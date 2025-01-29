@@ -17,6 +17,7 @@ public class MenuPanel extends JPanel{
     ImageIcon logoIcon;
     ImageIcon buttonIcon;
     ImageIcon buttonIconExercise;
+    ImageIcon buttonIconSettings;
     Font font;
     private String resourcePath;
     public MenuPanel(){
@@ -25,6 +26,7 @@ public class MenuPanel extends JPanel{
         logoIcon = new ImageIcon(resourcePath+"agile_small_icon.png");
         buttonIcon = new ImageIcon(resourcePath+"button.png");
         buttonIconExercise = new ImageIcon(resourcePath+"button_exercise.png");
+        buttonIconSettings = new ImageIcon(resourcePath+"button_settings.png");
         try{
             font=Font.createFont(Font.TRUETYPE_FONT, new File(resourcePath+"BebasNeue-Regular.otf"));
             font = font.deriveFont(30f);
@@ -188,6 +190,7 @@ public class MenuPanel extends JPanel{
             }
         });
 
+
         JButton button3 = new JButton("PROGRAM");
         button3.setFont(font.deriveFont(20f));
         button3.setForeground(Color.WHITE);
@@ -244,9 +247,12 @@ public class MenuPanel extends JPanel{
             }
         });
 
-        JButton button4 = new JButton("SETTINGS");
+        Image scaledButtonSettings = buttonIconSettings.getImage().getScaledInstance(151, 40, Image.SCALE_SMOOTH);
+        ImageIcon scaledButtonSettingsIcon = new ImageIcon(scaledButtonSettings);
+
+        JButton button4 = new JButton("SETTINGS",scaledButtonSettingsIcon);
         button4.setFont(font.deriveFont(20f));
-        button4.setForeground(Color.WHITE);
+        button4.setForeground(Color.BLACK);
         button4.setAlignmentX(Component.CENTER_ALIGNMENT);
         button4.setAlignmentY(Component.CENTER_ALIGNMENT);
         button4.setMaximumSize(new Dimension((int)((0.156770833*1920)/2), 40));
@@ -256,7 +262,7 @@ public class MenuPanel extends JPanel{
         button4.setFocusPainted(false);
         button4.setFocusable(false);
         button4.setBorderPainted(false);
-        button4.setContentAreaFilled(true);
+        button4.setContentAreaFilled(false);
         button4.setBackground(bg3);
 
         button4.addMouseListener(new MouseAdapter() {

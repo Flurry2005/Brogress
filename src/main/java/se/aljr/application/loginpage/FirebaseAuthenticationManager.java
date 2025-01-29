@@ -19,11 +19,11 @@ public class FirebaseAuthenticationManager {
         try {
             resourcePath = getClass().getClassLoader().getResource("resource.path").getPath().replace("resource.path","");
             System.out.println(resourcePath);
-            FileInputStream serviceAccount = new FileInputStream(resourcePath+"brogress-7499c-firebase-adminsdk-fbsvc-28c8a3e194.json");
+            FileInputStream serviceAccount = new FileInputStream(resourcePath+"brogress-7499c-firebase-adminsdk-fbsvc-f751df8ba3.json");
 
             FirebaseOptions options = FirebaseOptions.builder()
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                    .setDatabaseUrl("https://brogress-7499c.firebaseio.com")
+                    .setDatabaseUrl("https://test-7528a.firebaseio.com")
                     .build();
 
             FirebaseApp.initializeApp(options);
