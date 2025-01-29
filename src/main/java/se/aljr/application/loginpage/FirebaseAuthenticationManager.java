@@ -19,11 +19,11 @@ public class FirebaseAuthenticationManager {
         try {
             resourcePath = getClass().getClassLoader().getResource("resource.path").getPath().replace("resource.path","");
             System.out.println(resourcePath);
-            FileInputStream serviceAccount = new FileInputStream(resourcePath+"test-7528a-firebase-adminsdk-fbsvc-f916586d63.json");
+            FileInputStream serviceAccount = new FileInputStream(resourcePath+"brogress-7499c-firebase-adminsdk-fbsvc-28c8a3e194.json");
 
             FirebaseOptions options = FirebaseOptions.builder()
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                    .setDatabaseUrl("https://test-7528a.firebaseio.com")
+                    .setDatabaseUrl("https://brogress-7499c.firebaseio.com")
                     .build();
 
             FirebaseApp.initializeApp(options);
@@ -37,7 +37,7 @@ public class FirebaseAuthenticationManager {
     public static boolean authenticateUser(String email, String password) {
         try {
             // Firebase Authentication endpoint
-            String endpoint = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=" + "AIzaSyDP85UfsFrvUSbN6Ozo1nBJ8Ia8TU9YHVM";
+            String endpoint = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=" + "AIzaSyADuzz3eZoO-UpAkNS89ksgC4G4eXAdx8w";
 
             // Create JSON payload
             String payload = String.format(
