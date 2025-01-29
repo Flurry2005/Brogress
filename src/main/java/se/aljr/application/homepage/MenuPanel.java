@@ -226,6 +226,7 @@ public class MenuPanel extends JPanel{
             @Override
             public void mousePressed(MouseEvent e) {
                 button3.setBackground(new Color(220, 220, 220));
+                ApplicationWindow.switchWindow("program");
                 button3.repaint();
             }
 
@@ -248,11 +249,11 @@ public class MenuPanel extends JPanel{
             }
         });
 
-        /**Settings Button*/
         Image scaledButtonSettings = buttonIconSettings.getImage().getScaledInstance(151, 40, Image.SCALE_SMOOTH);
         ImageIcon scaledButtonSettingsIcon = new ImageIcon(scaledButtonSettings);
 
         JButton button4 = new JButton("SETTINGS",scaledButtonSettingsIcon);
+        /**Settings Button*/
         button4.setFont(font.deriveFont(20f));
         button4.setForeground(Color.BLACK);
         button4.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -286,6 +287,7 @@ public class MenuPanel extends JPanel{
             @Override
             public void mousePressed(MouseEvent e) {
                 button4.setBackground(new Color(220, 220, 220));
+                ApplicationWindow.switchWindow("settings");
                 button4.repaint();
             }
 
