@@ -131,6 +131,7 @@ public class MenuPanel extends JPanel{
         Image scaledButtonExercise = buttonIconExercise.getImage().getScaledInstance(151, 40, Image.SCALE_SMOOTH);
         ImageIcon scaledButtonExerciseIcon = new ImageIcon(scaledButtonExercise);
 
+        /**Exercises button*/
         JButton button2 = new JButton("EXERCISES",scaledButtonExerciseIcon);
         button2.setFont(font.deriveFont(20f));
         button2.setForeground(Color.BLACK);
@@ -188,9 +189,10 @@ public class MenuPanel extends JPanel{
             }
         });
 
+        /**Program button*/
         JButton button3 = new JButton("PROGRAM");
         button3.setFont(font.deriveFont(20f));
-        button3.setForeground(Color.WHITE);
+        button3.setForeground(Color.BLACK);
         button3.setAlignmentX(Component.CENTER_ALIGNMENT);
         button3.setAlignmentY(Component.CENTER_ALIGNMENT);
         button3.setMaximumSize(new Dimension((int)((0.156770833*1920)/2), 40));
@@ -244,9 +246,10 @@ public class MenuPanel extends JPanel{
             }
         });
 
+        /**Settings Button*/
         JButton button4 = new JButton("SETTINGS");
         button4.setFont(font.deriveFont(20f));
-        button4.setForeground(Color.WHITE);
+        button4.setForeground(Color.BLACK);
         button4.setAlignmentX(Component.CENTER_ALIGNMENT);
         button4.setAlignmentY(Component.CENTER_ALIGNMENT);
         button4.setMaximumSize(new Dimension((int)((0.156770833*1920)/2), 40));
