@@ -9,6 +9,7 @@ import java.awt.*;
  */
 public class Launcher {
     //Keeps track
+
     public static boolean isLoggedIn = false;
 
     public static void main(String[] args) throws InterruptedException {

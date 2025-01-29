@@ -111,38 +111,39 @@ public class LoginWindow extends JFrame {
         ImageIcon scaledBigLogoIcon = new ImageIcon(scaledBigLogo);
 
         JLabel bigLogoLabel = new JLabel(scaledBigLogoIcon);
-        //bigLogoLabel.setPreferredSize(new Dimension(getWidth()/2,getHeight()));
 
         Image scaledSmallLogo = new ImageIcon(resourcePath+"agile_small_icon.png").getImage().getScaledInstance((getHeight()-getHeight()/13)-(getHeight()*3/4), (getHeight()-getHeight()/13)-(getHeight()*3/4), Image.SCALE_SMOOTH);
         ImageIcon scaledSmallLogoIcon = new ImageIcon(scaledSmallLogo);
 
+
         JLabel smallLogoLabel = new JLabel(scaledSmallLogoIcon);
 
-        smallLogoLabel.setPreferredSize(new Dimension((getHeight()-getHeight()/13)-(getHeight()*3/5), (getHeight()-getHeight()/13)-(getHeight()*3/5)));
+        smallLogoLabel.setPreferredSize(new Dimension((getHeight()-getHeight()/13)-(getHeight()*3/5), (getHeight()-getHeight()/13)-(getHeight()*6/9)));
         smallLogoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JLabel incorrectUserCredentialsLabel = new JLabel("");
-        incorrectUserCredentialsLabel.setPreferredSize(new Dimension((int)(Monitorsize.getWidth()/38.4),(int)(Monitorsize.getHeight()/108)));
-        incorrectUserCredentialsLabel.setMaximumSize(new Dimension((int)(Monitorsize.getWidth()/38.4),(int)(Monitorsize.getHeight()/108)));
+        JLabel incorrectUserCredentialsLabel = new JLabel("",SwingConstants.CENTER);
+        incorrectUserCredentialsLabel.setPreferredSize((new Dimension(getWidth(),getHeight()/22)));
+        incorrectUserCredentialsLabel.setMinimumSize((new Dimension(getWidth(),getHeight()/22)));
+        incorrectUserCredentialsLabel.setMaximumSize((new Dimension(getWidth(),getHeight()/22)));
         incorrectUserCredentialsLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         incorrectUserCredentialsLabel.setForeground(Color.RED);
-        incorrectUserCredentialsLabel.setFont(new Font("Arial", Font.BOLD, (int)(Monitorsize.getHeight()/108)));
+        incorrectUserCredentialsLabel.setFont((font.deriveFont((float)getHeight()/23)));
         incorrectUserCredentialsLabel.setVisible(true);
 
         JTextField emailField = new JTextField("");
         emailField.setAlignmentX(Component.CENTER_ALIGNMENT);
-        emailField.setMinimumSize(new Dimension((int)(Monitorsize.getWidth()/19.2),(int)(Monitorsize.getHeight()/54)));
-        emailField.setMaximumSize(new Dimension(new Dimension((int)(Monitorsize.getWidth()/19.2),(int)(Monitorsize.getHeight()/54))));
+        emailField.setMinimumSize(new Dimension((int)(getWidth()/5),(int)(getHeight()/15)));
+        emailField.setMaximumSize(new Dimension(new Dimension((int)(getWidth()/5),(int)(getHeight()/15))));
 
         JPasswordField passwordField = new JPasswordField("");
-        passwordField.setMinimumSize(new Dimension(new Dimension((int)(Monitorsize.getWidth()/19.2),(int)(Monitorsize.getHeight()/54))));
-        passwordField.setMaximumSize(new Dimension(new Dimension((int)(Monitorsize.getWidth()/19.2),(int)(Monitorsize.getHeight()/54))));
+        passwordField.setMinimumSize(new Dimension((int)(getWidth()/5),(int)(getHeight()/15)));
+        passwordField.setMaximumSize(new Dimension(new Dimension((int)(getWidth()/5),(int)(getHeight()/15))));
         passwordField.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JButton loginButton = new JButton("Login");
-        loginButton.setMinimumSize(new Dimension(new Dimension((int)(Monitorsize.getWidth()/19.2),(int)(Monitorsize.getHeight()/27))));
-        loginButton.setPreferredSize(new Dimension(new Dimension((int)(Monitorsize.getWidth()/19.2),(int)(Monitorsize.getHeight()/27))));
-        loginButton.setMaximumSize(new Dimension(new Dimension((int)(Monitorsize.getWidth()/19.2),(int)(Monitorsize.getHeight()/27))));
+        loginButton.setMinimumSize(new Dimension(new Dimension((int)(getWidth()/5),(int)(getHeight()/7.5))));
+        loginButton.setPreferredSize(new Dimension(new Dimension((int)(getWidth()/5),(int)(getHeight()/7.5))));
+        loginButton.setMaximumSize(new Dimension(new Dimension((int)(getWidth()/5),(int)(getHeight()/7.5))));
         loginButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         loginButton.addActionListener(new ActionListener()
         {
@@ -158,7 +159,7 @@ public class LoginWindow extends JFrame {
                             Launcher.isLoggedIn = true; //Sätter Launcherns status till inloggad.
                         }
                         else{
-                            incorrectUserCredentialsLabel.setText("Incorrect.");
+                            incorrectUserCredentialsLabel.setText("INVALID CREDENTIALS");
                         }
                     }else{
                         FirebaseAuthenticationManager.registerUser(emailAdress, password);
@@ -174,8 +175,8 @@ public class LoginWindow extends JFrame {
         });
 
         JButton register = new JButton("<html><u>REGISTER</u></html>");
-        register.setFont(font.deriveFont((float)(Monitorsize.getHeight()/108)));
-        register.setMaximumSize(new Dimension((int)(Monitorsize.getWidth()/19.2),(int)(Monitorsize.getHeight()/27)));
+        register.setFont(font.deriveFont((float)(getHeight()/30)));
+        register.setMaximumSize(new Dimension((int)(getWidth()/6),(int)(getHeight()/10)));
         register.setAlignmentX(Component.CENTER_ALIGNMENT);
         register.setBorderPainted(false);
         register.setFocusPainted(false);
@@ -215,15 +216,12 @@ public class LoginWindow extends JFrame {
 
         JLabel emailText = new JLabel("Email: ");
         emailText.setAlignmentX(Component.CENTER_ALIGNMENT);
-        emailText.setFont(font.deriveFont((float)(Monitorsize.getHeight()/72)));
+        emailText.setFont(font.deriveFont((float)(getHeight()/17)));
 
         JLabel passwordText = new JLabel("Password: ");
         passwordText.setAlignmentX(Component.CENTER_ALIGNMENT);
-        passwordText.setFont(font.deriveFont((float)(Monitorsize.getHeight()/72)));
+        passwordText.setFont(font.deriveFont((float)(getHeight()/17)));
 
-
-
-        loginMenuPanel.add(Box.createVerticalStrut((int)(Monitorsize.getHeight()/216)));
         loginMenuPanel.add(emailText);
         loginMenuPanel.add(emailField);
         loginMenuPanel.add(Box.createVerticalStrut((int)(Monitorsize.getHeight()/108)));
@@ -243,9 +241,6 @@ public class LoginWindow extends JFrame {
         loginMenuPanel.setBackground(Color.BLACK);
         loginMenuPanel.setOpaque(false);
 
-        //loginPanel.setBackground(Color.GREEN);
-
-
         topBar.add(exitButton,BorderLayout.EAST);
 
         rightPanel.add(topBar,BorderLayout.NORTH);
@@ -255,6 +250,8 @@ public class LoginWindow extends JFrame {
 
         this.add(leftPanel, BorderLayout.WEST);
         this.add(rightPanel, BorderLayout.EAST);
+
+        //Handles the resizing of the components
         this.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
@@ -267,9 +264,24 @@ public class LoginWindow extends JFrame {
                 loginMenuPanel.setPreferredSize(new Dimension(loginPanel.getWidth(),getHeight()*6/9));
                 Image scaledSmallLogo = new ImageIcon(resourcePath+"agile_small_icon.png").getImage().getScaledInstance((rightPanel.getHeight()-topBar.getHeight())-(getHeight()*3/4), (rightPanel.getHeight()-topBar.getHeight())-(getHeight()*3/4), Image.SCALE_SMOOTH);
                 smallLogoLabel.setIcon(new ImageIcon(scaledSmallLogo));
-                smallLogoLabel.setPreferredSize(new Dimension((rightPanel.getHeight()-topBar.getHeight())-(getHeight()*3/5), (rightPanel.getHeight()-topBar.getHeight())-(getHeight()*3/5)));
-                System.out.println(new Dimension((rightPanel.getHeight()-topBar.getHeight())-(getHeight()*3/5), (rightPanel.getHeight()-topBar.getHeight())-(getHeight()*3/5)));
-                //LoginWindow.this.pack();
+                smallLogoLabel.setPreferredSize(new Dimension((rightPanel.getHeight()-topBar.getHeight())-(getHeight()*3/5), (rightPanel.getHeight()-topBar.getHeight())-(getHeight()*6/9)));
+                register.setFont(font.deriveFont((float)(getHeight()/30)));
+                register.setMaximumSize(new Dimension((int)(getWidth()/6),(int)(getHeight()/10)));        emailField.setMinimumSize(new Dimension((int)(getWidth()/5),(int)(getHeight()/15)));
+                emailField.setMaximumSize(new Dimension(new Dimension((int)(getWidth()/5),(int)(getHeight()/15))));
+                passwordField.setMinimumSize(new Dimension((int)(getWidth()/5),(int)(getHeight()/15)));
+                passwordField.setMaximumSize(new Dimension(new Dimension((int)(getWidth()/5),(int)(getHeight()/15))));
+                emailText.setFont(font.deriveFont((float)(getHeight()/17)));
+                passwordText.setFont(font.deriveFont((float)(getHeight()/17)));
+                loginButton.setMinimumSize(new Dimension(new Dimension((int)(getWidth()/5),(int)(getHeight()/7.5))));
+                loginButton.setPreferredSize(new Dimension(new Dimension((int)(getWidth()/5),(int)(getHeight()/7.5))));
+                loginButton.setMaximumSize(new Dimension(new Dimension((int)(getWidth()/5),(int)(getHeight()/7.5))));
+                incorrectUserCredentialsLabel.setPreferredSize((new Dimension(getWidth(),getHeight()/22)));
+                incorrectUserCredentialsLabel.setMinimumSize((new Dimension(getWidth(),getHeight()/22)));
+                incorrectUserCredentialsLabel.setMaximumSize((new Dimension(getWidth(),getHeight()/22)));
+                incorrectUserCredentialsLabel.setFont(new Font("Arial", Font.BOLD, (int)(getHeight()/27)));
+
+
+
 
             }
         });
