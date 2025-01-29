@@ -133,6 +133,7 @@ public class MenuPanel extends JPanel{
         Image scaledButtonExercise = buttonIconExercise.getImage().getScaledInstance(151, 40, Image.SCALE_SMOOTH);
         ImageIcon scaledButtonExerciseIcon = new ImageIcon(scaledButtonExercise);
 
+        /**Exercises button*/
         JButton button2 = new JButton("EXERCISES",scaledButtonExerciseIcon);
         button2.setFont(font.deriveFont(20f));
         button2.setForeground(Color.BLACK);
@@ -225,6 +226,7 @@ public class MenuPanel extends JPanel{
             @Override
             public void mousePressed(MouseEvent e) {
                 button3.setBackground(new Color(220, 220, 220));
+                ApplicationWindow.switchWindow("program");
                 button3.repaint();
             }
 
@@ -285,6 +287,7 @@ public class MenuPanel extends JPanel{
             @Override
             public void mousePressed(MouseEvent e) {
                 button4.setBackground(new Color(220, 220, 220));
+                ApplicationWindow.switchWindow("settings");
                 button4.repaint();
             }
 
