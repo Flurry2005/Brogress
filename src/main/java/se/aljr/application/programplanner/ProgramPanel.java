@@ -17,6 +17,7 @@ public class ProgramPanel extends JPanel {
     private String workoutTitle = activeWorkout.getName();
     Map<Exercise, Integer> exerciseSetmap = new HashMap<>();
     Map<Exercise, JPanel> exerciseToPanelMap = new HashMap<>();
+    private static int totalHeight;
 
     public ProgramPanel(int width, int height){
         this.setSize(width,height);
@@ -152,7 +153,7 @@ public class ProgramPanel extends JPanel {
                 }
 
                 JPanel newExercisePanel = createExercisePanel();
-                logContainer.setPreferredSize(new Dimension(logContainer.getWidth(), logContainer.getComponentCount() * getHeight()/6));
+                //logContainer.setPreferredSize(new Dimension(logContainer.getWidth(), logContainer.getComponentCount() * getHeight()/6));
                 logContainer.revalidate();
                 logContainer.repaint();
 
@@ -233,12 +234,15 @@ public class ProgramPanel extends JPanel {
                 addSet.setText("[+]");
                 addSet.setMaximumSize(new Dimension(50,30));
                 exerciseSetmap.put(currentExercise, exerciseSetmap.get(currentExercise)+1);
-                addSet.addActionListener(e -> {
 
+                totalHeight+=3*getHeight()/19; //Lägger till höjden för de 3 paneler som skapas när en övning läggs till
+
+                addSet.addActionListener(e -> {
+                    totalHeight+=getHeight()/19; //Lägger till höjden settet som läggs till
                     mainExercisePanel.add(addSet(currentExercise));
                     mainExercisePanel.revalidate();
                     mainExercisePanel.repaint();
-                    logContainer.setPreferredSize(new Dimension(logContainer.getWidth(), logContainer.getComponentCount() * getHeight()/6));
+                    logContainer.setPreferredSize(new Dimension(logContainer.getWidth(), totalHeight));
                     logContainer.revalidate();
                     logContainer.repaint();
 
@@ -248,7 +252,7 @@ public class ProgramPanel extends JPanel {
                 ProgramPanel.this.repaint();
                 Map<JButton, Exercise> buttonToExerciseMap = new HashMap<>();
                 logContainer.add(mainExercisePanel);
-                logContainer.setPreferredSize(new Dimension(logContainer.getWidth(), getHeight()));
+                logContainer.setPreferredSize(new Dimension(logContainer.getWidth(), totalHeight));
                 logContainer.revalidate();
                 logContainer.repaint();
 
@@ -268,6 +272,7 @@ public class ProgramPanel extends JPanel {
         this.add(mainPanel);
 
     }
+
     public JPanel addSet(Exercise current) {
 
         // Switch and update the set counter for the exercise
