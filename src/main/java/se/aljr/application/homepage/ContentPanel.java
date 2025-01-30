@@ -6,14 +6,20 @@ import java.awt.*;
 
 public class ContentPanel extends JPanel {
 
-    ImageIcon contentPanelBackground;
+    protected ImageIcon contentPanelBackground;
     ImageIcon moduleIcon = new ImageIcon("src/main/resources/module.png");
+    protected ImageIcon scaledContentBackgroundPanel;
+    Image scaledContentBackground;
     private String resourcePath;
     public ContentPanel(int width, int height){
+        this.setPreferredSize(new Dimension(width, height));
         resourcePath = getClass().getClassLoader().getResource("resource.path").getPath().replace("resource.path","");
         contentPanelBackground = new ImageIcon(resourcePath+ "bottom_right_bar.png");
 
-        this.setPreferredSize(new Dimension(width, height));
+        scaledContentBackground = contentPanelBackground.getImage().getScaledInstance(width,height,Image.SCALE_SMOOTH);
+        scaledContentBackgroundPanel = new ImageIcon(scaledContentBackground);
+
+
         init();
     }
 
@@ -32,10 +38,15 @@ public class ContentPanel extends JPanel {
         super.paintComponent(g);
         // Draw the image to fill the entire panel
         if (contentPanelBackground != null) {
-            g.drawImage(contentPanelBackground.getImage(), 0, 0, getWidth(), getHeight(), this);
+            g.drawImage(scaledContentBackgroundPanel.getImage(), 0, 0, getWidth(), getHeight(), this);
         }
         else{
             System.out.println("Error");
         }
+    }
+    public void reScaleBackground(){
+        scaledContentBackground = contentPanelBackground.getImage().getScaledInstance(getWidth(),getHeight(),Image.SCALE_SMOOTH);
+        scaledContentBackgroundPanel = new ImageIcon(scaledContentBackground);
+
     }
 }

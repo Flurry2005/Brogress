@@ -71,7 +71,7 @@ public class TopBar extends JPanel {
 
         this.add(exitButton, BorderLayout.EAST);
 
-        this.setPreferredSize(new Dimension(getWidth(), (int)((0.0768518519*1080)/2)));
+
 
     }
     @Override
