@@ -2,26 +2,26 @@ package se.aljr.application.programplanner;
 
 import se.aljr.application.exercise.Excercise.Exercise;
 import se.aljr.application.exercise.Program.Exercises;
-import se.aljr.application.programplanner.workout.Workout;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.*;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ProgramPanel extends JPanel {
     private static boolean noExercises = true;
-    private static int setCounter = 1;
-    private static Workout currentWorkout = new Workout();
-    private static Exercise currentExcercise;
-    private static String workoutTitle;
+    private Workout activeWorkout = new Workout();
+    private String workoutTitle = activeWorkout.getName();
+    Map<Exercise, Integer> exerciseSetmap = new HashMap<>();
+    Map<Exercise, JPanel> exerciseToPanelMap = new HashMap<>();
+    private static int totalHeight;
 
     public ProgramPanel(int width, int height){
         this.setSize(width,height);
-        this.setBackground(Color.cyan);
+        this.setBackground(Color.WHITE);
         this.setLayout(new FlowLayout(FlowLayout.CENTER,0,0));
         init();
     }
@@ -47,9 +47,9 @@ public class ProgramPanel extends JPanel {
 
         //Label holding workout title
         JLabel headerTitle = new JLabel();
-        headerTitle.setText("Workout " + LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd")));
+        headerTitle.setText(workoutTitle);
         headerTitle.setForeground(Color.BLACK);
-        headerTitle.setFont(new Font("Arial", Font.BOLD, 45));
+        headerTitle.setFont(new Font("Arial", Font.BOLD, 22));
         headerTitle.setHorizontalAlignment(SwingConstants.CENTER);
 
 
@@ -114,7 +114,6 @@ public class ProgramPanel extends JPanel {
             }
         });
 
-
         //Scroll-Panel to hold all exercises
         JScrollPane scrollPane2 = new JScrollPane(searchExerciseResult);
         exercisesPanel.add(scrollPane2);
@@ -132,77 +131,14 @@ public class ProgramPanel extends JPanel {
 
         changeTitle.setVisible(false);
 
-
         //Label to display text when log is empty
         JLabel isEmpty = new JLabel();
         isEmpty.setFont( new Font("Arial", Font.ITALIC, 20));
         isEmpty.setText("No exercises added yet.");
 
-
-        // "Add set"- button
-        JButton addSet = new JButton();
-        addSet.setText("[+] Set ");
-        //Listener to generate new set-panel
-        addSet.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (!noExercises) {
-                    JPanel newSetPanel = createSetPanel(setCounter++);
-                    logContainer.add(newSetPanel);
-                    logContainer.revalidate();
-                    logContainer.repaint();
-                    logContainer.setPreferredSize(new Dimension(getWidth() - 20, logContainer.getComponentCount() * getHeight() / 10));
-                }
-            }
-            private JPanel createSetPanel(int setCounter) {
-                JPanel setPanel = new JPanel();
-                setPanel.setOpaque(true);
-                setPanel.setLayout(new BorderLayout());
-                setPanel.setBackground(Color.WHITE);
-                setPanel.setMaximumSize(new Dimension(getWidth(),getHeight()/10));
-                setPanel.setPreferredSize(new Dimension(getWidth(),getHeight()/10));
-                setPanel.setAlignmentX(SwingConstants.CENTER);
-
-                JPanel leftPanel = new JPanel();
-                leftPanel.setOpaque(false);
-                leftPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-                setPanel.add(leftPanel, BorderLayout.WEST);
-
-                JLabel setLabel = new JLabel();
-                setLabel.setText(Integer.toString(setCounter) + ".");
-                leftPanel.add(setLabel);
-                setPanel.add(leftPanel, BorderLayout.WEST);
-
-                JPanel rightPanel = new JPanel();
-                rightPanel.setOpaque(false);
-                rightPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
-
-                JTextField repsAmount = new JTextField();
-                repsAmount.setText("12");
-                repsAmount.setPreferredSize(new Dimension(35,20));
-                rightPanel.add(repsAmount);
-
-                JTextField weightAmount = new JTextField();
-                weightAmount.setText("100");
-                weightAmount.setPreferredSize(new Dimension(35,20));
-                rightPanel.add(weightAmount);
-
-                JTextField rirAmount = new JTextField();
-                rirAmount.setText("100");
-                rirAmount.setPreferredSize(new Dimension(35,20));
-                rightPanel.add(rirAmount);
-
-                setPanel.add(rightPanel, BorderLayout.EAST);
-                return setPanel;
-            }
-        });
-
-
-
         //"Add exercise"-button
         JButton newExcerciseButton = new JButton();
         newExcerciseButton.setText("[+] Exercise");
-
 
         //This part generates a new exercise
         newExcerciseButton.addActionListener(new ActionListener() {
@@ -211,33 +147,30 @@ public class ProgramPanel extends JPanel {
                 if (searchExerciseResult.getSelectedValue() == null) {
                     return;
                 }
-
                 if (noExercises) {
                     logContainer.removeAll();
                     noExercises = false;
-                    addExerciseAndSetPanel.add(addSet);
                 }
 
-                currentExcercise = searchExerciseResult.getSelectedValue();
-                currentWorkout.setRep(currentExcercise,setCounter,12,100);
-
                 JPanel newExercisePanel = createExercisePanel();
-                setCounter = 1;
-                logContainer.add(newExercisePanel);
+                //logContainer.setPreferredSize(new Dimension(logContainer.getWidth(), logContainer.getComponentCount() * getHeight()/6));
                 logContainer.revalidate();
                 logContainer.repaint();
-                logContainer.setPreferredSize(new Dimension(getWidth() - 20, logContainer.getComponentCount() * getHeight() / 10));
+
                 ProgramPanel.this.revalidate();
                 ProgramPanel.this.repaint();
             }
             private JPanel createExercisePanel() {
+                Integer exerciseSet = 0;
+                Exercise currentExercise = searchExerciseResult.getSelectedValue();
 
-                // New container to hold every added panel
-                JPanel logContainer = new JPanel();
-                logContainer.setLayout(new BoxLayout(logContainer, BoxLayout.Y_AXIS));
-                logContainer.setMaximumSize(new Dimension(getWidth(),getHeight()/10));
-                logContainer.setOpaque(true);
-                logContainer.setBackground(Color.WHITE);
+                activeWorkout.addExercise(currentExercise);
+                exerciseSetmap.put(currentExercise, exerciseSet);
+
+                JPanel mainExercisePanel = new JPanel();
+                mainExercisePanel.setLayout(new BoxLayout(mainExercisePanel, BoxLayout.Y_AXIS));
+                mainExercisePanel.setBackground(Color.WHITE);
+                exerciseToPanelMap.put(currentExercise, mainExercisePanel);
 
                 // Panel to display exercise name
                 JPanel exerciseNameTitlePanel = new JPanel();
@@ -245,18 +178,19 @@ public class ProgramPanel extends JPanel {
                 exerciseNameTitlePanel.setOpaque(false);
 
                 // Label to hold name of exercise
-                JLabel exerciseName = new JLabel(searchExerciseResult.getSelectedValue().getName());
+                JLabel exerciseName = new JLabel();
+                exerciseName.setText(searchExerciseResult.getSelectedValue().getName());
                 exerciseName.setFont( new Font("Arial", Font.BOLD, 20));
                 exerciseNameTitlePanel.add(exerciseName);
-                logContainer.add(exerciseNameTitlePanel);
+                mainExercisePanel.add(exerciseNameTitlePanel);
 
                 // Panel to hold the titles of Set, Rep, Weight, RIR
                 JPanel setRepWeightRirTitleNPanel = new JPanel();
                 setRepWeightRirTitleNPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-                setRepWeightRirTitleNPanel.setMaximumSize(new Dimension(getWidth(), getHeight()/10));
+                setRepWeightRirTitleNPanel.setMaximumSize(new Dimension(getWidth(), getHeight()/18));
                 setRepWeightRirTitleNPanel.setOpaque(true);
                 setRepWeightRirTitleNPanel.setLayout(new BorderLayout());
-                logContainer.add(setRepWeightRirTitleNPanel);
+                mainExercisePanel.add(setRepWeightRirTitleNPanel);
 
                 // Title Panel to align Set title to left
                 JPanel leftPanel = new JPanel();
@@ -295,11 +229,34 @@ public class ProgramPanel extends JPanel {
                 rirLabel.setAlignmentX(Component.RIGHT_ALIGNMENT);
                 rightPanel.add(rirLabel);
 
+                // "Add set"- button
+                JButton addSet = new JButton();
+                addSet.setText("[+]");
+                addSet.setMaximumSize(new Dimension(50,30));
+                exerciseSetmap.put(currentExercise, exerciseSetmap.get(currentExercise)+1);
+
+                totalHeight+=3*getHeight()/19; //Lägger till höjden för de 3 paneler som skapas när en övning läggs till
+
+                addSet.addActionListener(e -> {
+                    totalHeight+=getHeight()/19; //Lägger till höjden settet som läggs till
+                    mainExercisePanel.add(addSet(currentExercise));
+                    mainExercisePanel.revalidate();
+                    mainExercisePanel.repaint();
+                    logContainer.setPreferredSize(new Dimension(logContainer.getWidth(), totalHeight));
+                    logContainer.revalidate();
+                    logContainer.repaint();
+
+                });
+                mainExercisePanel.add(addSet);
                 ProgramPanel.this.revalidate();
                 ProgramPanel.this.repaint();
+                Map<JButton, Exercise> buttonToExerciseMap = new HashMap<>();
+                logContainer.add(mainExercisePanel);
+                logContainer.setPreferredSize(new Dimension(logContainer.getWidth(), totalHeight));
+                logContainer.revalidate();
+                logContainer.repaint();
 
                 return logContainer;
-
             }
         });
 
@@ -313,5 +270,58 @@ public class ProgramPanel extends JPanel {
         mainPanel.add(exercisesPanel);
         mainPanel.add(addExerciseAndSetPanel);
         this.add(mainPanel);
+
+    }
+
+    public JPanel addSet(Exercise current) {
+
+        // Switch and update the set counter for the exercise
+        int set = exerciseSetmap.get(current);
+        exerciseSetmap.remove(current, exerciseSetmap.get(current));
+        exerciseSetmap.put(current, set+1);
+        // Save set number to current workout
+        activeWorkout.addSet(current, set);
+
+        JPanel setPanel = new JPanel();
+        setPanel.setOpaque(true);
+        setPanel.setLayout(new BorderLayout());
+        setPanel.setBackground(Color.WHITE);
+        setPanel.setMaximumSize(new Dimension(getWidth(),getHeight()/19));
+        setPanel.setPreferredSize(new Dimension(getWidth(),getHeight()/19));
+        setPanel.setAlignmentX(SwingConstants.CENTER);
+
+        JPanel leftPanel = new JPanel();
+        leftPanel.setOpaque(false);
+        leftPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        setPanel.add(leftPanel, BorderLayout.WEST);
+
+        JLabel setLabel = new JLabel();
+        setLabel.setText(set + ".");
+        leftPanel.add(setLabel);
+        setPanel.add(leftPanel, BorderLayout.WEST);
+
+        JPanel rightPanel = new JPanel();
+        rightPanel.setOpaque(false);
+        rightPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+
+        JTextField repsAmount = new JTextField();
+        repsAmount.setText("12");
+        repsAmount.setPreferredSize(new Dimension(35,20));
+        rightPanel.add(repsAmount);
+
+        JTextField weightAmount = new JTextField();
+        weightAmount.setText("100");
+        weightAmount.setPreferredSize(new Dimension(35,20));
+        rightPanel.add(weightAmount);
+
+        JTextField rirAmount = new JTextField();
+        rirAmount.setText("100");
+        rirAmount.setPreferredSize(new Dimension(35,20));
+        rightPanel.add(rirAmount);
+
+        setPanel.add(rightPanel, BorderLayout.EAST);
+
+        return setPanel;
+
     }
 }
