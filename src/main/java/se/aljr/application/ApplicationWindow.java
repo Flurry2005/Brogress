@@ -7,6 +7,8 @@ import se.aljr.application.settings.SettingsPanel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 
 public class ApplicationWindow extends JFrame  {
     private static boolean menu = true;
@@ -21,24 +23,36 @@ public class ApplicationWindow extends JFrame  {
 
     ApplicationWindow(int width, int height, String applicationTitle) throws InterruptedException {
 
+
+        System.out.println(width+" "+height);
         this.setUndecorated(true);
         this.setTitle(applicationTitle); //Sätter titeln av fönstret
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //Terminerar programet vid stängning.
-        this.setSize(width,height); //Sätter bredd och höjd för fönstret
+        this.setMinimumSize(new Dimension(width,height));
+        this.setPreferredSize(new Dimension(width,height)); //Sätter bredd och höjd för fönstret
          //Sätter fönstret till synlig
         setApplicationLogo();
         this.setLocationRelativeTo(null);
+
+        ResizeHandler resizeHandler = new ResizeHandler(this, ((double) width /height)); // Aspect ratio (t.ex. 4:3)
+        this.addMouseListener(resizeHandler);
+        this.addMouseMotionListener(resizeHandler);
         init();
         }
 
     private void init() throws InterruptedException {
         this.setLayout(new BorderLayout(0,0)); //Sätter Fönstrets layout till BorderLayout
 
-        MenuPanel menuPanel = new MenuPanel(); //Skapar Meny panelen
+        MenuPanel menuPanel = new MenuPanel((int)((getWidth()/6.4)), getHeight()); //Skapar Meny panelen
+        menuPanel.setPreferredSize(new Dimension((int)((getWidth()/6.4)), getHeight()));
+        menuPanel.setMinimumSize(new Dimension((int)(((getWidth()/6.4))), getHeight()));
 
         TopBar top_bar = new TopBar(this); //Skapar toppen baren
+        top_bar.setPreferredSize(new Dimension(getWidth(), (int)(getHeight()/13)));
 
-        ContentPanel content_panel = new ContentPanel(this.getWidth()-menuPanel.getWidth(), this.getHeight()-top_bar.getHeight()-41); //Skapar innehålls panelen
+        ContentPanel content_panel = new ContentPanel((int)(getWidth()-(getWidth()/6.4)), getHeight()-getHeight()/13); //Skapar innehålls panelen
+        content_panel.setMinimumSize(new Dimension((int)(getWidth()-(getWidth()/6.4)), getHeight()-top_bar.getHeight()));
+        content_panel.setMaximumSize(new Dimension((int)(getWidth()-(getWidth()/6.4)), getHeight()-top_bar.getHeight()));
 
         ExercisePanel exercisePanel = new ExercisePanel(this.getWidth()-menuPanel.getWidth(), this.getHeight()-top_bar.getHeight()-41);
         exercisePanel.setVisible(false);
@@ -51,24 +65,44 @@ public class ApplicationWindow extends JFrame  {
 
         System.out.println(this.getWidth()-menuPanel.getWidth());
         LeftPanel left_panel = new LeftPanel(); //Skapar den vänstra sektionen för fönstret
+        left_panel.setMinimumSize(new Dimension((int)((getWidth()/6.4)), getHeight()));
+        left_panel.setPreferredSize(new Dimension((int)((getWidth()/6.4)), getHeight()));
 
         RightPanel right_panel = new RightPanel(); //Skapar den högra sektionen för fönstret
-        right_panel.setPreferredSize(new Dimension(this.getWidth()-menuPanel.getWidth(), this.getHeight()));
+        right_panel.setMaximumSize(new Dimension(this.getWidth()-(int)((getWidth()/6.4)), this.getHeight()));
+        right_panel.setPreferredSize(new Dimension(this.getWidth()-(int)((getWidth()/6.4)), this.getHeight()));
 
         left_panel.add(menuPanel);
 
         right_panel.add(top_bar,BorderLayout.NORTH);
         right_panel.add(content_panel, BorderLayout.SOUTH);
 
+        //Handles the resizing of the components
+        this.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                SwingUtilities.invokeLater(()->{
+
+                    left_panel.setMinimumSize(new Dimension((int)((getWidth()/6.4)), getHeight()));
+                    left_panel.setPreferredSize(new Dimension((int)((getWidth()/6.4)), getHeight()));
+                    right_panel.setMaximumSize(new Dimension(getWidth()-(int)((getWidth()/6.4)), getHeight()));
+                    right_panel.setPreferredSize(new Dimension(getWidth()-(int)((getWidth()/6.4)), getHeight()));
+                    menuPanel.setPreferredSize(new Dimension((int)((getWidth()/6.4)), getHeight()));
+                    content_panel.setPreferredSize(new Dimension((int)(getWidth()-(getWidth()/6.4)), getHeight()-top_bar.getHeight()));
+                    content_panel.reScaleBackground();
+
+                    revalidate();
+                    repaint();
+
+                });
+            }
+        });
 
         this.add(right_panel, BorderLayout.EAST);
         this.add(left_panel, BorderLayout.WEST);
-        this.pack();
         this.setResizable(false);
         this.setVisible(true);
-        while(true){
-            Thread.sleep(100);
-
+        new Timer(100, e -> {
             switch(pageSelector){
 
                 /**Home Panel*/
@@ -118,7 +152,8 @@ public class ApplicationWindow extends JFrame  {
 
             }
             pageSelector=0;
-        }
+        }).start();
+
     }
     public static void switchWindow(String window){
 
