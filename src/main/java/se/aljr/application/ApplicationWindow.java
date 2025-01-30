@@ -55,9 +55,6 @@ public class ApplicationWindow extends JFrame  {
         RightPanel right_panel = new RightPanel(); //Skapar den högra sektionen för fönstret
         right_panel.setPreferredSize(new Dimension(this.getWidth()-menuPanel.getWidth(), this.getHeight()));
 
-
-
-
         left_panel.add(menuPanel);
 
         right_panel.add(top_bar,BorderLayout.NORTH);
@@ -73,6 +70,7 @@ public class ApplicationWindow extends JFrame  {
             Thread.sleep(100);
 
             switch(pageSelector){
+
                 /**Home Panel*/
                 case 1->{
                     right_panel.remove(exercisePanel);
@@ -117,7 +115,9 @@ public class ApplicationWindow extends JFrame  {
                     programPanel.setVisible(false);
                     settingsPanel.setVisible(true);
                 }
+
             }
+            pageSelector=0;
         }
     }
     public static void switchWindow(String window){
