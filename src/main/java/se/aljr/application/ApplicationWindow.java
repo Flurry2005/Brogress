@@ -57,7 +57,7 @@ public class ApplicationWindow extends JFrame  {
         ExercisePanel exercisePanel = new ExercisePanel(this.getWidth()-menuPanel.getWidth(), this.getHeight()-top_bar.getHeight()-41);
         exercisePanel.setVisible(false);
 
-        ProgramPanel programPanel = new ProgramPanel(this.getWidth()-menuPanel.getWidth(), this.getHeight()-top_bar.getHeight()-41);
+        ProgramPanel programPanel = new ProgramPanel((int)(getWidth()-(getWidth()/6.4)), getHeight()-getHeight()/13);
         programPanel.setVisible(false);
 
         SettingsPanel settingsPanel = new SettingsPanel(this.getWidth()-menuPanel.getWidth(), this.getHeight()-top_bar.getHeight()-41);
