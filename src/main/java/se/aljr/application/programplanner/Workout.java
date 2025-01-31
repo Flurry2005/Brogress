@@ -2,41 +2,34 @@ package se.aljr.application.programplanner;
 
 import se.aljr.application.exercise.Excercise.Exercise;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 
 public class Workout {
-    private String name;
-    private HashMap<Exercise, LinkedHashMap <Integer, HashMap>> workout = new HashMap<>();
-    private LinkedHashMap<Integer, HashMap> set;
+    String name = "Untitled Workout";
+    static HashMap<Exercise, Set> exercisesDone = new HashMap<>();
 
-    public Workout() {
-        this.name = "Untitled Workout";
+    public String getName () {
+        return this.name;
     }
+    public static class Set {
+        HashMap<Rep, Weight> set = new HashMap<>();
 
-    public String getName() { return this.name; }
-
-    public void setName(String name) { this.name = name; }
-
-    public void addExercise(Exercise exercise) {
-        workout.put(exercise, null);
+        public void addSet (Exercise exercise, Rep rep, Weight weight) {
+            set.put(rep, weight);
+            exercisesDone.put(exercise, this);
+        }
     }
-
-    public void addSet(Exercise exercise, Integer setNumber) {
-
-        LinkedHashMap<Integer, HashMap> set = new LinkedHashMap<>();
-        set.put(setNumber, new HashMap<>());
-        workout.put(exercise, set);
+    public class Rep {
+        int reps;
+        public Rep (int repAmount) {
+            this.reps = repAmount;
+        }
     }
-
-    public void addRep(Exercise exercise, Integer setNumber, Integer repNumber, Integer weight) {
-        HashMap<Integer, Integer> reps = new HashMap<>();
-        reps.put(repNumber, weight);
-        set.put(setNumber, reps);
-        workout.put(exercise, set);
-    }
-
-    public String getExercise() {
-        return this.workout.toString();
+    public class Weight {
+        int weight;
+        public Weight (int weightAmount) {
+            this.weight = weightAmount;
+        }
     }
 }
