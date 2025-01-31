@@ -47,65 +47,50 @@ public class ResizeHandler extends MouseAdapter {
 
             Rectangle bounds = frame.getBounds();
 
-            // Ändra storlek baserat på cursorType och bibehåll aspect ratio
-            if (cursorType == Cursor.SE_RESIZE_CURSOR || cursorType == Cursor.NW_RESIZE_CURSOR) {
-                // Skala både bredd och höjd proportionellt
-                int sizeDelta = Math.max(dx, dy);
-                int newWidth = bounds.width + (cursorType == Cursor.SE_RESIZE_CURSOR ? sizeDelta : -sizeDelta);
-                int newHeight = (int) (newWidth / aspectRatio);
+            int newWidth = bounds.width;
+            int newHeight = bounds.height;
 
-                if (cursorType == Cursor.NW_RESIZE_CURSOR) {
-                    bounds.x += bounds.width - newWidth;
-                    bounds.y += bounds.height - newHeight;
+            switch (cursorType) {
+                case Cursor.E_RESIZE_CURSOR, Cursor.W_RESIZE_CURSOR -> {
+                    newWidth = bounds.width + (cursorType == Cursor.E_RESIZE_CURSOR ? dx : -dx);
+                    newHeight = (int) (newWidth / aspectRatio);
+
+                    if (cursorType == Cursor.W_RESIZE_CURSOR) bounds.x += bounds.width - newWidth;
                 }
-
-                bounds.width = newWidth;
-                bounds.height = newHeight;
-
-            } else if (cursorType == Cursor.SW_RESIZE_CURSOR || cursorType == Cursor.NE_RESIZE_CURSOR) {
-                // Skala både bredd och höjd proportionellt
-                int sizeDelta = Math.max(Math.abs(dx), Math.abs(dy));
-                int newWidth = bounds.width + (cursorType == Cursor.NE_RESIZE_CURSOR ? sizeDelta : -sizeDelta);
-                int newHeight = (int) (newWidth / aspectRatio);
-
-                if (cursorType == Cursor.SW_RESIZE_CURSOR) {
-                    bounds.x += bounds.width - newWidth;
-                } else if (cursorType == Cursor.NE_RESIZE_CURSOR) {
-                    bounds.y += bounds.height - newHeight;
+                case Cursor.S_RESIZE_CURSOR, Cursor.N_RESIZE_CURSOR -> {
+                    newHeight = bounds.height + (cursorType == Cursor.S_RESIZE_CURSOR ? dy : -dy);
+                    newWidth = (int) (newHeight * aspectRatio);
+                    if (cursorType == Cursor.N_RESIZE_CURSOR) bounds.y += bounds.height - newHeight;
                 }
-
-                bounds.width = newWidth;
-                bounds.height = newHeight;
-
-            } else if (cursorType == Cursor.E_RESIZE_CURSOR || cursorType == Cursor.W_RESIZE_CURSOR) {
-                // Justera endast bredd och skala höjd
-                int newWidth = bounds.width + (cursorType == Cursor.E_RESIZE_CURSOR ? dx : -dx);
-                int newHeight = (int) (newWidth / aspectRatio);
-
-                if (cursorType == Cursor.W_RESIZE_CURSOR) {
-                    bounds.x += bounds.width - newWidth;
+                case Cursor.SE_RESIZE_CURSOR, Cursor.NW_RESIZE_CURSOR,
+                     Cursor.SW_RESIZE_CURSOR, Cursor.NE_RESIZE_CURSOR -> {
+                    int sizeDelta = Math.max(Math.abs(dx), Math.abs(dy));
+                    if (dx > dy) {  // Bredd förändras mest
+                        newWidth = bounds.width + (cursorType == Cursor.SE_RESIZE_CURSOR || cursorType == Cursor.NE_RESIZE_CURSOR ? sizeDelta : -sizeDelta);
+                        newHeight = (int) (newWidth / aspectRatio);
+                    } else {  // Höjd förändras mest
+                        newHeight = bounds.height + (cursorType == Cursor.SE_RESIZE_CURSOR || cursorType == Cursor.SW_RESIZE_CURSOR ? sizeDelta : -sizeDelta);
+                        newWidth = (int) (newHeight * aspectRatio);
+                    }
+                    if (cursorType == Cursor.NW_RESIZE_CURSOR || cursorType == Cursor.SW_RESIZE_CURSOR) bounds.x += bounds.width - newWidth;
+                    if (cursorType == Cursor.NW_RESIZE_CURSOR || cursorType == Cursor.NE_RESIZE_CURSOR) bounds.y += bounds.height - newHeight;
                 }
-
-                bounds.width = newWidth;
-                bounds.height = newHeight;
-
-            } else if (cursorType == Cursor.S_RESIZE_CURSOR || cursorType == Cursor.N_RESIZE_CURSOR) {
-                // Justera endast höjd och skala bredd
-                int newHeight = bounds.height + (cursorType == Cursor.S_RESIZE_CURSOR ? dy : -dy);
-                int newWidth = (int) (newHeight * aspectRatio);
-
-                if (cursorType == Cursor.N_RESIZE_CURSOR) {
-                    bounds.y += bounds.height - newHeight;
-                }
-
-                bounds.width = newWidth;
-                bounds.height = newHeight;
             }
 
-            frame.setBounds(bounds);
-            prevPoint = currentPoint;
+            // Förhindra att fönstret blir för litet
+            if (newWidth >= 200 && newHeight >= 200) {
+
+                bounds.width = newWidth;
+                bounds.height = newHeight;
+                frame.setBounds(bounds);
+                prevPoint = currentPoint;
+            }
         }
     }
+
+
+
+
 
     @Override
     public void mouseReleased(MouseEvent e) {

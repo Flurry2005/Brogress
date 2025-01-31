@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import se.aljr.application.exercise.Excercise.*;
 
 public class Exercises {
-	private static ArrayList<Exercise> exercises = new ArrayList<>();
+	private ArrayList<Exercise> exercises = new ArrayList<>();
 
 	public Exercises() {
 		exercises.add(new BarbellRow());
@@ -39,11 +39,22 @@ public class Exercises {
 		exercises.add(new TricepsFrenchPress());
 
 	}
-	public ArrayList<Exercise> getList () {
+
+	public ArrayList<Exercise> getList() {
 		return exercises;
 	}
 
-	public void addToList(Exercise name) {
+	public void createExcercise(Exercise name) {
 		exercises.add(name);
+	}
+
+	public ArrayList<Exercise> getByMuscle(String muscle) {
+		ArrayList<Exercise> temp = new ArrayList<>();
+		for (Exercise i : exercises) {
+			if (i.getMusclesUsed().contains(muscle)) {
+				temp.add(i);
+			}
+		}
+		return temp;
 	}
 }

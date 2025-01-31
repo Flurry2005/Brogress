@@ -4,6 +4,8 @@ import se.aljr.application.ApplicationWindow;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -18,9 +20,19 @@ public class MenuPanel extends JPanel{
     ImageIcon buttonIcon;
     ImageIcon buttonIconExercise;
     ImageIcon buttonIconSettings;
+    private ImageIcon scaledButtonHomeIcon;
+    private ImageIcon scaledButtonExerciseIcon;
+    private ImageIcon scaledButtonSettingsIcon;
+    private ImageIcon scaledLogoIcon;
+
     Font font;
+    private int width;
+    private int height;
     private String resourcePath;
-    public MenuPanel(){
+    public MenuPanel(int width, int height){
+        this.width = width;
+        this.height = height;
+        this.setPreferredSize(new Dimension(width, height));
         resourcePath = getClass().getClassLoader().getResource("resource.path").getPath().replace("resource.path","");
         menuBackground = new ImageIcon(resourcePath+"side_bar.png");
         logoIcon = new ImageIcon(resourcePath+"agile_small_icon.png");
@@ -29,25 +41,26 @@ public class MenuPanel extends JPanel{
         buttonIconSettings = new ImageIcon(resourcePath+"button_settings.png");
         try{
             font=Font.createFont(Font.TRUETYPE_FONT, new File(resourcePath+"BebasNeue-Regular.otf"));
-            font = font.deriveFont(30f);
+            font = font.deriveFont((float) (height/17));
         }catch(Exception e){
             font = new Font("Arial", Font.BOLD, 40);
             e.printStackTrace();
         }
-        init();
+        init(width,height);
     }
 
-    private void init(){
+    private void init(int width, int height){
 
         this.setLayout(new BorderLayout(0,0));
-        this.setPreferredSize(new Dimension((int)((0.156770833*1920)/2), 1080/2));
+
 
         JPanel logoContainer = new JPanel(new BorderLayout(0,0));
-        logoContainer.setPreferredSize(new Dimension(getWidth(), 1080/10));
+        logoContainer.setPreferredSize(new Dimension(getWidth(), height/4));
         logoContainer.setOpaque(false);
 
-        Image scaledlogoIcon = logoIcon.getImage().getScaledInstance(64, 64, Image.SCALE_SMOOTH);
-        ImageIcon scaledLogoIcon = new ImageIcon(scaledlogoIcon);
+        System.out.println((int)(width/8.5));
+        Image scaledlogoIcon = logoIcon.getImage().getScaledInstance((int)(height/8), (int)(height/8), Image.SCALE_SMOOTH);
+        scaledLogoIcon = new ImageIcon(scaledlogoIcon);
 
         JLabel logoLabel = new JLabel(scaledLogoIcon);
 
@@ -65,20 +78,21 @@ public class MenuPanel extends JPanel{
 
 
         JPanel buttonContainer = new JPanel();
+        buttonContainer.setPreferredSize(new Dimension(getWidth(),getHeight()/2));
         buttonContainer.add(Box.createVerticalStrut(30));
 
         buttonContainer.setLayout(new BoxLayout(buttonContainer, BoxLayout.Y_AXIS));
         buttonContainer.setOpaque(false);
 
         Image scaledbuttonHomeIcon = buttonIcon.getImage().getScaledInstance(151, 40, Image.SCALE_SMOOTH);
-        ImageIcon scaledButtonHomeIcon = new ImageIcon(scaledbuttonHomeIcon);
+        scaledButtonHomeIcon = new ImageIcon(scaledbuttonHomeIcon);
 
         JButton button1 = new JButton("HOME",scaledButtonHomeIcon);
         button1.setFont(font.deriveFont(20f));
         button1.setForeground(Color.BLACK);
         button1.setAlignmentX(Component.CENTER_ALIGNMENT);
         button1.setAlignmentY(Component.CENTER_ALIGNMENT);
-        button1.setMaximumSize(new Dimension((int)((0.156770833*1920)/2), 40));
+        button1.setMaximumSize(new Dimension(width, 40));
         button1.setHorizontalTextPosition(SwingConstants.CENTER);
         button1.setVerticalTextPosition(SwingConstants.CENTER);
         button1.setFocusPainted(false);
@@ -131,7 +145,7 @@ public class MenuPanel extends JPanel{
         });
 
         Image scaledButtonExercise = buttonIconExercise.getImage().getScaledInstance(151, 40, Image.SCALE_SMOOTH);
-        ImageIcon scaledButtonExerciseIcon = new ImageIcon(scaledButtonExercise);
+        scaledButtonExerciseIcon = new ImageIcon(scaledButtonExercise);
 
         /**Exercises button*/
         JButton button2 = new JButton("EXERCISES",scaledButtonExerciseIcon);
@@ -139,7 +153,7 @@ public class MenuPanel extends JPanel{
         button2.setForeground(Color.BLACK);
         button2.setAlignmentX(Component.CENTER_ALIGNMENT);
         button2.setAlignmentY(Component.CENTER_ALIGNMENT);
-        button2.setMaximumSize(new Dimension((int)((0.156770833*1920)/2), 40));
+        button2.setMaximumSize(new Dimension(width, 40));
         button2.setHorizontalTextPosition(SwingConstants.CENTER);
         button2.setVerticalTextPosition(SwingConstants.CENTER);
         Color bg1 = new Color(245, 245, 245,255);
@@ -197,7 +211,7 @@ public class MenuPanel extends JPanel{
         button3.setForeground(Color.BLACK);
         button3.setAlignmentX(Component.CENTER_ALIGNMENT);
         button3.setAlignmentY(Component.CENTER_ALIGNMENT);
-        button3.setMaximumSize(new Dimension((int)((0.156770833*1920)/2), 40));
+        button3.setMaximumSize(new Dimension(width,40));
         button3.setHorizontalTextPosition(SwingConstants.CENTER);
         button3.setVerticalTextPosition(SwingConstants.CENTER);
         Color bg2 = new Color(245, 245, 245,255);
@@ -250,7 +264,7 @@ public class MenuPanel extends JPanel{
         });
 
         Image scaledButtonSettings = buttonIconSettings.getImage().getScaledInstance(151, 40, Image.SCALE_SMOOTH);
-        ImageIcon scaledButtonSettingsIcon = new ImageIcon(scaledButtonSettings);
+        scaledButtonSettingsIcon = new ImageIcon(scaledButtonSettings);
 
 
         /**Settings Button*/
@@ -259,14 +273,14 @@ public class MenuPanel extends JPanel{
         button4.setForeground(Color.BLACK);
         button4.setAlignmentX(Component.CENTER_ALIGNMENT);
         button4.setAlignmentY(Component.CENTER_ALIGNMENT);
-        button4.setMaximumSize(new Dimension((int)((0.156770833*1920)/2), 40));
+        button4.setMaximumSize(new Dimension(width, 40));
         button4.setHorizontalTextPosition(SwingConstants.CENTER);
         button4.setVerticalTextPosition(SwingConstants.CENTER);
         Color bg3 = new Color(245, 245, 245,255);
         button4.setFocusPainted(false);
         button4.setFocusable(false);
         button4.setBorderPainted(false);
-        button4.setContentAreaFilled(false);
+        button4.setContentAreaFilled(true);
         button4.setBackground(bg3);
 
         button4.addMouseListener(new MouseAdapter() {
@@ -311,17 +325,60 @@ public class MenuPanel extends JPanel{
             }
         });
 
-        buttonContainer.add(button1);
-        buttonContainer.add(Box.createVerticalStrut(30));
-        buttonContainer.add(button2);
-        buttonContainer.add(Box.createVerticalStrut(30));
-        buttonContainer.add(button3);
-        buttonContainer.add(Box.createVerticalStrut(30));
-        buttonContainer.add(button4);
-        buttonContainer.add(Box.createVerticalStrut(30));
 
+        buttonContainer.add(button1);
+        buttonContainer.add(Box.createVerticalGlue());
+        buttonContainer.add(button2);
+        buttonContainer.add(Box.createVerticalGlue());
+        buttonContainer.add(button3);
+        buttonContainer.add(Box.createVerticalGlue());
+        buttonContainer.add(button4);
+        buttonContainer.add(Box.createVerticalGlue());
+        buttonContainer.add(Box.createVerticalGlue());
+        buttonContainer.add(Box.createVerticalGlue());
         this.add(logoContainer, BorderLayout.NORTH);
         this.add(buttonContainer, BorderLayout.CENTER);
+
+        //Handles the resizing of the components
+        this.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                SwingUtilities.invokeLater(()->{
+                    Image scaledlogoIcon = logoIcon.getImage().getScaledInstance((int)(getHeight()/8), (int)(getHeight()/8), Image.SCALE_SMOOTH);
+                    scaledLogoIcon = new ImageIcon(scaledlogoIcon);
+                    logoLabel.setIcon(scaledLogoIcon);
+
+                    logoContainer.setPreferredSize(new Dimension(getWidth(), getHeight()/4));
+
+                    logoLabelText.setFont(font.deriveFont((float) (getHeight()/17)));
+
+                    Image scaledbuttonHomeIcon = buttonIcon.getImage().getScaledInstance(getWidth(), (int)(getHeight()/13.5), Image.SCALE_SMOOTH);
+                    scaledButtonHomeIcon = new ImageIcon(scaledbuttonHomeIcon);
+                    button1.setIcon(scaledButtonHomeIcon);
+                    button1.setPreferredSize(new Dimension(getWidth(),(int)(getHeight()/13.5)));
+                    button1.setMaximumSize(new Dimension(getWidth(),(int)(getHeight()/13.5)));
+
+                    Image scaledButtonExercise = buttonIconExercise.getImage().getScaledInstance(getWidth(), (int)(getHeight()/13.5), Image.SCALE_SMOOTH);
+                    scaledButtonExerciseIcon = new ImageIcon(scaledButtonExercise);
+                    button2.setIcon(scaledButtonExerciseIcon);
+                    button2.setPreferredSize(new Dimension(getWidth(),(int)(getHeight()/13.5)));
+                    button2.setMaximumSize(new Dimension(getWidth(),(int)(getHeight()/13.5)));
+
+                    button3.setPreferredSize(new Dimension(getWidth(),(int)(getHeight()/13.5)));
+                    button3.setMaximumSize(new Dimension(getWidth(),(int)(getHeight()/13.5)));
+
+                    Image scaledButtonSettings = buttonIconSettings.getImage().getScaledInstance(getWidth(), (int)(getHeight()/13.5), Image.SCALE_SMOOTH);
+                    scaledButtonSettingsIcon = new ImageIcon(scaledButtonSettings);
+                    button4.setIcon(scaledButtonSettingsIcon);
+                    button4.setPreferredSize(new Dimension(getWidth(),(int)(getHeight()/13.5)));
+                    button4.setMaximumSize(new Dimension(getWidth(),(int)(getHeight()/13.5)));
+
+                    revalidate();
+                    repaint();
+
+                });
+            }
+        });
 
     }
     @Override
