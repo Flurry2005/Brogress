@@ -11,9 +11,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ProgramPanel extends JPanel {
-    private static boolean noExercises = true;
-    private Workout activeWorkout = new Workout();
-    private String workoutTitle = activeWorkout.getName();
+    private static boolean emptyLog = true;
+    private Workout currentWorkout = new Workout();
+    private String workoutTitle = currentWorkout.getName();
     private static int totalHeight;
     Map<Integer, JPanel> exercisePanels = new HashMap<>();
     Map<Integer, Integer> exerciseSetCount = new HashMap<>();
@@ -145,115 +145,18 @@ public class ProgramPanel extends JPanel {
                     return;
                 }
                 // Display if empty log
-                if (noExercises) {
+                if (emptyLog) {
                     logContainer.removeAll();
-                    noExercises = false;
+                    emptyLog = false;
                 }
 
-                JPanel newExercisePanel = createExercisePanel();
+                addExercise(searchExerciseResult.getSelectedValue(),logContainer);
                 logContainer.revalidate();
                 logContainer.repaint();
                 ProgramPanel.this.revalidate();
                 ProgramPanel.this.repaint();
             }
-            private JPanel createExercisePanel() {
-                Exercise currentExercise = searchExerciseResult.getSelectedValue();
 
-                // Exerciseid to identify
-                int exerciseId = exercisePanels.size() + 1;
-
-                JPanel mainExercisePanel = new JPanel();
-                mainExercisePanel.setLayout(new BoxLayout(mainExercisePanel, BoxLayout.Y_AXIS));
-                mainExercisePanel.setBackground(Color.WHITE);
-
-                // Track set cunt for each panel
-                exercisePanels.put(exerciseId, mainExercisePanel);
-                exerciseSetCount.put(exerciseId, 0);
-
-                // Panel to display exercise name
-                JPanel exerciseNameTitlePanel = new JPanel();
-                exerciseNameTitlePanel.setLayout(new BoxLayout(exerciseNameTitlePanel, BoxLayout.Y_AXIS));
-                exerciseNameTitlePanel.setOpaque(false);
-
-                // Label to hold name of exercise
-                JLabel exerciseName = new JLabel();
-                exerciseName.setText(searchExerciseResult.getSelectedValue().getName());
-                exerciseName.setFont( new Font("Arial", Font.BOLD, 20));
-                exerciseNameTitlePanel.add(exerciseName);
-                mainExercisePanel.add(exerciseNameTitlePanel);
-
-                // Panel to hold the titles of Set, Rep, Weight, RIR
-                JPanel setRepWeightRirTitleNPanel = new JPanel();
-                setRepWeightRirTitleNPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-                setRepWeightRirTitleNPanel.setMaximumSize(new Dimension(getWidth(), getHeight()/18));
-                setRepWeightRirTitleNPanel.setOpaque(true);
-                setRepWeightRirTitleNPanel.setLayout(new BorderLayout());
-                mainExercisePanel.add(setRepWeightRirTitleNPanel);
-
-                // Title Panel to align Set title to left
-                JPanel leftPanel = new JPanel();
-                leftPanel.setOpaque(false);
-                leftPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-                leftPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-                setRepWeightRirTitleNPanel.add(leftPanel, BorderLayout.WEST);
-
-                // Label to hold "Set"
-                JLabel setLabel = new JLabel();
-                setLabel.setText("Set");
-                setLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-                leftPanel.add(setLabel);
-
-                // Title Panel to align Rep, RIR and WEIGHT to right
-                JPanel rightPanel = new JPanel();
-                rightPanel.setOpaque(false);
-                rightPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-                rightPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
-                setRepWeightRirTitleNPanel.add(rightPanel, BorderLayout.EAST);
-
-                // Label to hold "Reps"
-                JLabel repsLabel = new JLabel();
-                repsLabel.setText("Reps");
-                repsLabel.setAlignmentX(Component.RIGHT_ALIGNMENT);
-                rightPanel.add(repsLabel);
-
-                // Label to hold "Weight"
-                JLabel weightLabel = new JLabel();
-                weightLabel.setText("Weight");
-                weightLabel.setAlignmentX(Component.RIGHT_ALIGNMENT);
-                rightPanel.add(weightLabel);
-                //Label to hold "RIR"
-                JLabel rirLabel = new JLabel();
-                rirLabel.setText("RIR");
-                rirLabel.setAlignmentX(Component.RIGHT_ALIGNMENT);
-                rightPanel.add(rirLabel);
-
-                // "Add set"- button
-                JButton addSet = new JButton();
-                addSet.setText("[+]");
-                addSet.setMaximumSize(new Dimension(50,30));
-
-                totalHeight+=3*getHeight()/19; //Lägger till höjden för de 3 paneler som skapas när en övning läggs till
-
-                addSet.addActionListener(e -> {
-                    totalHeight+=getHeight()/19; //Lägger till höjden settet som läggs till
-                    addSet(exerciseId);
-                    logContainer.setPreferredSize(new Dimension(logContainer.getWidth(), totalHeight));
-                    logContainer.revalidate();
-                    logContainer.repaint();
-
-                });
-
-                mainExercisePanel.add(addSet);
-                ProgramPanel.this.revalidate();
-                ProgramPanel.this.repaint();
-                Map<JButton, Exercise> buttonToExerciseMap = new HashMap<>();
-                logContainer.add(mainExercisePanel);
-                logContainer.setPreferredSize(new Dimension(logContainer.getWidth(), totalHeight));
-                logContainer.revalidate();
-                logContainer.repaint();
-
-                return logContainer;
-            }
         });
 
         mainPanel.add(headerPanel);
@@ -268,7 +171,103 @@ public class ProgramPanel extends JPanel {
         this.add(mainPanel);
 
     }
+    private JPanel addExercise(Exercise currentExercise, JPanel logContainer) {
 
+        // Exerciseid to identify
+        int exerciseId = exercisePanels.size() + 1;
+
+        JPanel mainExercisePanel = new JPanel();
+        mainExercisePanel.setLayout(new BoxLayout(mainExercisePanel, BoxLayout.Y_AXIS));
+        mainExercisePanel.setBackground(Color.WHITE);
+
+        // Track set cunt for each panel
+        exercisePanels.put(exerciseId, mainExercisePanel);
+        exerciseSetCount.put(exerciseId, 0);
+
+        // Panel to display exercise name
+        JPanel exerciseNameTitlePanel = new JPanel();
+        exerciseNameTitlePanel.setLayout(new BoxLayout(exerciseNameTitlePanel, BoxLayout.Y_AXIS));
+        exerciseNameTitlePanel.setOpaque(false);
+
+        // Label to hold name of exercise
+        JLabel exerciseName = new JLabel();
+        exerciseName.setText(currentExercise.getName());
+        exerciseName.setFont( new Font("Arial", Font.BOLD, 20));
+        exerciseNameTitlePanel.add(exerciseName);
+        mainExercisePanel.add(exerciseNameTitlePanel);
+
+        // Panel to hold the titles of Set, Rep, Weight, RIR
+        JPanel setRepWeightRirTitleNPanel = new JPanel();
+        setRepWeightRirTitleNPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        setRepWeightRirTitleNPanel.setMaximumSize(new Dimension(getWidth(), getHeight()/18));
+        setRepWeightRirTitleNPanel.setOpaque(true);
+        setRepWeightRirTitleNPanel.setLayout(new BorderLayout());
+        mainExercisePanel.add(setRepWeightRirTitleNPanel);
+
+        // Title Panel to align Set title to left
+        JPanel leftPanel = new JPanel();
+        leftPanel.setOpaque(false);
+        leftPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        leftPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        setRepWeightRirTitleNPanel.add(leftPanel, BorderLayout.WEST);
+
+        // Label to hold "Set"
+        JLabel setLabel = new JLabel();
+        setLabel.setText("Set");
+        setLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        leftPanel.add(setLabel);
+
+        // Title Panel to align Rep, RIR and WEIGHT to right
+        JPanel rightPanel = new JPanel();
+        rightPanel.setOpaque(false);
+        rightPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        rightPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+        setRepWeightRirTitleNPanel.add(rightPanel, BorderLayout.EAST);
+
+        // Label to hold "Reps"
+        JLabel repsLabel = new JLabel();
+        repsLabel.setText("Reps");
+        repsLabel.setAlignmentX(Component.RIGHT_ALIGNMENT);
+        rightPanel.add(repsLabel);
+
+        // Label to hold "Weight"
+        JLabel weightLabel = new JLabel();
+        weightLabel.setText("Weight");
+        weightLabel.setAlignmentX(Component.RIGHT_ALIGNMENT);
+        rightPanel.add(weightLabel);
+        //Label to hold "RIR"
+        JLabel rirLabel = new JLabel();
+        rirLabel.setText("RIR");
+        rirLabel.setAlignmentX(Component.RIGHT_ALIGNMENT);
+        rightPanel.add(rirLabel);
+
+        // "Add set"- button
+        JButton addSet = new JButton();
+        addSet.setText("[+]");
+        addSet.setMaximumSize(new Dimension(50,30));
+
+        totalHeight+=3*getHeight()/19; //Lägger till höjden för de 3 paneler som skapas när en övning läggs till
+
+        addSet.addActionListener(e -> {
+            totalHeight+=getHeight()/19; //Lägger till höjden settet som läggs till
+            addSet(exerciseId);
+            logContainer.setPreferredSize(new Dimension(logContainer.getWidth(), totalHeight));
+            logContainer.revalidate();
+            logContainer.repaint();
+
+        });
+
+        mainExercisePanel.add(addSet);
+        ProgramPanel.this.revalidate();
+        ProgramPanel.this.repaint();
+        Map<JButton, Exercise> buttonToExerciseMap = new HashMap<>();
+        logContainer.add(mainExercisePanel);
+        logContainer.setPreferredSize(new Dimension(logContainer.getWidth(), totalHeight));
+        logContainer.revalidate();
+        logContainer.repaint();
+
+        return logContainer;
+    }
     public void addSet(int exerciseId) {
 
         JPanel parentPanel = exercisePanels.get(exerciseId);
