@@ -8,7 +8,6 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -253,6 +252,22 @@ public class ProgramPanel extends JPanel {
         setLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         leftPanel.add(setLabel);
 
+        //Remove exercise-button
+        JButton removeExercise = new JButton();
+        removeExercise.setMargin(new Insets(0, 0, 0, 0));
+        removeExercise.setForeground(Color.white);
+        removeExercise.setText("remove");
+        removeExercise.setFont(new Font("Arial", Font.BOLD, 12));
+        removeExercise.setBackground(Color.red);
+        removeExercise.setBorderPainted(false);
+        removeExercise.setFocusPainted(false);
+        removeExercise.addActionListener(e -> {
+            currentWorkout.deleteExercise(exerciseId);
+            mainExercisePanel.removeAll();
+            logContainer.repaint();
+            logContainer.revalidate();
+        });
+
         // Title Panel to align Rep, RIR and WEIGHT to right
         JPanel rightPanel = new JPanel();
         rightPanel.setOpaque(false);
@@ -281,7 +296,7 @@ public class ProgramPanel extends JPanel {
         JButton addSet = new JButton();
         addSet.setMargin(new Insets(0, 0, 0, 0));
         addSet.setForeground(Color.white);
-        addSet.setText("new");
+        addSet.setText("+");
         addSet.setFont(new Font("Arial", Font.BOLD, 12));
         addSet.setBackground(new Color(40, 129, 201));
         addSet.setBorderPainted(false);
@@ -298,8 +313,8 @@ public class ProgramPanel extends JPanel {
             logContainer.repaint();
 
         });
-
-        leftPanel.add(addSet);
+        exerciseNameTitlePanel.add(removeExercise);
+        mainExercisePanel.add(addSet);
         ProgramPanel.this.revalidate();
         ProgramPanel.this.repaint();
         logContainer.add(mainExercisePanel);
@@ -336,7 +351,7 @@ public class ProgramPanel extends JPanel {
         setPanel.add(leftPanel, BorderLayout.WEST);
 
         JLabel setLabel = new JLabel();
-        setLabel.setText(workoutSet.getNumber() + ".");
+        setLabel.setText(currentWorkout.getSetSize(exerciseId) + ".");
         leftPanel.add(setLabel);
         setPanel.add(leftPanel, BorderLayout.WEST);
 
@@ -352,16 +367,11 @@ public class ProgramPanel extends JPanel {
 
         // delete set
         deleteSet.addActionListener(e -> {
-
-
-            currentWorkout.deleteSet(exerciseId, workoutSet.getNumber());
-            setPanels.remove(workoutSet.getNumber());
-            workoutSet.setNumber(currentWorkout.getSetSize(exerciseId));
+            currentWorkout.deleteSet(exerciseId,workoutSet.getNumber());
             parentPanel.remove(setPanel);
-            parentPanel.repaint();
             parentPanel.revalidate();
-            setLabel.repaint();
-            setLabel.revalidate();
+            parentPanel.repaint();
+
         });
 
         JPanel rightPanel = new JPanel();
@@ -414,4 +424,7 @@ public class ProgramPanel extends JPanel {
             currentWorkout.addSet(exerciseId, finalWorkoutSet);
         });
     }
-}
+    }
+
+
+

@@ -1,5 +1,7 @@
 package se.aljr.application.programplanner;
 
+import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -53,7 +55,7 @@ public class WorkoutData {
         }
     }
 
-    public int getSetSize (int id) {
+    public int getSetSize(int id) {
         int size = 0;
         for (Map.Entry<Integer, List<WorkoutSet>> set : exerciseSets.entrySet()) {
             if (set.getKey() == id) {
@@ -76,5 +78,12 @@ public class WorkoutData {
         }
         return result.toString();
     }
+
+    public void deleteExercise(int exerciseId) {
+        exerciseSets.remove(exerciseId);
+    }
+
 }
+
+
 
