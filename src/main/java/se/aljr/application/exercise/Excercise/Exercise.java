@@ -1,6 +1,7 @@
 package se.aljr.application.exercise.Excercise;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import se.aljr.application.exercise.Muscle.Muscle;
 
@@ -25,5 +26,17 @@ public abstract class Exercise {
 	public String toString() {
 		return this.name;
 	}
-	
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) return true;
+		if (obj == null || getClass() != obj.getClass()) return false;
+		Exercise exercise = (Exercise) obj;
+		return name.equals(exercise.name);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(name);
+	}
 }
