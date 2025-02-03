@@ -226,6 +226,7 @@ public class ProgramPanel extends JPanel {
 
         // Label to hold name of exercise
         JLabel exerciseName = new JLabel();
+        exerciseName.setPreferredSize(new Dimension(getWidth(),getHeight()/19));
         exerciseName.setText(currentExercise.getName());
         exerciseName.setFont(new Font("Arial", Font.BOLD, 20));
         exerciseNameTitlePanel.add(exerciseName);
@@ -234,7 +235,8 @@ public class ProgramPanel extends JPanel {
         // Panel to hold the titles of Set, Rep, Weight, RIR
         JPanel setRepWeightRirTitleNPanel = new JPanel();
         setRepWeightRirTitleNPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        setRepWeightRirTitleNPanel.setMaximumSize(new Dimension(getWidth(), getHeight() / 18));
+        setRepWeightRirTitleNPanel.setPreferredSize(new Dimension(getWidth(), getHeight() / 19));
+        setRepWeightRirTitleNPanel.setMaximumSize(new Dimension(getWidth(), getHeight() / 19));
         setRepWeightRirTitleNPanel.setOpaque(true);
         setRepWeightRirTitleNPanel.setLayout(new BorderLayout());
         mainExercisePanel.add(setRepWeightRirTitleNPanel);
@@ -244,6 +246,7 @@ public class ProgramPanel extends JPanel {
         leftPanel.setOpaque(false);
         leftPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
         leftPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        leftPanel.setPreferredSize(new Dimension(getWidth(),getHeight()/19));
         setRepWeightRirTitleNPanel.add(leftPanel, BorderLayout.WEST);
 
         // Label to hold "Set"
@@ -254,6 +257,8 @@ public class ProgramPanel extends JPanel {
 
         //Remove exercise-button
         JButton removeExercise = new JButton();
+        removeExercise.setPreferredSize(new Dimension(getWidth()/15,getHeight()/19));
+        removeExercise.setMaximumSize(new Dimension(getWidth()/15,getHeight()/19));
         removeExercise.setMargin(new Insets(0, 0, 0, 0));
         removeExercise.setForeground(Color.white);
         removeExercise.setText("remove");
@@ -262,10 +267,20 @@ public class ProgramPanel extends JPanel {
         removeExercise.setBorderPainted(false);
         removeExercise.setFocusPainted(false);
         removeExercise.addActionListener(e -> {
+            totalHeight-=4*getHeight()/19;
+            int i = 1;// For settings the numbers of the sets correctly
+            for(Component comp : mainExercisePanel.getComponents()){
+                if("setPanel".equals(comp.getName())){
+                    totalHeight-=getHeight()/19;
+                }
+            }
+            logContainer.setPreferredSize(new Dimension(logContainer.getWidth(), totalHeight));
             currentWorkout.deleteExercise(exerciseId);
             mainExercisePanel.removeAll();
             logContainer.repaint();
             logContainer.revalidate();
+
+
         });
 
         // Title Panel to align Rep, RIR and WEIGHT to right
@@ -294,6 +309,8 @@ public class ProgramPanel extends JPanel {
 
         // "Add set"- button
         JButton addSet = new JButton();
+        addSet.setPreferredSize(new Dimension(getWidth()/35,getHeight()/19));
+        addSet.setMaximumSize(new Dimension(getWidth()/35,getHeight()/19));
         addSet.setMargin(new Insets(0, 0, 0, 0));
         addSet.setForeground(Color.white);
         addSet.setText("+");
@@ -302,18 +319,18 @@ public class ProgramPanel extends JPanel {
         addSet.setBorderPainted(false);
         addSet.setFocusPainted(false);
 
-
-        totalHeight += 3 * getHeight() / 19; //Lägger till höjden för de 3 paneler som skapas när en övning läggs till
+        totalHeight += 4 * getHeight() / 19; //Lägger till höjden för de 4 paneler som skapas när en övning läggs till
 
         addSet.addActionListener(e -> {
             totalHeight += getHeight() / 19; //Lägger till höjden settet som läggs till
-            addSet(exerciseId, currentExercise);
+            addSet(exerciseId, currentExercise, mainExercisePanel,getHeight()/19, logContainer);
             logContainer.setPreferredSize(new Dimension(logContainer.getWidth(), totalHeight));
             logContainer.revalidate();
             logContainer.repaint();
 
         });
-        exerciseNameTitlePanel.add(removeExercise);
+
+                exerciseNameTitlePanel.add(removeExercise);
         mainExercisePanel.add(addSet);
         ProgramPanel.this.revalidate();
         ProgramPanel.this.repaint();
@@ -325,7 +342,7 @@ public class ProgramPanel extends JPanel {
         return logContainer;
     }
 
-    public void addSet(int exerciseId, Exercise currentExercise) {
+    public void addSet(int exerciseId, Exercise currentExercise, JPanel mainExercisePanel, int heightToRemove, JPanel logContainer) {
 
         WorkoutSet workoutSet = new WorkoutSet();
         workoutSet.setExercise(currentExercise);
@@ -333,6 +350,7 @@ public class ProgramPanel extends JPanel {
 
         JPanel setPanel = new JPanel();
         setPanels.put(exerciseId, setPanel);
+        setPanel.setName("setPanel");
 
         workoutSet.setNumber(currentWorkout.getSetSize(exerciseId));
 
@@ -348,9 +366,12 @@ public class ProgramPanel extends JPanel {
         JPanel leftPanel = new JPanel();
         leftPanel.setOpaque(false);
         leftPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        leftPanel.setName("leftPanel");
         setPanel.add(leftPanel, BorderLayout.WEST);
 
+
         JLabel setLabel = new JLabel();
+        setLabel.setName("setLabel");
         setLabel.setText(currentWorkout.getSetSize(exerciseId) + ".");
         leftPanel.add(setLabel);
         setPanel.add(leftPanel, BorderLayout.WEST);
@@ -367,10 +388,35 @@ public class ProgramPanel extends JPanel {
 
         // delete set
         deleteSet.addActionListener(e -> {
+            System.out.println("Deleting a set and putting the correct number.");
             currentWorkout.deleteSet(exerciseId,workoutSet.getNumber());
             parentPanel.remove(setPanel);
+            int i = 1;// For settings the numbers of the sets correctly
+            for(Component comp : parentPanel.getComponents()){
+                if("setPanel".equals(comp.getName())){
+                    JPanel compSetPanel = (JPanel) comp;
+                    for(Component comp1 : compSetPanel.getComponents()){
+                        if("leftPanel".equals(comp1.getName())){
+                            JPanel compLeftPanel = (JPanel) comp1;
+                            for(Component comp2 : compLeftPanel.getComponents()){
+                                if("setLabel".equals(comp2.getName())){
+                                    JLabel setLabelRe = (JLabel) comp2;
+                                    setLabelRe.setText(i + ".");
+                                    i++;
+                                }
+
+                            }
+                        }
+                    }
+                }
+            }
+            totalHeight-=heightToRemove;
+            logContainer.setPreferredSize(new Dimension(logContainer.getWidth(), totalHeight));
+            ProgramPanel.this.repaint();
+            ProgramPanel.this.revalidate();
             parentPanel.revalidate();
             parentPanel.repaint();
+
 
         });
 
