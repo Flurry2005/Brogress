@@ -272,7 +272,7 @@ public class ProgramPanel extends JPanel {
             for(Component comp : mainExercisePanel.getComponents()){
                 if("setPanel".equals(comp.getName())){
                     totalHeight-=getHeight()/19;
-                }
+                }   
             }
             logContainer.setPreferredSize(new Dimension(logContainer.getWidth(), totalHeight));
             currentWorkout.deleteExercise(exerciseId);
