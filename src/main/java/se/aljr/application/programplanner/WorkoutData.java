@@ -1,18 +1,16 @@
 package se.aljr.application.programplanner;
 
-import javax.swing.*;
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class WorkoutData {
-    private String name = "Untitled Workout";
+    private String title = "Untitled Workout";
     private HashMap<Integer, List<WorkoutSet>> exerciseSets = new HashMap<>();
 
-    public String getName() {
-        return this.name;
+    public String getTitle() {
+        return this.title;
     }
 
     public void addSet(int exerciseId, WorkoutSet newSet) {
@@ -44,14 +42,13 @@ public class WorkoutData {
         List<WorkoutSet> sets = exerciseSets.get(exerciseId);
         sets.removeIf(set -> set.getNumber() == setNumber);
 
+        // update and assign setnumbers
         int newSetId = 1;
         for (WorkoutSet s : sets) {
             s.setNumber(newSetId++);
-
             if (sets.isEmpty()) {
                 exerciseSets.remove(exerciseId);
             }
-
         }
     }
 
@@ -69,7 +66,7 @@ public class WorkoutData {
 
     public String getData() {
         StringBuilder result = new StringBuilder();
-        result.append(this.name).append("\n");
+        result.append(this.title).append("\n");
 
         for (Map.Entry<Integer, List<WorkoutSet>> set : exerciseSets.entrySet()) {
             result.append(set.getValue().get(0).exercise + "\n");
@@ -83,6 +80,9 @@ public class WorkoutData {
         exerciseSets.remove(exerciseId);
     }
 
+    public HashMap<Integer, List<WorkoutSet>> update() {
+        return exerciseSets;
+    }
 }
 
 
