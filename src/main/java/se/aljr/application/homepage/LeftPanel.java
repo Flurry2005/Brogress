@@ -16,8 +16,7 @@ public class LeftPanel extends JPanel {
         init();
     }
     private void init(){
-        this.setPreferredSize(new Dimension((int)((0.156770833*screenWidth)/2), screenHeight/2));
         this.setOpaque(false);
-        this.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
+
     }
 }

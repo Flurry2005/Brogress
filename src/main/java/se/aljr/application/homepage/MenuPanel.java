@@ -1,6 +1,7 @@
 package se.aljr.application.homepage;
 
 import se.aljr.application.ApplicationWindow;
+import se.aljr.application.programplanner.ProgramPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -24,15 +25,17 @@ public class MenuPanel extends JPanel{
     private ImageIcon scaledButtonExerciseIcon;
     private ImageIcon scaledButtonSettingsIcon;
     private ImageIcon scaledLogoIcon;
+    public boolean lightMode = false;
 
     Font font;
     private int width;
     private int height;
     private String resourcePath;
     public MenuPanel(int width, int height){
+        this.setOpaque(false);
         this.width = width;
         this.height = height;
-        this.setPreferredSize(new Dimension(width, height));
+        //this.setPreferredSize(new Dimension(width, height));
         resourcePath = getClass().getClassLoader().getResource("resource.path").getPath().replace("resource.path","");
         menuBackground = new ImageIcon(resourcePath+"side_bar.png");
         logoIcon = new ImageIcon(resourcePath+"agile_small_icon.png");
@@ -50,16 +53,14 @@ public class MenuPanel extends JPanel{
     }
 
     private void init(int width, int height){
-
         this.setLayout(new BorderLayout(0,0));
 
-
         JPanel logoContainer = new JPanel(new BorderLayout(0,0));
-        logoContainer.setPreferredSize(new Dimension(getWidth(), height/4));
+        logoContainer.setPreferredSize(new Dimension(width/2, height/6));
         logoContainer.setOpaque(false);
 
         System.out.println((int)(width/8.5));
-        Image scaledlogoIcon = logoIcon.getImage().getScaledInstance((int)(height/8), (int)(height/8), Image.SCALE_SMOOTH);
+        Image scaledlogoIcon = logoIcon.getImage().getScaledInstance((int)(height/6), (int)(height/6), Image.SCALE_SMOOTH);
         scaledLogoIcon = new ImageIcon(scaledlogoIcon);
 
         JLabel logoLabel = new JLabel(scaledLogoIcon);
@@ -68,8 +69,8 @@ public class MenuPanel extends JPanel{
 
         logoLabelTextContainer.setOpaque(false);
         JLabel logoLabelText = new JLabel("BROGRESS");
-        logoLabelText.setFont(font);
-        logoLabelText.setForeground(Color.BLACK);
+        logoLabelText.setFont(font.deriveFont(4f));
+        logoLabelText.setForeground(Color.WHITE);
         logoLabelTextContainer.add(logoLabelText);
         logoContainer.add(logoLabel, BorderLayout.CENTER);
         logoContainer.add(logoLabelTextContainer, BorderLayout.SOUTH);
@@ -78,68 +79,116 @@ public class MenuPanel extends JPanel{
 
 
         JPanel buttonContainer = new JPanel();
-        buttonContainer.setPreferredSize(new Dimension(getWidth(),getHeight()/2));
+        buttonContainer.setPreferredSize(new Dimension(200,20000));
+        buttonContainer.setMinimumSize(new Dimension(200,20000));
         buttonContainer.add(Box.createVerticalStrut(30));
 
         buttonContainer.setLayout(new BoxLayout(buttonContainer, BoxLayout.Y_AXIS));
         buttonContainer.setOpaque(false);
 
+
         Image scaledbuttonHomeIcon = buttonIcon.getImage().getScaledInstance(151, 40, Image.SCALE_SMOOTH);
         scaledButtonHomeIcon = new ImageIcon(scaledbuttonHomeIcon);
 
-        JButton button1 = new JButton("HOME",scaledButtonHomeIcon);
-        button1.setFont(font.deriveFont(20f));
-        button1.setForeground(Color.BLACK);
-        button1.setAlignmentX(Component.CENTER_ALIGNMENT);
-        button1.setAlignmentY(Component.CENTER_ALIGNMENT);
-        button1.setMaximumSize(new Dimension(width, 40));
-        button1.setHorizontalTextPosition(SwingConstants.CENTER);
-        button1.setVerticalTextPosition(SwingConstants.CENTER);
-        button1.setFocusPainted(false);
-        button1.setFocusable(false);
-        button1.setBorderPainted(false);
-        button1.setContentAreaFilled(true);
-        Color bg = new Color(245, 245, 245,255);
-        button1.setBackground(bg);
+        final boolean[] homePageIsActive = {true};
+        final boolean[] exercisesPageIsActive = {false};
+        final boolean[] programPageIsActive = {false};
+        final boolean[] settingsPageIsActive = {false};
 
-        button1.addMouseListener(new MouseAdapter() {
+
+        final JButton homeButton = new JButton("Home",scaledButtonHomeIcon);
+        final JButton exercisesButton = new JButton("Exercises",scaledButtonExerciseIcon);
+        final JButton programButton = new JButton("Program");
+        JButton settingsButton = new JButton("Settings",scaledButtonSettingsIcon);
+
+        homeButton.setFont(new Font("Arial", Font.TRUETYPE_FONT,height/35));
+        homeButton.setForeground(Color.WHITE);
+        homeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        homeButton.setAlignmentY(Component.CENTER_ALIGNMENT);
+        homeButton.setMaximumSize(new Dimension(width-1, 40));
+        homeButton.setHorizontalTextPosition(SwingConstants.CENTER);
+        homeButton.setVerticalTextPosition(SwingConstants.CENTER);
+        homeButton.setFocusPainted(false);
+        homeButton.setFocusable(false);
+        homeButton.setBorderPainted(false);
+        homeButton.setContentAreaFilled(true);
+        //Color bg = Color.WHITE;
+        Color bg = new Color(51,51,51);
+        homeButton.setBackground(bg);
+
+        homeButton.addMouseListener(new MouseAdapter() {
+
             private boolean isHovered = false;
             @Override
             public void mouseEntered(MouseEvent e) {
                 isHovered = true;
-                button1.setBackground(new Color(230, 230, 230));
-                button1.repaint();
+                if(lightMode){
+                    homeButton.setBackground(new Color(230, 230, 230));
+                }else{
+                    homeButton.setBackground(new Color(40,40,40));
+                }
+
+                homeButton.repaint();
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
                 isHovered = false;
-                button1.setBackground(bg);
-                button1.repaint();
+                if(!homePageIsActive[0]){
+                    if(lightMode){
+                        homeButton.setBackground(Color.WHITE);
+                    }else{
+                        homeButton.setBackground(bg);
+                    }
+
+                }
+                homeButton.repaint();
             }
 
             @Override
             public void mousePressed(MouseEvent e) {
-                button1.setBackground(new Color(220,220,220));
-                button1.repaint();
+                exercisesPageIsActive[0] = false;
+                programPageIsActive[0] = false;
+                settingsPageIsActive[0] = false;
+                homePageIsActive[0] = true;
+
+                if(lightMode){
+                    settingsButton.setBackground(Color.WHITE);
+                    programButton.setBackground(Color.WHITE);
+                    exercisesButton.setBackground(Color.WHITE);
+                    homeButton.setBackground(new Color(220, 220, 220));
+                }else{
+                    settingsButton.setBackground(new Color(51,51,51));
+                    programButton.setBackground(new Color(51,51,51));
+                    exercisesButton.setBackground(new Color(51,51,51));
+                    homeButton.setBackground(new Color(30,30,30));
+                }
+
+
+
+                homeButton.repaint();
                 ApplicationWindow.switchWindow("home");
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
                 if (isHovered) {
-                    button1.setBackground(new Color(230, 230, 230));
+                    if(lightMode)
+                        homeButton.setBackground(new Color(230, 230, 230));
+                    else{
+                        homeButton.setBackground(new Color(40,40,40));
+                    }
                 } else {
-                    button1.setBackground(bg);
+                    homeButton.setBackground(bg);
                 }
-                button1.repaint();
+                homeButton.repaint();
             }
         });
-        button1.setUI(new javax.swing.plaf.basic.BasicButtonUI() {
+        homeButton.setUI(new javax.swing.plaf.basic.BasicButtonUI() {
             @Override
             public void paint(Graphics g, JComponent c) {
-                g.setColor(button1.getBackground());
-                g.fillRoundRect(0, 0, button1.getWidth(), button1.getHeight(), 10, 10);
+                g.setColor(homeButton.getBackground());
+                g.fillRoundRect(0, 0, homeButton.getWidth(), homeButton.getHeight(), 10, 10);
                 super.paint(g, c);
             }
         });
@@ -148,117 +197,175 @@ public class MenuPanel extends JPanel{
         scaledButtonExerciseIcon = new ImageIcon(scaledButtonExercise);
 
         /**Exercises button*/
-        JButton button2 = new JButton("EXERCISES",scaledButtonExerciseIcon);
-        button2.setFont(font.deriveFont(20f));
-        button2.setForeground(Color.BLACK);
-        button2.setAlignmentX(Component.CENTER_ALIGNMENT);
-        button2.setAlignmentY(Component.CENTER_ALIGNMENT);
-        button2.setMaximumSize(new Dimension(width, 40));
-        button2.setHorizontalTextPosition(SwingConstants.CENTER);
-        button2.setVerticalTextPosition(SwingConstants.CENTER);
-        Color bg1 = new Color(245, 245, 245,255);
-        button2.setFocusPainted(false);
-        button2.setFocusable(false);
-        button2.setBorderPainted(false);
-        button2.setContentAreaFilled(true);
-        button2.setBackground(bg1);
+        exercisesButton.setFont(new Font("Arial", Font.TRUETYPE_FONT,height/35));
+        exercisesButton.setForeground(Color.WHITE);
+        exercisesButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        exercisesButton.setAlignmentY(Component.CENTER_ALIGNMENT);
+        exercisesButton.setMaximumSize(new Dimension(width, 40));
+        exercisesButton.setHorizontalTextPosition(SwingConstants.CENTER);
+        exercisesButton.setVerticalTextPosition(SwingConstants.CENTER);
+        Color bg1 = new Color(51,51,51);
+        exercisesButton.setFocusPainted(false);
+        exercisesButton.setFocusable(false);
+        exercisesButton.setBorderPainted(false);
+        exercisesButton.setContentAreaFilled(true);
+        exercisesButton.setBackground(new Color(40,40,40));
 
-        button2.addMouseListener(new MouseAdapter() {
+        exercisesButton.addMouseListener(new MouseAdapter() {
             private boolean isHovered = false;
             @Override
             public void mouseEntered(MouseEvent e) {
                 isHovered = true;
-                button2.setBackground(new Color(230, 230, 230));
-                button2.repaint();
+                if(lightMode){
+                    exercisesButton.setBackground(new Color(230, 230, 230));
+                }else{
+                    exercisesButton.setBackground(new Color(40,40,40));
+                }
+                exercisesButton.repaint();
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
                 isHovered = false;
-                button2.setBackground(bg1);
-                button2.repaint();
+                if(!exercisesPageIsActive[0]){
+                    if(lightMode){
+                        exercisesButton.setBackground(Color.WHITE);
+                    }else{
+                        exercisesButton.setBackground(bg1);
+                    }
+                }
+                exercisesButton.repaint();
             }
 
             @Override
             public void mousePressed(MouseEvent e) {
-                button2.setBackground(new Color(220, 220, 220));
+                exercisesPageIsActive[0] = true;
+                programPageIsActive[0] = false;
+                settingsPageIsActive[0] = false;
+                homePageIsActive[0] = false;
+
+                if(lightMode){
+                    settingsButton.setBackground(Color.WHITE);
+                    programButton.setBackground(Color.WHITE);
+                    homeButton.setBackground(Color.WHITE);
+                    exercisesButton.setBackground(new Color(220, 220, 220));
+                }else{
+                    settingsButton.setBackground(new Color(51,51,51));
+                    programButton.setBackground(new Color(51,51,51));
+                    homeButton.setBackground(new Color(51,51,51));
+                    exercisesButton.setBackground(new Color(30,30,30));
+                }
+
                 ApplicationWindow.switchWindow("exercises");
-                button2.repaint();
+                exercisesButton.repaint();
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
                 if (isHovered) {
-                    button2.setBackground(new Color(230, 230, 230));
+                    if(lightMode)
+                        exercisesButton.setBackground(new Color(230, 230, 230));
+                    else{
+                        exercisesButton.setBackground(new Color(40,40,40));
+                    }
                 } else {
-                    button2.setBackground(bg1);
+                    exercisesButton.setBackground(bg1);
                 }
-                button2.repaint();
+                exercisesButton.repaint();
             }
         });
-        button2.setUI(new javax.swing.plaf.basic.BasicButtonUI() {
+        exercisesButton.setUI(new javax.swing.plaf.basic.BasicButtonUI() {
             @Override
             public void paint(Graphics g, JComponent c) {
-                g.setColor(button2.getBackground());
-                g.fillRoundRect(0, 0, button2.getWidth(), button2.getHeight(), 10, 10);
+                g.setColor(exercisesButton.getBackground());
+                g.fillRoundRect(0, 0, exercisesButton.getWidth(), exercisesButton.getHeight(), 10, 10);
                 super.paint(g, c);
             }
         });
 
         /**Program button*/
-        JButton button3 = new JButton("PROGRAM");
-        button3.setFont(font.deriveFont(20f));
-        button3.setForeground(Color.BLACK);
-        button3.setAlignmentX(Component.CENTER_ALIGNMENT);
-        button3.setAlignmentY(Component.CENTER_ALIGNMENT);
-        button3.setMaximumSize(new Dimension(width,40));
-        button3.setHorizontalTextPosition(SwingConstants.CENTER);
-        button3.setVerticalTextPosition(SwingConstants.CENTER);
-        Color bg2 = new Color(245, 245, 245,255);
-        button3.setFocusPainted(false);
-        button3.setFocusable(false);
-        button3.setBorderPainted(false);
-        button3.setContentAreaFilled(true);
-        button3.setBackground(bg2);
+        programButton.setFont(new Font("Arial", Font.TRUETYPE_FONT,height/35));
+        programButton.setForeground(Color.WHITE);
+        programButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        programButton.setAlignmentY(Component.CENTER_ALIGNMENT);
+        programButton.setMaximumSize(new Dimension(width,40));
+        programButton.setHorizontalTextPosition(SwingConstants.CENTER);
+        programButton.setVerticalTextPosition(SwingConstants.CENTER);
+        Color bg2 = new Color(51,51,51);
+        programButton.setFocusPainted(false);
+        programButton.setFocusable(false);
+        programButton.setBorderPainted(false);
+        programButton.setContentAreaFilled(true);
+        programButton.setBackground(bg2);
 
-        button3.addMouseListener(new MouseAdapter() {
+        programButton.addMouseListener(new MouseAdapter() {
             private boolean isHovered = false;
             @Override
             public void mouseEntered(MouseEvent e) {
                 isHovered = true;
-                button3.setBackground(new Color(230, 230, 230));
-                button3.repaint();
+                if(lightMode){
+                    programButton.setBackground(new Color(230, 230, 230));
+                }else{
+                    programButton.setBackground(new Color(40,40,40));
+                }
+                programButton.repaint();
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
                 isHovered = false;
-                button3.setBackground(bg2);
-                button3.repaint();
+                if(!programPageIsActive[0]){
+                    if(lightMode){
+                        programButton.setBackground(Color.WHITE);
+                    }else{
+                        programButton.setBackground(bg2);
+                    }
+                }
+                programButton.repaint();
             }
 
             @Override
             public void mousePressed(MouseEvent e) {
-                button3.setBackground(new Color(220, 220, 220));
+                exercisesPageIsActive[0] = false;
+                programPageIsActive[0] = true;
+                settingsPageIsActive[0] = false;
+                homePageIsActive[0] = false;
+
+                if(lightMode){
+                    settingsButton.setBackground(Color.WHITE);
+                    homeButton.setBackground(Color.WHITE);
+                    exercisesButton.setBackground(Color.WHITE);
+                    programButton.setBackground(new Color(220, 220, 220));
+                }else{
+                    settingsButton.setBackground(new Color(51,51,51));
+                    homeButton.setBackground(new Color(51,51,51));
+                    exercisesButton.setBackground(new Color(51,51,51));
+                    programButton.setBackground(new Color(30,30,30));
+                }
+
                 ApplicationWindow.switchWindow("program");
-                button3.repaint();
+                programButton.repaint();
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
                 if (isHovered) {
-                    button3.setBackground(new Color(230, 230, 230));
+                    if(lightMode)
+                        programButton.setBackground(new Color(230, 230, 230));
+                    else{
+                        programButton.setBackground(new Color(40,40,40));
+                    }
                 } else {
-                    button3.setBackground(bg2);
+                    programButton.setBackground(bg);
                 }
-                button3.repaint();
+                programButton.repaint();
             }
         });
-        button3.setUI(new javax.swing.plaf.basic.BasicButtonUI() {
+        programButton.setUI(new javax.swing.plaf.basic.BasicButtonUI() {
             @Override
             public void paint(Graphics g, JComponent c) {
-                g.setColor(button3.getBackground());
-                g.fillRoundRect(0, 0, button3.getWidth(), button3.getHeight(), 10, 10);
+                g.setColor(programButton.getBackground());
+                g.fillRoundRect(0, 0, programButton.getWidth(), programButton.getHeight(), 10, 10);
                 super.paint(g, c);
             }
         });
@@ -266,73 +373,100 @@ public class MenuPanel extends JPanel{
         Image scaledButtonSettings = buttonIconSettings.getImage().getScaledInstance(151, 40, Image.SCALE_SMOOTH);
         scaledButtonSettingsIcon = new ImageIcon(scaledButtonSettings);
 
-
         /**Settings Button*/
-        JButton button4 = new JButton("SETTINGS",scaledButtonSettingsIcon);
-        button4.setFont(font.deriveFont(20f));
-        button4.setForeground(Color.BLACK);
-        button4.setAlignmentX(Component.CENTER_ALIGNMENT);
-        button4.setAlignmentY(Component.CENTER_ALIGNMENT);
-        button4.setMaximumSize(new Dimension(width, 40));
-        button4.setHorizontalTextPosition(SwingConstants.CENTER);
-        button4.setVerticalTextPosition(SwingConstants.CENTER);
-        Color bg3 = new Color(245, 245, 245,255);
-        button4.setFocusPainted(false);
-        button4.setFocusable(false);
-        button4.setBorderPainted(false);
-        button4.setContentAreaFilled(true);
-        button4.setBackground(bg3);
+        settingsButton.setFont(new Font("Arial", Font.TRUETYPE_FONT,height/35));
+        settingsButton.setForeground(Color.WHITE);
+        settingsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        settingsButton.setAlignmentY(Component.CENTER_ALIGNMENT);
+        settingsButton.setMaximumSize(new Dimension(width, 40));
+        settingsButton.setHorizontalTextPosition(SwingConstants.CENTER);
+        settingsButton.setVerticalTextPosition(SwingConstants.CENTER);
+        Color bg3 = new Color(51,51,51);
+        settingsButton.setFocusPainted(false);
+        settingsButton.setFocusable(false);
+        settingsButton.setBorderPainted(false);
+        settingsButton.setContentAreaFilled(true);
+        settingsButton.setBackground(bg3);
 
-        button4.addMouseListener(new MouseAdapter() {
+        settingsButton.addMouseListener(new MouseAdapter() {
             private boolean isHovered = false;
             @Override
             public void mouseEntered(MouseEvent e) {
                 isHovered = true;
-                button4.setBackground(new Color(230, 230, 230));
-                button4.repaint();
+                if(lightMode){
+                    settingsButton.setBackground(new Color(230, 230, 230));
+                }else{
+                    settingsButton.setBackground(new Color(40,40,40));
+                }
+                settingsButton.repaint();
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
                 isHovered = false;
-                button4.setBackground(bg3);
-                button4.repaint();
+                if(!settingsPageIsActive[0]){
+                    if(lightMode){
+                        settingsButton.setBackground(Color.WHITE);
+                    }else{
+                        settingsButton.setBackground(bg3);
+                    }
+                }
+                settingsButton.repaint();
             }
 
             @Override
             public void mousePressed(MouseEvent e) {
-                button4.setBackground(new Color(220, 220, 220));
+                exercisesPageIsActive[0] = false;
+                programPageIsActive[0] = false;
+                settingsPageIsActive[0] = true;
+                homePageIsActive[0] = false;
+
+                if(lightMode){
+                    homeButton.setBackground(Color.WHITE);
+                    programButton.setBackground(Color.WHITE);
+                    exercisesButton.setBackground(Color.WHITE);
+                    settingsButton.setBackground(new Color(220, 220, 220));
+                }else{
+                    homeButton.setBackground(new Color(51,51,51));
+                    programButton.setBackground(new Color(51,51,51));
+                    exercisesButton.setBackground(new Color(51,51,51));
+                    settingsButton.setBackground(new Color(30,30,30));
+                }
                 ApplicationWindow.switchWindow("settings");
-                button4.repaint();
+                settingsButton.repaint();
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
                 if (isHovered) {
-                    button4.setBackground(new Color(230, 230, 230));
+                    if(lightMode)
+                        settingsButton.setBackground(new Color(230, 230, 230));
+                    else{
+                        settingsButton.setBackground(new Color(40,40,40));
+                    }
                 } else {
-                    button4.setBackground(bg3);
+                    settingsButton.setBackground(bg);
                 }
-                button4.repaint();
+                settingsButton.repaint();
             }
         });
-        button4.setUI(new javax.swing.plaf.basic.BasicButtonUI() {
+        settingsButton.setUI(new javax.swing.plaf.basic.BasicButtonUI() {
             @Override
             public void paint(Graphics g, JComponent c) {
-                g.setColor(button4.getBackground());
-                g.fillRoundRect(0, 0, button4.getWidth(), button4.getHeight(), 10, 10);
+                g.setColor(settingsButton.getBackground());
+                g.fillRoundRect(0, 0, settingsButton.getWidth(), settingsButton.getHeight(), 10, 10);
                 super.paint(g, c);
             }
         });
 
 
-        buttonContainer.add(button1);
-        buttonContainer.add(Box.createVerticalGlue());
-        buttonContainer.add(button2);
-        buttonContainer.add(Box.createVerticalGlue());
-        buttonContainer.add(button3);
-        buttonContainer.add(Box.createVerticalGlue());
-        buttonContainer.add(button4);
+        buttonContainer.add(homeButton);
+       //buttonContainer.add(Box.createVerticalGlue());
+        buttonContainer.add(exercisesButton);
+        //buttonContainer.add(Box.createVerticalGlue());
+        buttonContainer.add(programButton);
+       // buttonContainer.add(Box.createVerticalGlue());
+        buttonContainer.add(settingsButton);
         buttonContainer.add(Box.createVerticalGlue());
         buttonContainer.add(Box.createVerticalGlue());
         buttonContainer.add(Box.createVerticalGlue());
@@ -354,24 +488,28 @@ public class MenuPanel extends JPanel{
 
                     Image scaledbuttonHomeIcon = buttonIcon.getImage().getScaledInstance(getWidth(), (int)(getHeight()/13.5), Image.SCALE_SMOOTH);
                     scaledButtonHomeIcon = new ImageIcon(scaledbuttonHomeIcon);
-                    button1.setIcon(scaledButtonHomeIcon);
-                    button1.setPreferredSize(new Dimension(getWidth(),(int)(getHeight()/13.5)));
-                    button1.setMaximumSize(new Dimension(getWidth(),(int)(getHeight()/13.5)));
+                    homeButton.setIcon(scaledButtonHomeIcon);
+                    homeButton.setPreferredSize(new Dimension(getWidth(),(int)(getHeight()/13.5)));
+                    homeButton.setMaximumSize(new Dimension(getWidth(),(int)(getHeight()/13.5)));
+                    homeButton.setFont(new Font("Arial", Font.TRUETYPE_FONT,getHeight()/35));
 
                     Image scaledButtonExercise = buttonIconExercise.getImage().getScaledInstance(getWidth(), (int)(getHeight()/13.5), Image.SCALE_SMOOTH);
                     scaledButtonExerciseIcon = new ImageIcon(scaledButtonExercise);
-                    button2.setIcon(scaledButtonExerciseIcon);
-                    button2.setPreferredSize(new Dimension(getWidth(),(int)(getHeight()/13.5)));
-                    button2.setMaximumSize(new Dimension(getWidth(),(int)(getHeight()/13.5)));
+                    exercisesButton.setIcon(scaledButtonExerciseIcon);
+                    exercisesButton.setPreferredSize(new Dimension(getWidth(),(int)(getHeight()/13.5)));
+                    exercisesButton.setMaximumSize(new Dimension(getWidth(),(int)(getHeight()/13.5)));
+                    exercisesButton.setFont(new Font("Arial", Font.TRUETYPE_FONT,getHeight()/35));
 
-                    button3.setPreferredSize(new Dimension(getWidth(),(int)(getHeight()/13.5)));
-                    button3.setMaximumSize(new Dimension(getWidth(),(int)(getHeight()/13.5)));
+                    programButton.setPreferredSize(new Dimension(getWidth(),(int)(getHeight()/13.5)));
+                    programButton.setMaximumSize(new Dimension(getWidth(),(int)(getHeight()/13.5)));
+                    programButton.setFont(new Font("Arial", Font.TRUETYPE_FONT,getHeight()/35));
 
                     Image scaledButtonSettings = buttonIconSettings.getImage().getScaledInstance(getWidth(), (int)(getHeight()/13.5), Image.SCALE_SMOOTH);
                     scaledButtonSettingsIcon = new ImageIcon(scaledButtonSettings);
-                    button4.setIcon(scaledButtonSettingsIcon);
-                    button4.setPreferredSize(new Dimension(getWidth(),(int)(getHeight()/13.5)));
-                    button4.setMaximumSize(new Dimension(getWidth(),(int)(getHeight()/13.5)));
+                    settingsButton.setIcon(scaledButtonSettingsIcon);
+                    settingsButton.setPreferredSize(new Dimension(getWidth(),(int)(getHeight()/13.5)));
+                    settingsButton.setMaximumSize(new Dimension(getWidth(),(int)(getHeight()/13.5)));
+                    settingsButton.setFont(new Font("Arial", Font.TRUETYPE_FONT,getHeight()/35));
 
                     revalidate();
                     repaint();

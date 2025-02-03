@@ -65,8 +65,19 @@ public class TopBar extends JPanel {
         exitButton.setFocusable(false);
         exitButton.setBorderPainted(false);
         exitButton.setContentAreaFilled(true);
-        Color bg = new Color(227, 227, 227,255);
+        Color bg = new Color(51,51,51);
         exitButton.setBackground(bg);
+        exitButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                exitButton.setBackground(new Color(40,40,40));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                exitButton.setBackground(bg);
+            }
+        });
         exitButton.addActionListener(e -> System.exit(0));
 
         this.add(exitButton, BorderLayout.EAST);
