@@ -69,7 +69,7 @@ public class ApplicationWindow extends JFrame  {
         ExercisePanel exercisePanel = new ExercisePanel(this.getWidth()-menuPanel.getWidth(), this.getHeight()-top_bar.getHeight()-41);
         exercisePanel.setVisible(false);
 
-        ProgramPanel programPanel = new ProgramPanel((int)(getWidth()-(getWidth()/6.4)), getHeight()-getHeight()/13);
+        ProgramPanel programPanel = new ProgramPanel((int)(getWidth()-(getWidth()/6.4)-2*getWidth()/150), getHeight()-getHeight()/18-2*getWidth()/150);
         programPanel.setVisible(false);
 
         SettingsPanel settingsPanel = new SettingsPanel(this.getWidth()-menuPanel.getWidth(), this.getHeight()-top_bar.getHeight()-41);
@@ -86,6 +86,8 @@ public class ApplicationWindow extends JFrame  {
             @Override
             public void componentResized(ComponentEvent e) {
                 SwingUtilities.invokeLater(()->{
+                    programPanel.setPreferredSize(new Dimension((int)(getWidth()-(getWidth()/6.4)-2*getWidth()/150), getHeight()-top_bar.getHeight()-2*getWidth()/150));
+
                     left_panel.setLayout(new FlowLayout(FlowLayout.LEFT, (int)((getWidth()/150)), (int)((getWidth()/150))));
                     left_panel.setPreferredSize(new Dimension((int)((getWidth()/6.4)),getHeight()-getHeight()/18));
                     left_panel.setMinimumSize(new Dimension((int)((getWidth()/6.4)), getHeight()/18));
