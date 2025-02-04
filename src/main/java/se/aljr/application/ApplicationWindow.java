@@ -72,7 +72,7 @@ public class ApplicationWindow extends JFrame  {
         ProgramPanel programPanel = new ProgramPanel((int)(getWidth()-(getWidth()/6.4)), getHeight()-getHeight()/13);
         programPanel.setVisible(false);
 
-        SettingsPanel settingsPanel = new SettingsPanel(this.getWidth()-menuPanel.getWidth(), this.getHeight()-top_bar.getHeight()-41);
+        SettingsPanel settingsPanel = new SettingsPanel((int)(getWidth()-(getWidth()/6.4)), getHeight()-getHeight()/13);
         settingsPanel.setVisible(false);
 
 
@@ -98,6 +98,9 @@ public class ApplicationWindow extends JFrame  {
                     menuPanel.setPreferredSize(new Dimension((int)(getWidth()/6.4-(2*getWidth()/150)), (int)(getHeight()-top_bar.getHeight()-(2*getWidth()/150))));
                     content_panel.setPreferredSize(new Dimension((int)(getWidth()-(getWidth()/6.4)), getHeight()-top_bar.getHeight()));
                     content_panel.reScaleBackground();
+                    settingsPanel.setPreferredSize(new Dimension((int)(getWidth()-(getWidth()/6.4)), getHeight()-top_bar.getHeight()));
+
+                    settingsPanel.setPreferredSize(new Dimension((int)(getWidth()-(getWidth()/6.4)-2*getWidth()/150), getHeight()-top_bar.getHeight()-2*getWidth()/150));
 
                     revalidate();
                     repaint();
