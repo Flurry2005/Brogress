@@ -1,9 +1,6 @@
 package se.aljr.application.programplanner;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class WorkoutData {
     private String title = "Untitled Workout";
@@ -16,9 +13,7 @@ public class WorkoutData {
     public void addSet(int exerciseId, WorkoutSet newSet) {
 
         exerciseSets.putIfAbsent(exerciseId, new ArrayList<>());
-
         List<WorkoutSet> sets = exerciseSets.get(exerciseId);
-
         boolean found = false;
         for (WorkoutSet set : sets) {
             if (set.getNumber() == newSet.getNumber()) {
@@ -31,13 +26,12 @@ public class WorkoutData {
                 break;
             }
         }
-
         if (!found) {
             sets.add(newSet);
         }
     }
 
-    public void update(int exerciseId,List<WorkoutSet> sets) {
+    public void updateSet(int exerciseId, List<WorkoutSet> sets) {
         // update and assign setnumbers
         int newSetId = 1;
         for (WorkoutSet s : sets) {
@@ -47,34 +41,17 @@ public class WorkoutData {
             }
         }
     }
-    public void deleteSet(int exerciseId, int setNumber) {
 
+    public void deleteSet(int exerciseId, int setNumber) {
         List<WorkoutSet> sets = exerciseSets.get(exerciseId);
         sets.removeIf(set -> set.getNumber() == setNumber);
-        update(exerciseId,sets);
+        updateSet(exerciseId, sets);
     }
 
     public void moveSetUp(int exerciseId, WorkoutSet workoutSet) {
-        List<WorkoutSet> sets = exerciseSets.get(exerciseId);
         if (workoutSet.getNumber() > 1) {
-            int oldSetNumber = workoutSet.getNumber();
-            int newSetNumber = workoutSet.getNumber()-1;
-
-            for (WorkoutSet set : sets) {
-                if (set.getNumber() == newSetNumber) {
-                    WorkoutSet temp = set;
-                    temp.setNumber(oldSetNumber);
-
-                    sets.remove(set);
-                    workoutSet.setNumber(newSetNumber);
-                    sets.add(temp);
-                }
-
-
-            }
-
+            Collections.swap(exerciseSets.get(exerciseId), workoutSet.getNumber() - 2, workoutSet.getNumber()-1);
         }
-        update(exerciseId,sets);
     }
 
     public int getSetSize(int id) {
@@ -94,9 +71,11 @@ public class WorkoutData {
         result.append(this.title).append("\n");
         int i = 0;
         for (Map.Entry<Integer, List<WorkoutSet>> set : exerciseSets.entrySet()) {
-            result.append(set.getValue().get(0).exercise + "\n");
-            set.getValue().forEach(s -> result.append(s.toString()));
+            List<WorkoutSet> sets = set.getValue();
+                for(WorkoutSet set1 : sets) {
+                    result.append(set1. getExercise().getName() + set1.getReps()).append(" ").append(set1.getWeight()).append(" ").append(set1.getRir()).append("\n");
 
+            }
         }
         return result.toString();
     }
@@ -105,9 +84,10 @@ public class WorkoutData {
         exerciseSets.remove(exerciseId);
     }
 
-    public HashMap<Integer, List<WorkoutSet>> update() {
+    public HashMap<Integer, List<WorkoutSet>> getExerciseSets() {
         return exerciseSets;
     }
+
 }
 
 

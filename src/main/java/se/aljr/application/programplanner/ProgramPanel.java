@@ -4,7 +4,6 @@ import se.aljr.application.exercise.Excercise.Exercise;
 import se.aljr.application.exercise.Program.Exercises;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
@@ -24,9 +23,8 @@ public class ProgramPanel extends JPanel {
     Map<Integer, Integer> exerciseSetCount = new HashMap<>();
 
     public ProgramPanel(int width, int height) {
-        this.setSize(new Dimension(width, height));
-        this.setBackground(Color.WHITE);
-        this.setOpaque(false);
+        this.setSize(width, height);
+        this.setBackground(new Color(31, 31, 31));
         this.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
         init();
     }
@@ -36,11 +34,9 @@ public class ProgramPanel extends JPanel {
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         mainPanel.setOpaque(true);
-        mainPanel.setBackground(new Color(51,51,51));
+        mainPanel.setBackground(new Color(51, 51, 51));
         mainPanel.setMaximumSize(new Dimension(getWidth(), getHeight()));
         mainPanel.setPreferredSize(new Dimension(getWidth(), getHeight()));
-        mainPanel.setBorder(new EmptyBorder(5,5,5,5));
-
 
         //Panel holding the name of the workout
         JPanel headerPanel = new JPanel();
@@ -60,19 +56,17 @@ public class ProgramPanel extends JPanel {
         JScrollPane workoutScrollPane = new JScrollPane();
         workoutScrollPane.setPreferredSize(new Dimension(getWidth(), getHeight() / 2));
         workoutScrollPane.setMaximumSize(new Dimension(getWidth(), getHeight() / 2));
-        workoutScrollPane.setBackground(new Color(31,31,31));
         workoutScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         workoutScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         workoutScrollPane.getVerticalScrollBar().setPreferredSize(new Dimension(0, 0));
         workoutScrollPane.getVerticalScrollBar().setUnitIncrement(6);
-        workoutScrollPane.setBorder(null);
-        workoutScrollPane.setAlignmentX(Component.CENTER_ALIGNMENT);
+
 
         //Panel containing log and workout data
         JPanel logContainer = new JPanel();
         logContainer.setLayout(new BoxLayout(logContainer, BoxLayout.Y_AXIS));
         logContainer.setOpaque(true);
-        logContainer.setBackground(new Color(31,31,31));
+        logContainer.setBackground(new Color(31, 31, 31));
         logContainer.setMaximumSize(new Dimension(getWidth() - 20, getHeight() / 10));
         logContainer.setPreferredSize(new Dimension(getWidth() - 20, getHeight() / 10));
         workoutScrollPane.setViewportView(logContainer); //workoutScrollPane will show the content of logContainer
@@ -81,6 +75,7 @@ public class ProgramPanel extends JPanel {
         JPanel exercisesPanel = new JPanel();
         exercisesPanel.setLayout(new BoxLayout(exercisesPanel, BoxLayout.Y_AXIS));
         exercisesPanel.setOpaque(true);
+        exercisesPanel.setBackground(new Color(31, 31, 31));
 
         //Search and add exercise
         DefaultListModel<Exercise> exerciseModel = new DefaultListModel<Exercise>();
@@ -91,7 +86,8 @@ public class ProgramPanel extends JPanel {
 
         JList<Exercise> searchExerciseResult = new JList(exerciseModel);
         searchExerciseResult.setFixedCellHeight(20);
-        searchExerciseResult.setPreferredSize(new Dimension(getWidth(), searchExerciseResult.getFixedCellHeight() * searchExerciseResult.getModel().getSize()));
+        searchExerciseResult.setPreferredSize(new Dimension(200, searchExerciseResult.getFixedCellHeight() * searchExerciseResult.getModel().getSize()));
+
 
         JTextField searchExercise = new JTextField();
         searchExercise.setText("Search for exercise...");
@@ -133,10 +129,9 @@ public class ProgramPanel extends JPanel {
         scrollPane2.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane2.getVerticalScrollBar().setPreferredSize(new Dimension(0, 0));
 
-
         //Panel to hold add new exercise button and set
         JPanel addExerciseAndSetPanel = new JPanel();
-        addExerciseAndSetPanel.setBackground(new Color(245, 245, 245));
+        addExerciseAndSetPanel.setBackground(new Color(31, 31, 31));
 
         //Change workout title button
         JButton changeTitle = new JButton();
@@ -213,16 +208,6 @@ public class ProgramPanel extends JPanel {
         addExerciseAndSetPanel.add(changeTitle);
         mainPanel.add(exercisesPanel);
         mainPanel.add(addExerciseAndSetPanel);
-        this.addComponentListener(new ComponentAdapter() {
-            @Override
-            public void componentResized(ComponentEvent e) {
-                mainPanel.setMaximumSize(new Dimension(getWidth(), getHeight()));
-                mainPanel.setPreferredSize(new Dimension(getWidth(), getHeight()));
-
-                workoutScrollPane.setPreferredSize(new Dimension(getWidth(), getHeight() / 2));
-                workoutScrollPane.setMaximumSize(new Dimension(getWidth(), getHeight() / 2));
-            }
-        });
         this.add(mainPanel);
 
     }
@@ -414,7 +399,7 @@ public class ProgramPanel extends JPanel {
 
             // Delete the set from WorkoutData
             currentWorkout.deleteSet(exerciseId, workoutSet.getNumber());
-            HashMap<Integer, List<WorkoutSet>> updatedSet = currentWorkout.update();
+            HashMap<Integer, List<WorkoutSet>> updatedSet = currentWorkout.getExerciseSets();
             List<WorkoutSet> updatedSets = updatedSet.get(exerciseId);
 
             for (Component comp : parentPanel.getComponents()) {
@@ -437,8 +422,6 @@ public class ProgramPanel extends JPanel {
                     }
                 }
             }
-
-
             totalHeight -= heightToRemove;
             logContainer.setPreferredSize(new Dimension(logContainer.getWidth(), totalHeight));
             ProgramPanel.this.repaint();
@@ -451,12 +434,42 @@ public class ProgramPanel extends JPanel {
         moveSetUp.setText("^");
         moveSetUp.setBackground(new Color(40, 129, 201));
         moveSetUp.setForeground(Color.white);
-        moveSetUp.setMargin(new Insets(0,0,0,0));
+        moveSetUp.setMargin(new Insets(0, 0, 0, 0));
 
+        // move the set up
         moveSetUp.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
                 currentWorkout.moveSetUp(exerciseId,workoutSet);
+                HashMap<Integer, List<WorkoutSet>> updatedSet = currentWorkout.getExerciseSets();
+                int i = 0;
+                for (Component comp : parentPanel.getComponents()) {
+                    if ("setPanel".equals(comp.getName())) {
+                        JPanel setPanel2 = (JPanel) comp;
+                        for (Component comp2 : setPanel2.getComponents()) {
+                            if ("leftPanel".equals(comp2.getName())) {
+                                JPanel leftPanel2 = (JPanel) comp2;
+
+                                for (Component comp3 : leftPanel2.getComponents()) {
+                                    if ("setLabel".equals(comp3.getName())) {
+                                        {
+                                            JLabel setLabel2 = (JLabel) comp3;
+                                            setLabel2.setText(updatedSet.get(exerciseId).get(i).getNumber() + ".");
+                                            i++;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+
+                ProgramPanel.this.revalidate();
+                ProgramPanel.this.repaint();
+                parentPanel.repaint();
+                parentPanel.revalidate();
             }
         });
 
