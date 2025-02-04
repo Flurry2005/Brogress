@@ -290,6 +290,7 @@ public class ProgramPanel extends JPanel {
 
         // Title Panel to align Rep, RIR and WEIGHT to right
         JPanel rightPanel = new JPanel();
+        rightPanel.setName("rightPanel");
         rightPanel.setOpaque(false);
         rightPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
         rightPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
@@ -394,82 +395,28 @@ public class ProgramPanel extends JPanel {
 
         // delete set & update log
         deleteSet.addActionListener(e -> {
-            int i = 0;
-            parentPanel.remove(setPanel);
+            deleteSet(parentPanel, exerciseId, workoutSet, logContainer, heightToRemove, setPanel);
 
-            // Delete the set from WorkoutData
-            currentWorkout.deleteSet(exerciseId, workoutSet.getNumber());
-            HashMap<Integer, List<WorkoutSet>> updatedSet = currentWorkout.getExerciseSets();
-            List<WorkoutSet> updatedSets = updatedSet.get(exerciseId);
-
-            for (Component comp : parentPanel.getComponents()) {
-                if ("setPanel".equals(comp.getName())) {
-                    JPanel setPanel2 = (JPanel) comp;
-                    for (Component comp2 : setPanel2.getComponents()) {
-                        if ("leftPanel".equals(comp2.getName())) {
-                            JPanel leftPanel2 = (JPanel) comp2;
-
-                            for (Component comp3 : leftPanel2.getComponents()) {
-                                if ("setLabel".equals(comp3.getName())) {
-                                    {
-                                        JLabel setLabel2 = (JLabel) comp3;
-                                        setLabel2.setText(updatedSets.get(i).getNumber() + ".");
-                                        i++;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            totalHeight -= heightToRemove;
-            logContainer.setPreferredSize(new Dimension(logContainer.getWidth(), totalHeight));
-            ProgramPanel.this.repaint();
-            ProgramPanel.this.revalidate();
-            parentPanel.revalidate();
-            parentPanel.repaint();
         });
 
         JButton moveSetUp = new JButton();
-        moveSetUp.setText("^");
+        moveSetUp.setText("↑");
         moveSetUp.setBackground(new Color(40, 129, 201));
         moveSetUp.setForeground(Color.white);
         moveSetUp.setMargin(new Insets(0, 0, 0, 0));
+
+        JButton moveSetDown = new JButton();
+        moveSetDown.setText("↓");
+        moveSetDown.setBackground(new Color(40, 129, 201));
+        moveSetDown.setForeground(Color.white);
+        moveSetDown.setMargin(new Insets(0, 0, 0, 0));
+
 
         // move the set up
         moveSetUp.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
-                currentWorkout.moveSetUp(exerciseId,workoutSet);
-                HashMap<Integer, List<WorkoutSet>> updatedSet = currentWorkout.getExerciseSets();
-                int i = 0;
-                for (Component comp : parentPanel.getComponents()) {
-                    if ("setPanel".equals(comp.getName())) {
-                        JPanel setPanel2 = (JPanel) comp;
-                        for (Component comp2 : setPanel2.getComponents()) {
-                            if ("leftPanel".equals(comp2.getName())) {
-                                JPanel leftPanel2 = (JPanel) comp2;
-
-                                for (Component comp3 : leftPanel2.getComponents()) {
-                                    if ("setLabel".equals(comp3.getName())) {
-                                        {
-                                            JLabel setLabel2 = (JLabel) comp3;
-                                            setLabel2.setText(updatedSet.get(exerciseId).get(i).getNumber() + ".");
-                                            i++;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-
-                ProgramPanel.this.revalidate();
-                ProgramPanel.this.repaint();
-                parentPanel.repaint();
-                parentPanel.revalidate();
+                moveUp(parentPanel, exerciseId, workoutSet);
             }
         });
 
@@ -478,6 +425,7 @@ public class ProgramPanel extends JPanel {
         rightPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
 
         JTextField repsAmount = new JTextField();
+        repsAmount.setName("repsAmount");
         repsAmount.setPreferredSize(new Dimension(35, 20));
         rightPanel.add(repsAmount);
         repsAmount.setBorder(null);
@@ -498,6 +446,7 @@ public class ProgramPanel extends JPanel {
         setPanel.add(rightPanel, BorderLayout.EAST);
         leftPanel.add(deleteSet);
         rightPanel.add(moveSetUp);
+        rightPanel.add(moveSetDown);
         parentPanel.add(setPanel);
         parentPanel.revalidate();
         parentPanel.repaint();
@@ -524,6 +473,79 @@ public class ProgramPanel extends JPanel {
             finalWorkoutSet.setRir(Integer.parseInt(rirAmount.getText()));
             currentWorkout.addSet(exerciseId, finalWorkoutSet);
         });
+    }
+
+    public void moveUp(JPanel parentPanel, int exerciseId, WorkoutSet workoutSet) {
+
+        currentWorkout.moveSetUp(exerciseId, workoutSet);
+
+        HashMap<Integer, List<WorkoutSet>> updatedSet = currentWorkout.getExerciseSets();
+        int i = 0;
+        // Swap set number
+        for (Component comp : parentPanel.getComponents()) {
+            if ("setPanel".equals(comp.getName())) {
+                JPanel setPanel2 = (JPanel) comp;
+
+                for (Component comp2 : setPanel2.getComponents()) {
+                    if ("leftPanel".equals(comp2.getName())) {
+                        JPanel leftPanel2 = (JPanel) comp2;
+
+                        for (Component comp3 : leftPanel2.getComponents()) {
+                            if ("setLabel".equals(comp3.getName())) {
+                                {
+                                    JLabel setLabel2 = (JLabel) comp3;
+                                    setLabel2.setText(updatedSet.get(exerciseId).get(i).getNumber() + ".");
+                                    i++;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        ProgramPanel.this.revalidate();
+        ProgramPanel.this.repaint();
+        parentPanel.repaint();
+        parentPanel.revalidate();
+
+    }
+
+    public void deleteSet(JPanel parentPanel, int exerciseId, WorkoutSet workoutSet, JPanel logContainer, int heightToRemove, JPanel setPanel) {
+        parentPanel.remove(setPanel);
+        int i = 0;
+        // Delete the set from WorkoutData
+        currentWorkout.deleteSet(exerciseId, workoutSet.getNumber());
+        HashMap<Integer, List<WorkoutSet>> updatedSet = currentWorkout.getExerciseSets();
+        List<WorkoutSet> updatedSets = updatedSet.get(exerciseId);
+
+        for (Component comp : parentPanel.getComponents()) {
+            if ("setPanel".equals(comp.getName())) {
+                JPanel setPanel2 = (JPanel) comp;
+                for (Component comp2 : setPanel2.getComponents()) {
+                    if ("leftPanel".equals(comp2.getName())) {
+                        JPanel leftPanel2 = (JPanel) comp2;
+
+                        for (Component comp3 : leftPanel2.getComponents()) {
+                            if ("setLabel".equals(comp3.getName())) {
+                                {
+                                    JLabel setLabel2 = (JLabel) comp3;
+                                    setLabel2.setText(updatedSets.get(i).getNumber() + ".");
+                                    i++;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        totalHeight -= heightToRemove;
+        logContainer.setPreferredSize(new Dimension(logContainer.getWidth(), totalHeight));
+        ProgramPanel.this.repaint();
+        ProgramPanel.this.revalidate();
+        parentPanel.revalidate();
+        parentPanel.repaint();
+
     }
 }
 
