@@ -62,7 +62,7 @@ public class ApplicationWindow extends JFrame  {
         TopBar top_bar = new TopBar(this); //Skapar toppen baren
         top_bar.setPreferredSize(new Dimension(getWidth(), (int)(getHeight()/18)));
 
-        ContentPanel content_panel = new ContentPanel((int)(getWidth()-(getWidth()/6.4)-2*getWidth()/150), getHeight()-getHeight()/18-2*getWidth()/150); //Skapar innehålls panelen
+        HomePanel content_panel = new HomePanel((int)(getWidth()-(getWidth()/6.4)-2*getWidth()/150), getHeight()-getHeight()/18-2*getWidth()/150); //Skapar innehålls panelen
         content_panel.setMinimumSize(new Dimension((int)(getWidth()-(getWidth()/6.4)-2*getWidth()/150), getHeight()-top_bar.getHeight()-2*getWidth()/150));
         content_panel.setMaximumSize(new Dimension((int)(getWidth()-(getWidth()/6.4)-2*getWidth()/150), getHeight()-top_bar.getHeight()-2*getWidth()/150));
 

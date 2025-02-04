@@ -54,6 +54,12 @@ public class WorkoutData {
         }
     }
 
+    public void moveSetDown(int exerciseId, WorkoutSet workoutSet, WorkoutData currentWorkout) {
+        if (workoutSet.getNumber() < currentWorkout.getSetSize(exerciseId)) {
+            Collections.swap(exerciseSets.get(exerciseId), workoutSet.getNumber() - 1, workoutSet.getNumber());
+        }
+    }
+
     public int getSetSize(int id) {
         int size = 0;
         for (Map.Entry<Integer, List<WorkoutSet>> set : exerciseSets.entrySet()) {
