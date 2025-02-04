@@ -376,7 +376,7 @@ public class ProgramPanel extends JPanel {
         setLabel.setName("setLabel");
         setLabel.setText(currentWorkout.getSetSize(exerciseId) + ".");
         leftPanel.add(setLabel);
-        setPanel.add(leftPanel, BorderLayout.WEST);
+
 
         JButton deleteSet = new JButton();
         deleteSet.setBackground(Color.RED);
@@ -429,6 +429,19 @@ public class ProgramPanel extends JPanel {
             parentPanel.repaint();
         });
 
+        JButton moveSetUp = new JButton();
+        moveSetUp.setText("^");
+        moveSetUp.setBackground(new Color(40, 129, 201));
+        moveSetUp.setForeground(Color.white);
+        moveSetUp.setMargin(new Insets(0,0,0,0));
+
+        moveSetUp.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                currentWorkout.moveSetUp(exerciseId,workoutSet);
+            }
+        });
+
         JPanel rightPanel = new JPanel();
         rightPanel.setOpaque(false);
         rightPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
@@ -452,7 +465,8 @@ public class ProgramPanel extends JPanel {
         rirAmount.setText("0");
 
         setPanel.add(rightPanel, BorderLayout.EAST);
-        rightPanel.add(deleteSet);
+        leftPanel.add(deleteSet);
+        rightPanel.add(moveSetUp);
         parentPanel.add(setPanel);
         parentPanel.revalidate();
         parentPanel.repaint();
