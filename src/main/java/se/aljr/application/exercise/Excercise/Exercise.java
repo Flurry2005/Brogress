@@ -8,6 +8,10 @@ import se.aljr.application.exercise.Muscle.Muscle;
 public abstract class Exercise {
 	protected String name;
 	protected String info;
+	protected String form;
+	protected String mistakes;
+	protected String link;
+	protected String picture;
 	protected ArrayList<Muscle> musclesUsed = new ArrayList<>();
 
 	public String getName() {
@@ -16,6 +20,14 @@ public abstract class Exercise {
 
 	public String getInfo() {
 		return this.info;
+	}
+
+	public String getForm() {
+		return this.form;
+	}
+
+	public String getMistakes() {
+		return this.mistakes;
 	}
 
 	public String getMusclesUsed() {

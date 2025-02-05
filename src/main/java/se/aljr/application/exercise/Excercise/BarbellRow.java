@@ -6,7 +6,23 @@ import se.aljr.application.exercise.Muscle.*;
 public class BarbellRow extends Exercise {
     public BarbellRow() {
         name = "Barbell Row";
+
         info = "A barbell-based pulling exercise that focuses on lats, traps, and posterior deltoids, with lower back stability.";
+
+        form = "Good Form and Tips:\n" +
+                "1. Maintain a Neutral Spine: Keep your back straight and chest up.\n" +
+                "2. Engage the Core: Tighten your abs to stabilize and protect the lower back.\n" +
+                "3. Controlled Movements: Lift the bar slowly and keep it close to your body.";
+
+        mistakes = "Common Mistakes to Avoid:\n" +
+                "1. Rounding the Back: Can lead to serious lower back injuries.\n" +
+                "2. Using Too Much Momentum: Reduces muscle activation and increases injury risk.\n" +
+                "3. Neglecting Core Engagement: Leads to excess stress on the lower back.";
+
+        link = "https://musclewiki.com/barbell/male/shoulders/barbell-upright-row";
+
+        picture = "https://weighttraining.guide/exercises/barbell-wide-grip-upright-row/";
+
         musclesUsed.add(new Lats());
         musclesUsed.add(new Traps());
         musclesUsed.add(new PosteriorDeltoid());
