@@ -21,7 +21,7 @@ public class Launcher {
 
             Thread.sleep(1000);
 
-            if(!isLoggedIn){
+            if(isLoggedIn){
                 //UserData.setUserAge(30);
                 //UserData.setUserHeight(150);
                 //UserData.setUserName("Johan Kronholm");

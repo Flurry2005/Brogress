@@ -3,6 +3,7 @@ package se.aljr.application.programplanner;
 import org.checkerframework.checker.units.qual.A;
 import se.aljr.application.exercise.Excercise.Exercise;
 import se.aljr.application.exercise.Program.Exercises;
+import se.aljr.application.loginpage.FirebaseManager;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -10,12 +11,15 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
 import java.util.*;
 import java.util.List;
 
 public class ProgramPanel extends JPanel {
     private static int totalHeight;
     private WorkoutData currentWorkout = new WorkoutData();
+    private Workout workoutContainer;
+
     private String workoutTitle = currentWorkout.getTitle();
     private String resourcePath;
     private static boolean emptyLog = true;
@@ -64,6 +68,29 @@ public class ProgramPanel extends JPanel {
         mainPanel.setPreferredSize(new Dimension(getWidth() - 20, getHeight()));
         //mainPanel.setBackground(Color.GREEN);
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
+
+        //Scrollable window
+        JScrollPane workoutScrollPane = new JScrollPane();
+        workoutScrollPane.setPreferredSize(new Dimension((int) (getWidth() / 2), getHeight() * 8 / 10));
+        workoutScrollPane.setMinimumSize(new Dimension((int) (getWidth() / 2), getHeight() * 8 / 10));
+        workoutScrollPane.setMaximumSize(new Dimension((int) (getWidth() / 2), getHeight() * 8 / 10));
+        workoutScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        workoutScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        workoutScrollPane.getVerticalScrollBar().setPreferredSize(new Dimension(0, 0));
+        workoutScrollPane.getVerticalScrollBar().setUnitIncrement(6);
+        workoutScrollPane.setBorder(new LineBorder(new Color(80, 73, 69), 1));
+
+
+        //Panel containing log and workout data
+
+        workoutContainer = FirebaseManager.readDBworkout();
+        workoutContainer.setLayout(new BoxLayout(workoutContainer, BoxLayout.Y_AXIS));
+        workoutContainer.setOpaque(true);
+        workoutContainer.setForeground(new Color(204, 204, 204));
+        workoutContainer.setBackground(new Color(22, 22, 22));
+        workoutContainer.setMaximumSize(new Dimension((int) (getWidth() / 2), getHeight() * 8 / 10));
+        workoutContainer.setPreferredSize(new Dimension((int) (getWidth() / 2), getHeight() * 8 / 10));
+        workoutScrollPane.setViewportView(workoutContainer); //workoutScrollPane will show the content of workoutContainer
 
         JPanel savedWorkoutsPanel = new JPanel();
         savedWorkoutsPanel.setLayout(new BoxLayout(savedWorkoutsPanel, BoxLayout.Y_AXIS));
@@ -128,17 +155,11 @@ public class ProgramPanel extends JPanel {
         saveWorkoutButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JFrame fuckyoujagvilhaenframe = new JFrame();
-                fuckyoujagvilhaenframe.setSize(500, 500);
-                fuckyoujagvilhaenframe.setVisible(true);
-                JTextArea textArea = new JTextArea();
-                textArea.setFont(new Font("Arial", Font.PLAIN, 20));
-                fuckyoujagvilhaenframe.add(textArea);
-                textArea.setText(currentWorkout.getData());
-                textArea.setEditable(false);
-                textArea.setLineWrap(true);
-                textArea.setWrapStyleWord(true);
-                textArea.setOpaque(false);
+                try {
+                    FirebaseManager.writeDBworkout(workoutContainer);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
 
 
@@ -153,28 +174,6 @@ public class ProgramPanel extends JPanel {
         workoutTitle.setMaximumSize(new Dimension(getWidth() / 3, 30));
         workoutTitle.setBorder(new LineBorder(new Color(80, 73, 69)));
 
-        //Scrollable window
-        JScrollPane workoutScrollPane = new JScrollPane();
-        workoutScrollPane.setPreferredSize(new Dimension((int) (getWidth() / 2), getHeight() * 8 / 10));
-        workoutScrollPane.setMinimumSize(new Dimension((int) (getWidth() / 2), getHeight() * 8 / 10));
-        workoutScrollPane.setMaximumSize(new Dimension((int) (getWidth() / 2), getHeight() * 8 / 10));
-        workoutScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        workoutScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        workoutScrollPane.getVerticalScrollBar().setPreferredSize(new Dimension(0, 0));
-        workoutScrollPane.getVerticalScrollBar().setUnitIncrement(6);
-        workoutScrollPane.setBorder(new LineBorder(new Color(80, 73, 69), 1));
-
-
-
-        //Panel containing log and workout data
-        JPanel logContainer = new JPanel();
-        logContainer.setLayout(new BoxLayout(logContainer, BoxLayout.Y_AXIS));
-        logContainer.setOpaque(true);
-        logContainer.setForeground(new Color(204, 204, 204));
-        logContainer.setBackground(new Color(22, 22, 22));
-        logContainer.setMaximumSize(new Dimension((int) (getWidth() / 2), getHeight() * 8 / 10));
-        logContainer.setPreferredSize(new Dimension((int) (getWidth() / 2), getHeight() * 8 / 10));
-        workoutScrollPane.setViewportView(logContainer); //workoutScrollPane will show the content of logContainer
 
         //Panel to hold search and exercieses list vertically
         JPanel exercisesPanel = new JPanel();
@@ -269,7 +268,10 @@ public class ProgramPanel extends JPanel {
         //Label to display text when log is empty
         JLabel isEmpty = new JLabel();
         isEmpty.setFont(new Font("Arial", Font.ITALIC, 20));
-        isEmpty.setText("No exercises added yet.");
+        if(workoutContainer.getComponentCount()==0){
+            isEmpty.setText("No exercises added yet.");
+        }
+
 
         //"Add exercise"-button
         JButton newExcerciseButton = new JButton(scaledAddButtonIcon);
@@ -290,13 +292,13 @@ public class ProgramPanel extends JPanel {
                 }
                 // Display if empty log
                 if (emptyLog) {
-                    logContainer.removeAll();
+                    workoutContainer.removeAll();
                     emptyLog = false;
                 }
 
-                addExercise(searchExerciseResult.getSelectedValue(), logContainer);
-                logContainer.revalidate();
-                logContainer.repaint();
+                addExercise(searchExerciseResult.getSelectedValue(), workoutContainer);
+                workoutContainer.revalidate();
+                workoutContainer.repaint();
                 ProgramPanel.this.revalidate();
                 ProgramPanel.this.repaint();
             }
@@ -307,7 +309,7 @@ public class ProgramPanel extends JPanel {
 
         exercisesPanelTop.add(searchExercise, BorderLayout.WEST);
         exercisesPanelTop.add(newExcerciseButton, BorderLayout.EAST);
-        logContainer.add(isEmpty);
+        workoutContainer.add(isEmpty);
 
         exercisesPanel.add(Box.createVerticalGlue());
         exercisesPanel.add(exercisesPanelTop);

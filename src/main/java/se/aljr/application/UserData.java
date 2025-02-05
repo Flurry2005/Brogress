@@ -7,6 +7,7 @@ public class UserData {
     private static int userHeight;
     private static int userAge;
     private static float userWeight;
+    private static String userEmail;
 
     public static void setUserName(String userName){
         UserData.userName = userName;
@@ -38,5 +39,13 @@ public class UserData {
 
     public static float getUserWeight() {
         return UserData.userWeight;
+    }
+
+    public static void setEmail(String email){
+        UserData.userEmail = email;
+    }
+
+    public static String getEmail(){
+        return UserData.userEmail;
     }
 }

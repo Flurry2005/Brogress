@@ -1,4 +1,6 @@
 package se.aljr.application.programplanner;
 
-public class Workout {
+import javax.swing.*;
+
+public class Workout extends JPanel {
 }

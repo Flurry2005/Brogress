@@ -12,12 +12,12 @@ import com.google.firebase.auth.UserRecord;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import se.aljr.application.UserData;
+import se.aljr.application.programplanner.Workout;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -93,11 +93,63 @@ public class FirebaseManager {
             userData = gson.fromJson(jsonElement, HashMap.class);
 
             UserData.setUserName(userData.get("name").toString());
+            UserData.setEmail(userData.get("email").toString());
 
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static void writeDBworkout(Workout workout) throws IOException {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+        objectOutputStream.writeObject(workout);
+        objectOutputStream.close();
+
+        String workoutBase64 = Base64.getEncoder().encodeToString(byteArrayOutputStream.toByteArray());
+
+        Map<String, Object> workoutsMap = new HashMap<>();
+        workoutsMap.put("workouts", workoutBase64);
+
+        // Referens till dokumentet i "users" collection
+        DocumentReference docRef = db.collection("users").document(UserData.getEmail());
+
+        // Skriv data och vänta på resultat
+        ApiFuture<WriteResult> result = docRef.update(workoutsMap);
+
+        try {
+            System.out.println("Uppdaterat vid: " + result.get().getUpdateTime());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public static Workout readDBworkout(){
+        try {
+            Gson gson = new Gson();
+            HashMap<String, Object> userData = new HashMap<>();
+
+            ApiFuture<DocumentSnapshot> snapshot = db.collection("users").document(UserData.getEmail()).get();
+
+            DocumentSnapshot document = snapshot.get();
+            JsonElement jsonElement = gson.toJsonTree(document.getData());
+
+            userData = gson.fromJson(jsonElement, HashMap.class);
+
+            if(userData.get("workouts")!=null){
+                byte[] data = Base64.getDecoder().decode((String) userData.get("workouts"));
+                ObjectInputStream objectInputStream = new ObjectInputStream(new ByteArrayInputStream(data));
+                Workout workout = (Workout) objectInputStream.readObject();
+                objectInputStream.close();
+                return workout;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new Workout();
     }
 
     public static boolean authenticateUser(String email, String password) {
