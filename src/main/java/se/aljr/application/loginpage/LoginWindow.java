@@ -1,15 +1,14 @@
 package se.aljr.application.loginpage;
 
-import org.apache.commons.logging.Log;
 import se.aljr.application.CustomFont;
 import se.aljr.application.Launcher;
 import se.aljr.application.Monitorsize;
 import se.aljr.application.ResizeHandler;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
 
 /**
  * Login window for application
@@ -18,6 +17,7 @@ public class LoginWindow extends JFrame {
 
     protected String emailAdress;
     protected String password;
+    protected String userName;
     private String resourcePath;
 
     private final ImageIcon logoIcon;
@@ -25,7 +25,7 @@ public class LoginWindow extends JFrame {
 
     private Point initialClick;
 
-    private FirebaseAuthenticationManager firebaseAuthenticationManager;
+    private FirebaseManager firebaseManager;
 
     private Font font;
 
@@ -38,7 +38,7 @@ public class LoginWindow extends JFrame {
         logoIcon = new ImageIcon(resourcePath+"agile300.png");
         font = CustomFont.getFont();
         thisFrame = this;
-        this.firebaseAuthenticationManager = new FirebaseAuthenticationManager();
+        this.firebaseManager = new FirebaseManager();
 
         ResizeHandler resizeHandler = new ResizeHandler(this, (width/height)); // Aspect ratio (t.ex. 4:3)
         this.addMouseListener(resizeHandler);
@@ -130,6 +130,11 @@ public class LoginWindow extends JFrame {
         incorrectUserCredentialsLabel.setFont((font.deriveFont((float)getHeight()/23)));
         incorrectUserCredentialsLabel.setVisible(true);
 
+        JTextField userNameField = new JTextField("");
+        userNameField.setAlignmentX(Component.CENTER_ALIGNMENT);
+        userNameField.setMinimumSize(new Dimension((int)(getWidth()/5),(int)(getHeight()/15)));
+        userNameField.setMaximumSize(new Dimension(new Dimension((int)(getWidth()/5),(int)(getHeight()/15))));
+
         JTextField emailField = new JTextField("");
         emailField.setAlignmentX(Component.CENTER_ALIGNMENT);
         emailField.setMinimumSize(new Dimension((int)(getWidth()/5),(int)(getHeight()/15)));
@@ -145,16 +150,18 @@ public class LoginWindow extends JFrame {
         loginButton.setPreferredSize(new Dimension(new Dimension((int)(getWidth()/5),(int)(getHeight()/7.5))));
         loginButton.setMaximumSize(new Dimension(new Dimension((int)(getWidth()/5),(int)(getHeight()/7.5))));
         loginButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        loginButton.setFont(font.deriveFont((float)(getHeight()/17)));
         loginButton.addActionListener(new ActionListener()
         {
             @Override
             public void actionPerformed(ActionEvent e)
             {
                 password = String.valueOf(passwordField.getPassword());
-                emailAdress = emailField.getText();
+                emailAdress = emailField.getText().trim();
+                userName = userNameField.getText().trim();
                 try {
                     if(!registerMode){
-                        if(FirebaseAuthenticationManager.authenticateUser(emailAdress, password)){
+                        if(FirebaseManager.authenticateUser(emailAdress, password)){
                             Thread.sleep(1000);
                             Launcher.isLoggedIn = true; //Sätter Launcherns status till inloggad.
                         }
@@ -162,13 +169,16 @@ public class LoginWindow extends JFrame {
                             incorrectUserCredentialsLabel.setText("INVALID CREDENTIALS");
                         }
                     }else{
-                        FirebaseAuthenticationManager.registerUser(emailAdress, password);
+                        FirebaseManager.registerUser(emailAdress, password);
                         Thread.sleep(2000);
-                        if(FirebaseAuthenticationManager.authenticateUser(emailAdress, password)){
+                        if(FirebaseManager.authenticateUser(emailAdress, password)){
+                            FirebaseManager.writeDBnewUser(userName,emailAdress);
                             Launcher.isLoggedIn = true;
                         }
                     }
                 } catch (InterruptedException ex) {
+                    throw new RuntimeException(ex);
+                } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
             }
@@ -182,25 +192,7 @@ public class LoginWindow extends JFrame {
         register.setFocusPainted(false);
         register.setContentAreaFilled(false);
         register.setForeground(Color.BLUE);
-        register.addActionListener(new ActionListener()
-        {
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                if(!registerMode){
-                    loginButton.setText("SIGN UP");
-                    register.setText("<html><u>LOGIN</u></html>");
-                    registerMode = true;
-                    incorrectUserCredentialsLabel.setText("");
-                    repaint();
-                }else{
-                    loginButton.setText("LOGIN");
-                    registerMode = false;
-                    register.setText("<html><u>SIGN UP</u></html>");
-                    repaint();
-                }
-            }
-        });
+
 
         JButton exitButton = new JButton("X");
         exitButton.setMaximumSize(new Dimension((int)(Monitorsize.getWidth()/96),(int)(Monitorsize.getHeight()/108)));
@@ -214,6 +206,10 @@ public class LoginWindow extends JFrame {
             }
         });
 
+        JLabel fullNameText = new JLabel("Full name: ");
+        fullNameText.setAlignmentX(Component.CENTER_ALIGNMENT);
+        fullNameText.setFont(font.deriveFont((float)(getHeight()/17)));
+
         JLabel emailText = new JLabel("Email: ");
         emailText.setAlignmentX(Component.CENTER_ALIGNMENT);
         emailText.setFont(font.deriveFont((float)(getHeight()/17)));
@@ -222,16 +218,70 @@ public class LoginWindow extends JFrame {
         passwordText.setAlignmentX(Component.CENTER_ALIGNMENT);
         passwordText.setFont(font.deriveFont((float)(getHeight()/17)));
 
+        loginMenuPanel.add(Box.createVerticalGlue());
         loginMenuPanel.add(emailText);
         loginMenuPanel.add(emailField);
-        loginMenuPanel.add(Box.createVerticalStrut((int)(Monitorsize.getHeight()/108)));
+        loginMenuPanel.add(Box.createVerticalGlue());
+        loginMenuPanel.add(Box.createVerticalGlue());
+        loginMenuPanel.add(Box.createVerticalGlue());
         loginMenuPanel.add(passwordText);
         loginMenuPanel.add(passwordField);
-        loginMenuPanel.add(Box.createVerticalStrut((int)(Monitorsize.getHeight()/158)));
+        loginMenuPanel.add(Box.createVerticalGlue());
         loginMenuPanel.add(incorrectUserCredentialsLabel);
-        loginMenuPanel.add(Box.createVerticalStrut((int)(Monitorsize.getHeight()/158)));
+        loginMenuPanel.add(Box.createVerticalGlue());
         loginMenuPanel.add(loginButton);
         loginMenuPanel.add(register);
+        loginMenuPanel.add(Box.createVerticalGlue());
+
+        register.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                if(!registerMode){
+                    loginMenuPanel.removeAll();
+                    loginMenuPanel.add(fullNameText);
+                    loginMenuPanel.add(userNameField);
+                    loginMenuPanel.add(Box.createVerticalGlue());
+                    loginMenuPanel.add(emailText);
+                    loginMenuPanel.add(emailField);
+                    loginMenuPanel.add(Box.createVerticalGlue());
+                    loginMenuPanel.add(passwordText);
+                    loginMenuPanel.add(passwordField);
+                    loginMenuPanel.add(Box.createVerticalGlue());
+                    loginMenuPanel.add(incorrectUserCredentialsLabel);
+                    loginMenuPanel.add(Box.createVerticalGlue());
+                    loginMenuPanel.add(loginButton);
+                    loginMenuPanel.add(register);
+                    loginMenuPanel.add(Box.createVerticalGlue());
+                    loginButton.setText("SIGN UP");
+                    register.setText("<html><u>LOGIN</u></html>");
+                    registerMode = true;
+                    incorrectUserCredentialsLabel.setText("");
+                    repaint();
+                }else{
+                    loginMenuPanel.removeAll();
+                    loginMenuPanel.add(Box.createVerticalGlue());
+                    loginMenuPanel.add(emailText);
+                    loginMenuPanel.add(emailField);
+                    loginMenuPanel.add(Box.createVerticalGlue());
+                    loginMenuPanel.add(Box.createVerticalGlue());
+                    loginMenuPanel.add(Box.createVerticalGlue());
+                    loginMenuPanel.add(passwordText);
+                    loginMenuPanel.add(passwordField);
+                    loginMenuPanel.add(Box.createVerticalGlue());
+                    loginMenuPanel.add(incorrectUserCredentialsLabel);
+                    loginMenuPanel.add(Box.createVerticalGlue());
+                    loginMenuPanel.add(loginButton);
+                    loginMenuPanel.add(register);
+                    loginMenuPanel.add(Box.createVerticalGlue());
+                    loginButton.setText("LOGIN");
+                    registerMode = false;
+                    register.setText("<html><u>SIGN UP</u></html>");
+                    repaint();
+                }
+            }
+        });
 
         smallLogoLabelContainer.add(smallLogoLabel, BorderLayout.NORTH);
 
@@ -266,15 +316,23 @@ public class LoginWindow extends JFrame {
                 smallLogoLabel.setIcon(new ImageIcon(scaledSmallLogo));
                 smallLogoLabel.setPreferredSize(new Dimension((rightPanel.getHeight()-topBar.getHeight())-(getHeight()*3/5), (rightPanel.getHeight()-topBar.getHeight())-(getHeight()*6/9)));
                 register.setFont(font.deriveFont((float)(getHeight()/30)));
-                register.setMaximumSize(new Dimension((int)(getWidth()/6),(int)(getHeight()/10)));        emailField.setMinimumSize(new Dimension((int)(getWidth()/5),(int)(getHeight()/15)));
+                register.setMaximumSize(new Dimension((int)(getWidth()/6),(int)(getHeight()/10)));
+                userNameField.setPreferredSize(new Dimension((int)(getWidth()/5),(int)(getHeight()/15)));
+                userNameField.setMinimumSize(new Dimension((int)(getWidth()/5),(int)(getHeight()/15)));
+                userNameField.setMaximumSize(new Dimension(new Dimension((int)(getWidth()/5),(int)(getHeight()/15))));
+                emailField.setPreferredSize(new Dimension((int)(getWidth()/5),(int)(getHeight()/15)));
+                emailField.setMinimumSize(new Dimension((int)(getWidth()/5),(int)(getHeight()/15)));
                 emailField.setMaximumSize(new Dimension(new Dimension((int)(getWidth()/5),(int)(getHeight()/15))));
+                passwordField.setPreferredSize(new Dimension((int)(getWidth()/5),(int)(getHeight()/15)));
                 passwordField.setMinimumSize(new Dimension((int)(getWidth()/5),(int)(getHeight()/15)));
                 passwordField.setMaximumSize(new Dimension(new Dimension((int)(getWidth()/5),(int)(getHeight()/15))));
                 emailText.setFont(font.deriveFont((float)(getHeight()/17)));
                 passwordText.setFont(font.deriveFont((float)(getHeight()/17)));
+                fullNameText.setFont(font.deriveFont((float)(getHeight()/17)));
                 loginButton.setMinimumSize(new Dimension(new Dimension((int)(getWidth()/5),(int)(getHeight()/7.5))));
                 loginButton.setPreferredSize(new Dimension(new Dimension((int)(getWidth()/5),(int)(getHeight()/7.5))));
                 loginButton.setMaximumSize(new Dimension(new Dimension((int)(getWidth()/5),(int)(getHeight()/7.5))));
+                loginButton.setFont(font.deriveFont((float)(getHeight()/17)));
                 incorrectUserCredentialsLabel.setPreferredSize((new Dimension(getWidth(),getHeight()/22)));
                 incorrectUserCredentialsLabel.setMinimumSize((new Dimension(getWidth(),getHeight()/22)));
                 incorrectUserCredentialsLabel.setMaximumSize((new Dimension(getWidth(),getHeight()/22)));

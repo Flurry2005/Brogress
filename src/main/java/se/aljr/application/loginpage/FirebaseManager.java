@@ -1,6 +1,11 @@
 package se.aljr.application.loginpage;
 
+import com.google.api.core.ApiFuture;
 import com.google.auth.oauth2.GoogleCredentials;
+import com.google.cloud.firestore.DocumentReference;
+import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.FirestoreOptions;
+import com.google.cloud.firestore.WriteResult;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseAuth;
@@ -8,28 +13,63 @@ import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
 
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
-public class FirebaseAuthenticationManager {
-    private String resourcePath;
-    public FirebaseAuthenticationManager(){
+public class FirebaseManager {
+    private static String resourcePath;
+    private static Firestore db;
+    private static FirestoreOptions firestoreOptions;
+    static {
         try {
-            resourcePath = getClass().getClassLoader().getResource("resource.path").getPath().replace("resource.path","");
-            System.out.println(resourcePath);
-            FileInputStream serviceAccount = new FileInputStream(resourcePath+"brogress-7499c-firebase-adminsdk-fbsvc-f751df8ba3.json");
+            resourcePath = FirebaseManager.class.getClassLoader().getResource("resource.path")
+                    .getPath().replace("resource.path","");
 
+            FileInputStream serviceAccount = new FileInputStream(resourcePath+"brogress-7499c-firebase-adminsdk-fbsvc-f751df8ba3.json");
+            GoogleCredentials credentials = GoogleCredentials.fromStream(serviceAccount);
             FirebaseOptions options = FirebaseOptions.builder()
-                    .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                    .setCredentials(credentials)
                     .setDatabaseUrl("https://test-7528a.firebaseio.com")
                     .build();
 
             FirebaseApp.initializeApp(options);
 
+            firestoreOptions = FirestoreOptions.newBuilder()
+                            .setProjectId("brogress-7499c")
+                            .setCredentials(credentials)
+                            .build();
+
+            db = firestoreOptions.getService();
+
+
+
         } catch (Exception e) {
             System.out.println("An error occurred during Firebase initialization");
+            e.printStackTrace();
+        }
+    }
+
+    public static void writeDBnewUser(String name, String email) throws IOException {
+
+        Map<String, Object> user = new HashMap<>();
+        user.put("email", email);
+        user.put("name", name);
+
+
+        // Referens till dokumentet i "users" collection
+        DocumentReference docRef = db.collection("users").document(email);
+
+        // Skriv data och vänta på resultat
+        ApiFuture<WriteResult> result = docRef.set(user);
+
+        try {
+           System.out.println("Uppdaterat vid: " + result.get().getUpdateTime());
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
