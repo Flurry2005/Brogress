@@ -163,6 +163,7 @@ public class LoginWindow extends JFrame {
                     if(!registerMode){
                         if(FirebaseManager.authenticateUser(emailAdress, password)){
                             Thread.sleep(1000);
+                            FirebaseManager.readDBUserInfo(emailAdress);
                             Launcher.isLoggedIn = true; //Sätter Launcherns status till inloggad.
                         }
                         else{
@@ -173,6 +174,7 @@ public class LoginWindow extends JFrame {
                         Thread.sleep(2000);
                         if(FirebaseManager.authenticateUser(emailAdress, password)){
                             FirebaseManager.writeDBnewUser(userName,emailAdress);
+
                             Launcher.isLoggedIn = true;
                         }
                     }

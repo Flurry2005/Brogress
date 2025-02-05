@@ -25,6 +25,11 @@ public class ProgramPanel extends JPanel {
     private ImageIcon addButton;
     private Image scaledAddButton;
     private ImageIcon scaledAddButtonIcon;
+
+    private ImageIcon saveButton;
+    private Image scaledsaveButton;
+    private ImageIcon scaledsaveButtonIcon;
+
     Map<Exercise, Integer> idToExercise = new HashMap<>();
     Map<Integer, JPanel> exercisePanels = new HashMap<>();
     Map<Integer, JPanel> setPanels = new HashMap<>();
@@ -39,6 +44,10 @@ public class ProgramPanel extends JPanel {
         addButton = new ImageIcon(resourcePath + "add_button.png");
         scaledAddButton = addButton.getImage().getScaledInstance(75, 29, Image.SCALE_SMOOTH);
         scaledAddButtonIcon = new ImageIcon(scaledAddButton);
+
+        saveButton = new ImageIcon(resourcePath + "save_workout_button.png");
+        scaledsaveButton = saveButton.getImage().getScaledInstance(140, 29, Image.SCALE_SMOOTH);
+        scaledsaveButtonIcon = new ImageIcon(scaledsaveButton);
 
         this.setSize(width, height);
         this.setBackground(new Color(31, 31, 31));
@@ -57,10 +66,36 @@ public class ProgramPanel extends JPanel {
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
 
         JPanel savedWorkoutsPanel = new JPanel();
+        savedWorkoutsPanel.setLayout(new BoxLayout(savedWorkoutsPanel, BoxLayout.Y_AXIS));
         savedWorkoutsPanel.setPreferredSize(new Dimension(getWidth() / 5, getHeight()));
         savedWorkoutsPanel.setMinimumSize(new Dimension(getWidth() / 5, getHeight()));
         savedWorkoutsPanel.setMaximumSize(new Dimension(getWidth() / 5, getHeight()));
-        savedWorkoutsPanel.setBackground(Color.BLUE);
+        //savedWorkoutsPanel.setBackground(Color.BLUE);
+        savedWorkoutsPanel.setOpaque(true);
+        savedWorkoutsPanel.setBackground(new Color(51, 51, 51));
+
+        JPanel savedWorkoutsPanelTop = new JPanel();
+        savedWorkoutsPanelTop.setLayout(new BorderLayout(0, 0));
+        savedWorkoutsPanelTop.setOpaque(false);
+        savedWorkoutsPanelTop.setPreferredSize(new Dimension(getWidth() / 5, getHeight() / 20));
+        savedWorkoutsPanelTop.setMinimumSize(new Dimension(getWidth() / 5, getHeight() / 20));
+        savedWorkoutsPanelTop.setMaximumSize(new Dimension(getWidth() / 5, getHeight() / 20));
+
+        JLabel savedWorkoutsLabel = new JLabel("Saved Workouts",JLabel.CENTER);
+        savedWorkoutsLabel.setFont(new Font("Arial", Font.PLAIN, 20));
+        savedWorkoutsLabel.setForeground(Color.CYAN);
+        savedWorkoutsLabel.setPreferredSize(new Dimension(getWidth()/5, getHeight()/20));
+        savedWorkoutsLabel.setMaximumSize(new Dimension(getWidth() / 5, getHeight()/20));
+        savedWorkoutsLabel.setOpaque(false);
+
+
+        JScrollPane savedWorkoutsScrollPane = new JScrollPane();
+        savedWorkoutsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        savedWorkoutsScrollPane.setPreferredSize(new Dimension(getWidth() / 5, getHeight() * 8 / 10));
+        savedWorkoutsScrollPane.setMinimumSize(new Dimension(getWidth() / 5, getHeight() * 8 / 10));
+        savedWorkoutsScrollPane.setMaximumSize(new Dimension(getWidth() / 5, getHeight() * 8 / 10));
+        savedWorkoutsScrollPane.getVerticalScrollBar().setPreferredSize(new Dimension(0, 0));
+        savedWorkoutsScrollPane.setBorder(new LineBorder(new Color(80, 73, 69), 1));
 
         //Label holding workout title
         JLabel headerTitle = new JLabel();
@@ -79,10 +114,35 @@ public class ProgramPanel extends JPanel {
 
         JPanel workoutPanelTop = new JPanel();
         workoutPanelTop.setLayout(new BorderLayout(0, 0));
-        workoutPanelTop.setBackground(Color.MAGENTA);
+        workoutPanelTop.setOpaque(false);
         workoutPanelTop.setPreferredSize(new Dimension((int) (getWidth() / 2), getHeight() / 20));
         workoutPanelTop.setMinimumSize(new Dimension((int) (getWidth() / 2), getHeight() / 20));
         workoutPanelTop.setMaximumSize(new Dimension((int) (getWidth() / 2), getHeight() / 20));
+
+        JButton saveWorkoutButton = new JButton(scaledsaveButtonIcon);
+        saveWorkoutButton.setContentAreaFilled(false);
+        saveWorkoutButton.setFocusPainted(false);
+        saveWorkoutButton.setBorderPainted(false);
+        saveWorkoutButton.setPreferredSize(new Dimension(scaledsaveButtonIcon.getIconWidth(), scaledsaveButtonIcon.getIconHeight()));
+        saveWorkoutButton.setMaximumSize(new Dimension(scaledsaveButtonIcon.getIconWidth(), scaledsaveButtonIcon.getIconHeight()));
+        saveWorkoutButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFrame fuckyoujagvilhaenframe = new JFrame();
+                fuckyoujagvilhaenframe.setSize(500, 500);
+                fuckyoujagvilhaenframe.setVisible(true);
+                JTextArea textArea = new JTextArea();
+                textArea.setFont(new Font("Arial", Font.PLAIN, 20));
+                fuckyoujagvilhaenframe.add(textArea);
+                textArea.setText(currentWorkout.getData());
+                textArea.setEditable(false);
+                textArea.setLineWrap(true);
+                textArea.setWrapStyleWord(true);
+                textArea.setOpaque(false);
+            }
+
+
+        });
 
         JTextField workoutTitle = new JTextField();
         workoutTitle.setText("Workout title");
@@ -103,6 +163,7 @@ public class ProgramPanel extends JPanel {
         workoutScrollPane.getVerticalScrollBar().setPreferredSize(new Dimension(0, 0));
         workoutScrollPane.getVerticalScrollBar().setUnitIncrement(6);
         workoutScrollPane.setBorder(new LineBorder(new Color(80, 73, 69), 1));
+
 
 
         //Panel containing log and workout data
@@ -241,29 +302,7 @@ public class ProgramPanel extends JPanel {
             }
 
         });
-        //Save workoutbutton
-        JButton saveWorkoutButton = new JButton();
-        saveWorkoutButton.setText("Save workout");
-        saveWorkoutButton.setBackground(new Color(40, 129, 201));
-        saveWorkoutButton.setForeground(Color.WHITE);
-        saveWorkoutButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JFrame fuckyoujagvilhaenframe = new JFrame();
-                fuckyoujagvilhaenframe.setSize(500, 500);
-                fuckyoujagvilhaenframe.setVisible(true);
-                JTextArea textArea = new JTextArea();
-                textArea.setFont(new Font("Arial", Font.PLAIN, 20));
-                fuckyoujagvilhaenframe.add(textArea);
-                textArea.setText(currentWorkout.getData());
-                textArea.setEditable(false);
-                textArea.setLineWrap(true);
-                textArea.setWrapStyleWord(true);
-                textArea.setOpaque(false);
-            }
 
-
-        });
 
 
         exercisesPanelTop.add(searchExercise, BorderLayout.WEST);
@@ -281,6 +320,7 @@ public class ProgramPanel extends JPanel {
         addExerciseAndSetPanel.add(changeTitle);
 
         workoutPanelTop.add(workoutTitle, BorderLayout.WEST);
+        workoutPanelTop.add(saveWorkoutButton, BorderLayout.EAST);
 
 
         workoutPanel.add(Box.createVerticalGlue());
@@ -288,6 +328,15 @@ public class ProgramPanel extends JPanel {
         workoutPanel.add(Box.createVerticalGlue());
         workoutPanel.add(workoutScrollPane);
         workoutPanel.add(Box.createVerticalGlue());
+
+        savedWorkoutsPanelTop.add(savedWorkoutsLabel, BorderLayout.CENTER);
+
+
+        savedWorkoutsPanel.add(Box.createVerticalGlue());
+        savedWorkoutsPanel.add(savedWorkoutsPanelTop);
+        savedWorkoutsPanel.add(Box.createVerticalGlue());
+        savedWorkoutsPanel.add(savedWorkoutsScrollPane);
+        savedWorkoutsPanel.add(Box.createVerticalGlue());
 
         mainPanel.add(Box.createHorizontalGlue());
         mainPanel.add(exercisesPanel);

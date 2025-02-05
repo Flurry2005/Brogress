@@ -2,15 +2,16 @@ package se.aljr.application.loginpage;
 
 import com.google.api.core.ApiFuture;
 import com.google.auth.oauth2.GoogleCredentials;
-import com.google.cloud.firestore.DocumentReference;
-import com.google.cloud.firestore.Firestore;
-import com.google.cloud.firestore.FirestoreOptions;
-import com.google.cloud.firestore.WriteResult;
+import com.google.cloud.firestore.*;
+import com.google.cloud.storage.Acl;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import se.aljr.application.UserData;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -20,6 +21,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.concurrent.ExecutionException;
 
 public class FirebaseManager {
     private static String resourcePath;
@@ -59,6 +61,10 @@ public class FirebaseManager {
         Map<String, Object> user = new HashMap<>();
         user.put("email", email);
         user.put("name", name);
+        user.put("age", "");
+        user.put("height", "");
+        user.put("weight", "");
+        user.put("workouts", "");
 
 
         // Referens till dokumentet i "users" collection
@@ -69,6 +75,26 @@ public class FirebaseManager {
 
         try {
            System.out.println("Uppdaterat vid: " + result.get().getUpdateTime());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    public static void readDBUserInfo(String email){
+
+        try {
+            Gson gson = new Gson();
+            HashMap<String, Object> userData = new HashMap<>();
+
+            ApiFuture<DocumentSnapshot> snapshot = db.collection("users").document(email).get();
+
+            DocumentSnapshot document = snapshot.get();
+            JsonElement jsonElement = gson.toJsonTree(document.getData());
+
+            userData = gson.fromJson(jsonElement, HashMap.class);
+
+            UserData.setUserName(userData.get("name").toString());
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
