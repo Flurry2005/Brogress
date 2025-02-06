@@ -39,14 +39,13 @@ public class ExercisePanel extends JPanel {
         this.setPreferredSize(new Dimension(width, height));
 
         // Initialize components
-        Font emojiFont = new Font("Segoe UI Emoji", Font.PLAIN, 40);
-        JButton favouriteButton = new JButton("\u2764");
+        Font emojiFont = new Font("Segoe UI Emoji", Font.PLAIN, 45);
+        JButton favouriteButton = new JButton("\uD83D\uDCAA\n");
         favouriteButton.setFocusPainted(false);
         favouriteButton.setBorder(BorderFactory.createEmptyBorder());
         favouriteButton.setContentAreaFilled(false);
         favouriteButton.setBackground(new Color(51, 51, 51));
         favouriteButton.setFont(emojiFont);
-        favouriteButton.setForeground(new Color(22, 22, 22));
         favouriteButton.setPreferredSize(new Dimension(100, 100));
         favouriteButton.setMaximumSize(new Dimension(100, 100));
         // Add mouselistener
@@ -54,7 +53,7 @@ public class ExercisePanel extends JPanel {
             @Override
             public void mouseEntered(MouseEvent e) {
                 super.mouseEntered(e);
-                favouriteButton.setForeground(new Color(150, 5, 34));
+                favouriteButton.setForeground(new Color(196, 196, 49));
 
             }
 
@@ -62,7 +61,7 @@ public class ExercisePanel extends JPanel {
             public void mouseExited(MouseEvent e) {
                 super.mouseExited(e);
                 if (isFavourite) {
-                    favouriteButton.setForeground(new Color(150, 5, 34));
+                    favouriteButton.setForeground(new Color(196, 196, 49));
                 } else {
                     favouriteButton.setForeground(new Color(22, 22, 22));
                 }
@@ -76,7 +75,7 @@ public class ExercisePanel extends JPanel {
                 if (menuList.getSelectedValue() != null) {
                     if (!isFavourite) {
                         UserData.setFavoriteExercises(menuList.getSelectedValue());
-                        favouriteButton.setForeground(new Color(150, 5, 34));
+                        favouriteButton.setForeground(new Color(196, 196, 49));
                         isFavourite = true;
                     }
                     else {
@@ -176,7 +175,7 @@ public class ExercisePanel extends JPanel {
                     musclesWorkedLabel.setText(selected.getMusclesUsed());
                     if (UserData.getFavoriteExercises().contains(selected)) {
                         isFavourite = true;
-                        favouriteButton.setForeground(new Color(150, 5, 34));
+                        favouriteButton.setForeground(new Color(196, 196, 49));
                     } else {
                         isFavourite = false;
                         favouriteButton.setForeground(new Color(22, 22, 22));
