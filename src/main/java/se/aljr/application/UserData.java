@@ -1,6 +1,11 @@
 package se.aljr.application;
 
 import com.google.cloud.storage.Acl;
+import se.aljr.application.exercise.Excercise.Exercise;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class UserData {
     private static String userName;
@@ -8,32 +13,33 @@ public class UserData {
     private static int userAge;
     private static float userWeight;
     private static String userEmail;
+    private static HashSet<Exercise> favoriteExercises = new HashSet<>();
 
-    public static void setUserName(String userName){
+    public static void setUserName(String userName) {
         UserData.userName = userName;
     }
 
-    public static String getUserName(){
+    public static String getUserName() {
         return UserData.userName;
     }
 
-    public static void setUserHeight(int height){
+    public static void setUserHeight(int height) {
         UserData.userHeight = height;
     }
 
-    public static int getUserHeight(){
+    public static int getUserHeight() {
         return UserData.userHeight;
     }
 
-    public static void setUserAge(int age){
+    public static void setUserAge(int age) {
         UserData.userAge = age;
     }
 
-    public static int getUserAge(){
+    public static int getUserAge() {
         return UserData.userAge;
     }
 
-    public static void setUserWeight(float weight){
+    public static void setUserWeight(float weight) {
         UserData.userWeight = weight;
     }
 
@@ -41,11 +47,36 @@ public class UserData {
         return UserData.userWeight;
     }
 
-    public static void setEmail(String email){
+    public static void setEmail(String email) {
         UserData.userEmail = email;
     }
 
-    public static String getEmail(){
+    public static String getEmail() {
         return UserData.userEmail;
     }
-}
+
+
+    public static HashSet<Exercise> getFavoriteExercises() {
+        return (favoriteExercises != null) ? favoriteExercises : new HashSet<>();
+    }
+
+    public static boolean removeFavoriteExercises(Exercise exercise) {
+        if (favoriteExercises.contains(exercise)) {
+            favoriteExercises.remove(exercise);
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    public static boolean setFavoriteExercises(Exercise exercise) {
+        if (!favoriteExercises.contains(exercise)) {
+            favoriteExercises.add(exercise);
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    }

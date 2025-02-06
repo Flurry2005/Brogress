@@ -215,12 +215,13 @@ public class ProgramPanel extends JPanel {
             exerciseModel.addElement(exercise);
         }
 
+
         JList<Exercise> searchExerciseResult = new JList(exerciseModel);
         searchExerciseResult.setFixedCellHeight(26);
         searchExerciseResult.setBackground(new Color(22, 22, 22));
         searchExerciseResult.setForeground(new Color(204, 204, 204));
         searchExerciseResult.setPreferredSize(new Dimension(200, searchExerciseResult.getFixedCellHeight() * searchExerciseResult.getModel().getSize()));
-
+        
 
         JTextField searchExercise = new JTextField();
         searchExercise.setText("Search for exercise...");
@@ -255,6 +256,7 @@ public class ProgramPanel extends JPanel {
                     for (Exercise exercise : list.getList()) {
                         if (exercise.getName().toLowerCase().contains(searchText)) {
                             exerciseModel.addElement(exercise);//Add excercises back to list
+
                         }
                     }
                 });
