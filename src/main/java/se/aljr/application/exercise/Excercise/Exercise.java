@@ -1,11 +1,12 @@
 package se.aljr.application.exercise.Excercise;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Objects;
 
 import se.aljr.application.exercise.Muscle.Muscle;
 
-public abstract class Exercise {
+public abstract class Exercise implements Serializable {
 	protected String name;
 	protected String info;
 	protected ArrayList<Muscle> musclesUsed = new ArrayList<>();

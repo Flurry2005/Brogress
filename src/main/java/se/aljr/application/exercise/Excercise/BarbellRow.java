@@ -3,6 +3,7 @@ package se.aljr.application.exercise.Excercise;
 import se.aljr.application.exercise.Muscle.*;
 
 
+
 public class BarbellRow extends Exercise {
     public BarbellRow() {
         name = "Barbell Row";

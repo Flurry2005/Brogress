@@ -1,6 +1,8 @@
 package se.aljr.application.exercise.Muscle;
 
-public class Obliques extends Muscle {
+import java.io.Serializable;
+
+public class Obliques extends Muscle implements Serializable {
 
     public Obliques() {
         name = "Obliques";

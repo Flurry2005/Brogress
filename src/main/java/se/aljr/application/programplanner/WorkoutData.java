@@ -1,8 +1,9 @@
 package se.aljr.application.programplanner;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class WorkoutData {
+public class WorkoutData implements Serializable {
     private String title = "Untitled Workout";
     private HashMap<Integer, List<WorkoutSet>> exerciseSets = new HashMap<>();
 
@@ -69,6 +70,7 @@ public class WorkoutData {
 
             }
         }
+        System.out.println("Exercise id: "+id+" size: "+ size);
         return size;
     }
 

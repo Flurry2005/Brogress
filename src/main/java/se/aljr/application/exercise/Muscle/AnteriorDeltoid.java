@@ -1,5 +1,8 @@
 package se.aljr.application.exercise.Muscle;
-public class AnteriorDeltoid extends Muscle {
+
+import java.io.Serializable;
+
+public class AnteriorDeltoid extends Muscle implements Serializable {
 
     public AnteriorDeltoid() {
         name = "Anterior Deltoid";

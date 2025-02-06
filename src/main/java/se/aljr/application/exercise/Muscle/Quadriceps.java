@@ -1,6 +1,8 @@
 package se.aljr.application.exercise.Muscle;
 
-public class Quadriceps extends Muscle {
+import java.io.Serializable;
+
+public class Quadriceps extends Muscle implements Serializable {
 
 	public Quadriceps() {
 		name = "Quadriceps";

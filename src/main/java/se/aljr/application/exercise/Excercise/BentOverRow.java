@@ -2,6 +2,7 @@ package se.aljr.application.exercise.Excercise;
 
 import se.aljr.application.exercise.Muscle.*;
 
+
 public class BentOverRow extends Exercise {
     public BentOverRow() {
         name = "Bent Over Row";

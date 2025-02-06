@@ -4,6 +4,7 @@ import se.aljr.application.exercise.Muscle.AnteriorDeltoid;
 import se.aljr.application.exercise.Muscle.Chest;
 import se.aljr.application.exercise.Muscle.Triceps;
 
+import java.io.Serializable;
 
 
 public class BenchPress extends Exercise {

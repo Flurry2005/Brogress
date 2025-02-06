@@ -2,9 +2,10 @@ package se.aljr.application.programplanner;
 
 import se.aljr.application.exercise.Excercise.Exercise;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class WorkoutSet {
+public class WorkoutSet implements Serializable {
     int number;
     int weight;
     int rep;
