@@ -40,7 +40,7 @@ public class ExercisePanel extends JPanel {
 
         // Initialize components
         Font emojiFont = new Font("Segoe UI Emoji", Font.PLAIN, 45);
-        JButton favouriteButton = new JButton("\uD83D\uDCAA\n");
+        JButton favouriteButton = new JButton("\uD83D\uDCAA");
         favouriteButton.setFocusPainted(false);
         favouriteButton.setBorder(BorderFactory.createEmptyBorder());
         favouriteButton.setContentAreaFilled(false);
