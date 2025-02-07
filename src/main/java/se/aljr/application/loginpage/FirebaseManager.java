@@ -40,7 +40,7 @@ public class FirebaseManager {
             resourcePath = FirebaseManager.class.getClassLoader().getResource("resource.path")
                     .getPath().replace("resource.path","");
 
-            FileInputStream serviceAccount = new FileInputStream(resourcePath + "brogress-7499c-firebase-adminsdk-fbsvc-f751df8ba3.json");
+            FileInputStream serviceAccount = new FileInputStream(resourcePath + "brogress-7499c-firebase-adminsdk-fbsvc-7d0008d7db.json");
             GoogleCredentials credentials = GoogleCredentials.fromStream(serviceAccount);
             FirebaseOptions options = FirebaseOptions.builder()
                     .setCredentials(credentials)

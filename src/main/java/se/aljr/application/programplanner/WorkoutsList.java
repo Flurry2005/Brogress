@@ -1,7 +1,9 @@
 package se.aljr.application.programplanner;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class WorkoutsList {
-    List<Workout> workoutList;
+public class WorkoutsList extends ArrayList<Workout> {
+    
 }
+
