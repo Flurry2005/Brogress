@@ -16,6 +16,7 @@ import se.aljr.application.exercise.Excercise.Exercise;
 import se.aljr.application.programplanner.ProgramPanel;
 import se.aljr.application.programplanner.Workout;
 import se.aljr.application.programplanner.WorkoutSet;
+import se.aljr.application.programplanner.WorkoutsList;
 
 import javax.swing.*;
 import java.awt.*;
@@ -40,7 +41,7 @@ public class FirebaseManager {
             resourcePath = FirebaseManager.class.getClassLoader().getResource("resource.path")
                     .getPath().replace("resource.path","");
 
-            FileInputStream serviceAccount = new FileInputStream(resourcePath + "brogress-7499c-firebase-adminsdk-fbsvc-7d0008d7db.json");
+            FileInputStream serviceAccount = new FileInputStream(resourcePath + "brogress-7499c-firebase-adminsdk-fbsvc-f751df8ba3.json");
             GoogleCredentials credentials = GoogleCredentials.fromStream(serviceAccount);
             FirebaseOptions options = FirebaseOptions.builder()
                     .setCredentials(credentials)
@@ -110,10 +111,10 @@ public class FirebaseManager {
         }
     }
 
-    public static void writeDBworkout(Workout workout) throws IOException {
+    public static void writeDBworkout(WorkoutsList workoutsList) throws IOException {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
-        objectOutputStream.writeObject(workout);
+        objectOutputStream.writeObject(workoutsList);
         objectOutputStream.close();
 
         String workoutBase64 = Base64.getEncoder().encodeToString(byteArrayOutputStream.toByteArray());
@@ -135,7 +136,7 @@ public class FirebaseManager {
 
     }
 
-    public static Workout readDBworkout(ProgramPanel programPanel){
+    public static WorkoutsList readDBworkout(ProgramPanel programPanel){
         try {
             Gson gson = new Gson();
             HashMap<String, Object> userData = new HashMap<>();
@@ -153,168 +154,171 @@ public class FirebaseManager {
             if (userData.get("workouts") != null) {
                 byte[] data = Base64.getDecoder().decode((String) userData.get("workouts"));
                 ObjectInputStream objectInputStream = new ObjectInputStream(new ByteArrayInputStream(data));
-                Workout workout = (Workout) objectInputStream.readObject();
+                WorkoutsList workoutsList = (WorkoutsList) objectInputStream.readObject();
                 objectInputStream.close();
-                int exerciseId = 1;
-                for (Component comp1 : workout.getComponents()) {
-                    System.out.println("Added 4 panels : " + (float) (4 * height) / 19);
+                for(Workout workout : workoutsList){
+                    workout.getWorkoutData().setTotalWorkoutHeight(0);
+                    int exerciseId = 1;
+                    for (Component comp1 : workout.getComponents()) {
+                        if(comp1.getName()!=null){
+                            System.out.println("Added 4 panels : " + (float) (4 * height) / 19);
 
-                    if (comp1.getName().equals("mainExercisePanel")) {
-                        ProgramPanel.totalHeight += (4 * ProgramPanel.setPanelHeight);
-                        JPanel mainExercisePanel = (JPanel) comp1;
-                        int setCounterMoveUp = 0;
-                        for (Component comp2 : mainExercisePanel.getComponents()) {
-                            int finalExerciseId = exerciseId;
-                            if ("addSet".equals(comp2.getName())) {
-                                JButton addSet = (JButton) comp2;
-                                int finalExerciseId1 = exerciseId;
-                                addSet.addActionListener(e -> {
-                                    ProgramPanel.totalHeight += ProgramPanel.setPanelHeight; //Lägger till höjden settet som läggs till
-                                    ProgramPanel.addSet(finalExerciseId1, workout.getIdToExercise(finalExerciseId1), mainExercisePanel, ProgramPanel.setPanelHeight, workout);
-                                    workout.setPreferredSize(new Dimension(workout.getWidth(), (int) ProgramPanel.totalHeight));
-                                    workout.revalidate();
-                                    workout.repaint();
+                            if (comp1.getName().equals("mainExercisePanel")) {
+                                workout.getWorkoutData().setTotalWorkoutHeight(workout.getWorkoutData().getTotalWorkoutHeight()+(4 * ProgramPanel.setPanelHeight));
+                                JPanel mainExercisePanel = (JPanel) comp1;
+                                int setCounterMoveUp = 0;
+                                for (Component comp2 : mainExercisePanel.getComponents()) {
+                                    int finalExerciseId = exerciseId;
+                                    if ("addSet".equals(comp2.getName())) {
+                                        JButton addSet = (JButton) comp2;
+                                        int finalExerciseId1 = exerciseId;
+                                        addSet.addActionListener(e -> {
+                                            workout.getWorkoutData().setTotalWorkoutHeight(workout.getWorkoutData().getTotalWorkoutHeight()+(ProgramPanel.setPanelHeight)); //Lägger till höjden settet som läggs till
+                                            ProgramPanel.addSet(finalExerciseId1, workout.getIdToExercise(finalExerciseId1), mainExercisePanel, ProgramPanel.setPanelHeight, workout);
+                                            workout.setPreferredSize(new Dimension(workout.getWidth(), (int) workout.getWorkoutData().getTotalWorkoutHeight()));
+                                            workout.revalidate();
+                                            workout.repaint();
 
-                                });
-                            }
+                                        });
+                                    }
 
-                            if ("setPanel".equals(comp2.getName())) {
-                                JPanel setPanel = (JPanel) comp2;
-                                System.out.println("Added hieght for set panel: " + (float) height / 19);
+                                    if ("setPanel".equals(comp2.getName())) {
+                                        JPanel setPanel = (JPanel) comp2;
+                                        System.out.println("Added hieght for set panel: " + (float) height / 19);
 
-                                for (Component compRight : setPanel.getComponents()){
+                                        for (Component compRight : setPanel.getComponents()){
 
-                                    if(compRight.getName()!=null){
+                                            if(compRight.getName()!=null){
 
-                                        if("rightPanel".equals(compRight.getName())){
-                                            System.out.println("Found right panel, set: "+setCounterMoveUp);
-                                            JPanel rightPanel = (JPanel) compRight;
-                                            for(Component compMoveSetUp : rightPanel.getComponents()){
-                                                if(compMoveSetUp.getName()!=null){
-                                                    if("moveSetUp".equals(compMoveSetUp.getName())){
-                                                        System.out.println("Found moveSetUp, set: "+setCounterMoveUp);
-                                                        JButton moveSetUp = (JButton) compMoveSetUp;
-                                                        int finalExerciseId2 = exerciseId;
-                                                        int finalSetCounter1 = setCounterMoveUp;
-                                                        WorkoutSet workoutSet = workout.getWorkoutData().getExerciseSets().get(finalExerciseId2).get(finalSetCounter1);
-                                                        moveSetUp.addActionListener(new ActionListener() {
-                                                            @Override
-                                                            public void actionPerformed(ActionEvent e) {
+                                                if("rightPanel".equals(compRight.getName())){
+                                                    System.out.println("Found right panel, set: "+setCounterMoveUp);
+                                                    JPanel rightPanel = (JPanel) compRight;
+                                                    for(Component compMoveSetUp : rightPanel.getComponents()){
+                                                        if(compMoveSetUp.getName()!=null){
+                                                            if("moveSetUp".equals(compMoveSetUp.getName())){
+                                                                System.out.println("Found moveSetUp, set: "+setCounterMoveUp);
+                                                                JButton moveSetUp = (JButton) compMoveSetUp;
+                                                                int finalExerciseId2 = exerciseId;
+                                                                int finalSetCounter1 = setCounterMoveUp;
+                                                                WorkoutSet workoutSet = workout.getWorkoutData().getExerciseSets().get(finalExerciseId2).get(finalSetCounter1);
+                                                                moveSetUp.addActionListener(new ActionListener() {
+                                                                    @Override
+                                                                    public void actionPerformed(ActionEvent e) {
 
 
-                                                                ProgramPanel.moveUp(workout.getExercisePanels().get(finalExerciseId2), finalExerciseId2, workoutSet, workout);
+                                                                        ProgramPanel.moveUp(workout.getExercisePanels().get(finalExerciseId2), finalExerciseId2, workoutSet, workout);
+                                                                    }
+                                                                });
                                                             }
-                                                        });
-                                                    }
-                                                    if("moveSetDown".equals(compMoveSetUp.getName())){
-                                                        System.out.println("Found moveSetDown, set: "+setCounterMoveUp);
-                                                        JButton moveSetDown = (JButton) compMoveSetUp;
-                                                        int finalExerciseId2 = exerciseId;
-                                                        int finalSetCounter1 = setCounterMoveUp;
-                                                        WorkoutSet workoutSet = workout.getWorkoutData().getExerciseSets().get(finalExerciseId2).get(finalSetCounter1);
-                                                        moveSetDown.addActionListener(new ActionListener() {
-                                                            @Override
-                                                            public void actionPerformed(ActionEvent e) {
+                                                            if("moveSetDown".equals(compMoveSetUp.getName())){
+                                                                System.out.println("Found moveSetDown, set: "+setCounterMoveUp);
+                                                                JButton moveSetDown = (JButton) compMoveSetUp;
+                                                                int finalExerciseId2 = exerciseId;
+                                                                int finalSetCounter1 = setCounterMoveUp;
+                                                                WorkoutSet workoutSet = workout.getWorkoutData().getExerciseSets().get(finalExerciseId2).get(finalSetCounter1);
+                                                                moveSetDown.addActionListener(new ActionListener() {
+                                                                    @Override
+                                                                    public void actionPerformed(ActionEvent e) {
 
 
-                                                                ProgramPanel.moveDown(workout.getExercisePanels().get(finalExerciseId2), finalExerciseId2, workoutSet, workout);
+                                                                        ProgramPanel.moveDown(workout.getExercisePanels().get(finalExerciseId2), finalExerciseId2, workoutSet, workout);
+                                                                    }
+                                                                });
                                                             }
-                                                        });
+                                                        }
                                                     }
+                                                    setCounterMoveUp++;
                                                 }
                                             }
-                                            setCounterMoveUp++;
                                         }
+
+                                        for (Component compLeftPanel : setPanel.getComponents()) {
+                                            if ("leftPanel".equals(compLeftPanel.getName())) {
+                                                System.out.println("Found left panel");
+                                                JPanel leftPanel = (JPanel) compLeftPanel;
+
+                                                int setCounter = 0;
+                                                for (Component compDeleteSet : leftPanel.getComponents()) {
+                                                    if (compDeleteSet.getName() != null) {
+                                                        if ("deleteSet".equals(compDeleteSet.getName())) {
+                                                            System.out.println("Found deleteSet button");
+                                                            JButton deleteSet = (JButton) compDeleteSet;
+                                                            int finalExerciseId2 = exerciseId;
+                                                            int finalSetCounter = setCounter;
+                                                            deleteSet.addActionListener(e -> {
+                                                                ProgramPanel.deleteSet(workout.getExercisePanels().get(finalExerciseId2), finalExerciseId2, workout.getWorkoutData().getExerciseSets().get(finalExerciseId2).get(finalSetCounter), workout, ProgramPanel.setPanelHeight, setPanel, workout);
+
+                                                            });
+                                                        }
+                                                    }
+                                                    setCounter++;
+                                                }
+                                            }
+                                        }
+                                        workout.getWorkoutData().setTotalWorkoutHeight(workout.getWorkoutData().getTotalWorkoutHeight()+(ProgramPanel.setPanelHeight));
                                     }
-                                }
 
-                                for (Component compLeftPanel : setPanel.getComponents()) {
-                                    if ("leftPanel".equals(compLeftPanel.getName())) {
-                                        System.out.println("Found left panel");
-                                        JPanel leftPanel = (JPanel) compLeftPanel;
+                                    if (comp2.getName() != null) {
 
-                                        int setCounter = 0;
-                                        for (Component compDeleteSet : leftPanel.getComponents()) {
-                                            if (compDeleteSet.getName() != null) {
-                                                if ("deleteSet".equals(compDeleteSet.getName())) {
-                                                    System.out.println("Found deleteSet button");
-                                                    JButton deleteSet = (JButton) compDeleteSet;
-                                                    int finalExerciseId2 = exerciseId;
-                                                    int finalSetCounter = setCounter;
-                                                    deleteSet.addActionListener(e -> {
-                                                        ProgramPanel.deleteSet(workout.getExercisePanels().get(finalExerciseId2), finalExerciseId2, workout.getWorkoutData().getExerciseSets().get(finalExerciseId2).get(finalSetCounter), workout, ProgramPanel.setPanelHeight, setPanel, workout);
+                                        if (comp2.getName().equals("exerciseNameTitlePanel")) {
 
+                                            JPanel exerciseNameTitlePanel = (JPanel) comp2;
+
+                                            for (Component comp3 : exerciseNameTitlePanel.getComponents()) {
+
+                                                if (comp3.getName().equals("removeExercise")) {
+
+                                                    JButton removeExercise = (JButton) comp3;
+
+                                                    removeExercise.addActionListener(e -> {
+
+                                                        workout.getWorkoutData().setTotalWorkoutHeight(workout.getWorkoutData().getTotalWorkoutHeight()-(4 * ProgramPanel.setPanelHeight));
+                                                        int i = 1;// For settings the numbers of the sets correctly
+                                                        for (Component comp : mainExercisePanel.getComponents()) {
+
+                                                            if ("setPanel".equals(comp.getName())) {
+                                                                workout.getWorkoutData().setTotalWorkoutHeight(workout.getWorkoutData().getTotalWorkoutHeight()-(ProgramPanel.setPanelHeight));
+                                                            }
+
+                                                        }
+
+                                                        workout.setPreferredSize(new Dimension(workout.getWidth(), (int) ProgramPanel.totalHeight));
+
+                                                        workout.getWorkoutData().deleteExercise(finalExerciseId);
+
+                                                        mainExercisePanel.removeAll();
+
+                                                        workout.repaint();
+
+                                                        workout.revalidate();
                                                     });
+
                                                 }
                                             }
-                                            setCounter++;
                                         }
                                     }
+
                                 }
-                                ProgramPanel.totalHeight += ProgramPanel.setPanelHeight;
+
                             }
-
-                            if (comp2.getName() != null) {
-
-                                if (comp2.getName().equals("exerciseNameTitlePanel")) {
-
-                                    JPanel exerciseNameTitlePanel = (JPanel) comp2;
-
-                                    for (Component comp3 : exerciseNameTitlePanel.getComponents()) {
-
-                                        if (comp3.getName().equals("removeExercise")) {
-
-                                            JButton removeExercise = (JButton) comp3;
-
-                                            removeExercise.addActionListener(e -> {
-
-                                                ProgramPanel.totalHeight -= (4 * ProgramPanel.setPanelHeight);
-                                                int i = 1;// For settings the numbers of the sets correctly
-                                                for (Component comp : mainExercisePanel.getComponents()) {
-
-                                                    if ("setPanel".equals(comp.getName())) {
-                                                        ProgramPanel.totalHeight -= ProgramPanel.setPanelHeight;
-                                                    }
-
-                                                }
-
-                                                workout.setPreferredSize(new Dimension(workout.getWidth(), (int) ProgramPanel.totalHeight));
-
-                                                workout.getWorkoutData().deleteExercise(finalExerciseId);
-
-                                                mainExercisePanel.removeAll();
-
-                                                workout.repaint();
-
-                                                workout.revalidate();
-                                            });
-
-                                        }
-                                    }
-                                }
-                            }
-
+                            exerciseId++;
                         }
-
                     }
-                    exerciseId++;
+                    workout.setPreferredSize(new Dimension(workout.getWidth(), workout.getWorkoutData().getTotalWorkoutHeight()));
+                    workout.setMinimumSize(new Dimension(workout.getWidth(),  workout.getWorkoutData().getTotalWorkoutHeight()));
+                    workout.setMaximumSize(new Dimension(workout.getWidth(),  workout.getWorkoutData().getTotalWorkoutHeight()));
+
+                    workout.repaint();
+                    workout.revalidate();
                 }
-                workout.setPreferredSize(new Dimension(workout.getWidth(), (int) ProgramPanel.totalHeight));
-                workout.setMinimumSize(new Dimension(workout.getWidth(), (int) ProgramPanel.totalHeight));
-                workout.setMaximumSize(new Dimension(workout.getWidth(), (int) ProgramPanel.totalHeight));
-
-                workout.repaint();
-                workout.revalidate();
-
-                System.out.println("Supposed: " + ProgramPanel.totalHeight + " Actual: " + workout.getHeight());
-                return workout;
+                return workoutsList;
             }
 
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return new Workout();
+        return new WorkoutsList();
     }
 
     public static boolean authenticateUser(String email, String password) {

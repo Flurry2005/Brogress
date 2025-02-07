@@ -7,8 +7,14 @@ public class WorkoutData implements Serializable {
     private String title = "Untitled Workout";
     private HashMap<Integer, List<WorkoutSet>> exerciseSets = new HashMap<>();
 
+    private int totalWorkoutHeight;
+
     public String getTitle() {
         return this.title;
+    }
+
+    public void setTitle(String title){
+        this.title = title;
     }
 
     public void addSet(int exerciseId, WorkoutSet newSet) {
@@ -96,6 +102,13 @@ public class WorkoutData implements Serializable {
         return exerciseSets;
     }
 
+    public int getTotalWorkoutHeight() {
+        return totalWorkoutHeight;
+    }
+
+    public void setTotalWorkoutHeight(int totalWorkoutHeight) {
+        this.totalWorkoutHeight = totalWorkoutHeight;
+    }
 }
 
 

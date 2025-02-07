@@ -16,6 +16,7 @@ public class Workout extends JPanel {
     private Map<Integer, JPanel> setPanels = new HashMap<>();
     private Map<Integer, Integer> exerciseSetCount = new HashMap<>();
 
+
     public WorkoutData currentWorkout = new WorkoutData();
 
     public WorkoutData getWorkoutData(){
@@ -63,4 +64,5 @@ public class Workout extends JPanel {
     public void setIdToExercise(Map<Exercise, Integer> idToExercise) {
         this.idToExercise = idToExercise;
     }
+
 }
