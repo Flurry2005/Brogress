@@ -173,7 +173,6 @@ public class FirebaseManager {
                                         JButton addSet = (JButton) comp2;
                                         int finalExerciseId1 = exerciseId;
                                         addSet.addActionListener(e -> {
-                                            workout.getWorkoutData().setTotalWorkoutHeight(workout.getWorkoutData().getTotalWorkoutHeight()+(ProgramPanel.setPanelHeight)); //Lägger till höjden settet som läggs till
                                             ProgramPanel.addSet(finalExerciseId1, workout.getIdToExercise(finalExerciseId1), mainExercisePanel, ProgramPanel.setPanelHeight, workout);
                                             workout.setPreferredSize(new Dimension(workout.getWidth(), (int) workout.getWorkoutData().getTotalWorkoutHeight()));
                                             workout.revalidate();
@@ -282,7 +281,7 @@ public class FirebaseManager {
 
                                                         }
 
-                                                        workout.setPreferredSize(new Dimension(workout.getWidth(), (int) ProgramPanel.totalHeight));
+                                                        workout.setPreferredSize(new Dimension(workout.getWidth(), workout.getWorkoutData().getTotalWorkoutHeight()));
 
                                                         workout.getWorkoutData().deleteExercise(finalExerciseId);
 

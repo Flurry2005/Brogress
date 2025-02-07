@@ -924,7 +924,7 @@ public class ProgramPanel extends JPanel {
             }
         }
         workoutContainer.getWorkoutData().setTotalWorkoutHeight(workoutContainer.getWorkoutData().getTotalWorkoutHeight()-(setPanelHeight));
-        logContainer.setPreferredSize(new Dimension(logContainer.getWidth(), workoutContainer.getWorkoutData().getTotalWorkoutHeight()));
+        workoutContainer.setPreferredSize(new Dimension(logContainer.getWidth(), workoutContainer.getWorkoutData().getTotalWorkoutHeight()));
         parentPanel.revalidate();
         parentPanel.repaint();
 
