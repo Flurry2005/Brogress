@@ -16,16 +16,10 @@ public class Workout extends JPanel {
     private Map<Integer, JPanel> setPanels = new HashMap<>();
     private Map<Integer, Integer> exerciseSetCount = new HashMap<>();
 
-    public WorkoutSet workoutSet = new WorkoutSet();
-
     public WorkoutData currentWorkout = new WorkoutData();
 
     public WorkoutData getWorkoutData(){
         return currentWorkout;
-    }
-
-    public WorkoutSet getWorkoutSet(){
-        return workoutSet;
     }
 
     public Map<Integer, JPanel> getExercisePanels(){
@@ -52,7 +46,17 @@ public class Workout extends JPanel {
         this.setPanels = setPanels;
     }
 
-    public Map<Exercise, Integer> getIdToExercise() {
+    public Exercise getIdToExercise(int i) {
+        Exercise e = null;
+        for(Map.Entry<Exercise, Integer> exercise : idToExercise.entrySet()){
+            if(exercise.getValue()==i){
+                e = exercise.getKey();
+            }
+        }
+        return e;
+    }
+
+    public Map<Exercise, Integer> addIdToExercise(){
         return idToExercise;
     }
 

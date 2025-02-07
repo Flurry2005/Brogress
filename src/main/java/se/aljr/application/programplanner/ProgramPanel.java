@@ -375,7 +375,7 @@ public class ProgramPanel extends JPanel {
         int exerciseId = workoutContainer.getExercisePanels().size() + 1;
         workoutContainer.getExercisePanels().put(exerciseId, mainExercisePanel);
         workoutContainer.getExerciseSetCount().put(exerciseId, 0);
-        workoutContainer.getIdToExercise().put(currentExercise, exerciseId);
+        workoutContainer.addIdToExercise().put(currentExercise, exerciseId);
 
 
         // Panel to display exercise name
@@ -572,17 +572,19 @@ public class ProgramPanel extends JPanel {
 
         // delete set & update log
         deleteSet.addActionListener(e -> {
-            deleteSet(parentPanel, exerciseId, workoutSet.getNumber(), workoutContainer, heightToRemove, setPanel, workoutContainer);
+            deleteSet(parentPanel, exerciseId, workoutSet, workoutContainer, heightToRemove, setPanel, workoutContainer);
 
         });
 
         JButton moveSetUp = new JButton();
+        moveSetUp.setName("moveSetUp");
         moveSetUp.setText("↑");
         moveSetUp.setBackground(new Color(40, 129, 201));
         moveSetUp.setForeground(Color.white);
         moveSetUp.setMargin(new Insets(0, 0, 0, 0));
 
         JButton moveSetDown = new JButton();
+        moveSetDown.setName("moveSetDown");
         moveSetDown.setText("↓");
         moveSetDown.setBackground(new Color(40, 129, 201));
         moveSetDown.setForeground(Color.white);
@@ -605,6 +607,7 @@ public class ProgramPanel extends JPanel {
         });
 
         JPanel rightPanel = new JPanel();
+        rightPanel.setName("rightPanel");
         rightPanel.setOpaque(false);
         rightPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
 
@@ -809,11 +812,11 @@ public class ProgramPanel extends JPanel {
 
     }
 
-    public static void deleteSet(JPanel parentPanel, int exerciseId, int workoutSetNumber, JPanel logContainer, int heightToRemove, JPanel setPanel, Workout workoutContainer) {
+    public static void deleteSet(JPanel parentPanel, int exerciseId, WorkoutSet workoutSet, JPanel logContainer, int heightToRemove, JPanel setPanel, Workout workoutContainer) {
         parentPanel.remove(setPanel);
         int i = 0;
         // Delete the set from WorkoutData
-        workoutContainer.getWorkoutData().deleteSet(exerciseId, workoutSetNumber);
+        workoutContainer.getWorkoutData().deleteSet(exerciseId, workoutSet.getNumber());
         HashMap<Integer, List<WorkoutSet>> updatedSet = workoutContainer.getWorkoutData().getExerciseSets();
         List<WorkoutSet> updatedSets = updatedSet.get(exerciseId);
 
