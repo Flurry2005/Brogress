@@ -17,11 +17,7 @@ public abstract class Exercise implements Serializable {
     protected ArrayList<Muscle> musclesUsed = new ArrayList<>();
 
     public String getName() {
-        if (UserData.getFavoriteExercises().contains(this)) {
-            return this.name + " *";
-        } else {
             return this.name;
-        }
     }
 
     public String getInfo() {

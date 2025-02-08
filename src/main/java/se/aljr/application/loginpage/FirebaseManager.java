@@ -3,7 +3,6 @@ package se.aljr.application.loginpage;
 import com.google.api.core.ApiFuture;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.firestore.*;
-import com.google.cloud.storage.Acl;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseAuth;
@@ -12,7 +11,6 @@ import com.google.firebase.auth.UserRecord;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import se.aljr.application.UserData;
-import se.aljr.application.exercise.Excercise.Exercise;
 import se.aljr.application.programplanner.ProgramPanel;
 import se.aljr.application.programplanner.Workout;
 import se.aljr.application.programplanner.WorkoutSet;
@@ -29,7 +27,6 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.concurrent.ExecutionException;
 
 public class FirebaseManager {
     private static String resourcePath;
@@ -40,8 +37,8 @@ public class FirebaseManager {
         try {
             resourcePath = FirebaseManager.class.getClassLoader().getResource("resource.path")
                     .getPath().replace("resource.path","");
-
-            FileInputStream serviceAccount = new FileInputStream(resourcePath + "brogress-7499c-firebase-adminsdk-fbsvc-f751df8ba3.json");
+            MyKey key = new MyKey();
+            FileInputStream serviceAccount = new FileInputStream(resourcePath + key.getKey() + ".json" );
             GoogleCredentials credentials = GoogleCredentials.fromStream(serviceAccount);
             FirebaseOptions options = FirebaseOptions.builder()
                     .setCredentials(credentials)
