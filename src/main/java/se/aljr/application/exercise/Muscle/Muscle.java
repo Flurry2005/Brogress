@@ -1,6 +1,8 @@
 package se.aljr.application.exercise.Muscle;
 
-public abstract class Muscle {
+import java.io.Serializable;
+
+public abstract class Muscle implements Serializable {
 	protected String name;
 
 	@Override 

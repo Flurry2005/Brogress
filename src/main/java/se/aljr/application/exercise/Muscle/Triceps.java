@@ -1,6 +1,8 @@
 package se.aljr.application.exercise.Muscle;
 
-public class Triceps extends Muscle {
+import java.io.Serializable;
+
+public class Triceps extends Muscle implements Serializable {
 
 	public Triceps() {
 		name = "Triceps";

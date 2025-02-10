@@ -13,8 +13,10 @@ repositories {
 dependencies {
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
-    implementation platform('com.google.firebase:firebase-bom:32.8.0')
+    implementation(platform("com.google.firebase:firebase-bom:33.8.0"))
     implementation 'com.google.firebase:firebase-admin:9.1.1'
+
+
 
 
 

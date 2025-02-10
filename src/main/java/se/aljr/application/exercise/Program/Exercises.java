@@ -44,17 +44,4 @@ public class Exercises {
 		return exercises;
 	}
 
-	public void createExcercise(Exercise name) {
-		exercises.add(name);
-	}
-
-	public ArrayList<Exercise> getByMuscle(String muscle) {
-		ArrayList<Exercise> temp = new ArrayList<>();
-		for (Exercise i : exercises) {
-			if (i.getMusclesUsed().contains(muscle)) {
-				temp.add(i);
-			}
-		}
-		return temp;
-	}
 }

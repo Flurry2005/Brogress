@@ -1,5 +1,8 @@
 package se.aljr.application.exercise.Muscle;
-public class Adductors extends Muscle {
+
+import java.io.Serializable;
+
+public class Adductors extends Muscle implements Serializable {
 
     public Adductors() {
         name = "Adductors";

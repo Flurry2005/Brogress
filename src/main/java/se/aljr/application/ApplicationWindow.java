@@ -6,6 +6,7 @@ import se.aljr.application.programplanner.ProgramPanel;
 import se.aljr.application.settings.SettingsPanel;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -22,9 +23,6 @@ public class ApplicationWindow extends JFrame  {
     int screenHeight = screenSize.height;
 
     ApplicationWindow(int width, int height, String applicationTitle) throws InterruptedException {
-
-
-        System.out.println(width+" "+height);
         this.setUndecorated(true);
         this.setTitle(applicationTitle); //Sätter titeln av fönstret
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //Terminerar programet vid stängning.
@@ -33,6 +31,7 @@ public class ApplicationWindow extends JFrame  {
          //Sätter fönstret till synlig
         setApplicationLogo();
         this.setLocationRelativeTo(null);
+        this.getContentPane().setBackground(new Color(31,31,31));
 
         ResizeHandler resizeHandler = new ResizeHandler(this, ((double) width /height)); // Aspect ratio (t.ex. 4:3)
         this.addMouseListener(resizeHandler);
@@ -43,53 +42,67 @@ public class ApplicationWindow extends JFrame  {
     private void init() throws InterruptedException {
         this.setLayout(new BorderLayout(0,0)); //Sätter Fönstrets layout till BorderLayout
 
-        MenuPanel menuPanel = new MenuPanel((int)((getWidth()/6.4)), getHeight()); //Skapar Meny panelen
-        menuPanel.setPreferredSize(new Dimension((int)((getWidth()/6.4)), getHeight()));
-        menuPanel.setMinimumSize(new Dimension((int)(((getWidth()/6.4))), getHeight()));
-
-        TopBar top_bar = new TopBar(this); //Skapar toppen baren
-        top_bar.setPreferredSize(new Dimension(getWidth(), (int)(getHeight()/13)));
-
-        ContentPanel content_panel = new ContentPanel((int)(getWidth()-(getWidth()/6.4)), getHeight()-getHeight()/13); //Skapar innehålls panelen
-        content_panel.setMinimumSize(new Dimension((int)(getWidth()-(getWidth()/6.4)), getHeight()-top_bar.getHeight()));
-        content_panel.setMaximumSize(new Dimension((int)(getWidth()-(getWidth()/6.4)), getHeight()-top_bar.getHeight()));
-
-        ExercisePanel exercisePanel = new ExercisePanel(this.getWidth()-menuPanel.getWidth(), this.getHeight()-top_bar.getHeight()-41);
-        exercisePanel.setVisible(false);
-
-        ProgramPanel programPanel = new ProgramPanel((int)(getWidth()-(getWidth()/6.4)), getHeight()-getHeight()/13);
-        programPanel.setVisible(false);
-
-        SettingsPanel settingsPanel = new SettingsPanel(this.getWidth()-menuPanel.getWidth(), this.getHeight()-top_bar.getHeight()-41);
-        settingsPanel.setVisible(false);
-
-        System.out.println(this.getWidth()-menuPanel.getWidth());
         LeftPanel left_panel = new LeftPanel(); //Skapar den vänstra sektionen för fönstret
-        left_panel.setMinimumSize(new Dimension((int)((getWidth()/6.4)), getHeight()));
-        left_panel.setPreferredSize(new Dimension((int)((getWidth()/6.4)), getHeight()));
+        left_panel.setPreferredSize(new Dimension((int)((getWidth()/6.4)),getHeight()-getHeight()/18));
+        left_panel.setMinimumSize(new Dimension((int)((getWidth()/6.4)), getHeight()/18));
+        left_panel.setLayout(new FlowLayout(FlowLayout.LEFT, (int)((getWidth()/150)), (int)((getWidth()/150))));
+        left_panel.setOpaque(false);
+
 
         RightPanel right_panel = new RightPanel(); //Skapar den högra sektionen för fönstret
-        right_panel.setMaximumSize(new Dimension(this.getWidth()-(int)((getWidth()/6.4)), this.getHeight()));
+        right_panel.setMaximumSize(new Dimension(this.getWidth()-(int)((getWidth()/6.4)), getHeight()-getHeight()/18));
         right_panel.setPreferredSize(new Dimension(this.getWidth()-(int)((getWidth()/6.4)), this.getHeight()));
+        //right_panel.setLayout(new FlowLayout(FlowLayout.LEFT,(getWidth()/150),getWidth()/150));
+        right_panel.setBorder(new EmptyBorder(getWidth()/150,0,getWidth()/150,getWidth()/150));
+
+        MenuPanel menuPanel = new MenuPanel((int)(getWidth()/6.4-(2*getWidth()/150)),(int)(getHeight()-getHeight()/18-(2*getWidth()/150))); //Skapar Meny panelen
+        menuPanel.setMinimumSize(new Dimension((int)(getWidth()/6.4-(2*getWidth()/150)), (int)(getHeight()-getHeight()/18-(2*getWidth()/150))));
+        menuPanel.setPreferredSize(new Dimension((int)(getWidth()/6.4-(2*getWidth()/150)), (int)(getHeight()-getHeight()/18-(2*getWidth()/150))));
+
+        TopBar top_bar = new TopBar(this); //Skapar toppen baren
+        top_bar.setPreferredSize(new Dimension(getWidth(), (int)(getHeight()/18)));
+
+        HomePanel content_panel = new HomePanel((int)(getWidth()-(getWidth()/6.4)-2*getWidth()/150), getHeight()-getHeight()/18-2*getWidth()/150); //Skapar innehålls panelen
+        content_panel.setMinimumSize(new Dimension((int)(getWidth()-(getWidth()/6.4)-2*getWidth()/150), getHeight()-top_bar.getHeight()-2*getWidth()/150));
+        content_panel.setMaximumSize(new Dimension((int)(getWidth()-(getWidth()/6.4)-2*getWidth()/150), getHeight()-top_bar.getHeight()-2*getWidth()/150));
+
+        ExercisePanel exercisePanel = new ExercisePanel((int)(getWidth()-(getWidth()/6.4)-2*getWidth()/150), getHeight()-getHeight()/18-2*getWidth()/150);
+        exercisePanel.setVisible(false);
+
+        ProgramPanel programPanel = new ProgramPanel((int)(getWidth()-(getWidth()/6.4)-2*getWidth()/150), getHeight()-getHeight()/18-2*getWidth()/150);
+        programPanel.setVisible(false);
+
+        SettingsPanel settingsPanel = new SettingsPanel((int)(getWidth()-(getWidth()/6.4)), getHeight()-getHeight()/13);
+        settingsPanel.setVisible(false);
+
 
         left_panel.add(menuPanel);
 
-        right_panel.add(top_bar,BorderLayout.NORTH);
-        right_panel.add(content_panel, BorderLayout.SOUTH);
+
+        right_panel.add(content_panel);
 
         //Handles the resizing of the components
         this.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
                 SwingUtilities.invokeLater(()->{
+                    programPanel.setPreferredSize(new Dimension((int)(getWidth()-(getWidth()/6.4)-2*getWidth()/150), getHeight()-top_bar.getHeight()-2*getWidth()/150));
 
-                    left_panel.setMinimumSize(new Dimension((int)((getWidth()/6.4)), getHeight()));
-                    left_panel.setPreferredSize(new Dimension((int)((getWidth()/6.4)), getHeight()));
+                    left_panel.setLayout(new FlowLayout(FlowLayout.LEFT, (int)((getWidth()/150)), (int)((getWidth()/150))));
+                    left_panel.setPreferredSize(new Dimension((int)((getWidth()/6.4)),getHeight()-getHeight()/18));
+                    left_panel.setMinimumSize(new Dimension((int)((getWidth()/6.4)), getHeight()/18));
+
                     right_panel.setMaximumSize(new Dimension(getWidth()-(int)((getWidth()/6.4)), getHeight()));
                     right_panel.setPreferredSize(new Dimension(getWidth()-(int)((getWidth()/6.4)), getHeight()));
-                    menuPanel.setPreferredSize(new Dimension((int)((getWidth()/6.4)), getHeight()));
+                    right_panel.setBorder(new EmptyBorder(getWidth()/150,0,getWidth()/150,getWidth()/150));
+
+                    menuPanel.setMinimumSize(new Dimension((int)(getWidth()/6.4-(2*getWidth()/150)), (int)(getHeight()-top_bar.getHeight()-(2*getWidth()/150))));
+                    menuPanel.setPreferredSize(new Dimension((int)(getWidth()/6.4-(2*getWidth()/150)), (int)(getHeight()-top_bar.getHeight()-(2*getWidth()/150))));
                     content_panel.setPreferredSize(new Dimension((int)(getWidth()-(getWidth()/6.4)), getHeight()-top_bar.getHeight()));
                     content_panel.reScaleBackground();
+                    settingsPanel.setPreferredSize(new Dimension((int)(getWidth()-(getWidth()/6.4)), getHeight()-top_bar.getHeight()));
+
+                    settingsPanel.setPreferredSize(new Dimension((int)(getWidth()-(getWidth()/6.4)-2*getWidth()/150), getHeight()-top_bar.getHeight()-2*getWidth()/150));
 
                     revalidate();
                     repaint();
@@ -100,6 +113,7 @@ public class ApplicationWindow extends JFrame  {
 
         this.add(right_panel, BorderLayout.EAST);
         this.add(left_panel, BorderLayout.WEST);
+        this.add(top_bar, BorderLayout.NORTH);
         this.setResizable(false);
         this.setVisible(true);
         new Timer(100, e -> {
@@ -110,11 +124,12 @@ public class ApplicationWindow extends JFrame  {
                     right_panel.remove(exercisePanel);
                     right_panel.remove(programPanel);
                     right_panel.remove(settingsPanel);
-                    right_panel.add(content_panel, BorderLayout.SOUTH);
+                    right_panel.add(content_panel);
                     exercisePanel.setVisible(false);
                     settingsPanel.setVisible(false);
                     programPanel.setVisible(false);
                     content_panel.setVisible(true);
+                    repaint();
                 }
                 /**Exercises Panel*/
                 case 2->{
