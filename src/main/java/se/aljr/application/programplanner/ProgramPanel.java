@@ -228,6 +228,32 @@ public class ProgramPanel extends JPanel {
             }
         });
 
+        JButton deleteWorkout = new JButton("X");
+        deleteWorkout.setBorder(null);
+        deleteWorkout.setText("X");
+        deleteWorkout.setFont(new Font("Arial", Font.BOLD, 10));
+        deleteWorkout.setPreferredSize(new Dimension(getWidth()/60, getWidth()/60));
+        deleteWorkout.setMaximumSize(deleteWorkout.getPreferredSize());
+        deleteWorkout.setBackground(Color.red);
+        deleteWorkout.setBorderPainted(true);
+        deleteWorkout.setFocusable(false);
+        deleteWorkout.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int selectedIndex = savedWorkoutsList.getSelectedIndex();
+                workoutDefaultListModel.remove(selectedIndex);
+                workoutTitleDefaultListModel.remove(selectedIndex);
+                workoutsList.remove(selectedIndex);
+                if(selectedIndex==0){
+                    savedWorkoutsList.setSelectedIndex(0);
+                }
+                else{
+                    savedWorkoutsList.setSelectedIndex(selectedIndex);
+                }
+
+            }
+        });
+
         JScrollPane savedWorkoutsScrollPane = new JScrollPane();
         savedWorkoutsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         savedWorkoutsScrollPane.setPreferredSize(new Dimension(getWidth() / 5, getHeight() * 8 / 10));
@@ -254,7 +280,7 @@ public class ProgramPanel extends JPanel {
         workoutPanel.setBackground(new Color(51, 51, 51));
 
         JPanel workoutPanelTop = new JPanel();
-        workoutPanelTop.setLayout(new BorderLayout(0, 0));
+        workoutPanelTop.setLayout(new BoxLayout(workoutPanelTop, BoxLayout.X_AXIS));
         workoutPanelTop.setOpaque(false);
         workoutPanelTop.setPreferredSize(new Dimension((int) (getWidth() / 2), getHeight() / 20));
         workoutPanelTop.setMinimumSize(new Dimension((int) (getWidth() / 2), getHeight() / 20));
@@ -466,8 +492,12 @@ public class ProgramPanel extends JPanel {
         addExerciseAndSetPanel.add(saveWorkoutButton);
         addExerciseAndSetPanel.add(changeTitle);
 
-        workoutPanelTop.add(workoutTitle, BorderLayout.WEST);
-        workoutPanelTop.add(saveWorkoutButton, BorderLayout.EAST);
+
+        workoutPanelTop.add(workoutTitle);
+        workoutPanelTop.add(Box.createHorizontalGlue());
+        workoutPanelTop.add(deleteWorkout);
+        workoutPanelTop.add(Box.createHorizontalGlue());
+        workoutPanelTop.add(saveWorkoutButton);
 
 
         workoutPanel.add(Box.createVerticalGlue());
