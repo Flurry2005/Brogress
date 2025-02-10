@@ -7,6 +7,7 @@ import se.aljr.application.exercise.Program.Exercises;
 import se.aljr.application.loginpage.FirebaseManager;
 
 import javax.swing.*;
+import javax.swing.Timer;
 import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -25,7 +26,8 @@ public class ProgramPanel extends JPanel {
     private Workout workoutContainer;
     public static int setPanelHeight;
     private JLabel headerTitle;
-
+    private int statusDelayCounter;
+    private StringBuilder status = new StringBuilder();
     private String resourcePath;
     private static boolean emptyLog;
     private ImageIcon emptyBackground;
@@ -57,23 +59,26 @@ public class ProgramPanel extends JPanel {
         this.setSize(width, height);
         this.setBackground(new Color(31, 31, 31));
         this.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
-        init();
+        init(width,height);
     }
 
-    private void init() {
-
+    private void init(int width, int height) {
         setPanelHeight = getHeight() / 19;
-
         programPanelHeight = getHeight();
         programPanelWidth = getWidth();
+
+        //Wrapper
+        JLayeredPane wrapper = new JLayeredPane();
+        wrapper.setPreferredSize(new Dimension(programPanelWidth, programPanelHeight));
+
         // Main panel holding everything
         JPanel mainPanel = new JPanel();
         mainPanel.setOpaque(true);
+        mainPanel.setBounds(0,0,programPanelWidth,programPanelHeight);
         mainPanel.setBackground(new Color(51, 51, 51));
-        mainPanel.setMaximumSize(new Dimension(getWidth() - 20, getHeight()));
-        mainPanel.setPreferredSize(new Dimension(getWidth() - 20, getHeight()));
         //mainPanel.setBackground(Color.GREEN);
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
+
 
         //Scrollable window
         JScrollPane workoutScrollPane = new JScrollPane();
@@ -86,6 +91,37 @@ public class ProgramPanel extends JPanel {
         workoutScrollPane.getVerticalScrollBar().setUnitIncrement(6);
         workoutScrollPane.getViewport().setBackground(new Color(22, 22, 22));
         workoutScrollPane.setBorder(new LineBorder(new Color(80, 73, 69), 1));
+
+
+        //Statuspanel
+        JPanel statusPanel = new JPanel();
+        statusPanel.setBounds(0,programPanelHeight-50,this.getWidth(),50);
+        statusPanel.setPreferredSize(new Dimension(this.getWidth(), 50));
+        statusPanel.setVisible(false);
+
+        JLabel statusText = new JLabel(status.toString());
+        statusText.setForeground(new Color(204, 204, 204));
+
+        statusPanel.add(statusText);
+
+        Timer shrinkStatusTimer = new Timer(30, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (statusPanel.getHeight() == 0) {
+                    statusPanel.setVisible(false);
+                    ((Timer) e.getSource()).stop();
+                    return;
+                }
+                if (statusDelayCounter > 0) {
+                    statusDelayCounter -= 1;
+                } else {
+                    statusPanel.setBounds(0,statusPanel.getBounds().y + 1,mainPanel.getWidth(),statusPanel.getHeight());
+                    statusPanel.repaint();
+                    statusPanel.revalidate();
+                }
+            }
+
+        });
 
         //Label to display text when log is empty
         JLabel isEmpty = new JLabel();
@@ -265,6 +301,10 @@ public class ProgramPanel extends JPanel {
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
+                status.append("Workout saved!");
+                statusPanel.setBackground(new Color(46, 148, 76));
+                activateStatus(statusPanel,shrinkStatusTimer,statusText, mainPanel);
+                status.setLength(0);
             }
 
 
@@ -453,7 +493,14 @@ public class ProgramPanel extends JPanel {
         mainPanel.add(Box.createHorizontalGlue());
         mainPanel.add(savedWorkoutsPanel);
         mainPanel.add(Box.createHorizontalGlue());
-        this.add(mainPanel);
+        mainPanel.add(statusPanel);
+        mainPanel.add(Box.createHorizontalGlue());
+
+        wrapper.add(mainPanel, JLayeredPane.DEFAULT_LAYER);
+        wrapper.add(statusPanel, JLayeredPane.POPUP_LAYER);
+
+        this.add(wrapper);
+
 
     }
 
@@ -751,6 +798,8 @@ public class ProgramPanel extends JPanel {
         parentPanel.revalidate();
         parentPanel.repaint();
 
+
+
         // Action Listeners to update the correct set
         final WorkoutSet finalWorkoutSet = workoutSet;
         repsAmount.addActionListener(e -> {
@@ -845,6 +894,7 @@ public class ProgramPanel extends JPanel {
         parentPanel.revalidate();
 
     }
+
 
     public static void moveDown(JPanel parentPanel, int exerciseId, WorkoutSet workoutSet, Workout workoutContainer) {
 
@@ -958,7 +1008,23 @@ public class ProgramPanel extends JPanel {
             g.drawImage(scaledEmptyBackgroundIcon.getImage(), 0, 0, getWidth(), getHeight(), this);
         }
     }
+
+    //Trigger the status panel
+    public void activateStatus(JPanel statusPanel, Timer shrinkStatusTimer, JLabel statusText, JPanel mainPanel) {
+        statusPanel.setBounds(0,programPanelHeight-50,mainPanel.getWidth(),50);
+        statusPanel.revalidate();
+        statusPanel.repaint();
+        statusDelayCounter = 20;
+        statusPanel.setVisible(true);
+        statusText.setText(status.toString());
+        shrinkStatusTimer.start();
+        shrinkStatusTimer.restart();
+
+    }
+
+
 }
+
 
 
 
