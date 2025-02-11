@@ -104,7 +104,7 @@ public class ProgramPanel extends JPanel {
 
         statusPanel.add(statusText);
 
-        Timer shrinkStatusTimer = new Timer(30, new ActionListener() {
+        Timer shrinkStatusTimer = new Timer(17, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (statusPanel.getHeight() == 0) {
