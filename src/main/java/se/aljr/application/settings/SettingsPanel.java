@@ -4,6 +4,7 @@ import se.aljr.application.settings.custom.SteelCheckBox;
 import se.aljr.application.settings.custom.SteelCheckBoxUI;
 import se.aljr.application.settings.tools.ColorDef;
 
+
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
@@ -72,7 +73,7 @@ public class SettingsPanel extends JPanel{
 
         //
         //Set the SIZE of the CheckBoxes
-        SteelCheckBoxUI.SIZE = new Dimension(width/20, width/40);
+       SteelCheckBoxUI.SIZE = new Dimension(width/20, width/40);
 
 
 
@@ -214,7 +215,6 @@ public class SettingsPanel extends JPanel{
         //Adds the switch and label for Lightmode / Darkmode
         lightModeDarkModeCenteringPanel.add(lightModeDarkModeLabel);
         lightModeDarkModeCenteringPanel.add(lightModeDarkModeSwitch);
-
 
         JPanel test33 = new JPanel();
         test33.setBackground(Color.pink);

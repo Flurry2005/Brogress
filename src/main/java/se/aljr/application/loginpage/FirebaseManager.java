@@ -37,8 +37,8 @@ public class FirebaseManager {
         try {
             resourcePath = FirebaseManager.class.getClassLoader().getResource("resource.path")
                     .getPath().replace("resource.path","");
-            MyKey key = new MyKey();
-            FileInputStream serviceAccount = new FileInputStream(resourcePath + key.getKey() + ".json" );
+
+            FileInputStream serviceAccount = new FileInputStream(resourcePath + "serviceKey.json" );
             GoogleCredentials credentials = GoogleCredentials.fromStream(serviceAccount);
             FirebaseOptions options = FirebaseOptions.builder()
                     .setCredentials(credentials)
