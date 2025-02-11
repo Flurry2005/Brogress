@@ -147,36 +147,9 @@ public class ExercisePanel extends JPanel {
         JScrollPane exerciseScrollPanel = new JScrollPane(menuList);
         exerciseScrollPanel.setBorder(new LineBorder(new Color(80, 73, 69)));
         exerciseScrollPanel.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-        searchField.getDocument().addDocumentListener(new DocumentListener() {
 
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                if (!searchField.getText().equals("Search for exercise...")) {
-                    filterList();
-                }
-            }
 
-            public void changedUpdate(DocumentEvent e) {
-                filterList();
-            }
 
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                filterList();
-            }
-
-            private void filterList() {
-                SwingUtilities.invokeLater(() -> {
-                    String searchText = searchField.getText().toLowerCase();
-                    exerciseModel.clear();
-                    for (Exercise exercise : exercises.getList()) {
-                        if (exercise.getName().toLowerCase().contains(searchText)) {
-                            exerciseModel.addElement(exercise);
-                        }
-                    }
-                });
-            }
-        });
         // Add selection listener
         menuList.addListSelectionListener(new ListSelectionListener() {
             @Override
@@ -238,6 +211,55 @@ public class ExercisePanel extends JPanel {
         statusText.setForeground(new Color(204, 204, 204));
         statusPanel.setBorder(new LineBorder(new Color(46, 148, 76),1,true));
 
+        Timer timer = new Timer(50, new ActionListener() {
+            Color[] colors = {Color.RED, Color.BLUE, Color.GREEN, Color.ORANGE, Color.MAGENTA, Color.CYAN};
+            final int[] index = {0};
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                favouriteButton.setText("\uD83E\uDD84");detailsPanel.setBackground(colors[index[0]]);topBar.setBackground(colors[index[0]]);
+                topBarWestContainer.setBackground(colors[index[0]]);menuList.setBackground(colors[index[0]]);infoTextArea.setBackground(colors[index[0]]);
+                menuList.setForeground(Color.white);infoTextArea.setForeground(Color.white);titleLabel.setForeground(Color.white);
+                favouriteButton.setForeground(Color.white);
+                detailsPanel.repaint();
+                index[0] = (index[0] + 1) % colors.length;
+            }
+        });
+
+
+        searchField.getDocument().addDocumentListener(new DocumentListener() {
+
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                if (!searchField.getText().equals("Search for exercise...")) {
+                    filterList();
+                }
+                if (searchField.getText().equals("/YMCA")) {
+                    timer.start();
+                }
+            }
+
+            public void changedUpdate(DocumentEvent e) {
+                filterList();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                filterList();
+            }
+
+            private void filterList() {
+                SwingUtilities.invokeLater(() -> {
+                    String searchText = searchField.getText().toLowerCase();
+                    exerciseModel.clear();
+                    for (Exercise exercise : exercises.getList()) {
+                        if (exercise.getName().toLowerCase().contains(searchText)) {
+                            exerciseModel.addElement(exercise);
+                        }
+                    }
+                });
+            }
+        });
         Timer shrinkStatusPanel = new Timer(30, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
