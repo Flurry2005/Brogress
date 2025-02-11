@@ -215,8 +215,6 @@ public class FirebaseManager {
                                                                 moveSetDown.addActionListener(new ActionListener() {
                                                                     @Override
                                                                     public void actionPerformed(ActionEvent e) {
-
-
                                                                         ProgramPanel.moveDown(workout.getExercisePanels().get(finalExerciseId2), finalExerciseId2, workoutSet, workout);
                                                                     }
                                                                 });

@@ -685,11 +685,12 @@ public class ProgramPanel extends JPanel {
         addSet.setName("addSet");
         addSet.setPreferredSize(new Dimension(getWidth() / 35, setPanelHeight));
         addSet.setMinimumSize(addSet.getPreferredSize());
-        addSet.setMaximumSize(new Dimension(addSet.getPreferredSize()));
+        addSet.setMaximumSize(addSet.getPreferredSize());
         addSet.setMargin(new Insets(0, 0, 0, 0));
         addSet.setContentAreaFilled(false);
         addSet.setBorderPainted(false);
         addSet.setFocusPainted(false);
+        addSet.setBorder(null);
 
         workoutContainer.getWorkoutData().setTotalWorkoutHeight(workoutContainer.getWorkoutData().getTotalWorkoutHeight() + (4 * setPanelHeight)); //Lägger till höjden för de 4 paneler som skapas när en övning läggs till
 
@@ -773,7 +774,7 @@ public class ProgramPanel extends JPanel {
         JButton moveSetUp = new JButton(scaledMoveSetUpIcon);
         moveSetUp.setName("moveSetUp");
         moveSetUp.setContentAreaFilled(false);
-        moveSetUp.setBorder(null);
+        //moveSetUp.setBorder(null);
         moveSetUp.setBorderPainted(false);
         moveSetUp.setFocusable(false);
         moveSetUp.setMargin(new Insets(0, 0, 0, 0));
@@ -781,7 +782,7 @@ public class ProgramPanel extends JPanel {
         JButton moveSetDown = new JButton(scaledMoveSetDownIcon);
         moveSetDown.setName("moveSetDown");
         moveSetDown.setContentAreaFilled(false);
-        moveSetDown.setBorder(null);
+        //moveSetDown.setBorder(null);
         moveSetDown.setBorderPainted(false);
         moveSetDown.setFocusable(false);
         moveSetDown.setMargin(new Insets(0, 0, 0, 0));
