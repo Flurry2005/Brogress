@@ -1,11 +1,15 @@
 package se.aljr.application.programplanner;
 
-import org.checkerframework.checker.units.qual.A;
 import se.aljr.application.UserData;
+import se.aljr.application.exercise.Excercise.Deadlift;
 import se.aljr.application.exercise.Excercise.Exercise;
+import se.aljr.application.exercise.Excercise.HipThrusts;
 import se.aljr.application.exercise.Program.Exercises;
 import se.aljr.application.loginpage.FirebaseManager;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentEvent;
@@ -14,6 +18,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.List;
@@ -38,7 +43,6 @@ public class ProgramPanel extends JPanel {
     private ImageIcon saveButton;
     private Image scaledsaveButton;
     private ImageIcon scaledsaveButtonIcon;
-
 
     public ProgramPanel(int width, int height) {
         resourcePath = getClass().getClassLoader().getResource("resource.path").getPath().replace("resource.path", "");
@@ -319,7 +323,6 @@ public class ProgramPanel extends JPanel {
             exerciseModel.addElement(exercise);
         }
 
-
         JList<Exercise> searchExerciseResult = new JList(exerciseModel);
         searchExerciseResult.setFixedCellHeight(26);
         searchExerciseResult.setBackground(new Color(22, 22, 22));
@@ -452,13 +455,11 @@ public class ProgramPanel extends JPanel {
         addExerciseAndSetPanel.add(saveWorkoutButton);
         addExerciseAndSetPanel.add(changeTitle);
 
-
         workoutPanelTop.add(workoutTitle);
         workoutPanelTop.add(Box.createHorizontalGlue());
         workoutPanelTop.add(deleteWorkout);
         workoutPanelTop.add(Box.createHorizontalGlue());
         workoutPanelTop.add(saveWorkoutButton);
-
 
         workoutPanel.add(Box.createVerticalGlue());
         workoutPanel.add(workoutPanelTop);
@@ -468,7 +469,6 @@ public class ProgramPanel extends JPanel {
 
         savedWorkoutsPanelTop.add(savedWorkoutsLabel, BorderLayout.WEST);
         savedWorkoutsPanelTop.add(newWorkoutButton, BorderLayout.EAST);
-
 
         savedWorkoutsPanel.add(Box.createVerticalGlue());
         savedWorkoutsPanel.add(savedWorkoutsPanelTop);
@@ -499,13 +499,25 @@ public class ProgramPanel extends JPanel {
         workoutContainer.getExerciseSetCount().put(exerciseId, 0);
         workoutContainer.addIdToExercise().put(currentExercise, exerciseId);
 
-
         // Panel to display exercise name
         JPanel exerciseNameTitlePanel = new JPanel();
         exerciseNameTitlePanel.setLayout(new BoxLayout(exerciseNameTitlePanel, BoxLayout.Y_AXIS));
         exerciseNameTitlePanel.setOpaque(false);
         exerciseNameTitlePanel.setName("exerciseNameTitlePanel");
 
+        if (currentExercise instanceof HipThrusts) {
+            File ymca = new File("src/clip2.wav");
+            try {
+                AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(ymca);
+                Clip clip = AudioSystem.getClip();
+                clip.open(audioInputStream);
+                clip.start();
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
         // Label to hold name of exercise
         JLabel exerciseName = new JLabel();
         exerciseName.setName("exerciseName");

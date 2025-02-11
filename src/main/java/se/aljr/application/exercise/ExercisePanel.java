@@ -4,7 +4,6 @@ import se.aljr.application.UserData;
 import se.aljr.application.exercise.Excercise.*;
 import se.aljr.application.exercise.Program.Exercises;
 
-
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentEvent;
@@ -14,6 +13,8 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
+import java.io.InputStream;
+import javax.sound.sampled.*;
 
 public class ExercisePanel extends JPanel {
     private JList<Exercise> menuList;
@@ -51,6 +52,7 @@ public class ExercisePanel extends JPanel {
         favouriteButton.setFont(emojiFont);
         favouriteButton.setPreferredSize(new Dimension(100, 100));
         favouriteButton.setMaximumSize(new Dimension(100, 100));
+
         // Add mouselistener
         favouriteButton.addMouseListener(new MouseAdapter() {
             @Override
@@ -101,7 +103,6 @@ public class ExercisePanel extends JPanel {
         searchField.setPreferredSize(new Dimension(130, 30));
         searchField.setFocusable(true);
 
-
         // Focuslistener
         searchField.addFocusListener(new FocusAdapter() {
             @Override
@@ -147,7 +148,6 @@ public class ExercisePanel extends JPanel {
         JScrollPane exerciseScrollPanel = new JScrollPane(menuList);
         exerciseScrollPanel.setBorder(new LineBorder(new Color(80, 73, 69)));
         exerciseScrollPanel.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-
 
 
         // Add selection listener
@@ -211,7 +211,7 @@ public class ExercisePanel extends JPanel {
         statusText.setForeground(new Color(204, 204, 204));
         statusPanel.setBorder(new LineBorder(new Color(46, 148, 76),1,true));
 
-        Timer timer = new Timer(50, new ActionListener() {
+        Timer timer = new Timer((int) (60000 / 126), new ActionListener() {
             Color[] colors = {Color.RED, Color.BLUE, Color.GREEN, Color.ORANGE, Color.MAGENTA, Color.CYAN};
             final int[] index = {0};
 
@@ -235,6 +235,17 @@ public class ExercisePanel extends JPanel {
                     filterList();
                 }
                 if (searchField.getText().equals("/YMCA")) {
+
+                    File ymca = new File("src/clip.wav");
+                    try {
+                        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(ymca);
+                        Clip clip = AudioSystem.getClip();
+                        clip.open(audioInputStream);
+                        clip.start();
+                    }
+                    catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
                     timer.start();
                 }
             }
