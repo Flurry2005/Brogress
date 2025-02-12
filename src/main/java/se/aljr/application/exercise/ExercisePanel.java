@@ -2,6 +2,8 @@ package se.aljr.application.exercise;
 
 import se.aljr.application.UserData;
 import se.aljr.application.exercise.Excercise.*;
+import se.aljr.application.exercise.Muscle.Muscle;
+import se.aljr.application.exercise.Muscle.MuscleList;
 import se.aljr.application.exercise.Program.Exercises;
 
 import javax.swing.*;
@@ -13,7 +15,6 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
-import java.io.InputStream;
 import javax.sound.sampled.*;
 
 public class ExercisePanel extends JPanel {
@@ -25,6 +26,7 @@ public class ExercisePanel extends JPanel {
     private Exercise selectedExercise;
     private boolean isFavourite = false;
     private int statusDelayCounter;
+    static private boolean clicked;
     private StringBuilder status = new StringBuilder();
     Font font;
 
@@ -122,16 +124,54 @@ public class ExercisePanel extends JPanel {
 
         });
 
+        DefaultListModel<Muscle> muscleModel = new DefaultListModel<>();
+        DefaultListModel<String> muscleToString = new DefaultListModel<>();
+        MuscleList muscleList = new MuscleList();
+        muscleToString.addElement("Sort by muscle");
+        for (Muscle muscle : muscleList) {
+            muscleToString.addElement(muscle.toString());
+            muscleModel.addElement(muscle);
+        }
+
+        JList <Muscle> muscleJList = new JList(muscleToString);
+        muscleJList.setBackground(new Color(51,51,51));
+        muscleJList.setForeground(new Color(204, 204, 204));
+
+        JScrollPane muscleScroll = new JScrollPane(muscleJList);
+        muscleScroll.setPreferredSize(new Dimension(100,15));
+        muscleScroll.setBorder(null);
+        muscleScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+
+        muscleJList.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                    super.mouseClicked(e);
+                if (!clicked) {
+                    muscleScroll.setPreferredSize(new Dimension(100, 200));
+                    revalidate();
+                    repaint();
+                    clicked = true;
+                }
+                else {
+                    muscleScroll.setPreferredSize(new Dimension(100, 15));
+                    revalidate();
+                    repaint();
+                    clicked = false;
+                }
+            }
+        });
+
         JCheckBox showFavorites = new JCheckBox("Show Favorites");
         showFavorites.setBackground(new Color(51, 51, 51));
         showFavorites.setForeground(new Color(204, 204, 204));
 
 
-        JPanel searchFieldandExercisesContainer = new JPanel();
-        searchFieldandExercisesContainer.setLayout(new BoxLayout(searchFieldandExercisesContainer, BoxLayout.Y_AXIS));
-        searchFieldandExercisesContainer.add(searchField);
-        searchFieldandExercisesContainer.add(showFavorites);
-        searchFieldandExercisesContainer.setBackground(new Color(51, 51, 51));
+        JPanel searchContainer = new JPanel();
+        searchContainer.setLayout(new BorderLayout());
+        searchContainer.add(searchField, BorderLayout.NORTH);
+        searchContainer.add(muscleScroll, BorderLayout.WEST);
+        searchContainer.add(showFavorites, BorderLayout.EAST);
+        searchContainer.setBackground(new Color(51, 51, 51));
 
 
         // Populate the JList with exercise data
@@ -294,7 +334,7 @@ public class ExercisePanel extends JPanel {
         topBarWestContainer.add(musclesWorkedLabel);
         topBar.add(topBarWestContainer, BorderLayout.WEST);
         topBar.add(favouriteButton, BorderLayout.EAST);
-        searchPanel.add(searchFieldandExercisesContainer, BorderLayout.NORTH);
+        searchPanel.add(searchContainer, BorderLayout.NORTH);
         searchPanel.add(exerciseScrollPanel, BorderLayout.CENTER);
 
         detailsPanel.add(topBar, BorderLayout.NORTH);

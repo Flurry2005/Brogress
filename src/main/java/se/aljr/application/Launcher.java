@@ -21,7 +21,7 @@ public class Launcher {
 
             Thread.sleep(1000);
 
-            if(isLoggedIn){
+            if(!isLoggedIn){
                 loginWindow.dispose();
                 ApplicationWindow applicationWindow = new ApplicationWindow((int)(Monitorsize.getWidth()/1.5), (int)(Monitorsize.getHeight()/1.5), "Brogress - Gym tracker");
                 break;
