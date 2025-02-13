@@ -14,7 +14,7 @@ import java.awt.event.ComponentEvent;
 public class ApplicationWindow extends JFrame  {
     private static boolean menu = true;
     final String applicationIconPath = "src/main/resources/agile_small_icon.png";
-    private static int pageSelector;
+    static int pageSelector;
 
     ImageIcon applicationIcon = new ImageIcon(applicationIconPath);
 
@@ -22,7 +22,7 @@ public class ApplicationWindow extends JFrame  {
     int screenWidth = screenSize.width;
     int screenHeight = screenSize.height;
 
-    ApplicationWindow(int width, int height, String applicationTitle) throws InterruptedException {
+    public ApplicationWindow(int width, int height, String applicationTitle) throws InterruptedException {
         this.setUndecorated(true);
         this.setTitle(applicationTitle); //Sätter titeln av fönstret
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //Terminerar programet vid stängning.
@@ -30,6 +30,8 @@ public class ApplicationWindow extends JFrame  {
         this.setPreferredSize(new Dimension(width,height)); //Sätter bredd och höjd för fönstret
          //Sätter fönstret till synlig
         setApplicationLogo();
+
+
         this.setLocationRelativeTo(null);
         this.getContentPane().setBackground(new Color(31,31,31));
 

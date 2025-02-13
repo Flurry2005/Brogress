@@ -17,12 +17,12 @@ public class TopBar extends JPanel {
     private boolean isFullscreen = false;
     private Dimension previousSize;
     private Point previousLocation;
-    private Color bg = (new Color(51,51,51));
+    private Color bg = (new Color(51, 51, 51));
 
-    public TopBar(final JFrame parent){
-        resourcePath = getClass().getClassLoader().getResource("resource.path").getPath().replace("resource.path","");
-        topBarBackground = new ImageIcon(resourcePath+"top_bar.png");
-        exitButtonIcon = new ImageIcon(resourcePath+"exit_button_icon.png");
+    public TopBar(final JFrame parent) {
+        resourcePath = getClass().getClassLoader().getResource("resource.path").getPath().replace("resource.path", "");
+        topBarBackground = new ImageIcon(resourcePath + "top_bar.png");
+        exitButtonIcon = new ImageIcon(resourcePath + "exit_button_icon.png");
 
 
         this.parent = parent;
@@ -53,8 +53,9 @@ public class TopBar extends JPanel {
         });
         init();
     }
-    private void init(){
-        this.setLayout(new BorderLayout(0,0));
+
+    private void init() {
+        this.setLayout(new BorderLayout(0, 0));
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 0));
         buttonPanel.setOpaque(false);
 
@@ -63,7 +64,8 @@ public class TopBar extends JPanel {
 
 
         // Exit button
-        JButton exitButton = new JButton("",scaledExitButtonIcon);
+        JButton exitButton = new JButton("", scaledExitButtonIcon);
+        exitButton.setName("exitButton");
         exitButton.setFont(new Font("Arial", Font.BOLD, 14));
         exitButton.setForeground(Color.BLACK);
         exitButton.setBackground(bg);
@@ -75,7 +77,7 @@ public class TopBar extends JPanel {
         exitButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-                exitButton.setBackground(new Color(40,40,40));
+                exitButton.setBackground(new Color(40, 40, 40));
             }
 
             @Override
@@ -88,9 +90,10 @@ public class TopBar extends JPanel {
 
         // Mini button
         JButton minimizeButton = new JButton("—");
+        minimizeButton.setName("minimizeButton");
         minimizeButton.setFont(new Font("Arial", Font.BOLD, 14));
         minimizeButton.setForeground(Color.BLACK);
-        minimizeButton.setBackground(new Color(51,51,51));
+        minimizeButton.setBackground(new Color(51, 51, 51));
         minimizeButton.setFocusPainted(false);
         minimizeButton.setBorderPainted(false);
         minimizeButton.setOpaque(true);
@@ -99,7 +102,7 @@ public class TopBar extends JPanel {
         minimizeButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-                minimizeButton.setBackground(new Color(40,40,40));
+                minimizeButton.setBackground(new Color(40, 40, 40));
             }
 
             @Override
@@ -111,9 +114,10 @@ public class TopBar extends JPanel {
 
         // Fullscreen button
         JButton fullscreenButton = new JButton("⬜");
+        fullscreenButton.setName("fullscreenButton");
         fullscreenButton.setFont(new Font("Arial", Font.BOLD, 14));
         fullscreenButton.setForeground(Color.BLACK);
-        fullscreenButton.setBackground(new Color(51,51,51));
+        fullscreenButton.setBackground(new Color(51, 51, 51));
         fullscreenButton.setFocusPainted(false);
         fullscreenButton.setBorderPainted(false);
         fullscreenButton.setOpaque(true);
@@ -121,7 +125,7 @@ public class TopBar extends JPanel {
         fullscreenButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-                fullscreenButton.setBackground(new Color(40,40,40));
+                fullscreenButton.setBackground(new Color(40, 40, 40));
             }
 
             @Override
@@ -153,10 +157,11 @@ public class TopBar extends JPanel {
             isFullscreen = true;
         }
     }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         //draw image from top left corner
-        g.drawImage(topBarBackground.getImage(), 0, 0,getWidth(),getHeight(), this);
+        g.drawImage(topBarBackground.getImage(), 0, 0, getWidth(), getHeight(), this);
     }
 }

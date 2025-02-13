@@ -44,6 +44,7 @@ public class ExercisePanel extends JPanel {
         // Initialize components
         Font emojiFont = new Font("Segoe UI Emoji", Font.PLAIN, 45);
         JButton favouriteButton = new JButton("\uD83D\uDCAA");
+        favouriteButton.setName("FavouriteButton");
         favouriteButton.setFocusPainted(false);
         favouriteButton.setBorder(BorderFactory.createEmptyBorder());
         favouriteButton.setContentAreaFilled(false);
@@ -122,6 +123,7 @@ public class ExercisePanel extends JPanel {
         });
 
         JCheckBox showFavorites = new JCheckBox("Show Favorites");
+        showFavorites.setName("FavouriteCheckBox");
         showFavorites.setBackground(new Color(51, 51, 51));
         showFavorites.setForeground(new Color(204, 204, 204));
 
@@ -139,6 +141,7 @@ public class ExercisePanel extends JPanel {
         for (Exercise exercise : exercises.getList()) {
             exerciseModel.addElement(exercise);
         }
+
         JList<Exercise> menuList = new JList<>(exerciseModel);
         menuList.setFont(font.deriveFont(17f));
         menuList.setBackground(new Color(21, 21, 21));
@@ -177,6 +180,7 @@ public class ExercisePanel extends JPanel {
                 });
             }
         });
+
         // Add selection listener
         menuList.addListSelectionListener(new ListSelectionListener() {
             @Override
