@@ -26,6 +26,7 @@ public class ProgramPanel extends JPanel {
     private Workout workoutContainer;
     public static int setPanelHeight;
     private JLabel headerTitle;
+    private JTextField workoutTitle;
 
     private String resourcePath;
     private static boolean emptyLog;
@@ -247,7 +248,7 @@ public class ProgramPanel extends JPanel {
                     Workout target = workoutDefaultListModel.getElementAt(savedWorkoutsList.getSelectedIndex());
                     workoutContainer = target;
 
-                    headerTitle.setText(target.getWorkoutData().getTitle());
+                    workoutTitle.setText(target.getWorkoutData().getTitle());
 
                     if (workoutContainer.getComponentCount() == 0) {
                         emptyLog = true;
@@ -285,7 +286,6 @@ public class ProgramPanel extends JPanel {
                 workoutDefaultListModel.addElement(newWorkout);
                 workoutTitleDefaultListModel.addElement(newWorkout.getWorkoutData().getTitle());
 
-
             }
         });
 
@@ -310,6 +310,10 @@ public class ProgramPanel extends JPanel {
                         selectedIndex--;
                     }
                     savedWorkoutsList.setSelectedIndex(selectedIndex);
+
+                    status.setLength(0);
+                    status.append("Workout removed!");
+                    activateStatus(statusPanel,shrinkStatusTimer,statusText, mainPanel);
                 }
             }
         });
@@ -346,7 +350,7 @@ public class ProgramPanel extends JPanel {
         workoutPanelTop.setMinimumSize(new Dimension((int) (getWidth() / 2), getHeight() / 20));
         workoutPanelTop.setMaximumSize(new Dimension((int) (getWidth() / 2), getHeight() / 20));
 
-        JTextField workoutTitle = new JTextField();
+        workoutTitle = new JTextField();
         workoutTitle.setText("Workout title");
         workoutTitle.setForeground(new Color(204, 204, 204));
         workoutTitle.setBackground(new Color(22, 22, 22));
@@ -388,7 +392,6 @@ public class ProgramPanel extends JPanel {
                     throw new RuntimeException(ex);
                 }
                 status.append("Workout saved!");
-                statusPanel.setBackground(new Color(46, 148, 76));
                 activateStatus(statusPanel,shrinkStatusTimer,statusText, mainPanel);
                 status.setLength(0);
             }
@@ -595,6 +598,13 @@ public class ProgramPanel extends JPanel {
 
     //Trigger the status panel
     public void activateStatus(JPanel statusPanel, Timer shrinkStatusTimer, JLabel statusText, JPanel mainPanel) {
+        statusText.setText(status.toString());
+        if(statusText.getText().equals("Workout removed!")){
+            statusPanel.setBackground(Color.RED);
+        }else{
+            statusPanel.setBackground(new Color(46, 148, 76));
+        }
+
         statusPanel.setBounds(0,programPanelHeight-50,mainPanel.getWidth(),50);
         statusPanel.revalidate();
         statusPanel.repaint();
@@ -634,6 +644,7 @@ public class ProgramPanel extends JPanel {
         exerciseName.setText(currentExercise.getName());
         exerciseName.setFont(new Font("Arial", Font.BOLD, 20));
         exerciseName.setForeground(new Color(204, 204, 204));
+        exerciseName.setAlignmentX(Component.LEFT_ALIGNMENT);
         exerciseNameTitlePanel.add(exerciseName);
         mainExercisePanel.add(exerciseNameTitlePanel);
 
@@ -645,7 +656,7 @@ public class ProgramPanel extends JPanel {
         favoriteLabel.setText("\uD83D\uDCAA");
         favoriteLabel.setForeground(new Color(196, 196, 49));
         if (UserData.getFavoriteExercises().contains(currentExercise)) {
-            exerciseNameTitlePanel.add(favoriteLabel);
+            exerciseName.setText(exerciseName.getText()+" *");
         }
 
         // Panel to hold the titles of Set, Rep, Weight, RIR
