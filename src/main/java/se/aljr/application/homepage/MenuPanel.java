@@ -102,6 +102,7 @@ public class MenuPanel extends JPanel{
         JButton settingsButton = new JButton("Settings",scaledButtonSettingsIcon);
 
         homeButton.setFont(new Font("Arial", Font.TRUETYPE_FONT,height/35));
+        homeButton.setName("HomeButton");
         homeButton.setForeground(Color.WHITE);
         homeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         homeButton.setAlignmentY(Component.CENTER_ALIGNMENT);
@@ -198,6 +199,7 @@ public class MenuPanel extends JPanel{
 
         /**Exercises button*/
         exercisesButton.setFont(new Font("Arial", Font.TRUETYPE_FONT,height/35));
+        exercisesButton.setName("ExercisesButton");
         exercisesButton.setForeground(Color.WHITE);
         exercisesButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         exercisesButton.setAlignmentY(Component.CENTER_ALIGNMENT);
@@ -285,6 +287,7 @@ public class MenuPanel extends JPanel{
 
         /**Program button*/
         programButton.setFont(new Font("Arial", Font.TRUETYPE_FONT,height/35));
+        programButton.setName("ProgramButton");
         programButton.setForeground(Color.WHITE);
         programButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         programButton.setAlignmentY(Component.CENTER_ALIGNMENT);
@@ -375,6 +378,7 @@ public class MenuPanel extends JPanel{
 
         /**Settings Button*/
         settingsButton.setFont(new Font("Arial", Font.TRUETYPE_FONT,height/35));
+        settingsButton.setName("SettingsButton");
         settingsButton.setForeground(Color.WHITE);
         settingsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         settingsButton.setAlignmentY(Component.CENTER_ALIGNMENT);
@@ -473,6 +477,7 @@ public class MenuPanel extends JPanel{
         this.add(logoContainer, BorderLayout.NORTH);
         this.add(buttonContainer, BorderLayout.CENTER);
 
+
         //Handles the resizing of the components
         this.addComponentListener(new ComponentAdapter() {
             @Override
@@ -519,6 +524,7 @@ public class MenuPanel extends JPanel{
         });
 
     }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -527,4 +533,5 @@ public class MenuPanel extends JPanel{
             g.drawImage(menuBackground.getImage(), 0, 0, getWidth(), getHeight(), this);
         }
     }
+
 }
