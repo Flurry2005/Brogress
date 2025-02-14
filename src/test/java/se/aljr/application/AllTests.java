@@ -9,7 +9,7 @@ import se.aljr.application.homepage.MenuPanelTest;
 import se.aljr.application.homepage.TopBarTest;
 
 @Suite
-@SuiteDisplayName("Custom Ordered Test Suite")
+@SuiteDisplayName("Tests")
 @SelectClasses({
         ApplicationWindowTest.class, // Run first and next onwards
         TopBarTest.class,

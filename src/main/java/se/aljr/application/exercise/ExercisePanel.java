@@ -143,6 +143,7 @@ public class ExercisePanel extends JPanel {
         }
 
         JList<Exercise> menuList = new JList<>(exerciseModel);
+        menuList.setName("menuList");
         menuList.setFont(font.deriveFont(17f));
         menuList.setBackground(new Color(21, 21, 21));
         menuList.setForeground(new Color(204, 204, 204));
