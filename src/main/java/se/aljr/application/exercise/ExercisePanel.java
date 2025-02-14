@@ -6,6 +6,7 @@ import se.aljr.application.exercise.Program.Exercises;
 
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -27,8 +28,16 @@ public class ExercisePanel extends JPanel {
     private StringBuilder status = new StringBuilder();
     Font font;
 
+    protected ImageIcon homePanelBackground;
+    protected ImageIcon scaledContentBackgroundPanel;
+    Image scaledContentBackground;
 
     public ExercisePanel(int width, int height) throws InterruptedException {
+        resourcePath = getClass().getClassLoader().getResource("resource.path").getPath().replace("resource.path","");
+        homePanelBackground = new ImageIcon(resourcePath+ "bottom_right_bar.png");
+        scaledContentBackground = homePanelBackground.getImage().getScaledInstance(width,height,Image.SCALE_SMOOTH);
+        scaledContentBackgroundPanel = new ImageIcon(scaledContentBackground);
+
         resourcePath = getClass().getClassLoader().getResource("resource.path").getPath().replace("resource.path", "");
         try {
             font = Font.createFont(Font.TRUETYPE_FONT, new File(resourcePath + "BebasNeue-Regular.otf"));
@@ -38,8 +47,16 @@ public class ExercisePanel extends JPanel {
             e.printStackTrace();
         }
         // Set the layout for the panel
-        setLayout(new BorderLayout());
+
         this.setPreferredSize(new Dimension(width, height));
+        this.setMaximumSize(this.getPreferredSize());
+        this.setLayout(new FlowLayout());
+
+
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BorderLayout());
+        mainPanel.setPreferredSize(new Dimension(width,height));
+        mainPanel.setMaximumSize(mainPanel.getPreferredSize());
 
         // Initialize components
         Font emojiFont = new Font("Segoe UI Emoji", Font.PLAIN, 45);
@@ -82,6 +99,8 @@ public class ExercisePanel extends JPanel {
         musclesWorkedLabel.setForeground(new Color(204, 204, 204));
 
         infoTextArea = new JTextArea(10, 30);
+        infoTextArea.setPreferredSize(new Dimension(width - 200,height-(int)(height/8.2875)));
+        infoTextArea.setMaximumSize(infoTextArea.getPreferredSize());
         infoTextArea.setAlignmentY(Component.TOP_ALIGNMENT);
         infoTextArea.setBackground(new Color(21, 21, 21));
         infoTextArea.setForeground(new Color(204, 204, 204));
@@ -151,36 +170,8 @@ public class ExercisePanel extends JPanel {
         JScrollPane exerciseScrollPanel = new JScrollPane(menuList);
         exerciseScrollPanel.setBorder(new LineBorder(new Color(80, 73, 69)));
         exerciseScrollPanel.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-        searchField.getDocument().addDocumentListener(new DocumentListener() {
 
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                if (!searchField.getText().equals("Search for exercise...")) {
-                    filterList();
-                }
-            }
 
-            public void changedUpdate(DocumentEvent e) {
-                filterList();
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                filterList();
-            }
-
-            private void filterList() {
-                SwingUtilities.invokeLater(() -> {
-                    String searchText = searchField.getText().toLowerCase();
-                    exerciseModel.clear();
-                    for (Exercise exercise : exercises.getList()) {
-                        if (exercise.getName().toLowerCase().contains(searchText)) {
-                            exerciseModel.addElement(exercise);
-                        }
-                    }
-                });
-            }
-        });
 
         // Add selection listener
         menuList.addListSelectionListener(new ListSelectionListener() {
@@ -226,11 +217,13 @@ public class ExercisePanel extends JPanel {
         detailsPanel.setBackground(new Color(21, 21, 21));
         detailsPanel.setLayout(new BoxLayout(detailsPanel, BoxLayout.Y_AXIS));
         detailsPanel.setPreferredSize(new Dimension(this.getWidth() - 50, this.getHeight()));
+        detailsPanel.setMaximumSize(detailsPanel.getPreferredSize());
         exerciseScrollPanel.setPreferredSize(new Dimension(200, this.getHeight()));
 
+        System.out.println("Sigma height"+height);
         JPanel topBar = new JPanel(new BorderLayout(0, 0));
-        topBar.setPreferredSize(new Dimension(960 - exerciseScrollPanel.getWidth(), 80));
-        topBar.setMaximumSize(new Dimension(960 - exerciseScrollPanel.getWidth(), 80));
+        topBar.setPreferredSize(new Dimension(width - exerciseScrollPanel.getWidth(), (int)(height/8.2875)));
+        topBar.setMaximumSize(new Dimension(width - exerciseScrollPanel.getWidth(), (int)(height/8.2875)));
         topBar.setBackground(new Color(51, 51, 51));
         JPanel topBarWestContainer = new JPanel();
         topBarWestContainer.setLayout(new BoxLayout(topBarWestContainer, BoxLayout.Y_AXIS));
@@ -243,6 +236,55 @@ public class ExercisePanel extends JPanel {
         statusText.setForeground(new Color(204, 204, 204));
         statusPanel.setBorder(new LineBorder(new Color(46, 148, 76),1,true));
 
+        Timer timer = new Timer(50, new ActionListener() {
+            Color[] colors = {Color.RED, Color.BLUE, Color.GREEN, Color.ORANGE, Color.MAGENTA, Color.CYAN};
+            final int[] index = {0};
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                favouriteButton.setText("\uD83E\uDD84");detailsPanel.setBackground(colors[index[0]]);topBar.setBackground(colors[index[0]]);
+                topBarWestContainer.setBackground(colors[index[0]]);menuList.setBackground(colors[index[0]]);infoTextArea.setBackground(colors[index[0]]);
+                menuList.setForeground(Color.white);infoTextArea.setForeground(Color.white);titleLabel.setForeground(Color.white);
+                favouriteButton.setForeground(Color.white);
+                detailsPanel.repaint();
+                index[0] = (index[0] + 1) % colors.length;
+            }
+        });
+
+
+        searchField.getDocument().addDocumentListener(new DocumentListener() {
+
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                if (!searchField.getText().equals("Search for exercise...")) {
+                    filterList();
+                }
+                if (searchField.getText().equals("/YMCA")) {
+                    timer.start();
+                }
+            }
+
+            public void changedUpdate(DocumentEvent e) {
+                filterList();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                filterList();
+            }
+
+            private void filterList() {
+                SwingUtilities.invokeLater(() -> {
+                    String searchText = searchField.getText().toLowerCase();
+                    exerciseModel.clear();
+                    for (Exercise exercise : exercises.getList()) {
+                        if (exercise.getName().toLowerCase().contains(searchText)) {
+                            exerciseModel.addElement(exercise);
+                        }
+                    }
+                });
+            }
+        });
         Timer shrinkStatusPanel = new Timer(30, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -272,9 +314,14 @@ public class ExercisePanel extends JPanel {
         detailsPanel.add(topBar, BorderLayout.NORTH);
         detailsPanel.add(infoTextArea, BorderLayout.SOUTH);// List on the left
 
-        add(detailsPanel, BorderLayout.CENTER);     // Details on the center
-        add(searchPanel, BorderLayout.WEST);
-        add(statusPanel, BorderLayout.SOUTH);
+        mainPanel.add(detailsPanel, BorderLayout.CENTER);     // Details on the center
+        mainPanel.add(searchPanel, BorderLayout.WEST);
+        mainPanel.add(statusPanel, BorderLayout.SOUTH);
+        mainPanel.setOpaque(false);
+
+
+        this.setOpaque(false);
+        this.add(mainPanel);
 
         // Set a default exercise to be shown when entering
         if (menuList.getSelectedValue() == null) {
@@ -310,6 +357,23 @@ public class ExercisePanel extends JPanel {
 
             }
         });
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        // Draw the image to fill the entire panel
+        if (homePanelBackground != null) {
+            g.drawImage(scaledContentBackgroundPanel.getImage(), 0, 0, getWidth(), getHeight(), this);
+        }
+        else{
+            System.out.println("Error");
+        }
+    }
+    public void reScaleBackground(){
+        scaledContentBackground = homePanelBackground.getImage().getScaledInstance(getWidth(),getHeight(),Image.SCALE_SMOOTH);
+        scaledContentBackgroundPanel = new ImageIcon(scaledContentBackground);
+
     }
 
     public void activateStatus(JPanel statusPanel, Timer shrinkStatusPanel, JLabel statusText) {
