@@ -17,9 +17,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import javax.swing.event.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 
 public class SettingsPanel extends JPanel{
+
+    protected static ImageIcon profilePicture;
 
     ImageIcon settingsPanelBackground;
     Image scaleSettingsPanelBackground;
@@ -46,9 +49,6 @@ public class SettingsPanel extends JPanel{
 
     ArrayList<Integer> agesList = new ArrayList<>();
 
-    JComboBox ageDropDown = new JComboBox(agesList.toArray(new Integer[0]));
-    JComboBox weightDropDown = new JComboBox(agesList.toArray(new Integer[0]));
-    JComboBox heightDropDown = new JComboBox(agesList.toArray(new Integer[0]));
 
 
 
@@ -305,11 +305,10 @@ public class SettingsPanel extends JPanel{
         heightLabel.setPreferredSize(new Dimension(50, test2.getPreferredSize().height));
 
 
-        for (Integer i=0; i<100;i++){
+        for (Integer i=0; i<200;i++){
             agesList.add(i);
         }
 
-        String[] arrTest = {"dog","cat","bird"};
         JComboBox ageDropDown = new JComboBox(agesList.toArray(new Integer[0]));
         ageDropDown.setSelectedIndex(UserData.getUserAge());
         ageDropDown.setPreferredSize(new Dimension(width/15, height/15));
@@ -326,9 +325,37 @@ public class SettingsPanel extends JPanel{
             }
         });
 
+        JComboBox weightDropDown = new JComboBox(agesList.toArray(new Integer[0]));
+        weightDropDown.setSelectedIndex((int)(UserData.getUserWeight()));
         weightDropDown.setPreferredSize(new Dimension(width/15, height/15));
+        weightDropDown.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                UserData.setUserWeight(weightDropDown.getSelectedIndex()); //Updates the local user age in the userdata
+                try {
+                    FirebaseManager.writeDBUser(UserData.getEmail()); //Updates the user data on the database
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+                HomePanel.updateUserInfo(); //Updates the userdata on the home panel
+            }
+        });
 
+        JComboBox heightDropDown = new JComboBox(agesList.toArray(new Integer[0]));
+        heightDropDown.setSelectedIndex((int)(UserData.getUserHeight()));
         heightDropDown.setPreferredSize(new Dimension(width/15, height/15));
+        heightDropDown.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                UserData.setUserHeight(heightDropDown.getSelectedIndex()); //Updates the local user age in the userdata
+                try {
+                    FirebaseManager.writeDBUser(UserData.getEmail()); //Updates the user data on the database
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+                HomePanel.updateUserInfo(); //Updates the userdata on the home panel
+            }
+        });
 
         test222.add(ageLabel);
         test222.add(ageDropDown);
@@ -341,6 +368,23 @@ public class SettingsPanel extends JPanel{
         JPanel test333 = new JPanel();
         test333.setBackground(innerSettingPanelColor);
         test333.setPreferredSize(new Dimension(width-width/3, height/10));
+
+        JButton chooseProfilePictureButton = new JButton("Open Image File Chooser");
+        chooseProfilePictureButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                // Skapa huvudfönstret för att visa filväljaren
+                JFrame frame = new JFrame("Choose Image");
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.setSize(400, 400);
+
+                profilePicture = selectImage(frame);
+
+                HomePanel.updateProfilePicture(profilePicture);
+            }
+        });
+
+        test333.add(chooseProfilePictureButton);
 
         JPanel test444 = new JPanel();
         test444.setBackground(innerSettingPanelColor);
@@ -1049,7 +1093,28 @@ public class SettingsPanel extends JPanel{
     }
 
 
+    public static ImageIcon selectImage(JFrame parentFrame) {
+        // Skapa en JFileChooser
+        JFileChooser fileChooser = new JFileChooser();
 
+        // Sätt filtret så att endast bildfiler visas
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Image files", "jpg", "png", "gif", "bmp", "jpeg");
+        fileChooser.setFileFilter(filter);
+
+        // Öppna JFileChooser dialogen i ett nytt fönster
+        int result = fileChooser.showOpenDialog(parentFrame);
+
+        if (result == JFileChooser.APPROVE_OPTION) {
+            // Hämta den valda filen
+            File selectedFile = fileChooser.getSelectedFile();
+
+            // Skapa en ImageIcon från filen
+            return new ImageIcon(selectedFile.getAbsolutePath());
+        }
+
+        // Om ingen fil valdes eller användaren avbröt
+        return null;
+    }
 
 
 
