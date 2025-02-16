@@ -205,7 +205,7 @@ public class HomePanel extends JPanel {
         profilePictureIcon = profilePicture;
         avatar.setImage(new ImageIcon(profilePicture.getImage().getScaledInstance(avatar.getWidth(),avatar.getWidth(),Image.SCALE_SMOOTH)));
         try {
-            FirebaseManager.writeDBprofilePicture(avatar.getImage());
+            FirebaseManager.writeDBprofilePicture(new ImageIcon(profilePicture.getImage().getScaledInstance(43,43,Image.SCALE_SMOOTH)));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
