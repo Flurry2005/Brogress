@@ -86,6 +86,28 @@ public class FirebaseManager {
         }
     }
 
+    public static void writeDBUser(String email) throws IOException {
+
+        Map<String, Object> user = new HashMap<>();
+        user.put("name", UserData.getUserName());
+        user.put("age", String.valueOf(UserData.getUserAge()));
+        user.put("height", String.valueOf(UserData.getUserHeight()));
+        user.put("weight", String.valueOf(UserData.getUserWeight()));
+
+
+        // Referens till dokumentet i "users" collection
+        DocumentReference docRef = db.collection("users").document(email);
+
+        // Skriv data och vänta på resultat
+        ApiFuture<WriteResult> result = docRef.update(user);
+
+        try {
+            System.out.println("Updated User Info on db: " + result.get().getUpdateTime());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void readDBUserInfo(String email) {
 
         try {
@@ -101,7 +123,9 @@ public class FirebaseManager {
 
             UserData.setUserName(userData.get("name").toString());
             UserData.setEmail(userData.get("email").toString());
-
+            UserData.setUserWeight(userData.get("weight").toString().isEmpty() ? 0:Float.parseFloat(userData.get("weight").toString())); //If no user weight is set, return 0
+            UserData.setUserAge(userData.get("age").toString().isEmpty() ?0:Integer.parseInt(userData.get("age").toString())); //If no user age is set, return 0
+            UserData.setUserHeight(userData.get("height").toString().isEmpty() ?0:Integer.parseInt(userData.get("height").toString())); //If no user height is set, return 0
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -148,7 +172,7 @@ public class FirebaseManager {
             int height = programPanel.getHeight();
 
             System.out.print(programPanel.getHeight());
-            if (userData.get("workouts") != null) {
+            if (!userData.get("workouts").toString().isEmpty()) {
                 byte[] data = Base64.getDecoder().decode((String) userData.get("workouts"));
                 ObjectInputStream objectInputStream = new ObjectInputStream(new ByteArrayInputStream(data));
                 WorkoutsList workoutsList = (WorkoutsList) objectInputStream.readObject();
