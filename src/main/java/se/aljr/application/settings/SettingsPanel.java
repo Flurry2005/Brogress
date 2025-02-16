@@ -1,5 +1,8 @@
 package se.aljr.application.settings;
 
+import se.aljr.application.UserData;
+import se.aljr.application.homepage.HomePanel;
+import se.aljr.application.loginpage.FirebaseManager;
 import se.aljr.application.settings.custom.SteelCheckBox;
 import se.aljr.application.settings.custom.SteelCheckBoxUI;
 import se.aljr.application.settings.tools.ColorDef;
@@ -11,6 +14,7 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import javax.swing.event.*;
 
@@ -281,7 +285,20 @@ public class SettingsPanel extends JPanel{
 
         String[] arrTest = {"dog","cat","bird"};
         JComboBox ageDropDown = new JComboBox(agesList.toArray(new Integer[0]));
+        ageDropDown.setSelectedIndex(UserData.getUserAge());
         ageDropDown.setPreferredSize(new Dimension(width/15, height/15));
+        ageDropDown.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                UserData.setUserAge(ageDropDown.getSelectedIndex()); //Updates the local user age in the userdata
+                try {
+                    FirebaseManager.writeDBUser(UserData.getEmail()); //Updates the user data on the database
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+                HomePanel.updateUserInfo(); //Updates the userdata on the home panel
+            }
+        });
 
         JComboBox weightDropDown = new JComboBox(agesList.toArray(new Integer[0]));
         weightDropDown.setPreferredSize(new Dimension(width/15, height/15));
