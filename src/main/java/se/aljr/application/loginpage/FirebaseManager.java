@@ -71,6 +71,7 @@ public class FirebaseManager {
         user.put("height", "");
         user.put("weight", "");
         user.put("workouts", "");
+        user.put("profilepicture","");
 
 
         // Referens till dokumentet i "users" collection
@@ -337,6 +338,55 @@ public class FirebaseManager {
             e.printStackTrace();
         }
         return new WorkoutsList();
+    }
+
+    public static ImageIcon readDBprofilePicture() {
+        try {
+            Gson gson = new Gson();
+            HashMap<String, Object> userData = new HashMap<>();
+
+            ApiFuture<DocumentSnapshot> snapshot = db.collection("users").document(UserData.getEmail()).get();
+
+            DocumentSnapshot document = snapshot.get();
+            JsonElement jsonElement = gson.toJsonTree(document.getData());
+
+            userData = gson.fromJson(jsonElement, HashMap.class);
+            if (!userData.get("profilepicture").toString().isEmpty()) {
+                byte[] data = Base64.getDecoder().decode((String) userData.get("profilepicture"));
+                ObjectInputStream objectInputStream = new ObjectInputStream(new ByteArrayInputStream(data));
+                ImageIcon profilePicture = (ImageIcon) objectInputStream.readObject();
+                objectInputStream.close();
+                return profilePicture;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
+
+    public static void writeDBprofilePicture(ImageIcon profilePicture) throws IOException {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+        objectOutputStream.writeObject(profilePicture);
+        objectOutputStream.close();
+
+        String workoutBase64 = Base64.getEncoder().encodeToString(byteArrayOutputStream.toByteArray());
+
+        Map<String, Object> ref = new HashMap<>();
+        ref.put("profilepicture", workoutBase64);
+
+        // Referens till dokumentet i "users" collection
+        DocumentReference docRef = db.collection("users").document(UserData.getEmail());
+
+        // Skriv data och vänta på resultat
+        ApiFuture<WriteResult> result = docRef.update(ref);
+
+        try {
+            System.out.println("Profile picture written to database at: " + result.get().getUpdateTime());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     public static boolean authenticateUser(String email, String password) {
