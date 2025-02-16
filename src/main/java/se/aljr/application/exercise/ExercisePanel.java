@@ -2,8 +2,9 @@ package se.aljr.application.exercise;
 
 import se.aljr.application.UserData;
 import se.aljr.application.exercise.Excercise.*;
+import se.aljr.application.exercise.Muscle.Muscle;
+import se.aljr.application.exercise.Muscle.MuscleList;
 import se.aljr.application.exercise.Program.Exercises;
-
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -15,6 +16,7 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
+import javax.sound.sampled.*;
 
 public class ExercisePanel extends JPanel {
     private JList<Exercise> menuList;
@@ -25,6 +27,7 @@ public class ExercisePanel extends JPanel {
     private Exercise selectedExercise;
     private boolean isFavourite = false;
     private int statusDelayCounter;
+    static private boolean clicked;
     private StringBuilder status = new StringBuilder();
     Font font;
 
@@ -69,6 +72,7 @@ public class ExercisePanel extends JPanel {
         favouriteButton.setFont(emojiFont);
         favouriteButton.setPreferredSize(new Dimension(100, 100));
         favouriteButton.setMaximumSize(new Dimension(100, 100));
+
         // Add mouselistener
         favouriteButton.addMouseListener(new MouseAdapter() {
             @Override
@@ -121,7 +125,6 @@ public class ExercisePanel extends JPanel {
         searchField.setPreferredSize(new Dimension(130, 30));
         searchField.setFocusable(true);
 
-
         // Focuslistener
         searchField.addFocusListener(new FocusAdapter() {
             @Override
@@ -141,17 +144,55 @@ public class ExercisePanel extends JPanel {
 
         });
 
+        DefaultListModel<Muscle> muscleModel = new DefaultListModel<>();
+        DefaultListModel<String> muscleToString = new DefaultListModel<>();
+        MuscleList muscleList = new MuscleList();
+        muscleToString.addElement("Sort by muscle");
+        for (Muscle muscle : muscleList) {
+            muscleToString.addElement(muscle.toString());
+            muscleModel.addElement(muscle);
+        }
+
+        JList <Muscle> muscleJList = new JList(muscleToString);
+        muscleJList.setBackground(new Color(51,51,51));
+        muscleJList.setForeground(new Color(204, 204, 204));
+
+        JScrollPane muscleScroll = new JScrollPane(muscleJList);
+        muscleScroll.setPreferredSize(new Dimension(100,15));
+        muscleScroll.setBorder(null);
+        muscleScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+
+        muscleJList.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                    super.mouseClicked(e);
+                if (!clicked) {
+                    muscleScroll.setPreferredSize(new Dimension(100, 200));
+                    revalidate();
+                    repaint();
+                    clicked = true;
+                }
+                else {
+                    muscleScroll.setPreferredSize(new Dimension(100, 15));
+                    revalidate();
+                    repaint();
+                    clicked = false;
+                }
+            }
+        });
+
         JCheckBox showFavorites = new JCheckBox("Show Favorites");
         showFavorites.setName("FavouriteCheckBox");
         showFavorites.setBackground(new Color(51, 51, 51));
         showFavorites.setForeground(new Color(204, 204, 204));
 
 
-        JPanel searchFieldandExercisesContainer = new JPanel();
-        searchFieldandExercisesContainer.setLayout(new BoxLayout(searchFieldandExercisesContainer, BoxLayout.Y_AXIS));
-        searchFieldandExercisesContainer.add(searchField);
-        searchFieldandExercisesContainer.add(showFavorites);
-        searchFieldandExercisesContainer.setBackground(new Color(51, 51, 51));
+        JPanel searchContainer = new JPanel();
+        searchContainer.setLayout(new BorderLayout());
+        searchContainer.add(searchField, BorderLayout.NORTH);
+        searchContainer.add(muscleScroll, BorderLayout.WEST);
+        searchContainer.add(showFavorites, BorderLayout.EAST);
+        searchContainer.setBackground(new Color(51, 51, 51));
 
 
         // Populate the JList with exercise data
@@ -170,7 +211,6 @@ public class ExercisePanel extends JPanel {
         JScrollPane exerciseScrollPanel = new JScrollPane(menuList);
         exerciseScrollPanel.setBorder(new LineBorder(new Color(80, 73, 69)));
         exerciseScrollPanel.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-
 
 
         // Add selection listener
@@ -236,7 +276,7 @@ public class ExercisePanel extends JPanel {
         statusText.setForeground(new Color(204, 204, 204));
         statusPanel.setBorder(new LineBorder(new Color(46, 148, 76),1,true));
 
-        Timer timer = new Timer(50, new ActionListener() {
+        Timer timer = new Timer((int) (60000 / 126), new ActionListener() {
             Color[] colors = {Color.RED, Color.BLUE, Color.GREEN, Color.ORANGE, Color.MAGENTA, Color.CYAN};
             final int[] index = {0};
 
@@ -260,6 +300,17 @@ public class ExercisePanel extends JPanel {
                     filterList();
                 }
                 if (searchField.getText().equals("/YMCA")) {
+
+                    File ymca = new File("src/clip.wav");
+                    try {
+                        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(ymca);
+                        Clip clip = AudioSystem.getClip();
+                        clip.open(audioInputStream);
+                        clip.start();
+                    }
+                    catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
                     timer.start();
                 }
             }
@@ -308,7 +359,7 @@ public class ExercisePanel extends JPanel {
         topBarWestContainer.add(musclesWorkedLabel);
         topBar.add(topBarWestContainer, BorderLayout.WEST);
         topBar.add(favouriteButton, BorderLayout.EAST);
-        searchPanel.add(searchFieldandExercisesContainer, BorderLayout.NORTH);
+        searchPanel.add(searchContainer, BorderLayout.NORTH);
         searchPanel.add(exerciseScrollPanel, BorderLayout.CENTER);
 
         detailsPanel.add(topBar, BorderLayout.NORTH);
