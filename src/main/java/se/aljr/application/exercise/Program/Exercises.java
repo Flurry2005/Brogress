@@ -37,6 +37,7 @@ public class Exercises {
 		exercises.add(new TricepsCableOverheadExtensions());
 		exercises.add(new TricepsCablePushdowns());
 		exercises.add(new TricepsFrenchPress());
+		exercises.add(new HipThrusts());
 
 	}
 
