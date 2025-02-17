@@ -75,6 +75,8 @@ public class ApplicationWindow extends JFrame  {
         SettingsPanel settingsPanel = new SettingsPanel((int)(getWidth()-(getWidth()/6.4)), getHeight()-getHeight()/13);
         settingsPanel.setVisible(false);
 
+        ChatPanel chatPanel = new ChatPanel((int)(getWidth()-(getWidth()/6.4)), getHeight()-getHeight()/13);
+        chatPanel.setVisible(false);
 
         left_panel.add(menuPanel);
 
@@ -130,6 +132,7 @@ public class ApplicationWindow extends JFrame  {
                     exercisePanel.setVisible(false);
                     settingsPanel.setVisible(false);
                     programPanel.setVisible(false);
+                    chatPanel.setVisible(false);
                     content_panel.setVisible(true);
                     repaint();
                 }
@@ -138,10 +141,12 @@ public class ApplicationWindow extends JFrame  {
                     right_panel.remove(content_panel);
                     right_panel.remove(programPanel);
                     right_panel.remove(settingsPanel);
+                    right_panel.remove(chatPanel);
                     right_panel.add(exercisePanel, BorderLayout.SOUTH);
                     content_panel.setVisible(false);
                     settingsPanel.setVisible(false);
                     programPanel.setVisible(false);
+                    chatPanel.setVisible(false);
                     exercisePanel.setVisible(true);
                 }
                 /**Program Panel*/
@@ -149,10 +154,12 @@ public class ApplicationWindow extends JFrame  {
                     right_panel.remove(content_panel);
                     right_panel.remove(exercisePanel);
                     right_panel.remove(settingsPanel);
+                    right_panel.remove(chatPanel);
                     right_panel.add(programPanel, BorderLayout.SOUTH);
                     content_panel.setVisible(false);
                     exercisePanel.setVisible(false);
                     settingsPanel.setVisible(false);
+                    chatPanel.setVisible(false);
                     programPanel.setVisible(true);
                 }
                 /**Settings Panel*/
@@ -160,11 +167,26 @@ public class ApplicationWindow extends JFrame  {
                     right_panel.remove(content_panel);
                     right_panel.remove(exercisePanel);
                     right_panel.remove(programPanel);
+                    right_panel.remove(chatPanel);
                     right_panel.add(settingsPanel, BorderLayout.SOUTH);
                     content_panel.setVisible(false);
                     exercisePanel.setVisible(false);
                     programPanel.setVisible(false);
+                    chatPanel.setVisible(false);
                     settingsPanel.setVisible(true);
+                }
+                /**Chat Panel*/
+                case 5->{
+                    right_panel.remove(content_panel);
+                    right_panel.remove(exercisePanel);
+                    right_panel.remove(programPanel);
+                    right_panel.remove(settingsPanel);
+                    right_panel.add(chatPanel, BorderLayout.SOUTH);
+                    content_panel.setVisible(false);
+                    exercisePanel.setVisible(false);
+                    programPanel.setVisible(false);
+                    settingsPanel.setVisible(false);
+                    chatPanel.setVisible(true);
                 }
 
             }
@@ -186,6 +208,9 @@ public class ApplicationWindow extends JFrame  {
             }
             case "settings"->{
                 pageSelector = 4;
+            }
+            case "chat"->{
+                pageSelector = 5;
             }
         }
     }

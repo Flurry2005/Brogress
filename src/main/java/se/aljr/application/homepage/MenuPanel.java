@@ -94,12 +94,14 @@ public class MenuPanel extends JPanel{
         final boolean[] exercisesPageIsActive = {false};
         final boolean[] programPageIsActive = {false};
         final boolean[] settingsPageIsActive = {false};
+        final boolean[] chatPageIsActive = {false};
 
 
         final JButton homeButton = new JButton("Home",scaledButtonHomeIcon);
         final JButton exercisesButton = new JButton("Exercises",scaledButtonExerciseIcon);
         final JButton programButton = new JButton("Program");
         JButton settingsButton = new JButton("Settings",scaledButtonSettingsIcon);
+        JButton chatButton = new JButton("Chat",scaledButtonSettingsIcon);
 
         homeButton.setFont(new Font("Arial", Font.TRUETYPE_FONT,height/35));
         homeButton.setForeground(Color.WHITE);
@@ -151,16 +153,19 @@ public class MenuPanel extends JPanel{
                 programPageIsActive[0] = false;
                 settingsPageIsActive[0] = false;
                 homePageIsActive[0] = true;
+                chatPageIsActive[0] = false;
 
                 if(lightMode){
                     settingsButton.setBackground(Color.WHITE);
                     programButton.setBackground(Color.WHITE);
                     exercisesButton.setBackground(Color.WHITE);
+                    chatButton.setBackground(Color.WHITE);
                     homeButton.setBackground(new Color(220, 220, 220));
                 }else{
                     settingsButton.setBackground(new Color(51,51,51));
                     programButton.setBackground(new Color(51,51,51));
                     exercisesButton.setBackground(new Color(51,51,51));
+                    chatButton.setBackground(new Color(51,51,51));
                     homeButton.setBackground(new Color(30,30,30));
                 }
 
@@ -243,16 +248,19 @@ public class MenuPanel extends JPanel{
                 programPageIsActive[0] = false;
                 settingsPageIsActive[0] = false;
                 homePageIsActive[0] = false;
+                chatPageIsActive[0] = false;
 
                 if(lightMode){
                     settingsButton.setBackground(Color.WHITE);
                     programButton.setBackground(Color.WHITE);
                     homeButton.setBackground(Color.WHITE);
+                    chatButton.setBackground(Color.WHITE);
                     exercisesButton.setBackground(new Color(220, 220, 220));
                 }else{
                     settingsButton.setBackground(new Color(51,51,51));
                     programButton.setBackground(new Color(51,51,51));
                     homeButton.setBackground(new Color(51,51,51));
+                    chatButton.setBackground(new Color(51,51,51));
                     exercisesButton.setBackground(new Color(30,30,30));
                 }
 
@@ -330,16 +338,19 @@ public class MenuPanel extends JPanel{
                 programPageIsActive[0] = true;
                 settingsPageIsActive[0] = false;
                 homePageIsActive[0] = false;
+                chatPageIsActive[0] = false;
 
                 if(lightMode){
                     settingsButton.setBackground(Color.WHITE);
                     homeButton.setBackground(Color.WHITE);
                     exercisesButton.setBackground(Color.WHITE);
+                    chatButton.setBackground(Color.WHITE);
                     programButton.setBackground(new Color(220, 220, 220));
                 }else{
                     settingsButton.setBackground(new Color(51,51,51));
                     homeButton.setBackground(new Color(51,51,51));
                     exercisesButton.setBackground(new Color(51,51,51));
+                    chatButton.setBackground(new Color(51,51,51));
                     programButton.setBackground(new Color(30,30,30));
                 }
 
@@ -370,8 +381,6 @@ public class MenuPanel extends JPanel{
             }
         });
 
-        Image scaledButtonSettings = buttonIconSettings.getImage().getScaledInstance(151, 40, Image.SCALE_SMOOTH);
-        scaledButtonSettingsIcon = new ImageIcon(scaledButtonSettings);
 
         /**Settings Button*/
         settingsButton.setFont(new Font("Arial", Font.TRUETYPE_FONT,height/35));
@@ -420,16 +429,19 @@ public class MenuPanel extends JPanel{
                 programPageIsActive[0] = false;
                 settingsPageIsActive[0] = true;
                 homePageIsActive[0] = false;
+                chatPageIsActive[0] = false;
 
                 if(lightMode){
                     homeButton.setBackground(Color.WHITE);
                     programButton.setBackground(Color.WHITE);
                     exercisesButton.setBackground(Color.WHITE);
+                    chatButton.setBackground(Color.WHITE);
                     settingsButton.setBackground(new Color(220, 220, 220));
                 }else{
                     homeButton.setBackground(new Color(51,51,51));
                     programButton.setBackground(new Color(51,51,51));
                     exercisesButton.setBackground(new Color(51,51,51));
+                    chatButton.setBackground(new Color(51,51,51));
                     settingsButton.setBackground(new Color(30,30,30));
                 }
                 ApplicationWindow.switchWindow("settings");
@@ -459,6 +471,96 @@ public class MenuPanel extends JPanel{
             }
         });
 
+        /**Chat Button*/
+
+        chatButton.setFont(new Font("Arial", Font.TRUETYPE_FONT,height/35));
+        chatButton.setForeground(Color.WHITE);
+        chatButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        chatButton.setAlignmentY(Component.CENTER_ALIGNMENT);
+        chatButton.setMaximumSize(new Dimension(width, 40));
+        chatButton.setHorizontalTextPosition(SwingConstants.CENTER);
+        chatButton.setVerticalTextPosition(SwingConstants.CENTER);
+        Color bg4 = new Color(51,51,51);
+        chatButton.setFocusPainted(false);
+        chatButton.setFocusable(false);
+        chatButton.setBorderPainted(false);
+        chatButton.setContentAreaFilled(true);
+        chatButton.setBackground(bg3);
+
+        chatButton.addMouseListener(new MouseAdapter() {
+            private boolean isHovered = false;
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                isHovered = true;
+                if(lightMode){
+                    chatButton.setBackground(new Color(230, 230, 230));
+                }else{
+                    chatButton.setBackground(new Color(40,40,40));
+                }
+                chatButton.repaint();
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                isHovered = false;
+                if(!chatPageIsActive[0]){
+                    if(lightMode){
+                        chatButton.setBackground(Color.WHITE);
+                    }else{
+                        chatButton.setBackground(bg4);
+                    }
+                }
+                chatButton.repaint();
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                exercisesPageIsActive[0] = false;
+                programPageIsActive[0] = false;
+                settingsPageIsActive[0] = false;
+                homePageIsActive[0] = false;
+                chatPageIsActive[0] = true;
+
+                if(lightMode){
+                    homeButton.setBackground(Color.WHITE);
+                    programButton.setBackground(Color.WHITE);
+                    exercisesButton.setBackground(Color.WHITE);
+                    settingsButton.setBackground(Color.WHITE);
+                    chatButton.setBackground(new Color(220, 220, 220));
+                }else{
+                    homeButton.setBackground(new Color(51,51,51));
+                    programButton.setBackground(new Color(51,51,51));
+                    exercisesButton.setBackground(new Color(51,51,51));
+                    settingsButton.setBackground(new Color(51,51,51));
+                    chatButton.setBackground(new Color(30,30,30));
+                }
+                ApplicationWindow.switchWindow("chat");
+                settingsButton.repaint();
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                if (isHovered) {
+                    if(lightMode)
+                        chatButton.setBackground(new Color(230, 230, 230));
+                    else{
+                        chatButton.setBackground(new Color(40,40,40));
+                    }
+                } else {
+                    chatButton.setBackground(bg);
+                }
+                chatButton.repaint();
+            }
+        });
+        chatButton.setUI(new javax.swing.plaf.basic.BasicButtonUI() {
+            @Override
+            public void paint(Graphics g, JComponent c) {
+                g.setColor(chatButton.getBackground());
+                g.fillRoundRect(0, 0, chatButton.getWidth(), chatButton.getHeight(), 10, 10);
+                super.paint(g, c);
+            }
+        });
+
 
         buttonContainer.add(homeButton);
        //buttonContainer.add(Box.createVerticalGlue());
@@ -467,6 +569,7 @@ public class MenuPanel extends JPanel{
         buttonContainer.add(programButton);
        // buttonContainer.add(Box.createVerticalGlue());
         buttonContainer.add(settingsButton);
+        buttonContainer.add(chatButton);
         buttonContainer.add(Box.createVerticalGlue());
         buttonContainer.add(Box.createVerticalGlue());
         buttonContainer.add(Box.createVerticalGlue());
@@ -510,6 +613,13 @@ public class MenuPanel extends JPanel{
                     settingsButton.setPreferredSize(new Dimension(getWidth(),(int)(getHeight()/13.5)));
                     settingsButton.setMaximumSize(new Dimension(getWidth(),(int)(getHeight()/13.5)));
                     settingsButton.setFont(new Font("Arial", Font.TRUETYPE_FONT,getHeight()/35));
+
+                    chatButton.setIcon(scaledButtonSettingsIcon);
+                    chatButton.setPreferredSize(new Dimension(getWidth(),(int)(getHeight()/13.5)));
+                    chatButton.setMaximumSize(new Dimension(getWidth(),(int)(getHeight()/13.5)));
+                    chatButton.setFont(new Font("Arial", Font.TRUETYPE_FONT,getHeight()/35));
+
+
 
                     revalidate();
                     repaint();
