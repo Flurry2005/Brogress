@@ -302,6 +302,16 @@ public class LoginWindow extends JFrame {
 
         leftPanel.add(bigLogoLabel);
 
+        this.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                loginButton.doClick();
+                if(e.getKeyCode() == KeyEvent.VK_ENTER){
+                    loginButton.doClick();
+                }
+            }
+        });
+        this.setFocusable(true);
         this.add(leftPanel, BorderLayout.WEST);
         this.add(rightPanel, BorderLayout.EAST);
 
