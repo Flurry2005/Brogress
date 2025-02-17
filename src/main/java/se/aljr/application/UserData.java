@@ -11,6 +11,7 @@ public class UserData {
     private static float userWeight;
     private static String userEmail;
     private static HashSet<Exercise> favoriteExercises = new HashSet<>();
+    private static HashSet<Exercise> createdExercises = new HashSet<>();
 
     public static void setUserName(String userName) {
         UserData.userName = userName;
@@ -75,5 +76,13 @@ public class UserData {
         else {
             return false;
         }
+    }
+
+    public static HashSet<Exercise> getCreatedExercises() {
+        return (createdExercises != null) ? createdExercises : new HashSet<>();
+    }
+
+    public static void setCreatedExercises(Exercise exercise) {
+        createdExercises.add(exercise);
     }
     }

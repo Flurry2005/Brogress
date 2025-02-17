@@ -1,5 +1,6 @@
 package se.aljr.application.exercise;
 
+import se.aljr.application.ResourcePath;
 import se.aljr.application.UserData;
 import se.aljr.application.exercise.Excercise.*;
 import se.aljr.application.exercise.Muscle.Muscle;
@@ -11,24 +12,23 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import javax.sound.sampled.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 public class ExercisePanel extends JPanel {
-    private JList<Exercise> menuList;
-    private JTextArea infoTextArea;
     private JLabel titleLabel;
     private JLabel musclesWorkedLabel;
     private String resourcePath;
     private Exercise selectedExercise;
-    private boolean isFavourite = false;
-    private int statusDelayCounter;
-    static private boolean clicked;
-    private StringBuilder status = new StringBuilder();
+    private static int statusDelayCounter;
+    private static StringBuilder status = new StringBuilder();
+    private static DefaultListModel<Exercise> exerciseModel;
+    private static JList<Exercise> menuList;
+
     Font font;
 
     protected ImageIcon homePanelBackground;
@@ -36,9 +36,9 @@ public class ExercisePanel extends JPanel {
     Image scaledContentBackground;
 
     public ExercisePanel(int width, int height) throws InterruptedException {
-        resourcePath = getClass().getClassLoader().getResource("resource.path").getPath().replace("resource.path","");
-        homePanelBackground = new ImageIcon(resourcePath+ "bottom_right_bar.png");
-        scaledContentBackground = homePanelBackground.getImage().getScaledInstance(width,height,Image.SCALE_SMOOTH);
+        resourcePath = getClass().getClassLoader().getResource("resource.path").getPath().replace("resource.path", "");
+        homePanelBackground = new ImageIcon(resourcePath + "bottom_right_bar.png");
+        scaledContentBackground = homePanelBackground.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
         scaledContentBackgroundPanel = new ImageIcon(scaledContentBackground);
 
         resourcePath = getClass().getClassLoader().getResource("resource.path").getPath().replace("resource.path", "");
@@ -52,26 +52,329 @@ public class ExercisePanel extends JPanel {
         // Set the layout for the panel
         this.setPreferredSize(new Dimension(width, height));
         this.setMaximumSize(this.getPreferredSize());
-        this.setLayout(new FlowLayout());
+        this.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
+        init(width, height);
+    }
 
+
+    public void init(int width, int height) {
+
+        //-------------------Initialize components---------------------------
 
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
-        mainPanel.setPreferredSize(new Dimension(width,height));
-        mainPanel.setMaximumSize(mainPanel.getPreferredSize());
+        mainPanel.setBackground(new Color(51, 51, 51));
+        mainPanel.setPreferredSize(this.getPreferredSize());
+        mainPanel.setBorder(new EmptyBorder(height / 45, width / 45, height / 45, width / 45));
 
-        // Initialize components
-        Font emojiFont = new Font("Segoe UI Emoji", Font.PLAIN, 45);
+        Font emojiFont = new Font("Segoe UI Emoji", Font.PLAIN, 35);
         JButton favouriteButton = new JButton("\uD83D\uDCAA");
         favouriteButton.setFocusPainted(false);
-        favouriteButton.setBorder(BorderFactory.createEmptyBorder());
         favouriteButton.setContentAreaFilled(false);
         favouriteButton.setBackground(new Color(51, 51, 51));
+        favouriteButton.setForeground(new Color(21, 21, 21));
         favouriteButton.setFont(emojiFont);
-        favouriteButton.setPreferredSize(new Dimension(100, 100));
-        favouriteButton.setMaximumSize(new Dimension(100, 100));
+        favouriteButton.setBorder(null);
+        favouriteButton.setPreferredSize(new Dimension(100, 60));
 
-        // Add mouselistener
+        titleLabel = new JLabel();
+        titleLabel.setFont(font.deriveFont(65f));
+        titleLabel.setForeground(new Color(204, 204, 204));
+
+        musclesWorkedLabel = new JLabel();
+        musclesWorkedLabel.setFont(font.deriveFont(24f));
+        musclesWorkedLabel.setForeground(new Color(204, 204, 204));
+        musclesWorkedLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JTextField searchField = new JTextField("Search for exercise...");
+        searchField.setFont(new Font("Arial", Font.ITALIC, 12));
+        searchField.setBorder(new LineBorder(new Color(80, 73, 69)));
+        searchField.setBackground(new Color(21, 21, 21));
+        searchField.setForeground(new Color(204, 204, 204));
+        searchField.setPreferredSize(new Dimension(130, 30));
+
+        DefaultListModel<Muscle> muscleModel = new DefaultListModel<>();
+        MuscleList muscleList = new MuscleList();
+        for (Muscle muscle : muscleList) {
+            muscleModel.addElement(muscle);
+        }
+        // Display muscles when using filter option
+        JList<Muscle> muscleJList = new JList(muscleModel);
+        muscleJList.setBackground(new Color(51, 51, 51));
+        muscleJList.setForeground(new Color(204, 204, 204));
+
+        JScrollPane muscleScroll = new JScrollPane(muscleJList);
+        muscleScroll.setBorder(null);
+        muscleScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+        muscleScroll.setPreferredSize(new Dimension(getPreferredSize().width, getPreferredSize().height / 4));
+        muscleScroll.setMaximumSize(new Dimension(getPreferredSize().width, getPreferredSize().height / 4));
+        muscleScroll.setVisible(false);
+
+        // Populate the JList with exercises
+        exerciseModel = new DefaultListModel<>();
+        Exercises exercises = new Exercises();
+        for (Exercise exercise : exercises.getList()) {
+            exerciseModel.addElement(exercise);
+        }
+        for (Exercise userExercise : UserData.getFavoriteExercises()) {
+            exerciseModel.addElement(userExercise);
+        }
+
+        menuList = new JList<>(exerciseModel);
+        menuList.setFont(font.deriveFont(17f));
+        menuList.setBackground(new Color(21, 21, 21));
+        menuList.setForeground(new Color(204, 204, 204));
+
+        JScrollPane exerciseScrollPanel = new JScrollPane(menuList);
+        exerciseScrollPanel.setBorder(new LineBorder(new Color(80, 73, 69)));
+        exerciseScrollPanel.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+
+        // Create layout for the panel
+        JPanel westPanel = new JPanel();
+        westPanel.setLayout(new BoxLayout(westPanel, BoxLayout.Y_AXIS));
+        westPanel.setBackground(new Color(51, 51, 51));
+        westPanel.setPreferredSize(new Dimension(mainPanel.getPreferredSize().width / 4, mainPanel.getPreferredSize().height / 8));
+        westPanel.setBorder(new LineBorder(new Color(80, 73, 69), 1 / 2, true));
+
+        JPanel searchContainer = new JPanel();
+        searchContainer.setBorder(null);
+        searchContainer.setLayout(new BorderLayout());
+        searchContainer.setBackground(new Color(21, 21, 21));
+        searchContainer.setPreferredSize(new Dimension(westPanel.getPreferredSize().width, getPreferredSize().height / 8));
+        searchContainer.setMaximumSize(new Dimension(westPanel.getPreferredSize().width, getPreferredSize().height / 8));
+
+        JButton sortMuscleButton = new JButton();
+        sortMuscleButton.setText("Muscle");
+        sortMuscleButton.setBackground(new Color(51, 51, 51));
+        sortMuscleButton.setForeground(new Color(204, 204, 204));
+        sortMuscleButton.setPreferredSize(new Dimension((int) (searchContainer.getPreferredSize().getWidth() / 4), getPreferredSize().height / 2));
+        sortMuscleButton.setBorder(new LineBorder(new Color(80, 73, 69), 1, true));
+
+
+        JButton showFavorites = new JButton("Favorites");
+        showFavorites.setForeground(new Color(204, 204, 204));
+        showFavorites.setBackground(new Color(51, 51, 51));
+        showFavorites.setPreferredSize(new Dimension((int) (searchContainer.getPreferredSize().width/4), getPreferredSize().height / 2));
+        showFavorites.setBorder(new LineBorder(new Color(80, 73, 69), 1, true));
+
+
+        JButton myExercises = new JButton("Created");
+        myExercises.setForeground(new Color(204, 204, 204));
+        myExercises.setBackground(new Color(51, 51, 51));
+        myExercises.setPreferredSize(new Dimension((int) (searchContainer.getPreferredSize().width/4), getPreferredSize().height / 2));
+        myExercises.setBorder(new LineBorder(new Color(80, 73, 69), 1, true));
+
+
+        JButton createExerciseButton = new JButton("Add exercise");
+        createExerciseButton.setBackground(new Color(46, 148, 76));
+        createExerciseButton.setForeground(new Color(204, 204, 204));
+        createExerciseButton.setBorder(new LineBorder(new Color(80, 73, 69), 1, true));
+        createExerciseButton.setPreferredSize(new Dimension(westPanel.getPreferredSize().width, getPreferredSize().height / 24));
+
+        JPanel centerPanel = new JPanel();
+        centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
+        centerPanel.setBackground(new Color(51, 51, 51));
+        centerPanel.setPreferredSize(new Dimension((int) (mainPanel.getPreferredSize().width / 2.5365), (int) (mainPanel.getPreferredSize().height / 1.1714)));
+        centerPanel.setBorder(new EmptyBorder(0, centerPanel.getPreferredSize().width / 20, 0, centerPanel.getPreferredSize().width / 20));
+
+        //Label displaying the exercise image
+        JLabel imageLabel = new JLabel();
+        imageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        JPanel eastPanel = new JPanel();
+        eastPanel.setLayout(new BoxLayout(eastPanel, BoxLayout.Y_AXIS));
+        eastPanel.setBackground(new Color(51, 51, 51));
+        eastPanel.setPreferredSize(new Dimension(mainPanel.getPreferredSize().width / 4, mainPanel.getPreferredSize().height));
+        eastPanel.setMinimumSize(new Dimension(mainPanel.getPreferredSize().width / 4, mainPanel.getPreferredSize().height));
+        eastPanel.setMaximumSize(new Dimension(mainPanel.getPreferredSize().width / 4, mainPanel.getPreferredSize().height));
+
+        JPanel aboutContainer = new JPanel();
+        aboutContainer.setLayout(new BorderLayout());
+        aboutContainer.setForeground(new Color(204, 204, 204));
+        aboutContainer.setBackground(new Color(51, 51, 51));
+        aboutContainer.setPreferredSize(new Dimension(eastPanel.getPreferredSize().width, eastPanel.getPreferredSize().height / 2));
+        aboutContainer.setMinimumSize(new Dimension(eastPanel.getPreferredSize().width, eastPanel.getPreferredSize().height / 2));
+        aboutContainer.setMaximumSize(new Dimension(eastPanel.getPreferredSize().width, eastPanel.getPreferredSize().height / 2));
+        aboutContainer.setBorder(new EmptyBorder(0, 0, 10, 0));
+
+        // Displays "About"
+        JLabel aboutLabel = new JLabel();
+        aboutLabel.setText("About");
+        aboutLabel.setForeground(new Color(204, 204, 204));
+        aboutLabel.setBackground(new Color(51, 51, 51));
+        aboutLabel.setOpaque(true);
+        aboutLabel.setHorizontalAlignment(JLabel.CENTER);
+        aboutLabel.setFont(font.deriveFont(24f));
+        aboutLabel.setBorder(new LineBorder(new Color(80, 73, 69), 1, true));
+
+        JPanel formInfoContainer = new JPanel();
+        formInfoContainer.setLayout(new BorderLayout());
+        formInfoContainer.setBackground(new Color(22, 22, 22));
+        formInfoContainer.setMaximumSize(new Dimension(eastPanel.getPreferredSize().width, eastPanel.getPreferredSize().height / 2));
+        formInfoContainer.setPreferredSize(new Dimension(eastPanel.getPreferredSize().width, eastPanel.getPreferredSize().height / 2));
+        formInfoContainer.setMinimumSize(new Dimension(eastPanel.getPreferredSize().width, eastPanel.getPreferredSize().height / 2));
+
+        // Displays "How to"
+        JLabel formLabel = new JLabel();
+        formLabel.setText("How to");
+        formLabel.setForeground(new Color(204, 204, 204));
+        formLabel.setBackground(new Color(51, 51, 51));
+        formLabel.setOpaque(true);
+        formLabel.setHorizontalAlignment(JLabel.CENTER);
+        formLabel.setVerticalAlignment(JLabel.BOTTOM);
+        formLabel.setVerticalTextPosition(JLabel.BOTTOM);
+        formLabel.setFont(font.deriveFont(24f));
+        formLabel.setBorder(new LineBorder(new Color(80, 73, 69), 1, true));
+
+        JTextArea aboutText = new JTextArea();
+        aboutText.setBackground(new Color(21, 21, 21));
+        aboutText.setForeground(new Color(204, 204, 204));
+        aboutText.setFont(new Font("Arial", Font.TRUETYPE_FONT, 15));
+        aboutText.setEditable(false);
+        aboutText.setFocusable(false);
+        aboutText.setBorder(new LineBorder(new Color(80, 73, 69), 1, true));
+        aboutText.setLineWrap(true);
+
+        JTextPane formText = new JTextPane();
+        formText.setBackground(new Color(21, 21, 21));
+        formText.setForeground(new Color(204, 204, 204));
+        formText.setEditable(false);
+        formText.setFont(new Font("Arial", Font.TRUETYPE_FONT, 15));
+        formText.setFocusable(false);
+        formText.setBorder(new LineBorder(new Color(80, 73, 69), 1, true));
+
+        JPanel northPanel = new JPanel();
+        northPanel.setBackground(new Color(51, 51, 51));
+        northPanel.setLayout(new BorderLayout());
+        northPanel.setPreferredSize(new Dimension(mainPanel.getPreferredSize().width, mainPanel.getPreferredSize().height / 8));
+
+        JPanel northEastPanel = new JPanel();
+        northEastPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        northEastPanel.setOpaque(false);
+
+        JPanel northWestPanel = new JPanel();
+        northWestPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        northWestPanel.setBackground(new Color(51, 51, 51));
+
+        // Notice window
+        JPanel statusPanel = new JPanel();
+        statusPanel.setPreferredSize(new Dimension(this.getWidth(), 50));
+        statusPanel.setVisible(false);
+        JLabel statusText = new JLabel(status.toString());
+        statusText.setForeground(new Color(204, 204, 204));
+        statusPanel.setBorder(new LineBorder(new Color(46, 148, 76), 1, true));
+
+        // Functionality for the notice window
+        Timer shrinkStatusPanel = new Timer(30, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (statusPanel.getHeight() == 0) {
+                    return;
+                }
+                if (statusDelayCounter > 0) {
+                    statusPanel.setVisible(true);
+                    statusDelayCounter -= 1;
+                } else {
+                    statusPanel.setPreferredSize(new Dimension(statusPanel.getWidth(), statusPanel.getHeight() - 1));
+                    statusPanel.repaint();
+                    statusPanel.revalidate();
+                }
+            }
+
+        });
+
+        //-------------------ADD COMPONENTS--------------------------
+
+        // WEST
+
+
+
+        searchContainer.add(searchField, BorderLayout.NORTH);
+        searchContainer.add(sortMuscleButton, BorderLayout.WEST);
+        searchContainer.add(showFavorites, BorderLayout.CENTER);
+        searchContainer.add(myExercises, BorderLayout.EAST);
+        searchContainer.add(myExercises, BorderLayout.EAST);
+        searchContainer.add(createExerciseButton, BorderLayout.SOUTH);
+
+        westPanel.add(searchContainer);
+        westPanel.add(muscleScroll);
+        westPanel.add(exerciseScrollPanel);
+
+        // NORTH
+        northEastPanel.add(favouriteButton);
+
+        northWestPanel.add(titleLabel);
+        northWestPanel.add(musclesWorkedLabel);
+
+        northPanel.add(northWestPanel, BorderLayout.WEST);
+        northPanel.add(northEastPanel, BorderLayout.EAST);
+
+        //CENTER
+        CreateExerciseModule createExerciseModule = new CreateExerciseModule(centerPanel);
+        centerPanel.add(imageLabel);
+        centerPanel.add(createExerciseModule);
+
+        //EAST
+        aboutContainer.add(aboutLabel, BorderLayout.NORTH);
+        aboutContainer.add(aboutText, BorderLayout.CENTER);
+        eastPanel.add(aboutContainer);
+
+        formInfoContainer.add(formLabel, BorderLayout.NORTH);
+        formInfoContainer.add(formText, BorderLayout.CENTER);
+        eastPanel.add(formInfoContainer);
+
+        //SOUTH
+        statusPanel.add(statusText);
+
+        // MAIN STRUCTURE
+        mainPanel.add(eastPanel, BorderLayout.EAST);
+        mainPanel.add(centerPanel, BorderLayout.CENTER);
+        mainPanel.add(northPanel, BorderLayout.NORTH);
+        mainPanel.add(westPanel, BorderLayout.WEST);
+        mainPanel.add(statusPanel, BorderLayout.SOUTH);
+
+        this.add(mainPanel);
+        this.setOpaque(false);
+
+        //-------------Methods and listeners-------------------
+
+        // Set a default exercise to be shown when entering
+        if (menuList.getSelectedValue() == null) {
+            Exercise defaultExercise = exerciseModel.getElementAt(0);
+            selectedExercise = defaultExercise;
+            menuList.setSelectedValue(defaultExercise, true);
+            titleLabel.setText(defaultExercise.getName());
+            musclesWorkedLabel.setText(defaultExercise.getMusclesUsed());
+            aboutText.setText(defaultExercise.getInfo());
+            formText.setText(defaultExercise.getForm());
+        }
+        favouriteButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                if (selectedExercise != null) {
+                    if (!UserData.getFavoriteExercises().contains(selectedExercise)) {
+                        UserData.setFavoriteExercises(selectedExercise);
+                        status.append(selectedExercise.getName()).append(" has been added to favorites!");
+                        statusPanel.setBackground(new Color(46, 148, 76));
+                        activateStatus(statusPanel, shrinkStatusPanel, statusText);
+                        status.setLength(0);
+                        favouriteButton.setForeground(new Color(196, 196, 49));
+                    } else {
+                        UserData.removeFavoriteExercises(selectedExercise);
+                        status.append(selectedExercise.getName()).append(" has been removed from favorites!");
+                        statusPanel.setBackground(new Color(204, 20, 20));
+                        activateStatus(statusPanel, shrinkStatusPanel, statusText);
+                        status.setLength(0);
+                        favouriteButton.setForeground(new Color(22, 22, 22));
+
+                    }
+                }
+
+
+            }
+        });
+
         favouriteButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -83,7 +386,7 @@ public class ExercisePanel extends JPanel {
             @Override
             public void mouseExited(MouseEvent e) {
                 super.mouseExited(e);
-                if (isFavourite) {
+                if (UserData.getFavoriteExercises().contains(selectedExercise)) {
                     favouriteButton.setForeground(new Color(196, 196, 49));
                 } else {
                     favouriteButton.setForeground(new Color(22, 22, 22));
@@ -92,38 +395,100 @@ public class ExercisePanel extends JPanel {
 
         });
 
-        titleLabel = new JLabel();
-        titleLabel.setFont(font);
-        titleLabel.setForeground(new Color(204, 204, 204));
+        sortMuscleButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                muscleJList.clearSelection();
+                menuList.setModel(new DefaultListModel<>());
+                sortMuscleButton.setBackground(new Color(49, 84, 122));
+                showFavorites.setBackground(new Color(51, 51, 51));
+                myExercises.setBackground(new Color(51, 51, 51));
+                muscleScroll.setVisible(true);
+                repaint();
+                revalidate();
 
-        musclesWorkedLabel = new JLabel("");
-        musclesWorkedLabel.setFont(font.deriveFont(20f));
-        musclesWorkedLabel.setForeground(new Color(204, 204, 204));
+            }
+        });
 
-        infoTextArea = new JTextArea(10, 30);
-        infoTextArea.setPreferredSize(new Dimension(width - 200,height-(int)(height/8.2875)));
-        infoTextArea.setMaximumSize(infoTextArea.getPreferredSize());
-        infoTextArea.setAlignmentY(Component.TOP_ALIGNMENT);
-        infoTextArea.setBackground(new Color(21, 21, 21));
-        infoTextArea.setForeground(new Color(204, 204, 204));
-        infoTextArea.setEditable(false);
-        infoTextArea.setWrapStyleWord(true);
-        infoTextArea.setLineWrap(true);
-        infoTextArea.setFont(new Font("Arial", Font.TRUETYPE_FONT, 15));
-        infoTextArea.setFocusable(false);
+        createExerciseButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                imageLabel.setVisible(false);
+                createExerciseModule.setVisible(true);
+                centerPanel.revalidate();
+                centerPanel.repaint();
+            }
+        });
 
-        JPanel searchPanel = new JPanel(new BorderLayout());
-        searchPanel.setBackground(new Color(51, 51, 51));
+        muscleJList.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                DefaultListModel<Exercise> model = new DefaultListModel<>();
+                if (muscleJList.getSelectedValue() != null) {
+                    Muscle selectedMuscle = muscleJList.getSelectedValue();
+                    for (Exercise exercise : exercises.getList()) {
+                        if (exercise.getMusclesUsed().contains(selectedMuscle.toString())) {
+                            model.addElement(exercise);
+                        }
+                    }
+                }
+                menuList.setModel(model);
 
-        JTextField searchField = new JTextField("Search for exercise...");
-        searchField.setFont(new Font("Arial", Font.ITALIC, 12));
-        searchField.setBorder(new LineBorder(new Color(80, 73, 69)));
-        searchField.setBackground(new Color(21, 21, 21));
-        searchField.setForeground(new Color(204, 204, 204));
-        searchField.setPreferredSize(new Dimension(130, 30));
-        searchField.setFocusable(true);
 
-        // Focuslistener
+            }
+        });
+
+        showFavorites.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                muscleScroll.setVisible(false);
+                showFavorites.setBackground(new Color(49, 84, 122));
+                sortMuscleButton.setBackground(new Color(51, 51, 51));
+                myExercises.setBackground(new Color(51, 51, 51));
+                DefaultListModel<Exercise> favExerciseModel = new DefaultListModel<>();
+                menuList.setModel(favExerciseModel);
+                for (Exercise exercise : UserData.getFavoriteExercises()) {
+                    favExerciseModel.addElement(exercise);
+
+                }
+                repaint();
+                revalidate();
+            }
+        });
+
+        myExercises.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                myExercises.setBackground(new Color(49, 84, 122));
+                DefaultListModel<Exercise> myExerciseModel = new DefaultListModel<>();
+                for (Exercise exercise : UserData.getCreatedExercises()) {
+                    myExerciseModel.addElement(exercise);
+                }
+                menuList.setModel(myExerciseModel);
+                sortMuscleButton.setBackground(new Color(51, 51, 51));
+                showFavorites.setBackground(new Color(51, 51, 51));
+                muscleScroll.setVisible(false);
+                repaint();
+                revalidate();
+
+            }
+
+        });
+
+        searchField.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                muscleScroll.setVisible(false);
+                menuList.setModel(exerciseModel);
+                sortMuscleButton.setBackground(new Color(51, 51, 51));
+                showFavorites.setBackground(new Color(51, 51, 51));
+                myExercises.setBackground(new Color(51, 51, 51));
+                revalidate();
+                repaint();
+            }
+
+        });
         searchField.addFocusListener(new FocusAdapter() {
             @Override
             public void focusLost(FocusEvent e) {
@@ -142,150 +507,6 @@ public class ExercisePanel extends JPanel {
 
         });
 
-        DefaultListModel<Muscle> muscleModel = new DefaultListModel<>();
-        DefaultListModel<String> muscleToString = new DefaultListModel<>();
-        MuscleList muscleList = new MuscleList();
-        muscleToString.addElement("Sort by muscle");
-        for (Muscle muscle : muscleList) {
-            muscleToString.addElement(muscle.toString());
-            muscleModel.addElement(muscle);
-        }
-
-        JList <Muscle> muscleJList = new JList(muscleToString);
-        muscleJList.setBackground(new Color(51,51,51));
-        muscleJList.setForeground(new Color(204, 204, 204));
-
-        JScrollPane muscleScroll = new JScrollPane(muscleJList);
-        muscleScroll.setPreferredSize(new Dimension(100,15));
-        muscleScroll.setBorder(null);
-        muscleScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
-
-        muscleJList.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                    super.mouseClicked(e);
-                if (!clicked) {
-                    muscleScroll.setPreferredSize(new Dimension(100, 200));
-                    revalidate();
-                    repaint();
-                    clicked = true;
-                }
-                else {
-                    muscleScroll.setPreferredSize(new Dimension(100, 15));
-                    revalidate();
-                    repaint();
-                    clicked = false;
-                }
-            }
-        });
-
-        JCheckBox showFavorites = new JCheckBox("Show Favorites");
-        showFavorites.setBackground(new Color(51, 51, 51));
-        showFavorites.setForeground(new Color(204, 204, 204));
-
-
-        JPanel searchContainer = new JPanel();
-        searchContainer.setLayout(new BorderLayout());
-        searchContainer.add(searchField, BorderLayout.NORTH);
-        searchContainer.add(muscleScroll, BorderLayout.WEST);
-        searchContainer.add(showFavorites, BorderLayout.EAST);
-        searchContainer.setBackground(new Color(51, 51, 51));
-
-
-        // Populate the JList with exercise data
-        DefaultListModel<Exercise> exerciseModel = new DefaultListModel<>();
-        Exercises exercises = new Exercises();
-        for (Exercise exercise : exercises.getList()) {
-            exerciseModel.addElement(exercise);
-        }
-        JList<Exercise> menuList = new JList<>(exerciseModel);
-        menuList.setFont(font.deriveFont(17f));
-        menuList.setBackground(new Color(21, 21, 21));
-        menuList.setForeground(new Color(204, 204, 204));
-
-        JScrollPane exerciseScrollPanel = new JScrollPane(menuList);
-        exerciseScrollPanel.setBorder(new LineBorder(new Color(80, 73, 69)));
-        exerciseScrollPanel.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-
-
-        // Add selection listener
-        menuList.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                if (menuList.getSelectedIndex() != -1) {
-                    selectedExercise = menuList.getSelectedValue();
-                    if (selectedExercise != null) {
-                        infoTextArea.setText(selectedExercise.getInfo());
-                        titleLabel.setText(selectedExercise.getName());
-                        musclesWorkedLabel.setText(selectedExercise.getMusclesUsed());
-                        if (UserData.getFavoriteExercises().contains(selectedExercise)) {
-                            isFavourite = true;
-                            favouriteButton.setForeground(new Color(196, 196, 49));
-                        } else {
-                            isFavourite = false;
-                            favouriteButton.setForeground(new Color(22, 22, 22));
-                        }
-
-                    }
-                }
-            }
-        });
-
-        showFavorites.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (showFavorites.isSelected()) {
-                    DefaultListModel<Exercise> favExerciseModel = new DefaultListModel<>();
-                    for (Exercise exercise : UserData.getFavoriteExercises()) {
-                        favExerciseModel.addElement(exercise);
-                    }
-                    menuList.setModel(favExerciseModel);
-                } else {
-                    menuList.setModel(exerciseModel);
-                }
-            }
-        });
-
-        // Create layout for the panel
-        JPanel detailsPanel = new JPanel();
-        detailsPanel.setBackground(new Color(21, 21, 21));
-        detailsPanel.setLayout(new BoxLayout(detailsPanel, BoxLayout.Y_AXIS));
-        detailsPanel.setPreferredSize(new Dimension(this.getWidth() - 50, this.getHeight()));
-        detailsPanel.setMaximumSize(detailsPanel.getPreferredSize());
-        exerciseScrollPanel.setPreferredSize(new Dimension(200, this.getHeight()));
-
-        System.out.println("Sigma height"+height);
-        JPanel topBar = new JPanel(new BorderLayout(0, 0));
-        topBar.setPreferredSize(new Dimension(width - exerciseScrollPanel.getWidth(), (int)(height/8.2875)));
-        topBar.setMaximumSize(new Dimension(width - exerciseScrollPanel.getWidth(), (int)(height/8.2875)));
-        topBar.setBackground(new Color(51, 51, 51));
-        JPanel topBarWestContainer = new JPanel();
-        topBarWestContainer.setLayout(new BoxLayout(topBarWestContainer, BoxLayout.Y_AXIS));
-        topBarWestContainer.setBackground(new Color(51, 51, 51));
-
-        JPanel statusPanel = new JPanel();
-        statusPanel.setPreferredSize(new Dimension(this.getWidth(), 50));
-        statusPanel.setVisible(false);
-        JLabel statusText = new JLabel(status.toString());
-        statusText.setForeground(new Color(204, 204, 204));
-        statusPanel.setBorder(new LineBorder(new Color(46, 148, 76),1,true));
-
-        Timer timer = new Timer((int) (60000 / 126), new ActionListener() {
-            Color[] colors = {Color.RED, Color.BLUE, Color.GREEN, Color.ORANGE, Color.MAGENTA, Color.CYAN};
-            final int[] index = {0};
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                favouriteButton.setText("\uD83E\uDD84");detailsPanel.setBackground(colors[index[0]]);topBar.setBackground(colors[index[0]]);
-                topBarWestContainer.setBackground(colors[index[0]]);menuList.setBackground(colors[index[0]]);infoTextArea.setBackground(colors[index[0]]);
-                menuList.setForeground(Color.white);infoTextArea.setForeground(Color.white);titleLabel.setForeground(Color.white);
-                favouriteButton.setForeground(Color.white);
-                detailsPanel.repaint();
-                index[0] = (index[0] + 1) % colors.length;
-            }
-        });
-
 
         searchField.getDocument().addDocumentListener(new DocumentListener() {
 
@@ -302,11 +523,9 @@ public class ExercisePanel extends JPanel {
                         Clip clip = AudioSystem.getClip();
                         clip.open(audioInputStream);
                         clip.start();
-                    }
-                    catch (Exception ex) {
+                    } catch (Exception ex) {
                         ex.printStackTrace();
                     }
-                    timer.start();
                 }
             }
 
@@ -331,76 +550,52 @@ public class ExercisePanel extends JPanel {
                 });
             }
         });
-        Timer shrinkStatusPanel = new Timer(30, new ActionListener() {
+
+        menuList.addListSelectionListener(new ListSelectionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                if (statusPanel.getHeight() == 0) {
-                    return;
-                }
-                if (statusDelayCounter > 0) {
-                    statusPanel.setVisible(true);
-                    statusDelayCounter -= 1;
-                } else {
-                    statusPanel.setPreferredSize(new Dimension(statusPanel.getWidth(), statusPanel.getHeight() - 1));
-                    statusPanel.repaint();
-                    statusPanel.revalidate();
-                }
-            }
+            public void valueChanged(ListSelectionEvent e) {
+                if (menuList.getSelectedIndex() != -1) {
+                    selectedExercise = menuList.getSelectedValue();
+                    if (selectedExercise != null) {
+                        createExerciseModule.setVisible(false);
+                        aboutText.setText(selectedExercise.getInfo());
+                        imageLabel.setVisible(true);
+                        try {
+                            ImageIcon test = selectedExercise.getImageIcon();
+                            Image scaledTest = test.getImage().getScaledInstance(centerPanel.getPreferredSize().width, centerPanel.getPreferredSize().height, Image.SCALE_DEFAULT);
+                            ImageIcon scaledTestIcon = new ImageIcon(scaledTest);
+                            formInfoContainer.setVisible(true);
 
-        });
+                            imageLabel.setIcon(scaledTestIcon);
+                        } catch (Exception f) {
+                            ImageIcon test = new ImageIcon(ResourcePath.getResourcePath() + "bottom_right_bar.png");
+                            Image scaledTest = test.getImage().getScaledInstance(centerPanel.getPreferredSize().width, centerPanel.getPreferredSize().height, Image.SCALE_SMOOTH);
+                            ImageIcon scaledTestIcon = new ImageIcon(scaledTest);
+                            formInfoContainer.setVisible(false);
+                            imageLabel.setIcon(scaledTestIcon);
 
-        statusPanel.add(statusText);
-        topBarWestContainer.add(titleLabel);
-        topBarWestContainer.add(musclesWorkedLabel);
-        topBar.add(topBarWestContainer, BorderLayout.WEST);
-        topBar.add(favouriteButton, BorderLayout.EAST);
-        searchPanel.add(searchContainer, BorderLayout.NORTH);
-        searchPanel.add(exerciseScrollPanel, BorderLayout.CENTER);
+                        }
 
-        detailsPanel.add(topBar, BorderLayout.NORTH);
-        detailsPanel.add(infoTextArea, BorderLayout.SOUTH);// List on the left
+                        formText.setText(selectedExercise.getInfo());
+                        formText.setText(selectedExercise.getForm());
+                        titleLabel.setText(selectedExercise.getName());
 
-        mainPanel.add(detailsPanel, BorderLayout.CENTER);     // Details on the center
-        mainPanel.add(searchPanel, BorderLayout.WEST);
-        mainPanel.add(statusPanel, BorderLayout.SOUTH);
-        mainPanel.setOpaque(false);
+                        if (selectedExercise.getMusclesUsed().toString().length() > 50) {
+                            String muscles = selectedExercise.getMusclesUsed().toString();
+                            muscles = muscles.substring(0, 50);
+                            musclesWorkedLabel.setText(muscles + "...");
+                        }
+                        else {
+                            musclesWorkedLabel.setText(selectedExercise.getMusclesUsed());
+                        }
+                        if (UserData.getFavoriteExercises().contains(selectedExercise)) {
+                            favouriteButton.setForeground(new Color(196, 196, 49));
+                        } else {
+                            favouriteButton.setForeground(new Color(22, 22, 22));
+                        }
 
-
-        this.setOpaque(false);
-        this.add(mainPanel);
-
-        // Set a default exercise to be shown when entering
-        if (menuList.getSelectedValue() == null) {
-            Exercise defaultExercise = exerciseModel.getElementAt(0);
-            menuList.setSelectedValue(defaultExercise, true);
-            titleLabel.setText(defaultExercise.getName());
-            musclesWorkedLabel.setText(defaultExercise.getMusclesUsed());
-            infoTextArea.setText(defaultExercise.getInfo());
-        }
-        favouriteButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-                if (selectedExercise != null) {
-                    if (!isFavourite) {
-                        UserData.setFavoriteExercises(selectedExercise);
-                        status.append(selectedExercise.getName()).append(" has been added to favorites!");
-                        statusPanel.setBackground(new Color(46, 148, 76));
-                        activateStatus(statusPanel, shrinkStatusPanel, statusText);
-                        status.setLength(0);
-                        favouriteButton.setForeground(new Color(196, 196, 49));
-                        isFavourite = true;
-                    } else {
-                        UserData.removeFavoriteExercises(selectedExercise);
-                        status.append(selectedExercise.getName()).append(" has been removed from favorites!");
-                        statusPanel.setBackground(new Color(204, 20, 20));
-                        activateStatus(statusPanel, shrinkStatusPanel, statusText);
-                        status.setLength(0);
-                        favouriteButton.setForeground(new Color(22, 22, 22));
-                        isFavourite = false;
                     }
                 }
-
             }
         });
     }
@@ -411,18 +606,19 @@ public class ExercisePanel extends JPanel {
         // Draw the image to fill the entire panel
         if (homePanelBackground != null) {
             g.drawImage(scaledContentBackgroundPanel.getImage(), 0, 0, getWidth(), getHeight(), this);
-        }
-        else{
+        } else {
             System.out.println("Error");
         }
     }
-    public void reScaleBackground(){
-        scaledContentBackground = homePanelBackground.getImage().getScaledInstance(getWidth(),getHeight(),Image.SCALE_SMOOTH);
+
+    public void reScaleBackground() {
+        scaledContentBackground = homePanelBackground.getImage().getScaledInstance(getWidth(), getHeight(), Image.SCALE_SMOOTH);
         scaledContentBackgroundPanel = new ImageIcon(scaledContentBackground);
 
     }
 
-    public void activateStatus(JPanel statusPanel, Timer shrinkStatusPanel, JLabel statusText) {
+
+    public static void activateStatus(JPanel statusPanel, Timer shrinkStatusPanel, JLabel statusText) {
         statusDelayCounter = 20;
         statusPanel.setVisible(true);
         statusText.setText(status.toString());
@@ -430,6 +626,7 @@ public class ExercisePanel extends JPanel {
         shrinkStatusPanel.restart();
         statusPanel.setPreferredSize(new Dimension(statusPanel.getWidth(), 50));
     }
+
 }
 
 

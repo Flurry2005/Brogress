@@ -1,6 +1,9 @@
 package se.aljr.application.exercise.Excercise;
 
+import se.aljr.application.ResourcePath;
 import se.aljr.application.exercise.Muscle.Biceps;
+
+import javax.swing.*;
 
 public class DumbbellCurl extends Exercise {
 
@@ -25,6 +28,8 @@ public class DumbbellCurl extends Exercise {
 		picture = "https://weighttraining.guide/exercises/two-arm-supinated-dumbbell-curl/";
 
 		musclesUsed.add(new Biceps());
+
+		imageIcon = new ImageIcon(ResourcePath.getResourcePath() +"ExerciseImages\\DumbbelCurl.gif");
 	}
 
 }

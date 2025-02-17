@@ -1,8 +1,11 @@
 package se.aljr.application.exercise.Excercise;
 
+import se.aljr.application.ResourcePath;
 import se.aljr.application.exercise.Muscle.AnteriorDeltoid;
 import se.aljr.application.exercise.Muscle.Chest;
 import se.aljr.application.exercise.Muscle.Triceps;
+
+import javax.swing.*;
 
 public class InclineDumbbellPress extends Exercise {
     public InclineDumbbellPress() {
@@ -28,5 +31,7 @@ public class InclineDumbbellPress extends Exercise {
         musclesUsed.add(new Chest());
         musclesUsed.add(new AnteriorDeltoid());
         musclesUsed.add(new Triceps());
+
+        imageIcon = new ImageIcon(ResourcePath.getResourcePath() +"ExerciseImages\\InclineDumbbellPress.gif");
     }
 }

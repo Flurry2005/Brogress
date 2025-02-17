@@ -1,8 +1,11 @@
 package se.aljr.application.exercise.Excercise;
 
+import se.aljr.application.ResourcePath;
 import se.aljr.application.exercise.Muscle.AnteriorDeltoid;
 import se.aljr.application.exercise.Muscle.LateralDeltoid;
 import se.aljr.application.exercise.Muscle.Traps;
+
+import javax.swing.*;
 
 public class CableSideLateralRaises extends Exercise {
     public CableSideLateralRaises() {
@@ -28,5 +31,7 @@ public class CableSideLateralRaises extends Exercise {
         musclesUsed.add(new LateralDeltoid());
         musclesUsed.add(new Traps());
         musclesUsed.add(new AnteriorDeltoid());
+
+        imageIcon = new ImageIcon(ResourcePath.getResourcePath() +"ExerciseImages\\CableSideLateralRaises.gif");
     }
 }
