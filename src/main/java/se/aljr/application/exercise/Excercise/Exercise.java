@@ -31,8 +31,8 @@ public class Exercise implements Serializable {
         return this.info;
     }
 
-    public String setInfo() {
-        return this.info;
+    public void setInfo(String info) {
+        this.info = info;
     }
 
     public String getForm() {

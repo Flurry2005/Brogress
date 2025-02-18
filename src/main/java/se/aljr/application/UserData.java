@@ -2,6 +2,7 @@ package se.aljr.application;
 
 import se.aljr.application.exercise.Excercise.Exercise;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 
 public class UserData {
@@ -11,7 +12,7 @@ public class UserData {
     private static float userWeight;
     private static String userEmail;
     private static HashSet<Exercise> favoriteExercises = new HashSet<>();
-    private static HashSet<Exercise> createdExercises = new HashSet<>();
+    private static ArrayList<Exercise> createdExercises = new ArrayList<>();
 
     public static void setUserName(String userName) {
         UserData.userName = userName;
@@ -78,8 +79,8 @@ public class UserData {
         }
     }
 
-    public static HashSet<Exercise> getCreatedExercises() {
-        return (createdExercises != null) ? createdExercises : new HashSet<>();
+    public static ArrayList<Exercise> getCreatedExercises() {
+        return (createdExercises != null) ? createdExercises : new ArrayList<>();
     }
 
     public static void setCreatedExercises(Exercise exercise) {
