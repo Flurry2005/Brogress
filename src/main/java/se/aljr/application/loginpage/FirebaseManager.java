@@ -134,18 +134,107 @@ public class FirebaseManager {
     }
 
     public static void writeDBworkout(WorkoutsList workoutsList) throws IOException {
+        int workoutNumber = 1;
+        WorkoutsList workoutListCopy = (WorkoutsList) workoutsList.clone();
+        for(Workout workout : workoutListCopy){
+
+            for (Component comp1 : workout.getComponents()) {
+                if(comp1.getName()!=null){
+                    if (comp1.getName().equals("mainExercisePanel")) {
+                        JPanel mainExercisePanel = (JPanel) comp1;
+                        for (Component comp2 : mainExercisePanel.getComponents()) {
+                            if ("addSet".equals(comp2.getName())) {
+                                JButton addSet = (JButton) comp2;
+                                addSet.addActionListener(e -> {
+                                    addSet.setIcon(new ImageIcon());
+
+                                });
+                            }
+
+                            if ("setPanel".equals(comp2.getName())) {
+                                JPanel setPanel = (JPanel) comp2;
+                                for (Component compRight : setPanel.getComponents()){
+                                    if(compRight.getName()!=null){
+                                        if("rightPanel".equals(compRight.getName())){
+                                            JPanel rightPanel = (JPanel) compRight;
+                                            for(Component compMoveSetUp : rightPanel.getComponents()){
+                                                if(compMoveSetUp.getName()!=null){
+                                                    if("moveSetUp".equals(compMoveSetUp.getName())){
+                                                        JButton moveSetUp = (JButton) compMoveSetUp;
+                                                        moveSetUp.addActionListener(new ActionListener() {
+                                                            @Override
+                                                            public void actionPerformed(ActionEvent e) {
+                                                                moveSetUp.setIcon(new ImageIcon());
+                                                            }
+                                                        });
+                                                    }
+                                                    if("moveSetDown".equals(compMoveSetUp.getName())){
+                                                        JButton moveSetDown = (JButton) compMoveSetUp;
+                                                        moveSetDown.addActionListener(new ActionListener() {
+                                                            @Override
+                                                            public void actionPerformed(ActionEvent e) {
+                                                                moveSetDown.setIcon(new ImageIcon());
+                                                            }
+                                                        });
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+                                for (Component compLeftPanel : setPanel.getComponents()) {
+                                    if ("leftPanel".equals(compLeftPanel.getName())) {
+                                        JPanel leftPanel = (JPanel) compLeftPanel;
+                                        for (Component compDeleteSet : leftPanel.getComponents()) {
+                                            if (compDeleteSet.getName() != null) {
+                                                if ("deleteSet".equals(compDeleteSet.getName())) {
+                                                    JButton deleteSet = (JButton) compDeleteSet;
+                                                    deleteSet.addActionListener(e -> {
+                                                        deleteSet.setIcon(new ImageIcon());
+
+                                                    });
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            if (comp2.getName() != null) {
+                                if (comp2.getName().equals("exerciseNameTitlePanel")) {
+                                    JPanel exerciseNameTitlePanel = (JPanel) comp2;
+                                    for (Component comp3 : exerciseNameTitlePanel.getComponents()) {
+                                        if (comp3.getName().equals("removeExercise")) {
+                                            JButton removeExercise = (JButton) comp3;
+                                            removeExercise.addActionListener(e -> {
+                                                removeExercise.setIcon(new ImageIcon());
+                                            });
+
+                                        }
+                                    }
+                                }
+                            }
+
+                        }
+
+                    }
+                }
+            }
+        }
+
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
-        objectOutputStream.writeObject(workoutsList);
+        objectOutputStream.writeObject(workoutListCopy);
         objectOutputStream.close();
 
         String workoutBase64 = Base64.getEncoder().encodeToString(byteArrayOutputStream.toByteArray());
 
         Map<String, Object> workoutsMap = new HashMap<>();
-        workoutsMap.put("workouts", workoutBase64);
+        workoutsMap.put("workout", workoutBase64);
 
         // Referens till dokumentet i "users" collection
-        DocumentReference docRef = db.collection("users").document(UserData.getEmail());
+        DocumentReference docRef = db.collection("users").document(UserData.getEmail()).collection("workouts").document("workout"+workoutNumber);
 
         // Skriv data och vänta på resultat
         ApiFuture<WriteResult> result = docRef.update(workoutsMap);
@@ -442,7 +531,7 @@ public class FirebaseManager {
 
 
     // Register a new user with email and password
-    public static void registerUser(String email, String password) {
+    public static int registerUser(String email, String password) {
         try {
             UserRecord.CreateRequest request = new UserRecord.CreateRequest()
                     .setEmail(email)
@@ -451,8 +540,10 @@ public class FirebaseManager {
 
             UserRecord userRecord = FirebaseAuth.getInstance().createUser(request);
             System.out.println("Successfully created new user: " + userRecord.getUid());
+            return 0;
         } catch (FirebaseAuthException e) {
             System.err.println("Error creating new user: " + e.getMessage());
+            return -1;
         }
     }
 }

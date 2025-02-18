@@ -40,6 +40,7 @@ public class ExercisePanel extends JPanel {
     private static DefaultListModel<Exercise> myExerciseModel;
     private static DefaultListModel<Exercise> favExerciseModel;
     private static boolean editButtonEnabled = false;
+    private static boolean createdTabEnabled = false;
 
 
     Font font;
@@ -377,7 +378,7 @@ public class ExercisePanel extends JPanel {
         editButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (!editButtonEnabled) {
+                if (!editButtonEnabled && menuList.getSelectedIndex()!=-1) {
                     editButton.setText("✅");
                     editButton.setForeground(new Color(46, 148, 76));
                     titleLabel.setEditable(true);
@@ -405,7 +406,7 @@ public class ExercisePanel extends JPanel {
                             }
                         }
                     });
-                } else {
+                } else if(menuList.getSelectedIndex()!=-1){
                     int selectedIndex = menuList.getSelectedIndex();
                     String aboutTextString = aboutText.getText();
                     UserData.getCreatedExercises().get(menuList.getSelectedIndex()).setName(titleLabel.getText());
@@ -497,6 +498,9 @@ public class ExercisePanel extends JPanel {
                 if (editButtonEnabled) {
                     editButton.doClick();
                 }
+                createdTabEnabled=false;
+                editButton.setVisible(false);
+
                 muscleJList.clearSelection();
                 menuList.setModel(new DefaultListModel<>());
                 sortMuscleButton.setBackground(new Color(49, 84, 122));
@@ -538,6 +542,12 @@ public class ExercisePanel extends JPanel {
         showFavorites.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (editButtonEnabled) {
+                    editButton.doClick();
+                }
+                createdTabEnabled=false;
+                editButton.setVisible(false);
+
                 muscleScroll.setVisible(false);
                 showFavorites.setBackground(new Color(49, 84, 122));
                 sortMuscleButton.setBackground(new Color(51, 51, 51));
@@ -555,6 +565,11 @@ public class ExercisePanel extends JPanel {
         myExercises.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                createdTabEnabled=true;
+                if(UserData.getCreatedExercises().contains(selectedExercise)){
+                    editButton.setVisible(true);
+                }
+
                 myExercises.setBackground(new Color(49, 84, 122));
                 myExerciseModel = new DefaultListModel<>();
                 for (Exercise exercise : UserData.getCreatedExercises()) {
@@ -686,7 +701,7 @@ public class ExercisePanel extends JPanel {
                         } else {
                             favouriteButton.setForeground(new Color(22, 22, 22));
                         }
-                        if (UserData.getCreatedExercises().contains(selectedExercise)) {
+                        if (UserData.getCreatedExercises().contains(selectedExercise)&&createdTabEnabled) {
                             System.out.println("Ja den finns ");
                             editButton.setVisible(true);
                         } else {

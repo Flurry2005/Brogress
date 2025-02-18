@@ -139,13 +139,13 @@ public class LoginWindow extends JFrame {
         emailField.setAlignmentX(Component.CENTER_ALIGNMENT);
         emailField.setMinimumSize(new Dimension((int)(getWidth()/5),(int)(getHeight()/15)));
         emailField.setMaximumSize(new Dimension(new Dimension((int)(getWidth()/5),(int)(getHeight()/15))));
-        emailField.setText("kronholmjohan@gmail.com");
+        emailField.setText("zoonspoon123@gmail.com");
 
         JPasswordField passwordField = new JPasswordField("");
         passwordField.setMinimumSize(new Dimension((int)(getWidth()/5),(int)(getHeight()/15)));
         passwordField.setMaximumSize(new Dimension(new Dimension((int)(getWidth()/5),(int)(getHeight()/15))));
         passwordField.setAlignmentX(Component.CENTER_ALIGNMENT);
-        passwordField.setText("hej123");
+        passwordField.setText("sigmaboi");
 
         JButton loginButton = new JButton("Login");
         loginButton.setMinimumSize(new Dimension(new Dimension((int)(getWidth()/5),(int)(getHeight()/7.5))));
@@ -172,13 +172,17 @@ public class LoginWindow extends JFrame {
                             incorrectUserCredentialsLabel.setText("INVALID CREDENTIALS");
                         }
                     }else{
-                        FirebaseManager.registerUser(emailAdress, password);
-                        Thread.sleep(2000);
-                        if(FirebaseManager.authenticateUser(emailAdress, password)){
-                            FirebaseManager.writeDBnewUser(userName,emailAdress);
-
-                            Launcher.isLoggedIn = true;
+                        if(FirebaseManager.registerUser(emailAdress, password)==0){
+                            Thread.sleep(2000);
+                            if(FirebaseManager.authenticateUser(emailAdress, password)){
+                                FirebaseManager.writeDBnewUser(userName,emailAdress);
+                                Thread.sleep(2000);
+                                FirebaseManager.readDBUserInfo(emailAdress);
+                                Launcher.isLoggedIn = true;
+                            }
                         }
+
+
                     }
                 } catch (InterruptedException ex) {
                     throw new RuntimeException(ex);
