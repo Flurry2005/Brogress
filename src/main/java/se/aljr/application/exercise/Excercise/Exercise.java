@@ -23,8 +23,16 @@ public class Exercise implements Serializable {
             return this.name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getInfo() {
         return this.info;
+    }
+
+    public void setInfo(String info) {
+        this.info = info;
     }
 
     public String getForm() {

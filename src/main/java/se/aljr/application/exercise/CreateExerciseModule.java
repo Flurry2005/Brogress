@@ -18,13 +18,11 @@ import javax.swing.text.DocumentFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 public class CreateExerciseModule extends JPanel {
-    String name;
-    String info;
-    ArrayList<Muscle> musclesUsed = new ArrayList<>();
-
 
     public CreateExerciseModule(JPanel parentPanel) {
         setBackground(new Color(51, 51, 51));
@@ -36,7 +34,6 @@ public class CreateExerciseModule extends JPanel {
     public void init(JPanel parentPanel) {
 
         //---------------INITIALIZE COMPONENTS-----
-
 
         JPanel headerPanel = new JPanel();
         headerPanel.setLayout(new BorderLayout());
@@ -158,7 +155,6 @@ public class CreateExerciseModule extends JPanel {
 
         JTextPane musclePreviewLabel = new JTextPane();
         musclePreviewLabel.setEditable(false);
-        musclePreviewLabel.setText("[No muscles added yet]");
         musclePreviewLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         musclePreviewLabel.setFont(CustomFont.getFont().deriveFont(24f));
         musclePreviewLabel.setForeground(new Color(204, 204, 204));
@@ -235,6 +231,14 @@ public class CreateExerciseModule extends JPanel {
             }
         });
 
+        exerciseName.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                exerciseName.setForeground(new Color(204, 204, 204));
+                exerciseName.setText("");
+            }
+        });
+
         AbstractDocument document = (AbstractDocument) exerciseName.getDocument();
         document.setDocumentFilter(new DocumentFilter() {
             @Override
@@ -296,6 +300,14 @@ public class CreateExerciseModule extends JPanel {
             }
         });
 
+        exerciseInfo.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (exerciseInfo.getText().equals("Enter exercise info (optional)")) {
+                    exerciseInfo.setText("");
+                }
+            }
+        });
         exerciseInfo.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
@@ -344,27 +356,51 @@ public class CreateExerciseModule extends JPanel {
                 int maxLength = 60;
                 if (musclePreviewLabel.getText().length() > maxLength) {
                     musclePreviewLabel.setFont(CustomFont.getFont().deriveFont(14f));
+                    muscleJlist.setForeground(new Color(204, 204, 204));
                     musclePreviewLabel.setText(muscleJlist.getSelectedValuesList().toString());
                 } else {
+                    muscleJlist.setForeground(new Color(204, 204, 204));
                     musclePreviewLabel.setFont(CustomFont.getFont().deriveFont(24f));
                     musclePreviewLabel.setText(muscleJlist.getSelectedValuesList().toString());
                 }
-            } else {
-                musclePreviewLabel.setFont(CustomFont.getFont().deriveFont(24f));
-                musclePreviewLabel.setText("[No muscles added yet]");
+            }
+            else {
+                musclePreviewLabel.setText("");
             }
         });
         // ADD TO PUBLIC ARRAYLIST
         addExercise.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (!exerciseName.getText().isEmpty() && !exerciseInfo.getText().isEmpty() && !musclePreviewLabel.getText().isEmpty()) {
+                if (!exerciseName.getText().isEmpty() && !exerciseName.getText().equals("Name required") && !exerciseName.getText().equals("Enter exercise name...") && !muscleJlist.getSelectedValuesList().isEmpty()) {
                     Exercise exercise = new Exercise();
                     exercise.createExercise(exerciseName.getText(), exerciseInfo.getText(), (ArrayList<Muscle>) muscleJlist.getSelectedValuesList());
                     UserData.setCreatedExercises(exercise);
                     if (setFav.isSelected()) {
                         UserData.setFavoriteExercises(exercise);
                     }
+                    exerciseName.setText("");
+                    exerciseInfo.setText("");
+                    muscleJlist.clearSelection();
+                    musclePreviewLabel.setText("");
+                    setFav.setSelected(false);
+                    repaint();
+                    revalidate();
+                    ExercisePanel.updateMenuList("myExerciseModel");
+                    ExercisePanel.activateStatus(new Color(46, 148, 76), "New exercise " + exercise.getName()+ " has been created!");
+                } else {
+                    if (exerciseName.getText().isEmpty() || exerciseName.getText().equals("Enter exercise name...")) {
+                        exerciseName.setForeground(Color.RED);
+                        exerciseName.setText("Name required");
+                        exerciseName.revalidate();
+                        exerciseName.repaint();
+                    }
+                    if (muscleJlist.getSelectedValuesList().isEmpty()) {
+                        musclePreviewLabel.setText(("Select at least one muscle..."));
+                        musclePreviewLabel.revalidate();
+                        musclePreviewLabel.repaint();
+                    }
+
                 }
             }
         });
