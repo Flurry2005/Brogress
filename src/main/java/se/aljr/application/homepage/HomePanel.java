@@ -6,6 +6,7 @@ import se.aljr.application.ImageAvatar;
 import se.aljr.application.NutritionCalculator;
 import se.aljr.application.UserData;
 import se.aljr.application.loginpage.FirebaseManager;
+import se.aljr.application.settings.SettingsPanel;
 
 import javax.imageio.ImageIO;
 import javax.imageio.stream.ImageInputStream;
@@ -24,6 +25,11 @@ public class HomePanel extends JPanel {
     ImageIcon moduleIcon;
     protected ImageIcon scaledContentBackgroundPanel;
     Image scaledContentBackground;
+
+    protected ImageIcon lightHomePanelBackground;
+    protected ImageIcon scaledLightContentBackgroundPanel;
+    Image scaledLightContentBackground;
+
     private String resourcePath;
 
     private Image scaledProfilePicture;
@@ -35,6 +41,11 @@ public class HomePanel extends JPanel {
     private static JLabel userAge;
     private static JLabel userHeight;
     private static JLabel userWeight;
+    private static JLabel bmiLabel;
+    private static JLabel bmrLabel;
+    private static JLabel tdeeLabel;
+    private static JLabel proteinNeedLabel;
+
 
     public HomePanel(int width, int height){
         this.setSize(new Dimension(width, height));
@@ -43,6 +54,11 @@ public class HomePanel extends JPanel {
         moduleIcon = new ImageIcon(resourcePath+"module.png");
         scaledContentBackground = homePanelBackground.getImage().getScaledInstance(width,height,Image.SCALE_SMOOTH);
         scaledContentBackgroundPanel = new ImageIcon(scaledContentBackground);
+
+        lightHomePanelBackground = new ImageIcon(resourcePath+"bottom_right_bar_light.png");
+        scaledLightContentBackground = lightHomePanelBackground.getImage().getScaledInstance(width,height,Image.SCALE_SMOOTH);
+        scaledLightContentBackgroundPanel = new ImageIcon(scaledLightContentBackground);
+
 
         //profilePictureIcon = new ImageIcon(resourcePath + "Johan.png");
         profilePictureIcon = FirebaseManager.readDBprofilePicture();
@@ -132,8 +148,12 @@ public class HomePanel extends JPanel {
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 // Draw the image to fill the entire panel
-                if (homePanelBackground != null) {
-                    g.drawImage(moduleIcon.getImage(), 0, 0, moduleIcon.getIconWidth(), moduleIcon.getIconHeight(), this);
+                if (moduleIcon != null) {
+                    Image scale = moduleIcon.getImage().getScaledInstance((int) (HomePanel.this.getWidth()/3.7695035461),
+                            (int)(HomePanel.this.getHeight()/4.22292993631),
+                            Image.SCALE_SMOOTH);
+                    ImageIcon scaleImage = new ImageIcon(scale);
+                    g.drawImage(scaleImage.getImage(), 0, 0, (int) (HomePanel.this.getWidth()/3.7695035461), (int)(HomePanel.this.getHeight()/4.22292993631), this);
                 }
                 else{
                     System.out.println("Error");
@@ -146,22 +166,22 @@ public class HomePanel extends JPanel {
         userMacrosPanel.setMaximumSize(userInfoPanel.getPreferredSize());
         userMacrosPanel.setBorder(new EmptyBorder(0,userInfoPanel.getPreferredSize().width/16,0,0));
 
-        JLabel bmiLabel = new JLabel();
+        bmiLabel = new JLabel();
         bmiLabel.setText("BMI: "+ NutritionCalculator.getBmi(UserData.getUserWeight(), UserData.getUserHeight()));
         bmiLabel.setFont(CustomFont.getFont().deriveFont(getWidth()/50f));
         bmiLabel.setForeground(Color.WHITE);
 
-        JLabel bmrLabel = new JLabel();
+        bmrLabel = new JLabel();
         bmrLabel.setText("BMR: "+ NutritionCalculator.getBMR(UserData.getUserWeight(), UserData.getUserHeight(),UserData.getUserAge())+" kcal");
         bmrLabel.setFont(CustomFont.getFont().deriveFont(getWidth()/50f));
         bmrLabel.setForeground(Color.WHITE);
 
-        JLabel tdeeLabel = new JLabel();
+        tdeeLabel = new JLabel();
         tdeeLabel.setText("TDEE: "+ NutritionCalculator.getTDEE(UserData.getUserWeight(), UserData.getUserHeight(),UserData.getUserAge(),1.2f)+" kcal");
         tdeeLabel.setFont(CustomFont.getFont().deriveFont(getWidth()/50f));
         tdeeLabel.setForeground(Color.WHITE);
 
-        JLabel proteinNeedLabel = new JLabel();
+        proteinNeedLabel = new JLabel();
         proteinNeedLabel.setText("Protein: "+ NutritionCalculator.getProteinNeed(UserData.getUserWeight()));
         proteinNeedLabel.setFont(CustomFont.getFont().deriveFont(getWidth()/50f));
         proteinNeedLabel.setForeground(Color.WHITE);
@@ -222,6 +242,18 @@ public class HomePanel extends JPanel {
                 userHeight.setFont(CustomFont.getFont().deriveFont(getWidth()/60f));
                 userWeight.setFont(CustomFont.getFont().deriveFont(getWidth()/60f));
 
+                userMacrosPanel.repaint();
+                userMacrosPanel.setPreferredSize(new Dimension((int) (HomePanel.this.getWidth()/3.7695035461),(int)(HomePanel.this.getHeight()/4.22292993631)));
+                userMacrosPanel.setMaximumSize(userMacrosPanel.getPreferredSize());
+                userMacrosPanel.setBorder(new EmptyBorder(0,userMacrosPanel.getPreferredSize().width/16,0,0));
+
+                bmiLabel.setFont(CustomFont.getFont().deriveFont(getWidth()/50f));
+                bmrLabel.setFont(CustomFont.getFont().deriveFont(getWidth()/50f));
+                tdeeLabel.setFont(CustomFont.getFont().deriveFont(getWidth()/50f));
+                proteinNeedLabel.setFont(CustomFont.getFont().deriveFont(getWidth()/50f));
+                macroLabel.setFont(CustomFont.getFont().deriveFont(getWidth()/40f));
+
+
 
                 avatar.setPreferredSize(new Dimension(getWidth()/25,getWidth()/25));
                 scaledProfilePicture = profilePictureIcon.getImage().getScaledInstance(getWidth()/25,getWidth()/25,Image.SCALE_SMOOTH);
@@ -237,6 +269,11 @@ public class HomePanel extends JPanel {
         userAge.setText("Age: "+UserData.getUserAge());
         userHeight.setText("Height: "+ UserData.getUserHeight()+" Cm");
         userWeight.setText("Weight: "+ UserData.getUserWeight()+" Kg");
+        bmiLabel.setText("BMI: "+ NutritionCalculator.getBmi(UserData.getUserWeight(), UserData.getUserHeight()));
+        bmrLabel.setText("BMR: "+ NutritionCalculator.getBMR(UserData.getUserWeight(), UserData.getUserHeight(),UserData.getUserAge())+" kcal");
+        tdeeLabel.setText("TDEE: "+ NutritionCalculator.getTDEE(UserData.getUserWeight(), UserData.getUserHeight(),UserData.getUserAge(),1.2f)+" kcal");
+        proteinNeedLabel.setText("Protein: "+ NutritionCalculator.getProteinNeed(UserData.getUserWeight()));
+
 
     }
 
@@ -256,12 +293,21 @@ public class HomePanel extends JPanel {
         super.paintComponent(g);
         // Draw the image to fill the entire panel
         if (homePanelBackground != null) {
-            g.drawImage(scaledContentBackgroundPanel.getImage(), 0, 0, getWidth(), getHeight(), this);
+            if(!SettingsPanel.lightMode){
+
+
+                g.drawImage(scaledContentBackgroundPanel.getImage(), 0, 0, getWidth(), getHeight(), this);
+            }else{
+
+                g.drawImage(scaledLightContentBackgroundPanel.getImage(), 0, 0, getWidth(), getHeight(), this);
+            }
+
         }
         else{
             System.out.println("Error");
         }
-    }
+        }
+
     public void reScaleBackground(){
         scaledContentBackground = homePanelBackground.getImage().getScaledInstance(getWidth(),getHeight(),Image.SCALE_SMOOTH);
         scaledContentBackgroundPanel = new ImageIcon(scaledContentBackground);

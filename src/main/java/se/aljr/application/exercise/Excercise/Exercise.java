@@ -51,6 +51,10 @@ public class Exercise implements Serializable {
         return this.imageIcon;
     }
 
+    public void removeImageIcon(){
+        this.imageIcon=null;
+    }
+
     public void createExercise(String name, String info, ArrayList<Muscle> musclesUsed) {
         this.name = name;
         this.info = info;

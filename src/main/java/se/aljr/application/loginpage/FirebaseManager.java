@@ -140,46 +140,209 @@ public class FirebaseManager {
         }
     }
 
+    private static void removeWorkoutIcons(WorkoutsList workoutsList){
+        for(Workout workout : workoutsList){
+            for (Component comp1 : workout.getComponents()) {
+                if(comp1.getName()!=null){
+                    if (comp1.getName().equals("mainExercisePanel")) {
+                        JPanel mainExercisePanel = (JPanel) comp1;
+                        for (Component comp2 : mainExercisePanel.getComponents()) {
+                            if ("addSet".equals(comp2.getName())) {
+                                JButton addSet = (JButton) comp2;
+                                /**/
+                                addSet.setIcon(null);
+                            }
+                            if ("setPanel".equals(comp2.getName())) {
+                                JPanel setPanel = (JPanel) comp2;
+                                for (Component compRight : setPanel.getComponents()){
+                                    if(compRight.getName()!=null){
+                                        if("rightPanel".equals(compRight.getName())){
+                                            JPanel rightPanel = (JPanel) compRight;
+                                            for(Component compMoveSetUp : rightPanel.getComponents()){
+                                                if(compMoveSetUp.getName()!=null){
+                                                    if("moveSetUp".equals(compMoveSetUp.getName())){
+                                                        JButton moveSetUp = (JButton) compMoveSetUp;
+                                                        /**/
+                                                        moveSetUp.setIcon(null);
+                                                    }
+                                                    if("moveSetDown".equals(compMoveSetUp.getName())){
+                                                        JButton moveSetDown = (JButton) compMoveSetUp;
+                                                        /**/
+                                                        moveSetDown.setIcon(null);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+                                for (Component compLeftPanel : setPanel.getComponents()) {
+                                    if ("leftPanel".equals(compLeftPanel.getName())) {
+                                        JPanel leftPanel = (JPanel) compLeftPanel;
+                                        for (Component compDeleteSet : leftPanel.getComponents()) {
+                                            if (compDeleteSet.getName() != null) {
+                                                if ("deleteSet".equals(compDeleteSet.getName())) {
+                                                    JButton deleteSet = (JButton) compDeleteSet;
+                                                    /**/
+                                                    deleteSet.setIcon(null);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            if (comp2.getName() != null) {
+
+                                if (comp2.getName().equals("exerciseNameTitlePanel")) {
+
+                                    JPanel exerciseNameTitlePanel = (JPanel) comp2;
+
+                                    for (Component comp3 : exerciseNameTitlePanel.getComponents()) {
+
+                                        if (comp3.getName().equals("removeExercise")) {
+
+                                            JButton removeExercise = (JButton) comp3;
+                                            /**/
+                                            removeExercise.setIcon(null);
+
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private static void addWorkoutIcons(WorkoutsList workoutsList){
+        for(Workout workout : workoutsList){
+            for (Component comp1 : workout.getComponents()) {
+                if(comp1.getName()!=null){
+                    if (comp1.getName().equals("mainExercisePanel")) {
+                        JPanel mainExercisePanel = (JPanel) comp1;
+                        for (Component comp2 : mainExercisePanel.getComponents()) {
+                            if ("addSet".equals(comp2.getName())) {
+                                JButton addSet = (JButton) comp2;
+                                /**/
+                                addSet.setIcon(ProgramPanel.scaledNewSetIcon);
+
+                            }
+                            if ("setPanel".equals(comp2.getName())) {
+                                JPanel setPanel = (JPanel) comp2;
+                                for (Component compRight : setPanel.getComponents()){
+                                    if(compRight.getName()!=null){
+                                        if("rightPanel".equals(compRight.getName())){
+                                            JPanel rightPanel = (JPanel) compRight;
+                                            for(Component compMoveSetUp : rightPanel.getComponents()){
+                                                if(compMoveSetUp.getName()!=null){
+                                                    if("moveSetUp".equals(compMoveSetUp.getName())){
+                                                        JButton moveSetUp = (JButton) compMoveSetUp;
+                                                        /**/
+                                                        moveSetUp.setIcon(ProgramPanel.scaledMoveSetUpIcon);
+                                                    }
+                                                    if("moveSetDown".equals(compMoveSetUp.getName())){
+                                                        JButton moveSetDown = (JButton) compMoveSetUp;
+                                                        /**/
+                                                        moveSetDown.setIcon(ProgramPanel.scaledMoveSetDownIcon);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+                                for (Component compLeftPanel : setPanel.getComponents()) {
+                                    if ("leftPanel".equals(compLeftPanel.getName())) {
+                                        JPanel leftPanel = (JPanel) compLeftPanel;
+                                        for (Component compDeleteSet : leftPanel.getComponents()) {
+                                            if (compDeleteSet.getName() != null) {
+                                                if ("deleteSet".equals(compDeleteSet.getName())) {
+                                                    JButton deleteSet = (JButton) compDeleteSet;
+                                                    /**/
+                                                    deleteSet.setIcon(ProgramPanel.scaledRemoveSetIcon);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            if (comp2.getName() != null) {
+
+                                if (comp2.getName().equals("exerciseNameTitlePanel")) {
+
+                                    JPanel exerciseNameTitlePanel = (JPanel) comp2;
+
+                                    for (Component comp3 : exerciseNameTitlePanel.getComponents()) {
+
+                                        if (comp3.getName().equals("removeExercise")) {
+
+                                            JButton removeExercise = (JButton) comp3;
+                                            /**/
+                                            removeExercise.setIcon(ProgramPanel.scaledRemoveExerciseIcon);
+
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     public static void writeDBworkout(WorkoutsList workoutsList) throws IOException {
+        removeWorkoutIcons(workoutsList);
+
+        /*---------Creates a storage object connected to the database---------*/
         Storage storage = storageOptions.getService();
+
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
         objectOutputStream.writeObject(workoutsList);
         objectOutputStream.close();
 
+        /*---------Writes the byte stream into a string representation---------*/
         String workoutBase64 = Base64.getEncoder().encodeToString(byteArrayOutputStream.toByteArray());
 
 
-        String bucketName = "brogress-7499c.firebasestorage.app"; // Ersätt med ditt bucket-namn
-        String fileName = UserData.getEmail() + "_workouts.txt"; // Filnamn med användarnamn
+        /*---------Specifies the cloud storage url and the name of the file to save---------*/
+        String bucketName = "brogress-7499c.firebasestorage.app"; // Bucket name
+        String fileName = UserData.getEmail() + "_workouts.txt"; // workout file name
 
         // Konvertera String till byte-array
         byte[] bytes = workoutBase64.getBytes(StandardCharsets.UTF_8);
         ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
 
-        // Skapa en Blob (fil) i Firebase Storage
+        /*---------Creates a blob file in the cloud storage---------*/
         BlobId blobId = BlobId.of(bucketName, fileName);
         BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("text/plain").build();
 
-        // Ladda upp innehållet
+        /*---------uploads the file to the database---------*/
         storage.create(blobInfo, inputStream);
 
+        /*---------Specifies the url to the file created---------*/
         String publicUrl = "https://storage.googleapis.com/" + bucketName + "/" + fileName;
 
+        /*---------Key value pair to save the workouts url---------*/
         Map<String, Object> ref = new HashMap<>();
         ref.put("workouts", publicUrl);
 
-        // Referens till dokumentet i "users" collection
+        /*---------Document reference where the url is to be saved---------*/
         DocumentReference docRef = db.collection("users").document(UserData.getEmail());
 
-        // Skriv data och vänta på resultat
+        /*---------Writes the url to the firestore database---------*/
         ApiFuture<WriteResult> result = docRef.update(ref);
 
         System.out.println("Text har laddats upp som fil: " + fileName);
         System.out.println("Publik URL: " + "https://storage.googleapis.com/" + bucketName + "/" + fileName);
 
-
+        addWorkoutIcons(workoutsList);
 
     }
 
@@ -188,21 +351,28 @@ public class FirebaseManager {
             Gson gson = new Gson();
             HashMap<String, Object> userData = new HashMap<>();
 
+            /*---------Gets a snapshot of the document of the user in the firestore database---------*/
             ApiFuture<DocumentSnapshot> snapshot = db.collection("users").document(UserData.getEmail()).get();
 
+            /*---------Converts the documentSnapshot to a json element--------*/
             DocumentSnapshot document = snapshot.get();
             JsonElement jsonElement = gson.toJsonTree(document.getData());
 
+            /*---------Converts the json to a HashMap---------*/
             userData = gson.fromJson(jsonElement, HashMap.class);
 
             int height = programPanel.getHeight();
 
             System.out.print(programPanel.getHeight());
+            /*---------Checks if the user has stored a workout or not---------*/
             if (!userData.get("workouts").toString().isEmpty()) {
+                /*---------Creates a storage object connected to the database---------*/
                 Storage storage = storageOptions.getService();
 
+                /*---------Gets the workout url stored in the firestore of the user---------*/
                 String fileName = userData.get("workouts").toString();
 
+                /*---------Sets up the variables needed for collecting the workout data from the cloud storage---------*/
                 URL url = new URL(fileName);
                 String path = url.getPath();
                 String bucketName = "brogress-7499c.firebasestorage.app";
@@ -211,11 +381,13 @@ public class FirebaseManager {
                 byte[] data1 = storage.get(BlobId.of(bucketName,userWorkoutFileName)).getContent();
                 String fileContent = new String(data1, StandardCharsets.UTF_8);
 
-
+                /*---------Decodes the base64 string to an object (WorkoutsList)---------*/
                 byte[] data = Base64.getDecoder().decode(fileContent);
                 ObjectInputStream objectInputStream = new ObjectInputStream(new ByteArrayInputStream(data));
                 WorkoutsList workoutsList = (WorkoutsList) objectInputStream.readObject();
                 objectInputStream.close();
+
+                /*---------Reattaches all buttons listeners and data needed to load the WorkoutsList back to the program---------*/
                 for(Workout workout : workoutsList){
                     workout.getWorkoutData().setTotalWorkoutHeight(0);
                     int exerciseId = 1;
@@ -368,6 +540,7 @@ public class FirebaseManager {
                     workout.repaint();
                     workout.revalidate();
                 }
+                addWorkoutIcons(workoutsList);
                 return workoutsList;
             }
 

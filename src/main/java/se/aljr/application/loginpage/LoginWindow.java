@@ -1,5 +1,7 @@
 package se.aljr.application.loginpage;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import se.aljr.application.CustomFont;
 import se.aljr.application.Launcher;
 import se.aljr.application.Monitorsize;
@@ -8,7 +10,13 @@ import se.aljr.application.ResizeHandler;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Login window for application
@@ -139,13 +147,32 @@ public class LoginWindow extends JFrame {
         emailField.setAlignmentX(Component.CENTER_ALIGNMENT);
         emailField.setMinimumSize(new Dimension((int)(getWidth()/5),(int)(getHeight()/15)));
         emailField.setMaximumSize(new Dimension(new Dimension((int)(getWidth()/5),(int)(getHeight()/15))));
-        emailField.setText("drievmc@gmail.com");
+
+        HashMap<String,String> userLoginDeatils = new HashMap<>();
+        Gson gson = new Gson();
+        String userLoginDetailsPathJson = resourcePath+"loginDeatils.json";
+        try(FileReader reader = new FileReader(userLoginDetailsPathJson)){
+            userLoginDeatils = gson.fromJson(reader,HashMap.class);
+            if(userLoginDeatils.get("email")!=null){
+                emailField.setText(userLoginDeatils.get("email"));
+            }
+            else{
+
+            }
+        }catch (Exception es){
+
+        }
+
 
         JPasswordField passwordField = new JPasswordField("");
         passwordField.setMinimumSize(new Dimension((int)(getWidth()/5),(int)(getHeight()/15)));
         passwordField.setMaximumSize(new Dimension(new Dimension((int)(getWidth()/5),(int)(getHeight()/15))));
         passwordField.setAlignmentX(Component.CENTER_ALIGNMENT);
-        passwordField.setText("drievmc");
+        if(userLoginDeatils.get("password")!=null){
+            passwordField.setText(userLoginDeatils.get("password"));
+        }
+        else{
+        }
 
         JButton loginButton = new JButton("Login");
         loginButton.setMinimumSize(new Dimension(new Dimension((int)(getWidth()/5),(int)(getHeight()/7.5))));
@@ -178,6 +205,20 @@ public class LoginWindow extends JFrame {
                                 FirebaseManager.writeDBnewUser(userName,emailAdress);
                                 Thread.sleep(2000);
                                 FirebaseManager.readDBUserInfo(emailAdress);
+
+                                HashMap<String,String> userLoginDeatils = new HashMap<>();
+                                userLoginDeatils.put("email",emailAdress);
+                                userLoginDeatils.put("password",password);
+
+                                Gson gson = new GsonBuilder().setPrettyPrinting().create();
+                                String userLoginDetailsPathJson = resourcePath+"loginDeatils.json";
+                                try(FileWriter writer = new FileWriter(userLoginDetailsPathJson)){
+                                    gson.toJson(userLoginDeatils,writer);
+                                }catch (IOException es){
+                                    es.printStackTrace();
+                                }
+
+
                                 Launcher.isLoggedIn = true;
                             }
                         }

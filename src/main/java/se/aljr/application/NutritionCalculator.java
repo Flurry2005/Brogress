@@ -11,6 +11,6 @@ public class NutritionCalculator {
         return (int) (getBMR(weight,height,age)*activityFactor);
     }
     public static String getProteinNeed(float weight){
-        return String.format("%sg-%sg",weight*1.6,weight*2.2);
+        return String.format("%.1fg-%.1fg",weight*1.6,weight*2.2).replace(",",".");
     }
 }

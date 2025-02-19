@@ -35,6 +35,10 @@ public class ProgramPanel extends JPanel {
     private Image scaledEmptyBackground;
     private ImageIcon scaledEmptyBackgroundIcon;
 
+    private ImageIcon lightEmptyBackground;
+    private Image scaledLightEmptyBackground;
+    private ImageIcon scaledLightEmptyBackgroundIcon;
+
     private ImageIcon addButton;
     private Image scaledAddButton;
     private ImageIcon scaledAddButtonIcon;
@@ -53,23 +57,23 @@ public class ProgramPanel extends JPanel {
 
     private ImageIcon removeExerciseButtonImage;
     private Image scaledRemoveExerciseButtonImage;
-    private ImageIcon scaledRemoveExerciseIcon;
+    public static ImageIcon scaledRemoveExerciseIcon;
 
     private ImageIcon newSetButtonImage;
     private Image scaledNewSetButtonImage;
-    private ImageIcon scaledNewSetIcon;
+    public static ImageIcon scaledNewSetIcon;
 
     private ImageIcon removeSetButtonImage;
     private Image scaledRemoveSetButtonImage;
-    private static ImageIcon scaledRemoveSetIcon;
+    public static ImageIcon scaledRemoveSetIcon;
 
     private ImageIcon moveSetUpButtonImage;
     private Image scaledMoveSetUpButtonImage;
-    private static ImageIcon scaledMoveSetUpIcon;
+    public static ImageIcon scaledMoveSetUpIcon;
 
     private ImageIcon moveSetDownButtonImage;
     private Image scaledMoveSetDownButtonImage;
-    private static ImageIcon scaledMoveSetDownIcon;
+    public static ImageIcon scaledMoveSetDownIcon;
 
     private int statusDelayCounter;
     private StringBuilder status = new StringBuilder();
@@ -103,6 +107,10 @@ public class ProgramPanel extends JPanel {
         scaledEmptyBackground = emptyBackground.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
         scaledEmptyBackgroundIcon = new ImageIcon(scaledEmptyBackground);
 
+        lightEmptyBackground = new ImageIcon(resourcePath + "lightEmptyBackground.png");
+        scaledLightEmptyBackground = lightEmptyBackground.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
+        scaledLightEmptyBackgroundIcon = new ImageIcon(scaledLightEmptyBackground);
+                     
         addButton = new ImageIcon(resourcePath + "add_button.png");
         scaledAddButton = addButton.getImage().getScaledInstance((int)(width/14.1733333), (int)(height/22.862069), Image.SCALE_SMOOTH);
         scaledAddButtonIcon = new ImageIcon(scaledAddButton);
@@ -142,6 +150,7 @@ public class ProgramPanel extends JPanel {
         instance = this;
 
         this.setSize(width, height);
+        this.setOpaque(false);
         this.setBackground(new Color(31, 31, 31));
         this.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
         init();
@@ -447,6 +456,7 @@ public class ProgramPanel extends JPanel {
         //Search and add exercise
 
         Exercises list = new Exercises();
+        list.removeGif();
         for (Exercise exercise : list.getList()) {
             exerciseModel.addElement(exercise);
         }
@@ -1182,13 +1192,13 @@ public class ProgramPanel extends JPanel {
                 Color settingsPanelColor = new Color(195,195,195);
                 Color innerSettingPanelColor = new Color(220,220,220);
 
-                mainPanel.setBackground(settingsPanelColor);
+                mainPanel.setBackground(settingsPanelBackgroundColor);
                 workoutContainer.setBackground(settingsPanelColor);
                 workoutContainer.setForeground(Color.BLACK);
                 workoutScrollPane.getViewport().setBackground(innerSettingPanelColor);
                 workoutScrollPane.setForeground(Color.BLACK);
-                workoutPanel.setBackground(settingsPanelColor);
-                exercisesPanel.setBackground(settingsPanelColor);
+                workoutPanel.setBackground(settingsPanelBackgroundColor);
+                exercisesPanel.setBackground(settingsPanelBackgroundColor);
                 workoutTitle.setBackground(innerSettingPanelColor);
                 workoutTitle.setForeground(Color.BLACK);
                 searchExercise.setBackground(innerSettingPanelColor);
@@ -1199,7 +1209,7 @@ public class ProgramPanel extends JPanel {
                 exercisesScrollPane.setBackground(innerSettingPanelColor);
                 addExerciseAndSetPanel.setBackground(settingsPanelColor);
                 workoutPanelTop.setBackground(settingsPanelColor);
-                savedWorkoutsPanel.setBackground(settingsPanelColor);
+                savedWorkoutsPanel.setBackground(settingsPanelBackgroundColor);
                 savedWorkoutsList.setBackground(innerSettingPanelColor);
                 setPanel.setBackground(settingsPanelColor);
                 rightPanel.setBackground(innerSettingPanelColor);
@@ -1207,7 +1217,7 @@ public class ProgramPanel extends JPanel {
                 rirAmount.setBackground(innerSettingPanelColor);
 
 
-
+                g.drawImage(scaledLightEmptyBackgroundIcon.getImage(), 0, 0, getWidth(), getHeight(), this);
             }
 
         }

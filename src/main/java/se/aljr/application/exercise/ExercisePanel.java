@@ -39,6 +39,7 @@ public class ExercisePanel extends JPanel {
     private static JPanel statusPanel;
     private static Timer shrinkStatusPanel;
     private static JLabel statusText;
+    private static JPanel mainPanel;
     private static DefaultListModel<Exercise> myExerciseModel;
     private static DefaultListModel<Exercise> favExerciseModel;
     private static boolean editButtonEnabled = false;
@@ -73,7 +74,7 @@ public class ExercisePanel extends JPanel {
         scaledContentBackground = homePanelBackground.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
         scaledContentBackgroundPanel = new ImageIcon(scaledContentBackground);
 
-        lightHomePanelBackground = new ImageIcon(resourcePath+"bottom_right_bar_light.png");
+        lightHomePanelBackground = new ImageIcon(resourcePath+"lightEmptyBackground.png");
         scaledLightContentBackground = lightHomePanelBackground.getImage().getScaledInstance(width,height,Image.SCALE_SMOOTH);
         scaledLightContentBackgroundPanel = new ImageIcon(scaledLightContentBackground);
 
@@ -99,7 +100,7 @@ public class ExercisePanel extends JPanel {
 
         //-------------------Initialize components---------------------------
 
-        JPanel mainPanel = new JPanel();
+        mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
         mainPanel.setBackground(new Color(51, 51, 51));
         mainPanel.setPreferredSize(this.getPreferredSize());
@@ -787,19 +788,9 @@ public class ExercisePanel extends JPanel {
                 settingsPanelBackgroundColor = new Color(51,51,51);
                 settingsPanelColor = new Color(21,21,21);
                 innerSettingPanelColor = new Color(31,31,31);
-
-                infoTextArea.setBackground(settingsPanelColor);
-                infoTextArea.setForeground(Color.WHITE);
-
-                searchField.setBackground(settingsPanelColor);
-                searchField.setForeground(Color.WHITE);
-
-                showFavorites.setBackground(settingsPanelBackgroundColor);
-                searchFieldandExercisesContainer.setBackground(settingsPanelBackgroundColor);
-
-                topBar.setBackground(settingsPanelBackgroundColor);
-                topBarWestContainer.setBackground(settingsPanelBackgroundColor);
                 statusText.setForeground(Color.WHITE);
+
+                mainPanel.setBackground(settingsPanelBackgroundColor);
 
                 menuList.setBackground(settingsPanelColor);
                 menuList.setForeground(Color.WHITE);
@@ -813,17 +804,8 @@ public class ExercisePanel extends JPanel {
                 settingsPanelColor = new Color(230,230,230);
                 innerSettingPanelColor = new Color(220,220,220);
 
-                infoTextArea.setBackground(settingsPanelColor);
-                infoTextArea.setForeground(Color.BLACK);
+                mainPanel.setBackground(settingsPanelBackgroundColor);
 
-                searchField.setBackground(settingsPanelColor);
-                searchField.setForeground(Color.BLACK);
-
-                showFavorites.setBackground(settingsPanelBackgroundColor);
-                searchFieldandExercisesContainer.setBackground(settingsPanelBackgroundColor);
-
-                topBar.setBackground(settingsPanelBackgroundColor);
-                topBarWestContainer.setBackground(settingsPanelBackgroundColor);
                 statusText.setForeground(Color.BLACK);
 
                 menuList.setBackground(settingsPanelColor);

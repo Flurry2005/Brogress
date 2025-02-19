@@ -278,6 +278,7 @@ public class SettingsPanel extends JPanel{
         themeList.add("Dark");
 
         JComboBox themeDropDown = new JComboBox(themeList.toArray());
+        themeDropDown.setSelectedIndex(1);
         themeDropDown.setPreferredSize(new Dimension(width/15, height/10));
         themeDropDown.addItemListener(new ItemListener() {
             @Override
