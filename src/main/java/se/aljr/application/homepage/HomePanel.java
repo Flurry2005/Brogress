@@ -3,6 +3,7 @@ package se.aljr.application.homepage;
 import com.google.cloud.storage.Acl;
 import se.aljr.application.CustomFont;
 import se.aljr.application.ImageAvatar;
+import se.aljr.application.NutritionCalculator;
 import se.aljr.application.UserData;
 import se.aljr.application.loginpage.FirebaseManager;
 
@@ -140,10 +141,48 @@ public class HomePanel extends JPanel {
             }
         };
         userMacrosPanel.setOpaque(false);
-        userMacrosPanel.setPreferredSize(new Dimension(moduleIcon.getIconWidth(),moduleIcon.getIconHeight()));
-        userMacrosPanel.setMaximumSize(new Dimension(moduleIcon.getIconWidth(),moduleIcon.getIconHeight()));
+        userMacrosPanel.setLayout(new BoxLayout(userMacrosPanel,BoxLayout.Y_AXIS));
+        userMacrosPanel.setPreferredSize(new Dimension((int) (HomePanel.this.getWidth()/3.7695035461),(int)(HomePanel.this.getHeight()/4.22292993631)));
+        userMacrosPanel.setMaximumSize(userInfoPanel.getPreferredSize());
+        userMacrosPanel.setBorder(new EmptyBorder(0,userInfoPanel.getPreferredSize().width/16,0,0));
+
+        JLabel bmiLabel = new JLabel();
+        bmiLabel.setText("BMI: "+ NutritionCalculator.getBmi(UserData.getUserWeight(), UserData.getUserHeight()));
+        bmiLabel.setFont(CustomFont.getFont().deriveFont(getWidth()/50f));
+        bmiLabel.setForeground(Color.WHITE);
+
+        JLabel bmrLabel = new JLabel();
+        bmrLabel.setText("BMR: "+ NutritionCalculator.getBMR(UserData.getUserWeight(), UserData.getUserHeight(),UserData.getUserAge())+" kcal");
+        bmrLabel.setFont(CustomFont.getFont().deriveFont(getWidth()/50f));
+        bmrLabel.setForeground(Color.WHITE);
+
+        JLabel tdeeLabel = new JLabel();
+        tdeeLabel.setText("TDEE: "+ NutritionCalculator.getTDEE(UserData.getUserWeight(), UserData.getUserHeight(),UserData.getUserAge(),1.2f)+" kcal");
+        tdeeLabel.setFont(CustomFont.getFont().deriveFont(getWidth()/50f));
+        tdeeLabel.setForeground(Color.WHITE);
+
+        JLabel proteinNeedLabel = new JLabel();
+        proteinNeedLabel.setText("Protein: "+ NutritionCalculator.getProteinNeed(UserData.getUserWeight()));
+        proteinNeedLabel.setFont(CustomFont.getFont().deriveFont(getWidth()/50f));
+        proteinNeedLabel.setForeground(Color.WHITE);
+
+        JLabel macroLabel = new JLabel();
+        macroLabel.setText("MACROS");
+        macroLabel.setFont(CustomFont.getFont().deriveFont(getWidth()/40f));
+        macroLabel.setForeground(Color.WHITE);
+        //macroLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 
+
+        userMacrosPanel.add(Box.createVerticalGlue());
+        userMacrosPanel.add(Box.createVerticalGlue());
+        userMacrosPanel.add(macroLabel);
+        userMacrosPanel.add(Box.createVerticalGlue());
+        userMacrosPanel.add(bmiLabel);
+        userMacrosPanel.add(bmrLabel);
+        userMacrosPanel.add(tdeeLabel);
+        userMacrosPanel.add(proteinNeedLabel);
+        userMacrosPanel.add(Box.createVerticalGlue());
 
         JPanel topPanel = new JPanel();
         topPanel.setPreferredSize(new Dimension(getWidth(),(int)(getHeight()/3.171974)+getHeight()/20));

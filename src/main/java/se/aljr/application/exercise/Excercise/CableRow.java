@@ -1,6 +1,9 @@
 package se.aljr.application.exercise.Excercise;
 
+import se.aljr.application.ResourcePath;
 import se.aljr.application.exercise.Muscle.*;
+
+import javax.swing.*;
 
 public class CableRow extends Exercise {
     public CableRow() {
@@ -28,5 +31,8 @@ public class CableRow extends Exercise {
         musclesUsed.add(new Traps());
         musclesUsed.add(new PosteriorDeltoid());
         musclesUsed.add(new LowerBack());
+
+        imageIcon = new ImageIcon(ResourcePath.getResourcePath() + "ExerciseImages\\CableRow.gif");
     }
+
 }

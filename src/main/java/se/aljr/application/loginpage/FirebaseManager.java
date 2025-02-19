@@ -3,10 +3,14 @@ package se.aljr.application.loginpage;
 import com.google.api.core.ApiFuture;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.firestore.*;
+import com.google.cloud.storage.BlobId;
+import com.google.cloud.storage.BlobInfo;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
+import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageOptions;
 import com.google.firebase.auth.UserRecord;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -23,16 +27,18 @@ import java.awt.event.ActionListener;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 public class FirebaseManager {
     private static String resourcePath;
     private static Firestore db;
     private static FirestoreOptions firestoreOptions;
-
+    private static StorageOptions storageOptions;
     static {
         try {
             resourcePath = FirebaseManager.class.getClassLoader().getResource("resource.path")
@@ -54,6 +60,7 @@ public class FirebaseManager {
 
             db = firestoreOptions.getService();
 
+            storageOptions = StorageOptions.newBuilder().setCredentials(credentials).build();
 
 
         } catch (Exception e) {
@@ -134,6 +141,8 @@ public class FirebaseManager {
     }
 
     public static void writeDBworkout(WorkoutsList workoutsList) throws IOException {
+        Storage storage = storageOptions.getService();
+
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
         objectOutputStream.writeObject(workoutsList);
@@ -141,20 +150,36 @@ public class FirebaseManager {
 
         String workoutBase64 = Base64.getEncoder().encodeToString(byteArrayOutputStream.toByteArray());
 
-        Map<String, Object> workoutsMap = new HashMap<>();
-        workoutsMap.put("workouts", workoutBase64);
+
+        String bucketName = "brogress-7499c.firebasestorage.app"; // Ersätt med ditt bucket-namn
+        String fileName = UserData.getEmail() + "_workouts.txt"; // Filnamn med användarnamn
+
+        // Konvertera String till byte-array
+        byte[] bytes = workoutBase64.getBytes(StandardCharsets.UTF_8);
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
+
+        // Skapa en Blob (fil) i Firebase Storage
+        BlobId blobId = BlobId.of(bucketName, fileName);
+        BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("text/plain").build();
+
+        // Ladda upp innehållet
+        storage.create(blobInfo, inputStream);
+
+        String publicUrl = "https://storage.googleapis.com/" + bucketName + "/" + fileName;
+
+        Map<String, Object> ref = new HashMap<>();
+        ref.put("workouts", publicUrl);
 
         // Referens till dokumentet i "users" collection
         DocumentReference docRef = db.collection("users").document(UserData.getEmail());
 
         // Skriv data och vänta på resultat
-        ApiFuture<WriteResult> result = docRef.update(workoutsMap);
+        ApiFuture<WriteResult> result = docRef.update(ref);
 
-        try {
-            System.out.println("Uppdaterat vid: " + result.get().getUpdateTime());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        System.out.println("Text har laddats upp som fil: " + fileName);
+        System.out.println("Publik URL: " + "https://storage.googleapis.com/" + bucketName + "/" + fileName);
+
+
 
     }
 
@@ -174,7 +199,20 @@ public class FirebaseManager {
 
             System.out.print(programPanel.getHeight());
             if (!userData.get("workouts").toString().isEmpty()) {
-                byte[] data = Base64.getDecoder().decode((String) userData.get("workouts"));
+                Storage storage = storageOptions.getService();
+
+                String fileName = userData.get("workouts").toString();
+
+                URL url = new URL(fileName);
+                String path = url.getPath();
+                String bucketName = "brogress-7499c.firebasestorage.app";
+                String userWorkoutFileName = path.substring(1).split("/")[1];
+
+                byte[] data1 = storage.get(BlobId.of(bucketName,userWorkoutFileName)).getContent();
+                String fileContent = new String(data1, StandardCharsets.UTF_8);
+
+
+                byte[] data = Base64.getDecoder().decode(fileContent);
                 ObjectInputStream objectInputStream = new ObjectInputStream(new ByteArrayInputStream(data));
                 WorkoutsList workoutsList = (WorkoutsList) objectInputStream.readObject();
                 objectInputStream.close();
@@ -442,7 +480,7 @@ public class FirebaseManager {
 
 
     // Register a new user with email and password
-    public static void registerUser(String email, String password) {
+    public static int registerUser(String email, String password) {
         try {
             UserRecord.CreateRequest request = new UserRecord.CreateRequest()
                     .setEmail(email)
@@ -451,8 +489,10 @@ public class FirebaseManager {
 
             UserRecord userRecord = FirebaseAuth.getInstance().createUser(request);
             System.out.println("Successfully created new user: " + userRecord.getUid());
+            return 0;
         } catch (FirebaseAuthException e) {
             System.err.println("Error creating new user: " + e.getMessage());
+            return -1;
         }
     }
 }

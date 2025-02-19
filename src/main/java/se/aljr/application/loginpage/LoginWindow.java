@@ -172,13 +172,17 @@ public class LoginWindow extends JFrame {
                             incorrectUserCredentialsLabel.setText("INVALID CREDENTIALS");
                         }
                     }else{
-                        FirebaseManager.registerUser(emailAdress, password);
-                        Thread.sleep(2000);
-                        if(FirebaseManager.authenticateUser(emailAdress, password)){
-                            FirebaseManager.writeDBnewUser(userName,emailAdress);
-
-                            Launcher.isLoggedIn = true;
+                        if(FirebaseManager.registerUser(emailAdress, password)==0){
+                            Thread.sleep(2000);
+                            if(FirebaseManager.authenticateUser(emailAdress, password)){
+                                FirebaseManager.writeDBnewUser(userName,emailAdress);
+                                Thread.sleep(2000);
+                                FirebaseManager.readDBUserInfo(emailAdress);
+                                Launcher.isLoggedIn = true;
+                            }
                         }
+
+
                     }
                 } catch (InterruptedException ex) {
                     throw new RuntimeException(ex);

@@ -1,8 +1,11 @@
 package se.aljr.application.exercise.Excercise;
 
+import se.aljr.application.ResourcePath;
 import se.aljr.application.exercise.Muscle.AnteriorDeltoid;
 import se.aljr.application.exercise.Muscle.Biceps;
 import se.aljr.application.exercise.Muscle.Chest;
+
+import javax.swing.*;
 
 public class ChestFly extends Exercise {
     public ChestFly() {
@@ -28,5 +31,7 @@ public class ChestFly extends Exercise {
         musclesUsed.add(new Chest());
         musclesUsed.add(new AnteriorDeltoid());
         musclesUsed.add(new Biceps());
+
+        imageIcon = new ImageIcon(ResourcePath.getResourcePath() +"ExerciseImages\\ChestFly.gif");
     }
 }

@@ -1,6 +1,9 @@
 package se.aljr.application.exercise.Excercise;
 
+import se.aljr.application.ResourcePath;
 import se.aljr.application.exercise.Muscle.*;
+
+import javax.swing.*;
 
 public class Deadlift extends Exercise {
 
@@ -28,6 +31,8 @@ public class Deadlift extends Exercise {
 		musclesUsed.add(new LowerBack());
 		musclesUsed.add(new Traps());
 		musclesUsed.add(new Forearms());
+
+		imageIcon = new ImageIcon(ResourcePath.getResourcePath() +"ExerciseImages\\Deadlift.gif");
 	}
 
 }

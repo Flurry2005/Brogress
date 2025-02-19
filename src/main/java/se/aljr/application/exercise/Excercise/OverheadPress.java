@@ -1,6 +1,9 @@
 package se.aljr.application.exercise.Excercise;
 
+import se.aljr.application.ResourcePath;
 import se.aljr.application.exercise.Muscle.*;
+
+import javax.swing.*;
 
 public class OverheadPress extends Exercise {
     public OverheadPress() {
@@ -28,5 +31,7 @@ public class OverheadPress extends Exercise {
         musclesUsed.add(new Triceps());
         musclesUsed.add(new Traps());
         musclesUsed.add(new Abs());
+
+        imageIcon = new ImageIcon(ResourcePath.getResourcePath() +"ExerciseImages\\OverheadPress.gif");
     }
 }
