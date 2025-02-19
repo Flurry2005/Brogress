@@ -93,6 +93,12 @@ public class ProgramPanel extends JPanel {
     JPanel savedWorkoutsPanel = new JPanel();
     DefaultListModel<String> workoutTitleDefaultListModel = new DefaultListModel<>();
     JList<String> savedWorkoutsList = new JList<>(workoutTitleDefaultListModel);
+    WorkoutsList workoutsList;
+
+    public static Color settingsPanelBackgroundColor;
+    public static Color settingsPanelColor;
+    public static Color innerSettingPanelColor;
+    public static Color workoutPanelTextColor;
 
 
     public static ProgramPanel instance;
@@ -215,7 +221,7 @@ public class ProgramPanel extends JPanel {
         JLabel isEmpty = new JLabel();
 
         //Panel containing log and workout data
-        WorkoutsList workoutsList = FirebaseManager.readDBworkout(this);
+        workoutsList = FirebaseManager.readDBworkout(this);
         if (workoutsList.size() == 0) {
             workoutsList.add(new Workout());
 
@@ -657,7 +663,7 @@ public class ProgramPanel extends JPanel {
         JPanel mainExercisePanel = new JPanel();
         mainExercisePanel.setName("mainExercisePanel");
         mainExercisePanel.setLayout(new BoxLayout(mainExercisePanel, BoxLayout.Y_AXIS));
-        mainExercisePanel.setBackground(new Color(22, 22, 22));
+        mainExercisePanel.setBackground(settingsPanelColor);
 
         // Track in log
         int exerciseId = workoutContainer.getExercisePanels().size() + 1;
@@ -680,7 +686,7 @@ public class ProgramPanel extends JPanel {
         exerciseName.setMaximumSize(exerciseName.getPreferredSize());
         exerciseName.setText(currentExercise.getName());
         exerciseName.setFont(new Font("Arial", Font.BOLD, 20));
-        exerciseName.setForeground(new Color(204, 204, 204));
+        exerciseName.setForeground(workoutPanelTextColor);
         exerciseName.setAlignmentX(Component.LEFT_ALIGNMENT);
         exerciseNameTitlePanel.add(exerciseName);
         mainExercisePanel.add(exerciseNameTitlePanel);
@@ -698,7 +704,8 @@ public class ProgramPanel extends JPanel {
 
         // Panel to hold the titles of Set, Rep, Weight, RIR
         JPanel setRepWeightRirTitleNPanel = new JPanel();
-        setRepWeightRirTitleNPanel.setBackground(new Color(38, 38, 38));
+        setRepWeightRirTitleNPanel.setName("setRepWeightRirTitleNPanel");
+        setRepWeightRirTitleNPanel.setBackground(settingsPanelColor);
         setRepWeightRirTitleNPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
         setRepWeightRirTitleNPanel.setPreferredSize(new Dimension(getWidth(), setPanelHeight));
         setRepWeightRirTitleNPanel.setMinimumSize(setRepWeightRirTitleNPanel.getPreferredSize());
@@ -709,6 +716,7 @@ public class ProgramPanel extends JPanel {
 
         // Title Panel to align Set title to left
         JPanel leftPanel = new JPanel();
+        leftPanel.setName("leftPanel");
         leftPanel.setOpaque(false);
         leftPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
         leftPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -719,8 +727,9 @@ public class ProgramPanel extends JPanel {
 
         // Label to hold "Set"
         JLabel setLabel = new JLabel();
+        setLabel.setName("setLabel");
         setLabel.setText("Set");
-        setLabel.setForeground(new Color(225, 219, 217));
+        setLabel.setForeground(workoutPanelTextColor);
         setLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         leftPanel.add(setLabel);
 
@@ -764,21 +773,24 @@ public class ProgramPanel extends JPanel {
 
         // Label to hold "Reps"
         JLabel repsLabel = new JLabel();
+        repsLabel.setName("repsLabel");
         repsLabel.setText("Reps");
-        repsLabel.setForeground(new Color(225, 219, 217));
+        repsLabel.setForeground(workoutPanelTextColor);
         repsLabel.setAlignmentX(Component.RIGHT_ALIGNMENT);
         rightPanel.add(repsLabel);
 
         // Label to hold "Weight"
         JLabel weightLabel = new JLabel();
+        weightLabel.setName("weightLabel");
         weightLabel.setText("Weight");
-        weightLabel.setForeground(new Color(225, 219, 217));
+        weightLabel.setForeground(workoutPanelTextColor);
         weightLabel.setAlignmentX(Component.RIGHT_ALIGNMENT);
         rightPanel.add(weightLabel);
         //Label to hold "RIR"
         JLabel rirLabel = new JLabel();
+        rirLabel.setName("rirLabel");
         rirLabel.setText("RIR");
-        rirLabel.setForeground(new Color(225, 219, 217));
+        rirLabel.setForeground(workoutPanelTextColor);
         rirLabel.setAlignmentX(Component.RIGHT_ALIGNMENT);
         rightPanel.add(rirLabel);
 
@@ -837,7 +849,7 @@ public class ProgramPanel extends JPanel {
 
         setPanel.setOpaque(true);
         setPanel.setLayout(new BorderLayout());
-        setPanel.setBackground(new Color(22, 22, 22));
+        setPanel.setBackground(settingsPanelColor);
         setPanel.setPreferredSize(new Dimension(ProgramPanel.programPanelWidth, setPanelHeight));
         setPanel.setMinimumSize(setPanel.getPreferredSize());
         setPanel.setMaximumSize(new Dimension(ProgramPanel.programPanelWidth, setPanelHeight));
@@ -853,7 +865,7 @@ public class ProgramPanel extends JPanel {
         JLabel setLabel = new JLabel();
         setLabel.setName("setLabel");
         setLabel.setText(workoutContainer.getWorkoutData().getSetSize(exerciseId) + ".");
-        setLabel.setForeground(new Color(204, 204, 204));
+        setLabel.setForeground(workoutPanelTextColor);
         leftPanel.add(setLabel);
 
 
@@ -1155,9 +1167,10 @@ public class ProgramPanel extends JPanel {
         // Draw the image to fill the entire panel
         if (emptyBackground != null) {
             if(!SettingsPanel.lightMode){
-                Color settingsPanelBackgroundColor = new Color(51,51,51);
-                Color settingsPanelColor = new Color(21,21,21);
-                Color innerSettingPanelColor = new Color(31,31,31);
+                settingsPanelBackgroundColor = new Color(51,51,51);
+                settingsPanelColor = new Color(21,21,21);
+                innerSettingPanelColor = new Color(31,31,31);
+                workoutPanelTextColor = Color.WHITE;
 
                 mainPanel.setBackground(settingsPanelBackgroundColor);
                 workoutContainer.setBackground(settingsPanelColor);
@@ -1176,23 +1189,108 @@ public class ProgramPanel extends JPanel {
                 exercisesScrollPane.setBackground(innerSettingPanelColor);
                 addExerciseAndSetPanel.setBackground(settingsPanelBackgroundColor);
                 savedWorkoutsPanel.setBackground(settingsPanelBackgroundColor);
-                savedWorkoutsList.setBackground(innerSettingPanelColor);
+                savedWorkoutsList.setBackground(settingsPanelColor);
+                savedWorkoutsList.setForeground(workoutPanelTextColor);
+
+                for(Workout workout : workoutsList){
+                    for (Component comp1 : workout.getComponents()) {
+                        if(comp1.getName()!=null){
+                            if (comp1.getName().equals("mainExercisePanel")) {
+                                JPanel mainExercisePanel = (JPanel) comp1;
+                                mainExercisePanel.setBackground(settingsPanelColor);
+                                for (Component comp2 : mainExercisePanel.getComponents()) {
+                                    if ("setPanel".equals(comp2.getName())) {
+                                        JPanel setPanel = (JPanel) comp2;
+                                        setPanel.setBackground(settingsPanelColor);
 
 
+                                        for (Component compLeftPanel : setPanel.getComponents()) {
+                                            if ("leftPanel".equals(compLeftPanel.getName())) {
+                                                JPanel leftPanel = (JPanel) compLeftPanel;
+                                                leftPanel.setBackground(settingsPanelColor);
+                                                for(Component setLabelComp : leftPanel.getComponents()){
+                                                    if(setLabelComp.getName().equals("setLabel")){
+                                                        JLabel setLabel = (JLabel) setLabelComp;
+                                                        setLabel.setForeground(workoutPanelTextColor);
+                                                    }
 
+                                                }
+                                            }
+                                        }
+                                    }
 
+                                    if (comp2.getName() != null) {
 
+                                        if (comp2.getName().equals("exerciseNameTitlePanel")) {
+
+                                            JPanel exerciseNameTitlePanel = (JPanel) comp2;
+                                            exerciseNameTitlePanel.setBackground(settingsPanelColor);
+                                            for(Component titleComp:exerciseNameTitlePanel.getComponents()){
+                                                if(titleComp.getName().equals("exerciseName")){
+                                                    JLabel exerciseName = (JLabel) titleComp;
+                                                    exerciseName.setForeground(workoutPanelTextColor);
+                                                }
+                                            }
+
+                                        }
+                                        if(comp2.getName().equals("setRepWeightRirTitleNPanel")){
+                                            JPanel setRepWeightRirTitleNPanel = (JPanel) comp2;
+                                            setRepWeightRirTitleNPanel.setBackground(innerSettingPanelColor);
+                                            for (Component compRight : setRepWeightRirTitleNPanel.getComponents()){
+                                                if(compRight.getName()!=null){
+                                                    if("rightPanel".equals(compRight.getName())){
+                                                        JPanel rightPanel = (JPanel) compRight;
+                                                        for(Component comp : rightPanel.getComponents()){
+                                                            if(comp.getName()!=null){
+                                                                if(comp.getName().equals("repsLabel")){
+                                                                    JLabel repsLabel = (JLabel) comp;
+                                                                    repsLabel.setForeground(workoutPanelTextColor);
+                                                                }
+                                                                if(comp.getName().equals("weightLabel")){
+                                                                    JLabel repsLabel = (JLabel) comp;
+                                                                    repsLabel.setForeground(workoutPanelTextColor);
+                                                                }
+                                                                if(comp.getName().equals("rirLabel")){
+                                                                    JLabel repsLabel = (JLabel) comp;
+                                                                    repsLabel.setForeground(workoutPanelTextColor);
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                    for (Component compLeftPanel : setRepWeightRirTitleNPanel.getComponents()) {
+                                                        if ("leftPanel".equals(compLeftPanel.getName())) {
+                                                            JPanel leftPanel = (JPanel) compLeftPanel;
+                                                            leftPanel.setBackground(settingsPanelColor);
+                                                            for(Component setLabelComp : leftPanel.getComponents()){
+                                                                if(setLabelComp.getName().equals("setLabel")){
+                                                                    JLabel setLabel = (JLabel) setLabelComp;
+                                                                    setLabel.setForeground(workoutPanelTextColor);
+                                                                }
+
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
 
                 g.drawImage(scaledEmptyBackgroundIcon.getImage(), 0, 0, getWidth(), getHeight(), this);
             }else{
-                Color settingsPanelBackgroundColor = new Color(255,255,255);
-                Color settingsPanelColor = new Color(195,195,195);
-                Color innerSettingPanelColor = new Color(220,220,220);
+                settingsPanelBackgroundColor = new Color(255,255,255);
+                settingsPanelColor = new Color(195,195,195);
+                innerSettingPanelColor = new Color(220,220,220);
+                workoutPanelTextColor = Color.BLACK;
 
                 mainPanel.setBackground(settingsPanelBackgroundColor);
                 workoutContainer.setBackground(settingsPanelColor);
                 workoutContainer.setForeground(Color.BLACK);
-                workoutScrollPane.getViewport().setBackground(innerSettingPanelColor);
+                workoutScrollPane.getViewport().setBackground(settingsPanelColor);
                 workoutScrollPane.setForeground(Color.BLACK);
                 workoutPanel.setBackground(settingsPanelBackgroundColor);
                 exercisesPanel.setBackground(settingsPanelBackgroundColor);
@@ -1207,9 +1305,96 @@ public class ProgramPanel extends JPanel {
                 addExerciseAndSetPanel.setBackground(settingsPanelColor);
                 workoutPanelTop.setBackground(settingsPanelColor);
                 savedWorkoutsPanel.setBackground(settingsPanelBackgroundColor);
-                savedWorkoutsList.setBackground(innerSettingPanelColor);
+                savedWorkoutsList.setBackground(settingsPanelColor);
+                savedWorkoutsList.setForeground(workoutPanelTextColor);
+
+                for(Workout workout : workoutsList){
+                    for (Component comp1 : workout.getComponents()) {
+                        if(comp1.getName()!=null){
+                            if (comp1.getName().equals("mainExercisePanel")) {
+                                JPanel mainExercisePanel = (JPanel) comp1;
+                                mainExercisePanel.setBackground(settingsPanelColor);
+                                for (Component comp2 : mainExercisePanel.getComponents()) {
+                                    if ("setPanel".equals(comp2.getName())) {
+                                        JPanel setPanel = (JPanel) comp2;
+                                        setPanel.setBackground(settingsPanelColor);
 
 
+                                        for (Component compLeftPanel : setPanel.getComponents()) {
+                                            if ("leftPanel".equals(compLeftPanel.getName())) {
+                                                JPanel leftPanel = (JPanel) compLeftPanel;
+                                                leftPanel.setBackground(settingsPanelColor);
+                                                for(Component setLabelComp : leftPanel.getComponents()){
+                                                    if(setLabelComp.getName().equals("setLabel")){
+                                                        JLabel setLabel = (JLabel) setLabelComp;
+                                                        setLabel.setForeground(workoutPanelTextColor);
+                                                    }
+
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    if (comp2.getName() != null) {
+
+                                        if (comp2.getName().equals("exerciseNameTitlePanel")) {
+
+                                            JPanel exerciseNameTitlePanel = (JPanel) comp2;
+                                            exerciseNameTitlePanel.setBackground(settingsPanelColor);
+                                            for(Component titleComp:exerciseNameTitlePanel.getComponents()){
+                                                if(titleComp.getName().equals("exerciseName")){
+                                                    JLabel exerciseName = (JLabel) titleComp;
+                                                    exerciseName.setForeground(workoutPanelTextColor);
+                                                }
+                                            }
+
+                                        }
+                                        if(comp2.getName().equals("setRepWeightRirTitleNPanel")){
+                                            JPanel setRepWeightRirTitleNPanel = (JPanel) comp2;
+                                            setRepWeightRirTitleNPanel.setBackground(innerSettingPanelColor);
+                                            for (Component compRight : setRepWeightRirTitleNPanel.getComponents()){
+                                                if(compRight.getName()!=null){
+                                                    if("rightPanel".equals(compRight.getName())){
+                                                        JPanel rightPanel = (JPanel) compRight;
+                                                        for(Component comp : rightPanel.getComponents()){
+                                                            if(comp.getName()!=null){
+                                                                if(comp.getName().equals("repsLabel")){
+                                                                    JLabel repsLabel = (JLabel) comp;
+                                                                    repsLabel.setForeground(workoutPanelTextColor);
+                                                                }
+                                                                if(comp.getName().equals("weightLabel")){
+                                                                    JLabel repsLabel = (JLabel) comp;
+                                                                    repsLabel.setForeground(workoutPanelTextColor);
+                                                                }
+                                                                if(comp.getName().equals("rirLabel")){
+                                                                    JLabel repsLabel = (JLabel) comp;
+                                                                    repsLabel.setForeground(workoutPanelTextColor);
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                    for (Component compLeftPanel : setRepWeightRirTitleNPanel.getComponents()) {
+                                                        if ("leftPanel".equals(compLeftPanel.getName())) {
+                                                            JPanel leftPanel = (JPanel) compLeftPanel;
+                                                            leftPanel.setBackground(settingsPanelColor);
+                                                            for(Component setLabelComp : leftPanel.getComponents()){
+                                                                if(setLabelComp.getName().equals("setLabel")){
+                                                                    JLabel setLabel = (JLabel) setLabelComp;
+                                                                    setLabel.setForeground(workoutPanelTextColor);
+                                                                }
+
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
 
                 g.drawImage(scaledLightEmptyBackgroundIcon.getImage(), 0, 0, getWidth(), getHeight(), this);
             }
