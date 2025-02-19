@@ -6,6 +6,7 @@ import se.aljr.application.homepage.HomePanel;
 import se.aljr.application.homepage.MenuPanel;
 import se.aljr.application.homepage.TopBar;
 import se.aljr.application.loginpage.FirebaseManager;
+import se.aljr.application.programplanner.ProgramPanel;
 import se.aljr.application.settings.custom.SteelCheckBoxUI;
 
 
@@ -353,8 +354,9 @@ public class SettingsPanel extends JPanel{
                         TopBar.instance.repaint();
                         TopBar.instance.revalidate();
 
-                        MenuPanel.instance.repaint();
-                        MenuPanel.instance.revalidate();
+
+                        ProgramPanel.instance.repaint();
+                        ProgramPanel.instance.revalidate();
 
 
                         repaint();
@@ -422,8 +424,8 @@ public class SettingsPanel extends JPanel{
                         TopBar.instance.repaint();
                         TopBar.instance.revalidate();
 
-                        MenuPanel.instance.repaint();
-                        MenuPanel.instance.revalidate();
+                        ProgramPanel.instance.repaint();
+                        ProgramPanel.instance.revalidate();
 
                         System.out.println("Dark Mode");
                         repaint();
