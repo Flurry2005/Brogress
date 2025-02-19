@@ -2,11 +2,13 @@ package se.aljr.application.exercise;
 
 import com.google.cloud.storage.Acl;
 import se.aljr.application.ResourcePath;
+import org.checkerframework.checker.units.qual.C;
 import se.aljr.application.UserData;
 import se.aljr.application.exercise.Excercise.*;
 import se.aljr.application.exercise.Muscle.Muscle;
 import se.aljr.application.exercise.Muscle.MuscleList;
 import se.aljr.application.exercise.Program.Exercises;
+import se.aljr.application.settings.SettingsPanel;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -43,17 +45,39 @@ public class ExercisePanel extends JPanel {
     private static boolean createdTabEnabled = false;
 
 
+    private boolean isFavourite = false;
+
     Font font;
 
     protected ImageIcon homePanelBackground;
     protected ImageIcon scaledContentBackgroundPanel;
     Image scaledContentBackground;
 
+    protected ImageIcon lightHomePanelBackground;
+    protected ImageIcon scaledLightContentBackgroundPanel;
+    Image scaledLightContentBackground;
+
+    Color settingsPanelBackgroundColor = new Color(51,51,51);
+    Color settingsPanelColor = new Color(21,21,21);
+    Color innerSettingPanelColor = new Color(31,31,31);
+
+    Color buttonBG = new Color(51, 51, 51,255);
+    Color buttonBGHovered = new Color(40,40,40);
+    Color buttonBGPressed = new Color(30,30,30);
+
+    public static ExercisePanel instance;
+
     public ExercisePanel(int width, int height) throws InterruptedException {
         resourcePath = getClass().getClassLoader().getResource("resource.path").getPath().replace("resource.path", "");
         homePanelBackground = new ImageIcon(resourcePath + "bottom_right_bar.png");
         scaledContentBackground = homePanelBackground.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
         scaledContentBackgroundPanel = new ImageIcon(scaledContentBackground);
+
+        lightHomePanelBackground = new ImageIcon(resourcePath+"bottom_right_bar_light.png");
+        scaledLightContentBackground = lightHomePanelBackground.getImage().getScaledInstance(width,height,Image.SCALE_SMOOTH);
+        scaledLightContentBackgroundPanel = new ImageIcon(scaledLightContentBackground);
+
+        instance = this;
 
         resourcePath = getClass().getClassLoader().getResource("resource.path").getPath().replace("resource.path", "");
         try {
@@ -750,13 +774,69 @@ public class ExercisePanel extends JPanel {
         menuList.repaint();
     }
 
+    public void updateColor(){
+
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         // Draw the image to fill the entire panel
         if (homePanelBackground != null) {
-            g.drawImage(scaledContentBackgroundPanel.getImage(), 0, 0, getWidth(), getHeight(), this);
-        } else {
+            if(!SettingsPanel.lightMode){
+                settingsPanelBackgroundColor = new Color(51,51,51);
+                settingsPanelColor = new Color(21,21,21);
+                innerSettingPanelColor = new Color(31,31,31);
+
+                infoTextArea.setBackground(settingsPanelColor);
+                infoTextArea.setForeground(Color.WHITE);
+
+                searchField.setBackground(settingsPanelColor);
+                searchField.setForeground(Color.WHITE);
+
+                showFavorites.setBackground(settingsPanelBackgroundColor);
+                searchFieldandExercisesContainer.setBackground(settingsPanelBackgroundColor);
+
+                topBar.setBackground(settingsPanelBackgroundColor);
+                topBarWestContainer.setBackground(settingsPanelBackgroundColor);
+                statusText.setForeground(Color.WHITE);
+
+                menuList.setBackground(settingsPanelColor);
+                menuList.setForeground(Color.WHITE);
+
+                titleLabel.setForeground(Color.WHITE);
+                musclesWorkedLabel.setForeground(Color.WHITE);
+
+                g.drawImage(scaledContentBackgroundPanel.getImage(), 0, 0, getWidth(), getHeight(), this);
+            }else{
+                settingsPanelBackgroundColor = new Color(255,255,255);
+                settingsPanelColor = new Color(230,230,230);
+                innerSettingPanelColor = new Color(220,220,220);
+
+                infoTextArea.setBackground(settingsPanelColor);
+                infoTextArea.setForeground(Color.BLACK);
+
+                searchField.setBackground(settingsPanelColor);
+                searchField.setForeground(Color.BLACK);
+
+                showFavorites.setBackground(settingsPanelBackgroundColor);
+                searchFieldandExercisesContainer.setBackground(settingsPanelBackgroundColor);
+
+                topBar.setBackground(settingsPanelBackgroundColor);
+                topBarWestContainer.setBackground(settingsPanelBackgroundColor);
+                statusText.setForeground(Color.BLACK);
+
+                menuList.setBackground(settingsPanelColor);
+                menuList.setForeground(Color.BLACK);
+
+                titleLabel.setForeground(Color.BLACK);
+                musclesWorkedLabel.setForeground(Color.BLACK);
+
+                g.drawImage(scaledLightContentBackgroundPanel.getImage(), 0, 0, getWidth(), getHeight(), this);
+            }
+
+        }
+        else{
             System.out.println("Error");
         }
     }

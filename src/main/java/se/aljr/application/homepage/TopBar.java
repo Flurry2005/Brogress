@@ -1,5 +1,7 @@
 package se.aljr.application.homepage;
 
+import se.aljr.application.settings.SettingsPanel;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -9,21 +11,34 @@ import java.awt.event.MouseMotionAdapter;
 public class TopBar extends JPanel {
 
     ImageIcon topBarBackground;
+    ImageIcon lightTopBarBackground;
     ImageIcon exitButtonIcon;
     private Point initialClick;
     private JFrame parent;
     private String resourcePath;
+    Image scaledexitButtonIcon;
+    ImageIcon scaledExitButtonIcon;
+
+    JButton exitButton = new JButton("",scaledExitButtonIcon);
+    JButton minimizeButton = new JButton("—");
+    JButton fullscreenButton = new JButton("⬜");
 
     private boolean isFullscreen = false;
     private Dimension previousSize;
     private Point previousLocation;
     private Color bg = (new Color(51,51,51));
+    public static TopBar instance;
 
     public TopBar(final JFrame parent){
         resourcePath = getClass().getClassLoader().getResource("resource.path").getPath().replace("resource.path","");
         topBarBackground = new ImageIcon(resourcePath+"top_bar.png");
+        lightTopBarBackground = new ImageIcon(resourcePath+"top_bar_light.png");
         exitButtonIcon = new ImageIcon(resourcePath+"exit_button_icon.png");
 
+        instance = this;
+
+        scaledexitButtonIcon = exitButtonIcon.getImage().getScaledInstance(16, 16, Image.SCALE_SMOOTH);
+        scaledExitButtonIcon = new ImageIcon(scaledexitButtonIcon);
 
         this.parent = parent;
         addMouseListener(new MouseAdapter() {
@@ -58,12 +73,10 @@ public class TopBar extends JPanel {
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 0));
         buttonPanel.setOpaque(false);
 
-        Image scaledexitButtonIcon = exitButtonIcon.getImage().getScaledInstance(16, 16, Image.SCALE_SMOOTH);
-        ImageIcon scaledExitButtonIcon = new ImageIcon(scaledexitButtonIcon);
+
 
 
         // Exit button
-        JButton exitButton = new JButton("",scaledExitButtonIcon);
         exitButton.setFont(new Font("Arial", Font.BOLD, 14));
         exitButton.setForeground(Color.BLACK);
         exitButton.setBackground(bg);
@@ -87,7 +100,7 @@ public class TopBar extends JPanel {
 
 
         // Mini button
-        JButton minimizeButton = new JButton("—");
+
         minimizeButton.setFont(new Font("Arial", Font.BOLD, 14));
         minimizeButton.setForeground(Color.BLACK);
         minimizeButton.setBackground(new Color(51,51,51));
@@ -110,7 +123,7 @@ public class TopBar extends JPanel {
 
 
         // Fullscreen button
-        JButton fullscreenButton = new JButton("⬜");
+
         fullscreenButton.setFont(new Font("Arial", Font.BOLD, 14));
         fullscreenButton.setForeground(Color.BLACK);
         fullscreenButton.setBackground(new Color(51,51,51));
@@ -157,6 +170,24 @@ public class TopBar extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         //draw image from top left corner
-        g.drawImage(topBarBackground.getImage(), 0, 0,getWidth(),getHeight(), this);
+
+        if(!SettingsPanel.lightMode){
+            bg = (new Color(51,51,51));
+
+            minimizeButton.setBackground(bg);
+            fullscreenButton.setBackground(bg);
+            exitButton.setBackground(bg);
+
+            g.drawImage(topBarBackground.getImage(), 0, 0,getWidth(),getHeight(), this);
+        }else{
+            bg = (new Color(204,204,204));
+
+            minimizeButton.setBackground(bg);
+            fullscreenButton.setBackground(bg);
+            exitButton.setBackground(bg);
+
+            g.drawImage(lightTopBarBackground.getImage(), 0, 0,getWidth(),getHeight(), this);
+        }
+
     }
 }
