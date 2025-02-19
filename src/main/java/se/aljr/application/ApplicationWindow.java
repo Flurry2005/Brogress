@@ -22,6 +22,8 @@ public class ApplicationWindow extends JFrame  {
     int screenWidth = screenSize.width;
     int screenHeight = screenSize.height;
 
+    public static ApplicationWindow instance;
+
     ApplicationWindow(int width, int height, String applicationTitle) throws InterruptedException {
         this.setUndecorated(true);
         this.setTitle(applicationTitle); //Sätter titeln av fönstret
@@ -31,6 +33,7 @@ public class ApplicationWindow extends JFrame  {
          //Sätter fönstret till synlig
         setApplicationLogo();
         this.setLocationRelativeTo(null);
+        instance = this;
         this.getContentPane().setBackground(new Color(31,31,31));
 
         ResizeHandler resizeHandler = new ResizeHandler(this, ((double) width /height)); // Aspect ratio (t.ex. 4:3)
@@ -191,6 +194,14 @@ public class ApplicationWindow extends JFrame  {
     }
     private void setApplicationLogo(){
         this.setIconImage(applicationIcon.getImage());
+    }
+
+    public static void updateBackground() {
+        if (!SettingsPanel.lightMode) {
+            instance.getContentPane().setBackground(new Color(31, 31, 31));
+        } else {
+            instance.getContentPane().setBackground(new Color(200, 200, 200));
+        }
     }
 
 

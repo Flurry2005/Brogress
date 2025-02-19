@@ -1,8 +1,10 @@
 package se.aljr.application.exercise;
 
+import org.checkerframework.checker.units.qual.C;
 import se.aljr.application.UserData;
 import se.aljr.application.exercise.Excercise.*;
 import se.aljr.application.exercise.Program.Exercises;
+import se.aljr.application.settings.SettingsPanel;
 
 
 import javax.swing.*;
@@ -17,26 +19,60 @@ import java.awt.event.*;
 import java.io.File;
 
 public class ExercisePanel extends JPanel {
-    private JList<Exercise> menuList;
+
     private JTextArea infoTextArea;
+    JTextField searchField = new JTextField("Search for exercise...");
+    DefaultListModel<Exercise> exerciseModel = new DefaultListModel<>();
+    private JList<Exercise> menuList = new JList<>(exerciseModel);
+    JCheckBox showFavorites = new JCheckBox("Show Favorites");
+    JPanel searchFieldandExercisesContainer = new JPanel();
+
+    JPanel topBar = new JPanel(new BorderLayout(0, 0));
+    JPanel topBarWestContainer = new JPanel();
+
+    private StringBuilder status = new StringBuilder();
+
+    JPanel statusPanel = new JPanel();
+    JLabel statusText = new JLabel(status.toString());
+
     private JLabel titleLabel;
     private JLabel musclesWorkedLabel;
     private String resourcePath;
     private Exercise selectedExercise;
     private boolean isFavourite = false;
     private int statusDelayCounter;
-    private StringBuilder status = new StringBuilder();
+
     Font font;
 
     protected ImageIcon homePanelBackground;
     protected ImageIcon scaledContentBackgroundPanel;
     Image scaledContentBackground;
 
+    protected ImageIcon lightHomePanelBackground;
+    protected ImageIcon scaledLightContentBackgroundPanel;
+    Image scaledLightContentBackground;
+
+    Color settingsPanelBackgroundColor = new Color(51,51,51);
+    Color settingsPanelColor = new Color(21,21,21);
+    Color innerSettingPanelColor = new Color(31,31,31);
+
+    Color buttonBG = new Color(51, 51, 51,255);
+    Color buttonBGHovered = new Color(40,40,40);
+    Color buttonBGPressed = new Color(30,30,30);
+
+    public static ExercisePanel instance;
+
     public ExercisePanel(int width, int height) throws InterruptedException {
         resourcePath = getClass().getClassLoader().getResource("resource.path").getPath().replace("resource.path","");
         homePanelBackground = new ImageIcon(resourcePath+ "bottom_right_bar.png");
         scaledContentBackground = homePanelBackground.getImage().getScaledInstance(width,height,Image.SCALE_SMOOTH);
         scaledContentBackgroundPanel = new ImageIcon(scaledContentBackground);
+
+        lightHomePanelBackground = new ImageIcon(resourcePath+"bottom_right_bar_light.png");
+        scaledLightContentBackground = lightHomePanelBackground.getImage().getScaledInstance(width,height,Image.SCALE_SMOOTH);
+        scaledLightContentBackgroundPanel = new ImageIcon(scaledLightContentBackground);
+
+        instance = this;
 
         resourcePath = getClass().getClassLoader().getResource("resource.path").getPath().replace("resource.path", "");
         try {
@@ -111,7 +147,7 @@ public class ExercisePanel extends JPanel {
         JPanel searchPanel = new JPanel(new BorderLayout());
         searchPanel.setBackground(new Color(51, 51, 51));
 
-        JTextField searchField = new JTextField("Search for exercise...");
+
         searchField.setFont(new Font("Arial", Font.ITALIC, 12));
         searchField.setBorder(new LineBorder(new Color(80, 73, 69)));
         searchField.setBackground(new Color(21, 21, 21));
@@ -139,12 +175,12 @@ public class ExercisePanel extends JPanel {
 
         });
 
-        JCheckBox showFavorites = new JCheckBox("Show Favorites");
+
         showFavorites.setBackground(new Color(51, 51, 51));
         showFavorites.setForeground(new Color(204, 204, 204));
 
 
-        JPanel searchFieldandExercisesContainer = new JPanel();
+
         searchFieldandExercisesContainer.setLayout(new BoxLayout(searchFieldandExercisesContainer, BoxLayout.Y_AXIS));
         searchFieldandExercisesContainer.add(searchField);
         searchFieldandExercisesContainer.add(showFavorites);
@@ -152,12 +188,12 @@ public class ExercisePanel extends JPanel {
 
 
         // Populate the JList with exercise data
-        DefaultListModel<Exercise> exerciseModel = new DefaultListModel<>();
+
         Exercises exercises = new Exercises();
         for (Exercise exercise : exercises.getList()) {
             exerciseModel.addElement(exercise);
         }
-        JList<Exercise> menuList = new JList<>(exerciseModel);
+
         menuList.setFont(font.deriveFont(17f));
         menuList.setBackground(new Color(21, 21, 21));
         menuList.setForeground(new Color(204, 204, 204));
@@ -216,18 +252,18 @@ public class ExercisePanel extends JPanel {
         exerciseScrollPanel.setPreferredSize(new Dimension(200, this.getHeight()));
 
         System.out.println("Sigma height"+height);
-        JPanel topBar = new JPanel(new BorderLayout(0, 0));
+
         topBar.setPreferredSize(new Dimension(width - exerciseScrollPanel.getWidth(), (int)(height/8.2875)));
         topBar.setMaximumSize(new Dimension(width - exerciseScrollPanel.getWidth(), (int)(height/8.2875)));
         topBar.setBackground(new Color(51, 51, 51));
-        JPanel topBarWestContainer = new JPanel();
+
         topBarWestContainer.setLayout(new BoxLayout(topBarWestContainer, BoxLayout.Y_AXIS));
         topBarWestContainer.setBackground(new Color(51, 51, 51));
 
-        JPanel statusPanel = new JPanel();
+
         statusPanel.setPreferredSize(new Dimension(this.getWidth(), 50));
         statusPanel.setVisible(false);
-        JLabel statusText = new JLabel(status.toString());
+
         statusText.setForeground(new Color(204, 204, 204));
         statusPanel.setBorder(new LineBorder(new Color(46, 148, 76),1,true));
 
@@ -354,12 +390,67 @@ public class ExercisePanel extends JPanel {
         });
     }
 
+    public void updateColor(){
+
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         // Draw the image to fill the entire panel
         if (homePanelBackground != null) {
-            g.drawImage(scaledContentBackgroundPanel.getImage(), 0, 0, getWidth(), getHeight(), this);
+            if(!SettingsPanel.lightMode){
+                settingsPanelBackgroundColor = new Color(51,51,51);
+                settingsPanelColor = new Color(21,21,21);
+                innerSettingPanelColor = new Color(31,31,31);
+
+                infoTextArea.setBackground(settingsPanelColor);
+                infoTextArea.setForeground(Color.WHITE);
+
+                searchField.setBackground(settingsPanelColor);
+                searchField.setForeground(Color.WHITE);
+
+                showFavorites.setBackground(settingsPanelBackgroundColor);
+                searchFieldandExercisesContainer.setBackground(settingsPanelBackgroundColor);
+
+                topBar.setBackground(settingsPanelBackgroundColor);
+                topBarWestContainer.setBackground(settingsPanelBackgroundColor);
+                statusText.setForeground(Color.WHITE);
+
+                menuList.setBackground(settingsPanelColor);
+                menuList.setForeground(Color.WHITE);
+
+                titleLabel.setForeground(Color.WHITE);
+                musclesWorkedLabel.setForeground(Color.WHITE);
+
+                g.drawImage(scaledContentBackgroundPanel.getImage(), 0, 0, getWidth(), getHeight(), this);
+            }else{
+                settingsPanelBackgroundColor = new Color(255,255,255);
+                settingsPanelColor = new Color(230,230,230);
+                innerSettingPanelColor = new Color(220,220,220);
+
+                infoTextArea.setBackground(settingsPanelColor);
+                infoTextArea.setForeground(Color.BLACK);
+
+                searchField.setBackground(settingsPanelColor);
+                searchField.setForeground(Color.BLACK);
+
+                showFavorites.setBackground(settingsPanelBackgroundColor);
+                searchFieldandExercisesContainer.setBackground(settingsPanelBackgroundColor);
+
+                topBar.setBackground(settingsPanelBackgroundColor);
+                topBarWestContainer.setBackground(settingsPanelBackgroundColor);
+                statusText.setForeground(Color.BLACK);
+
+                menuList.setBackground(settingsPanelColor);
+                menuList.setForeground(Color.BLACK);
+
+                titleLabel.setForeground(Color.BLACK);
+                musclesWorkedLabel.setForeground(Color.BLACK);
+
+                g.drawImage(scaledLightContentBackgroundPanel.getImage(), 0, 0, getWidth(), getHeight(), this);
+            }
+
         }
         else{
             System.out.println("Error");

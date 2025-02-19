@@ -2,6 +2,7 @@ package se.aljr.application.homepage;
 
 import se.aljr.application.ApplicationWindow;
 import se.aljr.application.programplanner.ProgramPanel;
+import se.aljr.application.settings.SettingsPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,7 +17,8 @@ import java.io.File;
  * Meny panel
  */
 public class MenuPanel extends JPanel{
-    ImageIcon menuBackground;
+    public ImageIcon menuBackground;
+    public ImageIcon lightMenuBackground;
     ImageIcon logoIcon;
     ImageIcon buttonIcon;
     ImageIcon buttonIconExercise;
@@ -26,18 +28,38 @@ public class MenuPanel extends JPanel{
     private ImageIcon scaledButtonSettingsIcon;
     private ImageIcon scaledLogoIcon;
     public boolean lightMode = false;
+    public static MenuPanel instance;
+    public int currentPage = 0;
+
+    Color settingsPanelBackgroundColor = new Color(51,51,51);
+    Color settingsPanelColor = new Color(21,21,21);
+    Color innerSettingPanelColor = new Color(31,31,31);
+
+    Color buttonBG = new Color(51, 51, 51,255);
+    Color buttonBGHovered = new Color(40,40,40);
+    Color buttonBGPressed = new Color(40,40,40);
 
     Font font;
     private int width;
     private int height;
     private String resourcePath;
+
+    final JButton homeButton = new JButton("Home",scaledButtonHomeIcon);
+    final JButton exercisesButton = new JButton("Exercises",scaledButtonExerciseIcon);
+    final JButton programButton = new JButton("Program");
+    JButton settingsButton = new JButton("Settings",scaledButtonSettingsIcon);
+
+    JLabel logoLabelText = new JLabel("BROGRESS");
+
     public MenuPanel(int width, int height){
         this.setOpaque(false);
+        instance = this;
         this.width = width;
         this.height = height;
         //this.setPreferredSize(new Dimension(width, height));
         resourcePath = getClass().getClassLoader().getResource("resource.path").getPath().replace("resource.path","");
         menuBackground = new ImageIcon(resourcePath+"side_bar.png");
+        lightMenuBackground = new ImageIcon(resourcePath+"side_bar_light.png");
         logoIcon = new ImageIcon(resourcePath+"agile_small_icon.png");
         buttonIcon = new ImageIcon(resourcePath+"button.png");
         buttonIconExercise = new ImageIcon(resourcePath+"button_exercise.png");
@@ -68,7 +90,7 @@ public class MenuPanel extends JPanel{
         JPanel logoLabelTextContainer = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
 
         logoLabelTextContainer.setOpaque(false);
-        JLabel logoLabelText = new JLabel("BROGRESS");
+
         logoLabelText.setFont(font.deriveFont(4f));
         logoLabelText.setForeground(Color.WHITE);
         logoLabelTextContainer.add(logoLabelText);
@@ -96,10 +118,7 @@ public class MenuPanel extends JPanel{
         final boolean[] settingsPageIsActive = {false};
 
 
-        final JButton homeButton = new JButton("Home",scaledButtonHomeIcon);
-        final JButton exercisesButton = new JButton("Exercises",scaledButtonExerciseIcon);
-        final JButton programButton = new JButton("Program");
-        JButton settingsButton = new JButton("Settings",scaledButtonSettingsIcon);
+
 
         homeButton.setFont(new Font("Arial", Font.TRUETYPE_FONT,height/35));
         homeButton.setForeground(Color.WHITE);
@@ -147,6 +166,7 @@ public class MenuPanel extends JPanel{
 
             @Override
             public void mousePressed(MouseEvent e) {
+                currentPage = 0;
                 exercisesPageIsActive[0] = false;
                 programPageIsActive[0] = false;
                 settingsPageIsActive[0] = false;
@@ -239,6 +259,7 @@ public class MenuPanel extends JPanel{
 
             @Override
             public void mousePressed(MouseEvent e) {
+                currentPage = 1;
                 exercisesPageIsActive[0] = true;
                 programPageIsActive[0] = false;
                 settingsPageIsActive[0] = false;
@@ -326,6 +347,7 @@ public class MenuPanel extends JPanel{
 
             @Override
             public void mousePressed(MouseEvent e) {
+                currentPage = 2;
                 exercisesPageIsActive[0] = false;
                 programPageIsActive[0] = true;
                 settingsPageIsActive[0] = false;
@@ -416,6 +438,7 @@ public class MenuPanel extends JPanel{
 
             @Override
             public void mousePressed(MouseEvent e) {
+                currentPage = 3;
                 exercisesPageIsActive[0] = false;
                 programPageIsActive[0] = false;
                 settingsPageIsActive[0] = true;
@@ -517,14 +540,82 @@ public class MenuPanel extends JPanel{
                 });
             }
         });
-
     }
+
+    public void updateButtonColor(){
+
+        if(!SettingsPanel.lightMode){
+            logoLabelText.setForeground(Color.WHITE);
+            lightMode = false;
+            settingsPanelBackgroundColor = new Color(51,51,51);
+            settingsPanelColor = new Color(21,21,21);
+            innerSettingPanelColor = new Color(31,31,31);
+
+            buttonBG = new Color(51, 51, 51,255);
+            buttonBGHovered = new Color(40,40,40);
+            buttonBGPressed = new Color(40,40,40);
+
+            homeButton.setForeground(Color.WHITE);
+            exercisesButton.setForeground(Color.WHITE);
+            programButton.setForeground(Color.WHITE);
+            settingsButton.setForeground(Color.WHITE);
+
+
+        }else{
+            logoLabelText.setForeground(Color.BLACK);
+            lightMode = true;
+            settingsPanelBackgroundColor = new Color(255,255,255);
+            settingsPanelColor = new Color(195,195,195);
+            innerSettingPanelColor = new Color(220,220,220);
+
+            buttonBG = new Color(255, 255, 255);
+            buttonBGHovered = new Color(240,240,240);
+            buttonBGPressed = new Color(210,210,210);
+
+
+            homeButton.setForeground(Color.BLACK);
+            exercisesButton.setForeground(Color.BLACK);
+            programButton.setForeground(Color.BLACK);
+            settingsButton.setForeground(Color.BLACK);
+        }
+        homeButton.setBackground(buttonBG);
+        exercisesButton.setBackground(buttonBG);
+        programButton.setBackground(buttonBG);
+        settingsButton.setBackground(buttonBG);
+
+        switch (currentPage){
+            case 0->{
+                homeButton.setBackground(buttonBGPressed);
+            }
+            case 1->{
+                exercisesButton.setBackground(buttonBGPressed);
+            }
+            case 2->{
+                programButton.setBackground(buttonBGPressed);
+            }
+            case 3->{
+                settingsButton.setBackground(buttonBGPressed);
+            }
+        }
+    }
+
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         // Draw the image to fill the entire panel
+        System.out.println("JAG ÄR INNE I DIN MAMMA");
+
         if (menuBackground != null) {
-            g.drawImage(menuBackground.getImage(), 0, 0, getWidth(), getHeight(), this);
+            if(!SettingsPanel.lightMode){
+                g.drawImage(menuBackground.getImage(), 0, 0, getWidth(), getHeight(), this);
+                updateButtonColor();
+            }else{
+                g.drawImage(lightMenuBackground.getImage(), 0, 0, getWidth(), getHeight(), this);
+                updateButtonColor();
+            }
+
+
         }
     }
 }
