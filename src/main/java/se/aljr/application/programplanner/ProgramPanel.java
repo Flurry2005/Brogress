@@ -93,10 +93,7 @@ public class ProgramPanel extends JPanel {
     JPanel savedWorkoutsPanel = new JPanel();
     DefaultListModel<String> workoutTitleDefaultListModel = new DefaultListModel<>();
     JList<String> savedWorkoutsList = new JList<>(workoutTitleDefaultListModel);
-    static JPanel setPanel = new JPanel();
-    static JPanel rightPanel = new JPanel();
-    static JTextField weightAmount = new JTextField();
-    static JTextField rirAmount = new JTextField();
+
 
     public static ProgramPanel instance;
 
@@ -828,7 +825,7 @@ public class ProgramPanel extends JPanel {
         WorkoutSet workoutSet = new WorkoutSet();
         workoutSet.setExercise(currentExercise);
         workoutContainer.getWorkoutData().addSet(exerciseId, workoutSet);
-
+        JPanel setPanel = new JPanel();
 
         workoutContainer.getSetPanels().put(exerciseId, setPanel);
         setPanel.setName("setPanel");
@@ -909,6 +906,9 @@ public class ProgramPanel extends JPanel {
             }
         });
 
+        JPanel rightPanel = new JPanel();
+        JTextField weightAmount = new JTextField();
+        JTextField rirAmount = new JTextField();
 
         rightPanel.setName("rightPanel");
         rightPanel.setOpaque(false);
@@ -1177,10 +1177,7 @@ public class ProgramPanel extends JPanel {
                 addExerciseAndSetPanel.setBackground(settingsPanelBackgroundColor);
                 savedWorkoutsPanel.setBackground(settingsPanelBackgroundColor);
                 savedWorkoutsList.setBackground(innerSettingPanelColor);
-                setPanel.setBackground(settingsPanelBackgroundColor);
-                rightPanel.setBackground(innerSettingPanelColor);
-                weightAmount.setBackground(innerSettingPanelColor);
-                rirAmount.setBackground(innerSettingPanelColor);
+
 
 
 
@@ -1211,10 +1208,7 @@ public class ProgramPanel extends JPanel {
                 workoutPanelTop.setBackground(settingsPanelColor);
                 savedWorkoutsPanel.setBackground(settingsPanelBackgroundColor);
                 savedWorkoutsList.setBackground(innerSettingPanelColor);
-                setPanel.setBackground(settingsPanelColor);
-                rightPanel.setBackground(innerSettingPanelColor);
-                weightAmount.setBackground(innerSettingPanelColor);
-                rirAmount.setBackground(innerSettingPanelColor);
+
 
 
                 g.drawImage(scaledLightEmptyBackgroundIcon.getImage(), 0, 0, getWidth(), getHeight(), this);
