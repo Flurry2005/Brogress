@@ -11,6 +11,7 @@ public class UserData {
     private static int userAge;
     private static float userWeight;
     private static String userEmail;
+    private static String userTheme;
     private static HashSet<Exercise> favoriteExercises = new HashSet<>();
     private static ArrayList<Exercise> createdExercises = new ArrayList<>();
 
@@ -53,6 +54,10 @@ public class UserData {
     public static String getEmail() {
         return UserData.userEmail;
     }
+
+    public static void setTheme(String theme){UserData.userTheme = theme;}
+
+    public static String getTheme(){return UserData.userTheme;}
 
 
     public static HashSet<Exercise> getFavoriteExercises() {

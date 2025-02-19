@@ -3,14 +3,11 @@ package se.aljr.application.loginpage;
 import com.google.api.core.ApiFuture;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.firestore.*;
-import com.google.cloud.storage.BlobId;
-import com.google.cloud.storage.BlobInfo;
+import com.google.cloud.storage.*;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
-import com.google.cloud.storage.Storage;
-import com.google.cloud.storage.StorageOptions;
 import com.google.firebase.auth.UserRecord;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -79,6 +76,7 @@ public class FirebaseManager {
         user.put("weight", "");
         user.put("workouts", "");
         user.put("profilepicture","");
+        user.put("theme","dark");
 
 
         // Referens till dokumentet i "users" collection
@@ -101,6 +99,7 @@ public class FirebaseManager {
         user.put("age", String.valueOf(UserData.getUserAge()));
         user.put("height", String.valueOf(UserData.getUserHeight()));
         user.put("weight", String.valueOf(UserData.getUserWeight()));
+        user.put("theme", UserData.getTheme());
 
 
         // Referens till dokumentet i "users" collection
@@ -134,6 +133,7 @@ public class FirebaseManager {
             UserData.setUserWeight(userData.get("weight").toString().isEmpty() ? 0:Float.parseFloat(userData.get("weight").toString())); //If no user weight is set, return 0
             UserData.setUserAge(userData.get("age").toString().isEmpty() ?0:Integer.parseInt(userData.get("age").toString())); //If no user age is set, return 0
             UserData.setUserHeight(userData.get("height").toString().isEmpty() ?0:Integer.parseInt(userData.get("height").toString())); //If no user height is set, return 0
+            UserData.setTheme(userData.get("theme").toString());
 
         } catch (Exception e) {
             e.printStackTrace();

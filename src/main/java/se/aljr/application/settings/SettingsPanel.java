@@ -16,6 +16,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
+import java.sql.Time;
 import java.util.ArrayList;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -160,6 +161,15 @@ public class SettingsPanel extends JPanel{
         Image scaleddarkPrivacySettingsIcon = darkPrivacySettingsIcon.getImage().getScaledInstance(width-width/5*4, height/12, Image.SCALE_SMOOTH);
         scaledDarkPrivacySettingsIcon = new ImageIcon(scaleddarkPrivacySettingsIcon);
 
+        switch (UserData.getTheme()){
+            case "dark"->{
+                lightMode = false;
+            }
+            case "light"->{
+                lightMode = true;
+            }
+        }
+
 
         this.setOpaque(false);
         this.setLayout(new BorderLayout(0,0));
@@ -278,193 +288,212 @@ public class SettingsPanel extends JPanel{
         themeList.add("Dark");
 
         JComboBox themeDropDown = new JComboBox(themeList.toArray());
-        themeDropDown.setSelectedIndex(1);
+
         themeDropDown.setPreferredSize(new Dimension(width/15, height/10));
         themeDropDown.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                switch (themeDropDown.getSelectedIndex()){
-                    //Light Mode
-                    case 0->{
-                        lightMode = true;
 
-                        //Update the menu panel colors
+                    switch (themeDropDown.getSelectedIndex()){
+                        //Light Mode
+                        case 0->{
+                            lightMode = true;
 
-
-                        //Change the theme colors of the panel
-                        //Background color of the whole panel
-                        settingsPanelBackgroundColor = new Color(255,255,255);
-                        //Background color for the panels within the container panel
-                        settingsPanelColor = new Color(195,195,195);
-                        //Color of the individual settings panels within the scroll pane
-                        innerSettingPanelColor = new Color(220,220,220);
-
-                        buttonBG = new Color(255, 255, 255);
-                        buttonBGHovered = new Color(240,240,240);
-                        buttonBGPressed = new Color(210,210,210);
-
-                        //Change the text colors to black
-                        settingsLabel.setForeground(Color.BLACK);
-                        generalSettingsButton.setForeground(Color.BLACK);
-                        themeSettingsButton.setForeground(Color.BLACK);
-                        notificationsSettingsButton.setForeground(Color.BLACK);
-                        accountSettingsButton.setForeground(Color.BLACK);
-                        privacySettingsButton.setForeground(Color.BLACK);
-
-                        //change the button image to black
-                        generalSettingsButton.setIcon(scaledDarkGeneralSettingsIcon);
-                        themeSettingsButton.setIcon(scaledDarkThemeSettingsIcon);
-                        notificationsSettingsButton.setIcon(scaledDarkNotificationsSettingsIcon);
-                        accountSettingsButton.setIcon(scaledDarkAccountSettingsIcon);
-                        privacySettingsButton.setIcon(scaledDarkPrivacySettingsIcon);
+                            //Update the menu panel colors
 
 
-                        //General Settings panel
-                        generalScrollPanel.setBackground(settingsPanelColor);
-                        test2.setBackground(innerSettingPanelColor);
-                        test3.setBackground(innerSettingPanelColor);
-                        test4.setBackground(innerSettingPanelColor);
-                        test5.setBackground(innerSettingPanelColor);
+                            //Change the theme colors of the panel
+                            //Background color of the whole panel
+                            settingsPanelBackgroundColor = new Color(255,255,255);
+                            //Background color for the panels within the container panel
+                            settingsPanelColor = new Color(195,195,195);
+                            //Color of the individual settings panels within the scroll pane
+                            innerSettingPanelColor = new Color(220,220,220);
 
-                        //Theme Settings panel
-                        themeScrollPanel.setBackground(settingsPanelColor);
-                        themeSelectionPanel.setBackground(innerSettingPanelColor);
-                        themeSelectionLabel.setForeground(Color.BLACK);
-                        test33.setBackground(innerSettingPanelColor);
-                        test44.setBackground(innerSettingPanelColor);
-                        test55.setBackground(innerSettingPanelColor);
+                            buttonBG = new Color(255, 255, 255);
+                            buttonBGHovered = new Color(240,240,240);
+                            buttonBGPressed = new Color(210,210,210);
 
-                        themeSelectionLabel.setForeground(Color.BLACK);
+                            //Change the text colors to black
+                            settingsLabel.setForeground(Color.BLACK);
+                            generalSettingsButton.setForeground(Color.BLACK);
+                            themeSettingsButton.setForeground(Color.BLACK);
+                            notificationsSettingsButton.setForeground(Color.BLACK);
+                            accountSettingsButton.setForeground(Color.BLACK);
+                            privacySettingsButton.setForeground(Color.BLACK);
 
-                        //Notifications Settings Panel
-
-                        //Account Settings Panel
-                        accountScrollPanel.setBackground(settingsPanelColor);
-                        test222.setBackground(innerSettingPanelColor);
-                        test333.setBackground(innerSettingPanelColor);
-                        test444.setBackground(innerSettingPanelColor);
-                        test555.setBackground(innerSettingPanelColor);
-
-                        System.out.println("Light Mode");
-
-                        ApplicationWindow.updateBackground();
-
-                        MenuPanel.instance.repaint();
-                        MenuPanel.instance.revalidate();
-
-                        TopBar.instance.repaint();
-                        TopBar.instance.revalidate();
+                            //change the button image to black
+                            generalSettingsButton.setIcon(scaledDarkGeneralSettingsIcon);
+                            themeSettingsButton.setIcon(scaledDarkThemeSettingsIcon);
+                            notificationsSettingsButton.setIcon(scaledDarkNotificationsSettingsIcon);
+                            accountSettingsButton.setIcon(scaledDarkAccountSettingsIcon);
+                            privacySettingsButton.setIcon(scaledDarkPrivacySettingsIcon);
 
 
-                        ProgramPanel.instance.repaint();
-                        ProgramPanel.instance.revalidate();
+                            //General Settings panel
+                            generalScrollPanel.setBackground(settingsPanelColor);
+                            test2.setBackground(innerSettingPanelColor);
+                            test3.setBackground(innerSettingPanelColor);
+                            test4.setBackground(innerSettingPanelColor);
+                            test5.setBackground(innerSettingPanelColor);
+
+                            //Theme Settings panel
+                            themeScrollPanel.setBackground(settingsPanelColor);
+                            themeSelectionPanel.setBackground(innerSettingPanelColor);
+                            themeSelectionLabel.setForeground(Color.BLACK);
+                            test33.setBackground(innerSettingPanelColor);
+                            test44.setBackground(innerSettingPanelColor);
+                            test55.setBackground(innerSettingPanelColor);
+
+                            themeSelectionLabel.setForeground(Color.BLACK);
+
+                            //Notifications Settings Panel
+
+                            //Account Settings Panel
+                            accountScrollPanel.setBackground(settingsPanelColor);
+                            test222.setBackground(innerSettingPanelColor);
+                            test333.setBackground(innerSettingPanelColor);
+                            test444.setBackground(innerSettingPanelColor);
+                            test555.setBackground(innerSettingPanelColor);
+
+                            System.out.println("Light Mode");
 
 
-                        repaint();
-                        revalidate();
+
+                            MenuPanel.instance.repaint();
+                            MenuPanel.instance.revalidate();
+
+                            TopBar.instance.repaint();
+                            TopBar.instance.revalidate();
+
+
+                            ProgramPanel.instance.repaint();
+                            ProgramPanel.instance.revalidate();
+
+                            UserData.setTheme("light");
+                            try {
+                                FirebaseManager.writeDBUser(UserData.getEmail());
+                            } catch (IOException ex) {
+                                throw new RuntimeException(ex);
+                            }
+                            ApplicationWindow.updateBackground();
+
+
+                            repaint();
+                            revalidate();
+                        }
+
+                        //Dark Mode
+                        case 1->{
+                            lightMode = false;
+
+                            //Update the theme colors of the panel
+                            settingsPanelBackgroundColor = new Color(51,51,51);
+                            settingsPanelColor = new Color(21,21,21);
+                            innerSettingPanelColor = new Color(31,31,31);
+
+                            buttonBG = new Color(51, 51, 51,255);
+                            buttonBGHovered = new Color(40,40,40);
+                            buttonBGPressed = new Color(30,30,30);
+
+
+                            //Change the Text color of the buttons to white
+                            settingsLabel.setForeground(Color.WHITE);
+                            generalSettingsButton.setForeground(Color.WHITE);
+                            themeSettingsButton.setForeground(Color.WHITE);
+                            notificationsSettingsButton.setForeground(Color.WHITE);
+                            accountSettingsButton.setForeground(Color.WHITE);
+                            privacySettingsButton.setForeground(Color.WHITE);
+
+                            //Change the button image to white
+                            generalSettingsButton.setIcon(scaledGeneralSettingsIcon);
+                            themeSettingsButton.setIcon(scaledThemeSettingsIcon);
+                            notificationsSettingsButton.setIcon(scaledNotificationsSettingsIcon);
+                            accountSettingsButton.setIcon(scaledAccountSettingsIcon);
+                            privacySettingsButton.setIcon(scaledPrivacySettingsIcon);
+
+                            //General Settings panel
+                            generalScrollPanel.setBackground(settingsPanelColor);
+                            test2.setBackground(innerSettingPanelColor);
+                            test3.setBackground(innerSettingPanelColor);
+                            test4.setBackground(innerSettingPanelColor);
+                            test5.setBackground(innerSettingPanelColor);
+
+                            //Theme Settings panel
+                            themeScrollPanel.setBackground(settingsPanelColor);
+                            themeSelectionPanel.setBackground(innerSettingPanelColor);
+                            themeSelectionLabel.setForeground(Color.WHITE);
+                            test33.setBackground(innerSettingPanelColor);
+                            test44.setBackground(innerSettingPanelColor);
+                            test55.setBackground(innerSettingPanelColor);
+
+                            //Notifications Settings Panel
+
+                            //Account Settings Panel
+                            accountScrollPanel.setBackground(settingsPanelColor);
+                            test222.setBackground(innerSettingPanelColor);
+                            test333.setBackground(innerSettingPanelColor);
+                            test444.setBackground(innerSettingPanelColor);
+                            test555.setBackground(innerSettingPanelColor);
+
+
+
+                            MenuPanel.instance.repaint();
+                            MenuPanel.instance.revalidate();
+
+                            TopBar.instance.repaint();
+                            TopBar.instance.revalidate();
+
+                            ProgramPanel.instance.repaint();
+                            ProgramPanel.instance.revalidate();
+
+                            UserData.setTheme("dark");
+                            try {
+                                FirebaseManager.writeDBUser(UserData.getEmail());
+                            } catch (IOException ex) {
+                                throw new RuntimeException(ex);
+                            }
+                            ApplicationWindow.updateBackground();
+
+                            System.out.println("Dark Mode");
+                            repaint();
+                            revalidate();
+                        }
                     }
 
-                    //Dark Mode
-                    case 1->{
-                        lightMode = false;
-
-                        //Update the theme colors of the panel
-                        settingsPanelBackgroundColor = new Color(51,51,51);
-                        settingsPanelColor = new Color(21,21,21);
-                        innerSettingPanelColor = new Color(31,31,31);
-
-                        buttonBG = new Color(51, 51, 51,255);
-                        buttonBGHovered = new Color(40,40,40);
-                        buttonBGPressed = new Color(30,30,30);
+                    rightPanel.setBorder(BorderFactory.createMatteBorder(getHeight()/20, 0, getHeight()/20, 0, settingsPanelBackgroundColor));
+                    generalSettingsButton.setBackground(buttonBG);
+                    themeSettingsButton.setBackground(buttonBG);
+                    notificationsSettingsButton.setBackground(buttonBG);
+                    accountSettingsButton.setBackground(buttonBG);
+                    privacySettingsButton.setBackground(buttonBG);
 
 
-                        //Change the Text color of the buttons to white
-                        settingsLabel.setForeground(Color.WHITE);
-                        generalSettingsButton.setForeground(Color.WHITE);
-                        themeSettingsButton.setForeground(Color.WHITE);
-                        notificationsSettingsButton.setForeground(Color.WHITE);
-                        accountSettingsButton.setForeground(Color.WHITE);
-                        privacySettingsButton.setForeground(Color.WHITE);
 
-                        //Change the button image to white
-                        generalSettingsButton.setIcon(scaledGeneralSettingsIcon);
-                        themeSettingsButton.setIcon(scaledThemeSettingsIcon);
-                        notificationsSettingsButton.setIcon(scaledNotificationsSettingsIcon);
-                        accountSettingsButton.setIcon(scaledAccountSettingsIcon);
-                        privacySettingsButton.setIcon(scaledPrivacySettingsIcon);
 
-                        //General Settings panel
-                        generalScrollPanel.setBackground(settingsPanelColor);
-                        test2.setBackground(innerSettingPanelColor);
-                        test3.setBackground(innerSettingPanelColor);
-                        test4.setBackground(innerSettingPanelColor);
-                        test5.setBackground(innerSettingPanelColor);
-
-                        //Theme Settings panel
-                        themeScrollPanel.setBackground(settingsPanelColor);
-                        themeSelectionPanel.setBackground(innerSettingPanelColor);
-                        themeSelectionLabel.setForeground(Color.WHITE);
-                        test33.setBackground(innerSettingPanelColor);
-                        test44.setBackground(innerSettingPanelColor);
-                        test55.setBackground(innerSettingPanelColor);
-
-                        //Notifications Settings Panel
-
-                        //Account Settings Panel
-                        accountScrollPanel.setBackground(settingsPanelColor);
-                        test222.setBackground(innerSettingPanelColor);
-                        test333.setBackground(innerSettingPanelColor);
-                        test444.setBackground(innerSettingPanelColor);
-                        test555.setBackground(innerSettingPanelColor);
-
-                        ApplicationWindow.updateBackground();
-
-                        MenuPanel.instance.repaint();
-                        MenuPanel.instance.revalidate();
-
-                        TopBar.instance.repaint();
-                        TopBar.instance.revalidate();
-
-                        ProgramPanel.instance.repaint();
-                        ProgramPanel.instance.revalidate();
-
-                        System.out.println("Dark Mode");
-                        repaint();
-                        revalidate();
+                    switch (currentPage){
+                        case 0->{
+                            generalSettingsButton.setBackground(buttonBGPressed);
+                        }
+                        case 1->{
+                            themeSettingsButton.setBackground(buttonBGPressed);
+                        }
+                        case 2->{
+                            notificationsSettingsButton.setBackground(buttonBGPressed);
+                        }
+                        case 3->{
+                            generalSettingsButton.setBackground(buttonBGPressed);
+                        }
+                        case 4->{
+                            generalSettingsButton.setBackground(buttonBGPressed);
+                        }
                     }
-                }
-
-                rightPanel.setBorder(BorderFactory.createMatteBorder(getHeight()/20, 0, getHeight()/20, 0, settingsPanelBackgroundColor));
-                generalSettingsButton.setBackground(buttonBG);
-                themeSettingsButton.setBackground(buttonBG);
-                notificationsSettingsButton.setBackground(buttonBG);
-                accountSettingsButton.setBackground(buttonBG);
-                privacySettingsButton.setBackground(buttonBG);
-
-
-
-
-                switch (currentPage){
-                    case 0->{
-                        generalSettingsButton.setBackground(buttonBGPressed);
-                    }
-                    case 1->{
-                        themeSettingsButton.setBackground(buttonBGPressed);
-                    }
-                    case 2->{
-                        notificationsSettingsButton.setBackground(buttonBGPressed);
-                    }
-                    case 3->{
-                        generalSettingsButton.setBackground(buttonBGPressed);
-                    }
-                    case 4->{
-                        generalSettingsButton.setBackground(buttonBGPressed);
-                    }
-                }
 
 
             }
         });
+
+
 
 
         test33.setBackground(innerSettingPanelColor);
@@ -1036,38 +1065,66 @@ public class SettingsPanel extends JPanel{
                     settingsLabel.setFont(new Font("Arial", Font.PLAIN,getHeight()/15));
                     settingsLabel.setPreferredSize(new Dimension(getWidth(), getHeight()/9));
 
-                    Image scaledgeneralSettingsIcon = generalSettingsIcon.getImage().getScaledInstance(getWidth()-getWidth()/5*4,getHeight()/12, Image.SCALE_SMOOTH);
-                    scaledGeneralSettingsIcon = new ImageIcon(scaledgeneralSettingsIcon);
-                    generalSettingsButton.setIcon(scaledGeneralSettingsIcon);
+
+                    if(!lightMode){
+                        Image scaledgeneralSettingsIcon = generalSettingsIcon.getImage().getScaledInstance(getWidth()-getWidth()/5*4,getHeight()/12, Image.SCALE_SMOOTH);
+                        scaledGeneralSettingsIcon = new ImageIcon(scaledgeneralSettingsIcon);
+                        generalSettingsButton.setIcon(scaledGeneralSettingsIcon);
+                        Image scaledthemeSettingsIcon = themeSettingsIcon.getImage().getScaledInstance(getWidth()-getWidth()/5*4, getHeight()/12, Image.SCALE_SMOOTH);
+                        scaledThemeSettingsIcon = new ImageIcon(scaledthemeSettingsIcon);
+                        themeSettingsButton.setIcon(scaledThemeSettingsIcon);
+                        Image scalednotificationsSettingsIcon = notificationsSettingsIcon.getImage().getScaledInstance(getWidth()-getWidth()/5*4, getHeight()/12, Image.SCALE_SMOOTH);
+                        scaledNotificationsSettingsIcon = new ImageIcon(scalednotificationsSettingsIcon);
+                        notificationsSettingsButton.setIcon(scaledNotificationsSettingsIcon);
+                        Image scaledaccountSettingsIcon = accountSettingsIcon.getImage().getScaledInstance(getWidth()-getWidth()/5*4, getHeight()/12, Image.SCALE_SMOOTH);
+                        scaledAccountSettingsIcon = new ImageIcon(scaledaccountSettingsIcon);
+                        accountSettingsButton.setIcon(scaledAccountSettingsIcon);
+                        Image scaledprivacySettingsIcon = privacySettingsIcon.getImage().getScaledInstance(getWidth()-getWidth()/5*4, getHeight()/12, Image.SCALE_SMOOTH);
+                        scaledPrivacySettingsIcon = new ImageIcon(scaledprivacySettingsIcon);
+                        privacySettingsButton.setIcon(scaledPrivacySettingsIcon);
+                    }else{
+                        Image scaleddarkGeneralSettingsIcon = darkGeneralSettingsIcon.getImage().getScaledInstance(getWidth()-getWidth()/5*4,getHeight()/12, Image.SCALE_SMOOTH);
+                        scaledDarkGeneralSettingsIcon = new ImageIcon(scaleddarkGeneralSettingsIcon);
+                        generalSettingsButton.setIcon(scaledDarkGeneralSettingsIcon);
+                        Image scaleddarkThemeSettingsIcon = darkThemeSettingsIcon.getImage().getScaledInstance(getWidth()-getWidth()/5*4, getHeight()/12, Image.SCALE_SMOOTH);
+                        scaledDarkThemeSettingsIcon = new ImageIcon(scaleddarkThemeSettingsIcon);
+                        themeSettingsButton.setIcon(scaledDarkThemeSettingsIcon);
+                        Image scaleddarkNotificationsSettingsIcon = darkNotificationsSettingsIcon.getImage().getScaledInstance(getWidth()-getWidth()/5*4, getHeight()/12, Image.SCALE_SMOOTH);
+                        scaledDarkNotificationsSettingsIcon = new ImageIcon(scaleddarkNotificationsSettingsIcon);
+                        notificationsSettingsButton.setIcon(scaledDarkNotificationsSettingsIcon);
+                        Image scaleddarkAccountSettingsIcon = darkAccountSettingsIcon.getImage().getScaledInstance(getWidth()-getWidth()/5*4, getHeight()/12, Image.SCALE_SMOOTH);
+                        scaledDarkAccountSettingsIcon = new ImageIcon(scaleddarkAccountSettingsIcon);
+                        accountSettingsButton.setIcon(scaledDarkAccountSettingsIcon);
+                        Image scaleddarkPrivacySettingsIcon = darkPrivacySettingsIcon.getImage().getScaledInstance(getWidth()-getWidth()/5*4, getHeight()/12, Image.SCALE_SMOOTH);
+                        scaledDarkPrivacySettingsIcon = new ImageIcon(scaleddarkPrivacySettingsIcon);
+                        privacySettingsButton.setIcon(scaledDarkPrivacySettingsIcon);
+                    }
+
+
+
                     generalSettingsButton.setFont(new Font("Arial", Font.PLAIN,getHeight()/30));
                     generalSettingsButton.setPreferredSize(new Dimension(getWidth(), getHeight()/12));
                     generalSettingsButton.setMaximumSize(new Dimension(getWidth()-getWidth()/5*4, getHeight()/3));
 
-                    Image scaledthemeSettingsIcon = themeSettingsIcon.getImage().getScaledInstance(getWidth()-getWidth()/5*4, getHeight()/12, Image.SCALE_SMOOTH);
-                    scaledThemeSettingsIcon = new ImageIcon(scaledthemeSettingsIcon);
-                    themeSettingsButton.setIcon(scaledThemeSettingsIcon);
+
+
                     themeSettingsButton.setFont(new Font("Arial", Font.PLAIN,getHeight()/30));
                     themeSettingsButton.setPreferredSize(new Dimension(getWidth(), getHeight()/12));
                     themeSettingsButton.setMaximumSize(new Dimension(getWidth()-getWidth()/5*4, getHeight()/3));
 
-                    Image scalednotificationsSettingsIcon = notificationsSettingsIcon.getImage().getScaledInstance(getWidth()-getWidth()/5*4, getHeight()/12, Image.SCALE_SMOOTH);
-                    scaledNotificationsSettingsIcon = new ImageIcon(scalednotificationsSettingsIcon);
-                    notificationsSettingsButton.setIcon(scaledNotificationsSettingsIcon);
+
+
                     notificationsSettingsButton.setFont(new Font("Arial", Font.PLAIN,getHeight()/30));
                     notificationsSettingsButton.setPreferredSize(new Dimension(getWidth(), getHeight()/12));
                     notificationsSettingsButton.setMaximumSize(new Dimension(getWidth()-getWidth()/5*4, getHeight()/3));
 
-                    Image scaledaccountSettingsIcon = accountSettingsIcon.getImage().getScaledInstance(getWidth()-getWidth()/5*4, getHeight()/12, Image.SCALE_SMOOTH);
-                    scaledAccountSettingsIcon = new ImageIcon(scaledaccountSettingsIcon);
-                    accountSettingsButton.setIcon(scaledAccountSettingsIcon);
+
                     accountSettingsButton.setFont(new Font("Arial", Font.PLAIN,getHeight()/30));
                     accountSettingsButton.setPreferredSize(new Dimension(getWidth(), getHeight()/12));
                     accountSettingsButton.setMaximumSize(new Dimension(getWidth()-getWidth()/5*4, getHeight()/3));
 
 
-                    Image scaledprivacySettingsIcon = privacySettingsIcon.getImage().getScaledInstance(getWidth()-getWidth()/5*4, getHeight()/12, Image.SCALE_SMOOTH);
-                    scaledPrivacySettingsIcon = new ImageIcon(scaledprivacySettingsIcon);
-                    privacySettingsButton.setIcon(scaledPrivacySettingsIcon);
+
                     privacySettingsButton.setFont(new Font("Arial", Font.PLAIN,getHeight()/30));
                     privacySettingsButton.setPreferredSize(new Dimension(getWidth(), getHeight()/12));
                     privacySettingsButton.setMaximumSize(new Dimension(getWidth()-getWidth()/5*4, getHeight()/3));
@@ -1094,6 +1151,13 @@ public class SettingsPanel extends JPanel{
 
             }
         });
+
+        themeDropDown.setSelectedIndex(-1);
+        if(lightMode){
+            themeDropDown.setSelectedIndex(0);
+        }else{
+            themeDropDown.setSelectedIndex(1);
+        }
     }
 
 
