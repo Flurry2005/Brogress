@@ -30,10 +30,7 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class FirebaseManager {
@@ -41,6 +38,7 @@ public class FirebaseManager {
     private static Firestore db;
     private static FirestoreOptions firestoreOptions;
     private static StorageOptions storageOptions;
+    private static final ArrayList<Thread> activeThreads = new ArrayList<>();
     static {
         try {
             resourcePath = FirebaseManager.class.getClassLoader().getResource("resource.path")
@@ -155,11 +153,6 @@ public class FirebaseManager {
                 String friendsJson = (String) document.get("friendrequests");
                 friendRequestsMap = gson.fromJson(friendsJson, HashMap.class);
 
-
-                if (friendsJson != null) {;
-                    // Skriv ut resultatet
-                    System.out.println("Friends Map: " + friendRequestsMap);
-                }
             }
 
             return friendRequestsMap;
@@ -193,8 +186,13 @@ public class FirebaseManager {
 
     public static void readDBlistenToFriendsOnlineStatus() throws InterruptedException {
 
+                for(Thread thread : activeThreads){
+                    thread.interrupt();
+                }
+                activeThreads.clear();
+
                 for(Friend friend : FriendsList.getFriendArrayList()){
-                    new Thread(()->{
+                    Thread listnerThread = new Thread(()->{
                     // Referens till användarens dokument
                     DocumentReference docRef = db.collection("users").document(friend.getFriendEmail());
 
@@ -212,7 +210,7 @@ public class FirebaseManager {
                             if (newIsOnline != null) {
                                 friend.setOnline(newIsOnline.equals("true")?true:false); // Uppdatera variabeln
                                 friend.updateOnlineStatus();
-                                System.out.println("Updated isOnline: " + newIsOnline);
+                                System.out.println("Updated isOnline "+friend.getFriendEmail()+" :" + newIsOnline);
                             }
                         } else {
                             System.out.println("Document does not exist.");
@@ -220,17 +218,20 @@ public class FirebaseManager {
                     });
 
                     // Håll programmet igång
-                    System.out.println("Listening for Firestore changes on 'isOnline'...");
+                    System.out.println("Listening for 'isOnline' of user :"+friend.getFriendEmail());
                     try {
-
+                        System.out.println("Thread count listening to online status: "+activeThreads.size());
+                        System.out.println("Amount of friends: "+FriendsList.getFriendArrayList().size());
                         Thread.sleep(Long.MAX_VALUE);
 
                         //Thread.currentThread().interrupt();
                     } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
+                        System.out.println("Thread stopped listening to friends online status");
                     }
 
-                    }).start();
+                    });
+                    activeThreads.add(listnerThread);
+                    listnerThread.start();
                 }
 
     }
@@ -262,7 +263,7 @@ public class FirebaseManager {
                 });
 
                 // Håll programmet igång
-                System.out.println("Listening for Firestore changes on 'isOnline'...");
+                System.out.println("Listening for Firestore changes on 'friends' of user "+UserData.getEmail());
                 try {
 
                     Thread.sleep(Long.MAX_VALUE);
