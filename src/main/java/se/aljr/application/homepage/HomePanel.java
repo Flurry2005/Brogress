@@ -256,6 +256,11 @@ public class HomePanel extends JPanel {
         */
 
         updateFriends();
+        try {
+            FirebaseManager.readDBlistenToClientUserFriendsList();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
 
 
@@ -356,7 +361,7 @@ public class HomePanel extends JPanel {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        System.out.println(FriendsList.getFriendArrayList());
         for(Friend friend:FriendsList.getFriendArrayList()){
             ImageIcon userIcon = FirebaseManager.readDBprofilePicture(friend.getFriendEmail());
             Image scaledFriendProfilePicture = userIcon.getImage().getScaledInstance(instance.getPreferredSize().width/25,instance.getPreferredSize().width/25,Image.SCALE_SMOOTH);
