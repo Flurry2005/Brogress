@@ -1,7 +1,9 @@
 package se.aljr.application.settings;
 
+import se.aljr.application.AppThemeColors;
 import se.aljr.application.ApplicationWindow;
 import se.aljr.application.UserData;
+import se.aljr.application.exercise.CreateExerciseModule;
 import se.aljr.application.homepage.HomePanel;
 import se.aljr.application.homepage.MenuPanel;
 import se.aljr.application.homepage.TopBar;
@@ -16,7 +18,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
-import java.sql.Time;
 import java.util.ArrayList;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -67,6 +68,7 @@ public class SettingsPanel extends JPanel{
     ArrayList<String> themeList = new ArrayList<>();
 
     public static boolean lightMode = false;
+    public static String currentTheme = "Dark";
 
     //Various colors
     Color settingsPanelBackgroundColor = new Color(51,51,51);
@@ -298,29 +300,16 @@ public class SettingsPanel extends JPanel{
                         //Light Mode
                         case 0->{
                             lightMode = true;
-
-                            //Update the menu panel colors
-
-
-                            //Change the theme colors of the panel
-                            //Background color of the whole panel
-                            settingsPanelBackgroundColor = new Color(255,255,255);
-                            //Background color for the panels within the container panel
-                            settingsPanelColor = new Color(195,195,195);
-                            //Color of the individual settings panels within the scroll pane
-                            innerSettingPanelColor = new Color(220,220,220);
-
-                            buttonBG = new Color(255, 255, 255);
-                            buttonBGHovered = new Color(240,240,240);
-                            buttonBGPressed = new Color(210,210,210);
+                            currentTheme = "light";
+                            AppThemeColors.updateThemeColors();
 
                             //Change the text colors to black
-                            settingsLabel.setForeground(Color.BLACK);
-                            generalSettingsButton.setForeground(Color.BLACK);
-                            themeSettingsButton.setForeground(Color.BLACK);
-                            notificationsSettingsButton.setForeground(Color.BLACK);
-                            accountSettingsButton.setForeground(Color.BLACK);
-                            privacySettingsButton.setForeground(Color.BLACK);
+                            settingsLabel.setForeground(AppThemeColors.foregroundColor);
+                            generalSettingsButton.setForeground(AppThemeColors.foregroundColor);
+                            themeSettingsButton.setForeground(AppThemeColors.foregroundColor);
+                            notificationsSettingsButton.setForeground(AppThemeColors.foregroundColor);
+                            accountSettingsButton.setForeground(AppThemeColors.foregroundColor);
+                            privacySettingsButton.setForeground(AppThemeColors.foregroundColor);
 
                             //change the button image to black
                             generalSettingsButton.setIcon(scaledDarkGeneralSettingsIcon);
@@ -331,34 +320,30 @@ public class SettingsPanel extends JPanel{
 
 
                             //General Settings panel
-                            generalScrollPanel.setBackground(settingsPanelColor);
-                            test2.setBackground(innerSettingPanelColor);
-                            test3.setBackground(innerSettingPanelColor);
-                            test4.setBackground(innerSettingPanelColor);
-                            test5.setBackground(innerSettingPanelColor);
+                            generalScrollPanel.setBackground(AppThemeColors.panelColor);
+                            test2.setBackground(AppThemeColors.SECONDARY);
+                            test3.setBackground(AppThemeColors.SECONDARY);
+                            test4.setBackground(AppThemeColors.SECONDARY);
+                            test5.setBackground(AppThemeColors.SECONDARY);
 
                             //Theme Settings panel
-                            themeScrollPanel.setBackground(settingsPanelColor);
-                            themeSelectionPanel.setBackground(innerSettingPanelColor);
-                            themeSelectionLabel.setForeground(Color.BLACK);
-                            test33.setBackground(innerSettingPanelColor);
-                            test44.setBackground(innerSettingPanelColor);
-                            test55.setBackground(innerSettingPanelColor);
-
-                            themeSelectionLabel.setForeground(Color.BLACK);
+                            themeScrollPanel.setBackground(AppThemeColors.panelColor);
+                            themeSelectionPanel.setBackground(AppThemeColors.SECONDARY);
+                            themeSelectionLabel.setForeground(AppThemeColors.foregroundColor);
+                            test33.setBackground(AppThemeColors.SECONDARY);
+                            test44.setBackground(AppThemeColors.SECONDARY);
+                            test55.setBackground(AppThemeColors.SECONDARY);
 
                             //Notifications Settings Panel
 
                             //Account Settings Panel
-                            accountScrollPanel.setBackground(settingsPanelColor);
-                            test222.setBackground(innerSettingPanelColor);
-                            test333.setBackground(innerSettingPanelColor);
-                            test444.setBackground(innerSettingPanelColor);
-                            test555.setBackground(innerSettingPanelColor);
+                            accountScrollPanel.setBackground(AppThemeColors.panelColor);
+                            test222.setBackground(AppThemeColors.SECONDARY);
+                            test333.setBackground(AppThemeColors.SECONDARY);
+                            test444.setBackground(AppThemeColors.SECONDARY);
+                            test555.setBackground(AppThemeColors.SECONDARY);
 
                             System.out.println("Light Mode");
-
-
 
                             MenuPanel.instance.repaint();
                             MenuPanel.instance.revalidate();
@@ -366,9 +351,11 @@ public class SettingsPanel extends JPanel{
                             TopBar.instance.repaint();
                             TopBar.instance.revalidate();
 
-
                             ProgramPanel.instance.repaint();
                             ProgramPanel.instance.revalidate();
+
+                            CreateExerciseModule.instance.repaint();
+                            CreateExerciseModule.instance.revalidate();
 
                             UserData.setTheme("light");
                             try {
@@ -386,24 +373,16 @@ public class SettingsPanel extends JPanel{
                         //Dark Mode
                         case 1->{
                             lightMode = false;
-
-                            //Update the theme colors of the panel
-                            settingsPanelBackgroundColor = new Color(51,51,51);
-                            settingsPanelColor = new Color(21,21,21);
-                            innerSettingPanelColor = new Color(31,31,31);
-
-                            buttonBG = new Color(51, 51, 51,255);
-                            buttonBGHovered = new Color(40,40,40);
-                            buttonBGPressed = new Color(30,30,30);
-
+                            currentTheme = "dark";
+                            AppThemeColors.updateThemeColors();
 
                             //Change the Text color of the buttons to white
-                            settingsLabel.setForeground(Color.WHITE);
-                            generalSettingsButton.setForeground(Color.WHITE);
-                            themeSettingsButton.setForeground(Color.WHITE);
-                            notificationsSettingsButton.setForeground(Color.WHITE);
-                            accountSettingsButton.setForeground(Color.WHITE);
-                            privacySettingsButton.setForeground(Color.WHITE);
+                            settingsLabel.setForeground(AppThemeColors.foregroundColor);
+                            generalSettingsButton.setForeground(AppThemeColors.foregroundColor);
+                            themeSettingsButton.setForeground(AppThemeColors.foregroundColor);
+                            notificationsSettingsButton.setForeground(AppThemeColors.foregroundColor);
+                            accountSettingsButton.setForeground(AppThemeColors.foregroundColor);
+                            privacySettingsButton.setForeground(AppThemeColors.foregroundColor);
 
                             //Change the button image to white
                             generalSettingsButton.setIcon(scaledGeneralSettingsIcon);
@@ -413,28 +392,28 @@ public class SettingsPanel extends JPanel{
                             privacySettingsButton.setIcon(scaledPrivacySettingsIcon);
 
                             //General Settings panel
-                            generalScrollPanel.setBackground(settingsPanelColor);
-                            test2.setBackground(innerSettingPanelColor);
-                            test3.setBackground(innerSettingPanelColor);
-                            test4.setBackground(innerSettingPanelColor);
-                            test5.setBackground(innerSettingPanelColor);
+                            generalScrollPanel.setBackground(AppThemeColors.panelColor);
+                            test2.setBackground(AppThemeColors.SECONDARY);
+                            test3.setBackground(AppThemeColors.SECONDARY);
+                            test4.setBackground(AppThemeColors.SECONDARY);
+                            test5.setBackground(AppThemeColors.SECONDARY);
 
                             //Theme Settings panel
-                            themeScrollPanel.setBackground(settingsPanelColor);
-                            themeSelectionPanel.setBackground(innerSettingPanelColor);
-                            themeSelectionLabel.setForeground(Color.WHITE);
-                            test33.setBackground(innerSettingPanelColor);
-                            test44.setBackground(innerSettingPanelColor);
-                            test55.setBackground(innerSettingPanelColor);
+                            themeScrollPanel.setBackground(AppThemeColors.panelColor);
+                            themeSelectionPanel.setBackground(AppThemeColors.SECONDARY);
+                            themeSelectionLabel.setForeground(AppThemeColors.foregroundColor);
+                            test33.setBackground(AppThemeColors.SECONDARY);
+                            test44.setBackground(AppThemeColors.SECONDARY);
+                            test55.setBackground(AppThemeColors.SECONDARY);
 
                             //Notifications Settings Panel
 
                             //Account Settings Panel
-                            accountScrollPanel.setBackground(settingsPanelColor);
-                            test222.setBackground(innerSettingPanelColor);
-                            test333.setBackground(innerSettingPanelColor);
-                            test444.setBackground(innerSettingPanelColor);
-                            test555.setBackground(innerSettingPanelColor);
+                            accountScrollPanel.setBackground(AppThemeColors.panelColor);
+                            test222.setBackground(AppThemeColors.SECONDARY);
+                            test333.setBackground(AppThemeColors.SECONDARY);
+                            test444.setBackground(AppThemeColors.SECONDARY);
+                            test555.setBackground(AppThemeColors.SECONDARY);
 
 
 
@@ -446,6 +425,9 @@ public class SettingsPanel extends JPanel{
 
                             ProgramPanel.instance.repaint();
                             ProgramPanel.instance.revalidate();
+
+                            CreateExerciseModule.instance.repaint();
+                            CreateExerciseModule.instance.revalidate();
 
                             UserData.setTheme("dark");
                             try {
@@ -461,31 +443,31 @@ public class SettingsPanel extends JPanel{
                         }
                     }
 
-                    rightPanel.setBorder(BorderFactory.createMatteBorder(getHeight()/20, 0, getHeight()/20, 0, settingsPanelBackgroundColor));
-                    generalSettingsButton.setBackground(buttonBG);
-                    themeSettingsButton.setBackground(buttonBG);
-                    notificationsSettingsButton.setBackground(buttonBG);
-                    accountSettingsButton.setBackground(buttonBG);
-                    privacySettingsButton.setBackground(buttonBG);
+                    rightPanel.setBorder(BorderFactory.createMatteBorder(getHeight()/20, 0, getHeight()/20, 0, AppThemeColors.PRIMARY));
+                    generalSettingsButton.setBackground(AppThemeColors.buttonBG);
+                    themeSettingsButton.setBackground(AppThemeColors.buttonBG);
+                    notificationsSettingsButton.setBackground(AppThemeColors.buttonBG);
+                    accountSettingsButton.setBackground(AppThemeColors.buttonBG);
+                    privacySettingsButton.setBackground(AppThemeColors.buttonBG);
 
 
 
 
                     switch (currentPage){
                         case 0->{
-                            generalSettingsButton.setBackground(buttonBGPressed);
+                            generalSettingsButton.setBackground(AppThemeColors.buttonBGSelected);
                         }
                         case 1->{
-                            themeSettingsButton.setBackground(buttonBGPressed);
+                            themeSettingsButton.setBackground(AppThemeColors.buttonBGSelected);
                         }
                         case 2->{
-                            notificationsSettingsButton.setBackground(buttonBGPressed);
+                            notificationsSettingsButton.setBackground(AppThemeColors.buttonBGSelected);
                         }
                         case 3->{
-                            generalSettingsButton.setBackground(buttonBGPressed);
+                            generalSettingsButton.setBackground(AppThemeColors.buttonBGSelected);
                         }
                         case 4->{
-                            generalSettingsButton.setBackground(buttonBGPressed);
+                            generalSettingsButton.setBackground(AppThemeColors.buttonBGSelected);
                         }
                     }
 
@@ -716,7 +698,7 @@ public class SettingsPanel extends JPanel{
         generalSettingsButton.setBorderPainted(false);
         generalSettingsButton.setContentAreaFilled(false);
         generalSettingsButton.setOpaque(true);
-        generalSettingsButton.setBackground(buttonBGPressed);
+        generalSettingsButton.setBackground(AppThemeColors.buttonBGSelected);
         generalSettingsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         generalSettingsButton.setForeground(Color.WHITE);
 
@@ -724,18 +706,18 @@ public class SettingsPanel extends JPanel{
             private boolean isHovered = false;
             @Override
             public void mousePressed(MouseEvent e) {
-                generalSettingsButton.setBackground(buttonBGPressed);
+                generalSettingsButton.setBackground(AppThemeColors.buttonBGSelected);
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
                 if(isHovered){
                     currentPage = 0;
-                    generalSettingsButton.setBackground(buttonBGPressed);
-                    themeSettingsButton.setBackground(buttonBG);
-                    notificationsSettingsButton.setBackground(buttonBG);
-                    accountSettingsButton.setBackground(buttonBG);
-                    privacySettingsButton.setBackground(buttonBG);
+                    generalSettingsButton.setBackground(AppThemeColors.buttonBGSelected);
+                    themeSettingsButton.setBackground(AppThemeColors.buttonBG);
+                    notificationsSettingsButton.setBackground(AppThemeColors.buttonBG);
+                    accountSettingsButton.setBackground(AppThemeColors.buttonBG);
+                    privacySettingsButton.setBackground(AppThemeColors.buttonBG);
                     rightPanel.remove(privacyPanel);
                     rightPanel.remove(accountPanel);
                     rightPanel.remove(notificationsPanel);
@@ -747,7 +729,7 @@ public class SettingsPanel extends JPanel{
                     themePanel.setVisible(false);
                     generalPanel.setVisible(true);
                 }else{
-                    generalSettingsButton.setBackground(buttonBG);
+                    generalSettingsButton.setBackground(AppThemeColors.buttonBG);
                 }
             }
 
@@ -755,7 +737,7 @@ public class SettingsPanel extends JPanel{
             public void mouseEntered(MouseEvent e) {
                 isHovered = true;
                 if(currentPage != 0 ){
-                    generalSettingsButton.setBackground(buttonBGHovered);
+                    generalSettingsButton.setBackground(AppThemeColors.buttonBGHovered);
                 }
 
             }
@@ -764,7 +746,7 @@ public class SettingsPanel extends JPanel{
             public void mouseExited(MouseEvent e) {
                 isHovered = false;
                 if(currentPage != 0){
-                    generalSettingsButton.setBackground(buttonBG);
+                    generalSettingsButton.setBackground(AppThemeColors.buttonBG);
                 }
 
             }
@@ -778,26 +760,26 @@ public class SettingsPanel extends JPanel{
         themeSettingsButton.setBorderPainted(false);
         themeSettingsButton.setContentAreaFilled(false);
         themeSettingsButton.setOpaque(true);
-        themeSettingsButton.setBackground(buttonBG);
+        themeSettingsButton.setBackground(AppThemeColors.buttonBG);
         themeSettingsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        themeSettingsButton.setForeground(Color.WHITE);
+        themeSettingsButton.setForeground(AppThemeColors.foregroundColor);
 
         themeSettingsButton.addMouseListener(new MouseAdapter() {
             private boolean isHovered = false;
             @Override
             public void mousePressed(MouseEvent e) {
-                themeSettingsButton.setBackground(buttonBGPressed);
+                themeSettingsButton.setBackground(AppThemeColors.buttonBGSelected);
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
                 if(isHovered){
                     currentPage = 1;
-                    generalSettingsButton.setBackground(buttonBG);
-                    themeSettingsButton.setBackground(buttonBGPressed);
-                    notificationsSettingsButton.setBackground(buttonBG);
-                    accountSettingsButton.setBackground(buttonBG);
-                    privacySettingsButton.setBackground(buttonBG);
+                    generalSettingsButton.setBackground(AppThemeColors.buttonBG);
+                    themeSettingsButton.setBackground(AppThemeColors.buttonBGSelected);
+                    notificationsSettingsButton.setBackground(AppThemeColors.buttonBG);
+                    accountSettingsButton.setBackground(AppThemeColors.buttonBG);
+                    privacySettingsButton.setBackground(AppThemeColors.buttonBG);
                     rightPanel.remove(privacyPanel);
                     rightPanel.remove(accountPanel);
                     rightPanel.remove(notificationsPanel);
@@ -809,7 +791,7 @@ public class SettingsPanel extends JPanel{
                     generalPanel.setVisible(false);
                     themePanel.setVisible(true);
                 }else{
-                    themeSettingsButton.setBackground(buttonBG);
+                    themeSettingsButton.setBackground(AppThemeColors.buttonBG);
                 }
 
 
@@ -819,7 +801,7 @@ public class SettingsPanel extends JPanel{
             public void mouseEntered(MouseEvent e) {
                 isHovered = true;
                 if(currentPage != 1){
-                    themeSettingsButton.setBackground(buttonBGHovered);
+                    themeSettingsButton.setBackground(AppThemeColors.buttonBGHovered);
                 }
 
             }
@@ -828,7 +810,7 @@ public class SettingsPanel extends JPanel{
             public void mouseExited(MouseEvent e) {
                 isHovered = false;
                 if(currentPage != 1){
-                    themeSettingsButton.setBackground(buttonBG);
+                    themeSettingsButton.setBackground(AppThemeColors.buttonBG);
                 }
 
             }
@@ -850,18 +832,18 @@ public class SettingsPanel extends JPanel{
             private boolean isHovered = false;
             @Override
             public void mousePressed(MouseEvent e) {
-                notificationsSettingsButton.setBackground(buttonBGPressed);
+                notificationsSettingsButton.setBackground(AppThemeColors.buttonBGSelected);
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
                 if(isHovered){
                     currentPage = 2;
-                    generalSettingsButton.setBackground(buttonBG);
-                    themeSettingsButton.setBackground(buttonBG);
-                    notificationsSettingsButton.setBackground(buttonBGPressed);
-                    accountSettingsButton.setBackground(buttonBG);
-                    privacySettingsButton.setBackground(buttonBG);
+                    generalSettingsButton.setBackground(AppThemeColors.buttonBG);
+                    themeSettingsButton.setBackground(AppThemeColors.buttonBG);
+                    notificationsSettingsButton.setBackground(AppThemeColors.buttonBGSelected);
+                    accountSettingsButton.setBackground(AppThemeColors.buttonBG);
+                    privacySettingsButton.setBackground(AppThemeColors.buttonBG);
                     rightPanel.remove(privacyPanel);
                     rightPanel.remove(accountPanel);
                     rightPanel.remove(generalPanel);
@@ -873,7 +855,7 @@ public class SettingsPanel extends JPanel{
                     themePanel.setVisible(false);
                     notificationsPanel.setVisible(true);
                 }else{
-                    notificationsSettingsButton.setBackground(buttonBG);
+                    notificationsSettingsButton.setBackground(AppThemeColors.buttonBG);
                 }
 
 
@@ -883,14 +865,14 @@ public class SettingsPanel extends JPanel{
             public void mouseEntered(MouseEvent e) {
                 isHovered = true;
                 if(currentPage!=2)
-                notificationsSettingsButton.setBackground(buttonBGHovered);
+                notificationsSettingsButton.setBackground(AppThemeColors.buttonBGHovered);
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
                 isHovered = false;
                 if(currentPage!=2){
-                    notificationsSettingsButton.setBackground(buttonBG);
+                    notificationsSettingsButton.setBackground(AppThemeColors.buttonBG);
                 }
             }
         });
@@ -903,26 +885,26 @@ public class SettingsPanel extends JPanel{
         accountSettingsButton.setBorderPainted(false);
         accountSettingsButton.setContentAreaFilled(false);
         accountSettingsButton.setOpaque(true);
-        accountSettingsButton.setBackground(buttonBG);
+        accountSettingsButton.setBackground(AppThemeColors.buttonBG);
         accountSettingsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        accountSettingsButton.setForeground(Color.WHITE);
+        accountSettingsButton.setForeground(AppThemeColors.foregroundColor);
 
         accountSettingsButton.addMouseListener(new MouseAdapter() {
             private boolean isHovered = false;
             @Override
             public void mousePressed(MouseEvent e) {
-                accountSettingsButton.setBackground(buttonBGPressed);
+                accountSettingsButton.setBackground(AppThemeColors.buttonBGSelected);
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
                 if(isHovered){
                     currentPage = 3;
-                    generalSettingsButton.setBackground(buttonBG);
-                    themeSettingsButton.setBackground(buttonBG);
-                    notificationsSettingsButton.setBackground(buttonBG);
-                    accountSettingsButton.setBackground(buttonBGPressed);
-                    privacySettingsButton.setBackground(buttonBG);
+                    generalSettingsButton.setBackground(AppThemeColors.buttonBG);
+                    themeSettingsButton.setBackground(AppThemeColors.buttonBG);
+                    notificationsSettingsButton.setBackground(AppThemeColors.buttonBG);
+                    accountSettingsButton.setBackground(AppThemeColors.buttonBGSelected);
+                    privacySettingsButton.setBackground(AppThemeColors.buttonBG);
                     rightPanel.remove(privacyPanel);
                     rightPanel.remove(generalPanel);
                     rightPanel.remove(themePanel);
@@ -934,7 +916,7 @@ public class SettingsPanel extends JPanel{
                     notificationsPanel.setVisible(false);
                     accountPanel.setVisible(true);
                 }else{
-                    accountSettingsButton.setBackground(buttonBG);
+                    accountSettingsButton.setBackground(AppThemeColors.buttonBG);
                 }
             }
 
@@ -942,7 +924,7 @@ public class SettingsPanel extends JPanel{
             public void mouseEntered(MouseEvent e) {
                 isHovered = true;
                 if(currentPage!=3){
-                    accountSettingsButton.setBackground(buttonBGHovered);
+                    accountSettingsButton.setBackground(AppThemeColors.buttonBGHovered);
                 }
             }
 
@@ -950,7 +932,7 @@ public class SettingsPanel extends JPanel{
             public void mouseExited(MouseEvent e) {
                 isHovered = false;
                 if(currentPage!=3){
-                    accountSettingsButton.setBackground(buttonBG);
+                    accountSettingsButton.setBackground(AppThemeColors.buttonBG);
                 }
             }
         });
@@ -963,26 +945,26 @@ public class SettingsPanel extends JPanel{
         privacySettingsButton.setBorderPainted(false);
         privacySettingsButton.setContentAreaFilled(false);
         privacySettingsButton.setOpaque(true);
-        privacySettingsButton.setBackground(buttonBG);
+        privacySettingsButton.setBackground(AppThemeColors.buttonBG);
         privacySettingsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        privacySettingsButton.setForeground(Color.WHITE);
+        privacySettingsButton.setForeground(AppThemeColors.foregroundColor);
 
         privacySettingsButton.addMouseListener(new MouseAdapter() {
             private boolean isHovered = false;
             @Override
             public void mousePressed(MouseEvent e) {
-                privacySettingsButton.setBackground(buttonBGPressed);
+                privacySettingsButton.setBackground(AppThemeColors.buttonBGSelected);
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
                 if(isHovered){
                     currentPage = 4;
-                    generalSettingsButton.setBackground(buttonBG);
-                    themeSettingsButton.setBackground(buttonBG);
-                    notificationsSettingsButton.setBackground(buttonBG);
-                    accountSettingsButton.setBackground(buttonBG);
-                    privacySettingsButton.setBackground(buttonBGPressed);
+                    generalSettingsButton.setBackground(AppThemeColors.buttonBG);
+                    themeSettingsButton.setBackground(AppThemeColors.buttonBG);
+                    notificationsSettingsButton.setBackground(AppThemeColors.buttonBG);
+                    accountSettingsButton.setBackground(AppThemeColors.buttonBG);
+                    privacySettingsButton.setBackground(AppThemeColors.buttonBGSelected);
                     rightPanel.remove(generalPanel);
                     rightPanel.remove(themePanel);
                     rightPanel.remove(notificationsPanel);
@@ -994,7 +976,7 @@ public class SettingsPanel extends JPanel{
                     accountPanel.setVisible(false);
                     privacyPanel.setVisible(true);
                 }else{
-                    privacySettingsButton.setBackground(buttonBG);
+                    privacySettingsButton.setBackground(AppThemeColors.buttonBG);
                 }
             }
 
@@ -1002,7 +984,7 @@ public class SettingsPanel extends JPanel{
             public void mouseEntered(MouseEvent e) {
                 isHovered = true;
                 if(currentPage != 4){
-                    privacySettingsButton.setBackground(buttonBGHovered);
+                    privacySettingsButton.setBackground(AppThemeColors.buttonBGHovered);
                 }
             }
 
@@ -1010,7 +992,7 @@ public class SettingsPanel extends JPanel{
             public void mouseExited(MouseEvent e) {
                 isHovered = false;
                 if(currentPage!=4){
-                    privacySettingsButton.setBackground(buttonBG);
+                    privacySettingsButton.setBackground(AppThemeColors.buttonBG);
                 }
 
             }
@@ -1064,6 +1046,8 @@ public class SettingsPanel extends JPanel{
 
                     settingsLabel.setFont(new Font("Arial", Font.PLAIN,getHeight()/15));
                     settingsLabel.setPreferredSize(new Dimension(getWidth(), getHeight()/9));
+
+                    rightPanel.setBorder(BorderFactory.createMatteBorder(getHeight()/20, 0, getHeight()/20, 0, AppThemeColors.PRIMARY));
 
 
                     if(!lightMode){

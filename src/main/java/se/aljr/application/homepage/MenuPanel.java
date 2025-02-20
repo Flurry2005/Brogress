@@ -1,5 +1,6 @@
 package se.aljr.application.homepage;
 
+import se.aljr.application.AppThemeColors;
 import se.aljr.application.ApplicationWindow;
 import se.aljr.application.programplanner.ProgramPanel;
 import se.aljr.application.settings.SettingsPanel;
@@ -30,14 +31,6 @@ public class MenuPanel extends JPanel{
     public boolean lightMode = false;
     public static MenuPanel instance;
     public int currentPage = 0;
-
-    Color settingsPanelBackgroundColor = new Color(51,51,51);
-    Color settingsPanelColor = new Color(21,21,21);
-    Color innerSettingPanelColor = new Color(31,31,31);
-
-    Color buttonBG = new Color(51, 51, 51,255);
-    Color buttonBGHovered = new Color(40,40,40);
-    Color buttonBGPressed = new Color(40,40,40);
 
     Font font;
     private int width;
@@ -656,54 +649,38 @@ public class MenuPanel extends JPanel{
         if(!SettingsPanel.lightMode){
             logoLabelText.setForeground(Color.WHITE);
             lightMode = false;
-            settingsPanelBackgroundColor = new Color(51,51,51);
-            settingsPanelColor = new Color(21,21,21);
-            innerSettingPanelColor = new Color(31,31,31);
 
-            buttonBG = new Color(51, 51, 51,255);
-            buttonBGHovered = new Color(40,40,40);
-            buttonBGPressed = new Color(40,40,40);
-
-            homeButton.setForeground(Color.WHITE);
-            exercisesButton.setForeground(Color.WHITE);
-            programButton.setForeground(Color.WHITE);
-            settingsButton.setForeground(Color.WHITE);
-
+            homeButton.setForeground(AppThemeColors.foregroundColor);
+            exercisesButton.setForeground(AppThemeColors.foregroundColor);
+            programButton.setForeground(AppThemeColors.foregroundColor);
+            settingsButton.setForeground(AppThemeColors.foregroundColor);
 
         }else{
-            logoLabelText.setForeground(Color.BLACK);
+            logoLabelText.setForeground(AppThemeColors.foregroundColor);
             lightMode = true;
-            settingsPanelBackgroundColor = new Color(255,255,255);
-            settingsPanelColor = new Color(195,195,195);
-            innerSettingPanelColor = new Color(220,220,220);
 
-            buttonBG = new Color(255, 255, 255);
-            buttonBGHovered = new Color(240,240,240);
-            buttonBGPressed = new Color(210,210,210);
-
-
-            homeButton.setForeground(Color.BLACK);
-            exercisesButton.setForeground(Color.BLACK);
-            programButton.setForeground(Color.BLACK);
-            settingsButton.setForeground(Color.BLACK);
+            homeButton.setForeground(AppThemeColors.foregroundColor);
+            exercisesButton.setForeground(AppThemeColors.foregroundColor);
+            programButton.setForeground(AppThemeColors.foregroundColor);
+            settingsButton.setForeground(AppThemeColors.foregroundColor);
         }
-        homeButton.setBackground(buttonBG);
-        exercisesButton.setBackground(buttonBG);
-        programButton.setBackground(buttonBG);
-        settingsButton.setBackground(buttonBG);
+        homeButton.setBackground(AppThemeColors.buttonBG);
+        exercisesButton.setBackground(AppThemeColors.buttonBG);
+        programButton.setBackground(AppThemeColors.buttonBG);
+        settingsButton.setBackground(AppThemeColors.buttonBG);
 
         switch (currentPage){
             case 0->{
-                homeButton.setBackground(buttonBGPressed);
+                homeButton.setBackground(AppThemeColors.buttonBGSelected);
             }
             case 1->{
-                exercisesButton.setBackground(buttonBGPressed);
+                exercisesButton.setBackground(AppThemeColors.buttonBGSelected);
             }
             case 2->{
-                programButton.setBackground(buttonBGPressed);
+                programButton.setBackground(AppThemeColors.buttonBGSelected);
             }
             case 3->{
-                settingsButton.setBackground(buttonBGPressed);
+                settingsButton.setBackground(AppThemeColors.buttonBGSelected);
             }
         }
     }
@@ -713,7 +690,6 @@ public class MenuPanel extends JPanel{
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         // Draw the image to fill the entire panel
-        System.out.println("JAG ÄR INNE I DIN MAMMA");
 
         if (menuBackground != null) {
             if(!SettingsPanel.lightMode){

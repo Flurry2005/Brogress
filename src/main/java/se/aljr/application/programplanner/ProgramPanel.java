@@ -1,6 +1,7 @@
 package se.aljr.application.programplanner;
 
 import org.checkerframework.checker.units.qual.A;
+import se.aljr.application.AppThemeColors;
 import se.aljr.application.UserData;
 import se.aljr.application.exercise.Excercise.Exercise;
 import se.aljr.application.exercise.Program.Exercises;
@@ -663,7 +664,7 @@ public class ProgramPanel extends JPanel {
         JPanel mainExercisePanel = new JPanel();
         mainExercisePanel.setName("mainExercisePanel");
         mainExercisePanel.setLayout(new BoxLayout(mainExercisePanel, BoxLayout.Y_AXIS));
-        mainExercisePanel.setBackground(settingsPanelColor);
+        mainExercisePanel.setBackground(AppThemeColors.panelColor);
 
         // Track in log
         int exerciseId = workoutContainer.getExercisePanels().size() + 1;
@@ -1167,29 +1168,26 @@ public class ProgramPanel extends JPanel {
         // Draw the image to fill the entire panel
         if (emptyBackground != null) {
             if(!SettingsPanel.lightMode){
-                settingsPanelBackgroundColor = new Color(51,51,51);
-                settingsPanelColor = new Color(21,21,21);
-                innerSettingPanelColor = new Color(31,31,31);
                 workoutPanelTextColor = Color.WHITE;
 
-                mainPanel.setBackground(settingsPanelBackgroundColor);
-                workoutContainer.setBackground(settingsPanelColor);
+                mainPanel.setBackground(AppThemeColors.PRIMARY);
+                workoutContainer.setBackground(AppThemeColors.panelColor);
                 workoutContainer.setForeground(Color.WHITE);
-                workoutScrollPane.getViewport().setBackground(settingsPanelColor);
+                workoutScrollPane.getViewport().setBackground(AppThemeColors.panelColor);
                 workoutScrollPane.setForeground(Color.WHITE);
-                workoutPanel.setBackground(settingsPanelBackgroundColor);
-                exercisesPanel.setBackground(settingsPanelBackgroundColor);
-                workoutTitle.setBackground(innerSettingPanelColor);
+                workoutPanel.setBackground(AppThemeColors.PRIMARY);
+                exercisesPanel.setBackground(AppThemeColors.PRIMARY);
+                workoutTitle.setBackground(AppThemeColors.textFieldColor);
                 workoutTitle.setForeground(Color.WHITE);
-                searchExercise.setBackground(innerSettingPanelColor);
+                searchExercise.setBackground(AppThemeColors.textFieldColor);
                 searchExercise.setForeground(Color.WHITE);
-                savedWorkoutsScrollPane.getViewport().setBackground(innerSettingPanelColor);
-                searchExerciseResult.setBackground(settingsPanelColor);
+                savedWorkoutsScrollPane.getViewport().setBackground(AppThemeColors.textFieldColor);
+                searchExerciseResult.setBackground(AppThemeColors.panelColor);
                 searchExerciseResult.setForeground(Color.WHITE);
-                exercisesScrollPane.setBackground(innerSettingPanelColor);
-                addExerciseAndSetPanel.setBackground(settingsPanelBackgroundColor);
-                savedWorkoutsPanel.setBackground(settingsPanelBackgroundColor);
-                savedWorkoutsList.setBackground(settingsPanelColor);
+                exercisesScrollPane.setBackground(AppThemeColors.textFieldColor);
+                addExerciseAndSetPanel.setBackground(AppThemeColors.PRIMARY);
+                savedWorkoutsPanel.setBackground(AppThemeColors.PRIMARY);
+                savedWorkoutsList.setBackground(AppThemeColors.panelColor);
                 savedWorkoutsList.setForeground(workoutPanelTextColor);
 
                 for(Workout workout : workoutsList){
@@ -1197,17 +1195,17 @@ public class ProgramPanel extends JPanel {
                         if(comp1.getName()!=null){
                             if (comp1.getName().equals("mainExercisePanel")) {
                                 JPanel mainExercisePanel = (JPanel) comp1;
-                                mainExercisePanel.setBackground(settingsPanelColor);
+                                mainExercisePanel.setBackground(AppThemeColors.panelColor);
                                 for (Component comp2 : mainExercisePanel.getComponents()) {
                                     if ("setPanel".equals(comp2.getName())) {
                                         JPanel setPanel = (JPanel) comp2;
-                                        setPanel.setBackground(settingsPanelColor);
+                                        setPanel.setBackground(AppThemeColors.panelColor);
 
 
                                         for (Component compLeftPanel : setPanel.getComponents()) {
                                             if ("leftPanel".equals(compLeftPanel.getName())) {
                                                 JPanel leftPanel = (JPanel) compLeftPanel;
-                                                leftPanel.setBackground(settingsPanelColor);
+                                                leftPanel.setBackground(AppThemeColors.panelColor);
                                                 for(Component setLabelComp : leftPanel.getComponents()){
                                                     if(setLabelComp.getName().equals("setLabel")){
                                                         JLabel setLabel = (JLabel) setLabelComp;
@@ -1224,7 +1222,7 @@ public class ProgramPanel extends JPanel {
                                         if (comp2.getName().equals("exerciseNameTitlePanel")) {
 
                                             JPanel exerciseNameTitlePanel = (JPanel) comp2;
-                                            exerciseNameTitlePanel.setBackground(settingsPanelColor);
+                                            exerciseNameTitlePanel.setBackground(AppThemeColors.panelColor);
                                             for(Component titleComp:exerciseNameTitlePanel.getComponents()){
                                                 if(titleComp.getName().equals("exerciseName")){
                                                     JLabel exerciseName = (JLabel) titleComp;
@@ -1235,7 +1233,7 @@ public class ProgramPanel extends JPanel {
                                         }
                                         if(comp2.getName().equals("setRepWeightRirTitleNPanel")){
                                             JPanel setRepWeightRirTitleNPanel = (JPanel) comp2;
-                                            setRepWeightRirTitleNPanel.setBackground(innerSettingPanelColor);
+                                            setRepWeightRirTitleNPanel.setBackground(AppThemeColors.SECONDARY);
                                             for (Component compRight : setRepWeightRirTitleNPanel.getComponents()){
                                                 if(compRight.getName()!=null){
                                                     if("rightPanel".equals(compRight.getName())){
@@ -1260,7 +1258,7 @@ public class ProgramPanel extends JPanel {
                                                     for (Component compLeftPanel : setRepWeightRirTitleNPanel.getComponents()) {
                                                         if ("leftPanel".equals(compLeftPanel.getName())) {
                                                             JPanel leftPanel = (JPanel) compLeftPanel;
-                                                            leftPanel.setBackground(settingsPanelColor);
+                                                            leftPanel.setBackground(AppThemeColors.panelColor);
                                                             for(Component setLabelComp : leftPanel.getComponents()){
                                                                 if(setLabelComp.getName().equals("setLabel")){
                                                                     JLabel setLabel = (JLabel) setLabelComp;
@@ -1282,30 +1280,27 @@ public class ProgramPanel extends JPanel {
 
                 g.drawImage(scaledEmptyBackgroundIcon.getImage(), 0, 0, getWidth(), getHeight(), this);
             }else{
-                settingsPanelBackgroundColor = new Color(255,255,255);
-                settingsPanelColor = new Color(195,195,195);
-                innerSettingPanelColor = new Color(220,220,220);
                 workoutPanelTextColor = Color.BLACK;
 
-                mainPanel.setBackground(settingsPanelBackgroundColor);
-                workoutContainer.setBackground(settingsPanelColor);
+                mainPanel.setBackground(AppThemeColors.PRIMARY);
+                workoutContainer.setBackground(AppThemeColors.panelColor);
                 workoutContainer.setForeground(Color.BLACK);
-                workoutScrollPane.getViewport().setBackground(settingsPanelColor);
+                workoutScrollPane.getViewport().setBackground(AppThemeColors.panelColor);
                 workoutScrollPane.setForeground(Color.BLACK);
-                workoutPanel.setBackground(settingsPanelBackgroundColor);
-                exercisesPanel.setBackground(settingsPanelBackgroundColor);
-                workoutTitle.setBackground(innerSettingPanelColor);
+                workoutPanel.setBackground(AppThemeColors.PRIMARY);
+                exercisesPanel.setBackground(AppThemeColors.PRIMARY);
+                workoutTitle.setBackground(AppThemeColors.textFieldColor);
                 workoutTitle.setForeground(Color.BLACK);
-                searchExercise.setBackground(innerSettingPanelColor);
+                searchExercise.setBackground(AppThemeColors.textFieldColor);
                 searchExercise.setForeground(Color.BLACK);
-                savedWorkoutsScrollPane.getViewport().setBackground(innerSettingPanelColor);
-                searchExerciseResult.setBackground(settingsPanelColor);
+                savedWorkoutsScrollPane.getViewport().setBackground(AppThemeColors.textFieldColor);
+                searchExerciseResult.setBackground(AppThemeColors.panelColor);
                 searchExerciseResult.setForeground(Color.BLACK);
-                exercisesScrollPane.setBackground(innerSettingPanelColor);
-                addExerciseAndSetPanel.setBackground(settingsPanelColor);
-                workoutPanelTop.setBackground(settingsPanelColor);
-                savedWorkoutsPanel.setBackground(settingsPanelBackgroundColor);
-                savedWorkoutsList.setBackground(settingsPanelColor);
+                exercisesScrollPane.setBackground(AppThemeColors.textFieldColor);
+                addExerciseAndSetPanel.setBackground(AppThemeColors.panelColor);
+                workoutPanelTop.setBackground(AppThemeColors.panelColor);
+                savedWorkoutsPanel.setBackground(AppThemeColors.PRIMARY);
+                savedWorkoutsList.setBackground(AppThemeColors.panelColor);
                 savedWorkoutsList.setForeground(workoutPanelTextColor);
 
                 for(Workout workout : workoutsList){
@@ -1313,17 +1308,17 @@ public class ProgramPanel extends JPanel {
                         if(comp1.getName()!=null){
                             if (comp1.getName().equals("mainExercisePanel")) {
                                 JPanel mainExercisePanel = (JPanel) comp1;
-                                mainExercisePanel.setBackground(settingsPanelColor);
+                                mainExercisePanel.setBackground(AppThemeColors.panelColor);
                                 for (Component comp2 : mainExercisePanel.getComponents()) {
                                     if ("setPanel".equals(comp2.getName())) {
                                         JPanel setPanel = (JPanel) comp2;
-                                        setPanel.setBackground(settingsPanelColor);
+                                        setPanel.setBackground(AppThemeColors.panelColor);
 
 
                                         for (Component compLeftPanel : setPanel.getComponents()) {
                                             if ("leftPanel".equals(compLeftPanel.getName())) {
                                                 JPanel leftPanel = (JPanel) compLeftPanel;
-                                                leftPanel.setBackground(settingsPanelColor);
+                                                leftPanel.setBackground(AppThemeColors.panelColor);
                                                 for(Component setLabelComp : leftPanel.getComponents()){
                                                     if(setLabelComp.getName().equals("setLabel")){
                                                         JLabel setLabel = (JLabel) setLabelComp;
@@ -1340,7 +1335,7 @@ public class ProgramPanel extends JPanel {
                                         if (comp2.getName().equals("exerciseNameTitlePanel")) {
 
                                             JPanel exerciseNameTitlePanel = (JPanel) comp2;
-                                            exerciseNameTitlePanel.setBackground(settingsPanelColor);
+                                            exerciseNameTitlePanel.setBackground(AppThemeColors.panelColor);
                                             for(Component titleComp:exerciseNameTitlePanel.getComponents()){
                                                 if(titleComp.getName().equals("exerciseName")){
                                                     JLabel exerciseName = (JLabel) titleComp;
@@ -1351,7 +1346,7 @@ public class ProgramPanel extends JPanel {
                                         }
                                         if(comp2.getName().equals("setRepWeightRirTitleNPanel")){
                                             JPanel setRepWeightRirTitleNPanel = (JPanel) comp2;
-                                            setRepWeightRirTitleNPanel.setBackground(innerSettingPanelColor);
+                                            setRepWeightRirTitleNPanel.setBackground(AppThemeColors.SECONDARY);
                                             for (Component compRight : setRepWeightRirTitleNPanel.getComponents()){
                                                 if(compRight.getName()!=null){
                                                     if("rightPanel".equals(compRight.getName())){
@@ -1376,7 +1371,7 @@ public class ProgramPanel extends JPanel {
                                                     for (Component compLeftPanel : setRepWeightRirTitleNPanel.getComponents()) {
                                                         if ("leftPanel".equals(compLeftPanel.getName())) {
                                                             JPanel leftPanel = (JPanel) compLeftPanel;
-                                                            leftPanel.setBackground(settingsPanelColor);
+                                                            leftPanel.setBackground(AppThemeColors.panelColor);
                                                             for(Component setLabelComp : leftPanel.getComponents()){
                                                                 if(setLabelComp.getName().equals("setLabel")){
                                                                     JLabel setLabel = (JLabel) setLabelComp;
@@ -1398,7 +1393,6 @@ public class ProgramPanel extends JPanel {
 
                 g.drawImage(scaledLightEmptyBackgroundIcon.getImage(), 0, 0, getWidth(), getHeight(), this);
             }
-
         }
     }
 }
