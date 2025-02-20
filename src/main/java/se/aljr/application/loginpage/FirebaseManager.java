@@ -888,12 +888,18 @@ public class FirebaseManager {
 
         String base64String = documentSnapshot.getString("Favorite_Exercises");
 
-        byte[] decodedBytes = Base64.getDecoder().decode(base64String);
-        ByteArrayInputStream bis = new ByteArrayInputStream(decodedBytes);
-        ObjectInputStream inStream = new ObjectInputStream(bis);
-        inStream.close();
+        if(!base64String.isEmpty()&&!base64String.equals("")){
+            byte[] decodedBytes = Base64.getDecoder().decode(base64String);
+            ByteArrayInputStream bis = new ByteArrayInputStream(decodedBytes);
+            ObjectInputStream inStream = new ObjectInputStream(bis);
+            inStream.close();
 
-        return (HashSet<Exercise>) inStream.readObject();
+            return (HashSet<Exercise>) inStream.readObject();
+        }else{
+            return new HashSet<Exercise>();
+        }
+
+
     }
 
     public static ArrayList<Exercise> readDBcreatedExercises() throws IOException, ClassNotFoundException, ExecutionException, InterruptedException {
@@ -904,12 +910,18 @@ public class FirebaseManager {
         String base64String = documentSnapshot.getString("Created_Exercises");
 
 
+        if(!base64String.isEmpty()&&!base64String.equals("")){
             byte[] decodedBytes = Base64.getDecoder().decode(base64String);
             ByteArrayInputStream bis = new ByteArrayInputStream(decodedBytes);
             ObjectInputStream inStream = new ObjectInputStream(bis);
             inStream.close();
 
-        return (ArrayList<Exercise>) inStream.readObject();
+            return (ArrayList<Exercise>) inStream.readObject();
+        }else{
+            return new ArrayList<Exercise>();
+        }
+
+
     }
 
     public static ImageIcon readDBprofilePicture(String email) {
