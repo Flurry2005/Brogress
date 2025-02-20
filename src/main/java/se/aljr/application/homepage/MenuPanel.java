@@ -1,7 +1,9 @@
 package se.aljr.application.homepage;
 
+import se.aljr.application.AppThemeColors;
 import se.aljr.application.ApplicationWindow;
 import se.aljr.application.programplanner.ProgramPanel;
+import se.aljr.application.settings.SettingsPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,7 +18,8 @@ import java.io.File;
  * Meny panel
  */
 public class MenuPanel extends JPanel{
-    ImageIcon menuBackground;
+    public ImageIcon menuBackground;
+    public ImageIcon lightMenuBackground;
     ImageIcon logoIcon;
     ImageIcon buttonIcon;
     ImageIcon buttonIconExercise;
@@ -26,18 +29,30 @@ public class MenuPanel extends JPanel{
     private ImageIcon scaledButtonSettingsIcon;
     private ImageIcon scaledLogoIcon;
     public boolean lightMode = false;
+    public static MenuPanel instance;
+    public int currentPage = 0;
 
     Font font;
     private int width;
     private int height;
     private String resourcePath;
+
+    final JButton homeButton = new JButton("Home",scaledButtonHomeIcon);
+    final JButton exercisesButton = new JButton("Exercises",scaledButtonExerciseIcon);
+    final JButton programButton = new JButton("Program");
+    JButton settingsButton = new JButton("Settings",scaledButtonSettingsIcon);
+
+    JLabel logoLabelText = new JLabel("BROGRESS");
+
     public MenuPanel(int width, int height){
         this.setOpaque(false);
+        instance = this;
         this.width = width;
         this.height = height;
         //this.setPreferredSize(new Dimension(width, height));
         resourcePath = getClass().getClassLoader().getResource("resource.path").getPath().replace("resource.path","");
         menuBackground = new ImageIcon(resourcePath+"side_bar.png");
+        lightMenuBackground = new ImageIcon(resourcePath+"side_bar_light.png");
         logoIcon = new ImageIcon(resourcePath+"agile_small_icon.png");
         buttonIcon = new ImageIcon(resourcePath+"button.png");
         buttonIconExercise = new ImageIcon(resourcePath+"button_exercise.png");
@@ -68,7 +83,7 @@ public class MenuPanel extends JPanel{
         JPanel logoLabelTextContainer = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
 
         logoLabelTextContainer.setOpaque(false);
-        JLabel logoLabelText = new JLabel("BROGRESS");
+
         logoLabelText.setFont(font.deriveFont(4f));
         logoLabelText.setForeground(Color.WHITE);
         logoLabelTextContainer.add(logoLabelText);
@@ -97,14 +112,9 @@ public class MenuPanel extends JPanel{
         final boolean[] chatPageIsActive = {false};
 
 
-        final JButton homeButton = new JButton("Home",scaledButtonHomeIcon);
-        final JButton exercisesButton = new JButton("Exercises",scaledButtonExerciseIcon);
-        final JButton programButton = new JButton("Program");
-        JButton settingsButton = new JButton("Settings",scaledButtonSettingsIcon);
         JButton chatButton = new JButton("Chat",scaledButtonSettingsIcon);
 
         homeButton.setFont(new Font("Arial", Font.TRUETYPE_FONT,height/35));
-        homeButton.setName("HomeButton");
         homeButton.setForeground(Color.WHITE);
         homeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         homeButton.setAlignmentY(Component.CENTER_ALIGNMENT);
@@ -150,6 +160,7 @@ public class MenuPanel extends JPanel{
 
             @Override
             public void mousePressed(MouseEvent e) {
+                currentPage = 0;
                 exercisesPageIsActive[0] = false;
                 programPageIsActive[0] = false;
                 settingsPageIsActive[0] = false;
@@ -204,7 +215,6 @@ public class MenuPanel extends JPanel{
 
         /**Exercises button*/
         exercisesButton.setFont(new Font("Arial", Font.TRUETYPE_FONT,height/35));
-        exercisesButton.setName("ExercisesButton");
         exercisesButton.setForeground(Color.WHITE);
         exercisesButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         exercisesButton.setAlignmentY(Component.CENTER_ALIGNMENT);
@@ -246,6 +256,7 @@ public class MenuPanel extends JPanel{
 
             @Override
             public void mousePressed(MouseEvent e) {
+                currentPage = 1;
                 exercisesPageIsActive[0] = true;
                 programPageIsActive[0] = false;
                 settingsPageIsActive[0] = false;
@@ -295,7 +306,6 @@ public class MenuPanel extends JPanel{
 
         /**Program button*/
         programButton.setFont(new Font("Arial", Font.TRUETYPE_FONT,height/35));
-        programButton.setName("ProgramButton");
         programButton.setForeground(Color.WHITE);
         programButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         programButton.setAlignmentY(Component.CENTER_ALIGNMENT);
@@ -337,6 +347,7 @@ public class MenuPanel extends JPanel{
 
             @Override
             public void mousePressed(MouseEvent e) {
+                currentPage = 2;
                 exercisesPageIsActive[0] = false;
                 programPageIsActive[0] = true;
                 settingsPageIsActive[0] = false;
@@ -387,7 +398,6 @@ public class MenuPanel extends JPanel{
 
         /**Settings Button*/
         settingsButton.setFont(new Font("Arial", Font.TRUETYPE_FONT,height/35));
-        settingsButton.setName("SettingsButton");
         settingsButton.setForeground(Color.WHITE);
         settingsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         settingsButton.setAlignmentY(Component.CENTER_ALIGNMENT);
@@ -429,6 +439,7 @@ public class MenuPanel extends JPanel{
 
             @Override
             public void mousePressed(MouseEvent e) {
+                currentPage = 3;
                 exercisesPageIsActive[0] = false;
                 programPageIsActive[0] = false;
                 settingsPageIsActive[0] = true;
@@ -580,7 +591,6 @@ public class MenuPanel extends JPanel{
         this.add(logoContainer, BorderLayout.NORTH);
         this.add(buttonContainer, BorderLayout.CENTER);
 
-
         //Handles the resizing of the components
         this.addComponentListener(new ComponentAdapter() {
             @Override
@@ -632,16 +642,65 @@ public class MenuPanel extends JPanel{
                 });
             }
         });
-
     }
+
+    public void updateButtonColor(){
+
+        if(!SettingsPanel.lightMode){
+            logoLabelText.setForeground(Color.WHITE);
+            lightMode = false;
+
+            homeButton.setForeground(AppThemeColors.foregroundColor);
+            exercisesButton.setForeground(AppThemeColors.foregroundColor);
+            programButton.setForeground(AppThemeColors.foregroundColor);
+            settingsButton.setForeground(AppThemeColors.foregroundColor);
+
+        }else{
+            logoLabelText.setForeground(AppThemeColors.foregroundColor);
+            lightMode = true;
+
+            homeButton.setForeground(AppThemeColors.foregroundColor);
+            exercisesButton.setForeground(AppThemeColors.foregroundColor);
+            programButton.setForeground(AppThemeColors.foregroundColor);
+            settingsButton.setForeground(AppThemeColors.foregroundColor);
+        }
+        homeButton.setBackground(AppThemeColors.buttonBG);
+        exercisesButton.setBackground(AppThemeColors.buttonBG);
+        programButton.setBackground(AppThemeColors.buttonBG);
+        settingsButton.setBackground(AppThemeColors.buttonBG);
+
+        switch (currentPage){
+            case 0->{
+                homeButton.setBackground(AppThemeColors.buttonBGSelected);
+            }
+            case 1->{
+                exercisesButton.setBackground(AppThemeColors.buttonBGSelected);
+            }
+            case 2->{
+                programButton.setBackground(AppThemeColors.buttonBGSelected);
+            }
+            case 3->{
+                settingsButton.setBackground(AppThemeColors.buttonBGSelected);
+            }
+        }
+    }
+
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         // Draw the image to fill the entire panel
+
         if (menuBackground != null) {
-            g.drawImage(menuBackground.getImage(), 0, 0, getWidth(), getHeight(), this);
+            if(!SettingsPanel.lightMode){
+                g.drawImage(menuBackground.getImage(), 0, 0, getWidth(), getHeight(), this);
+                updateButtonColor();
+            }else{
+                g.drawImage(lightMenuBackground.getImage(), 0, 0, getWidth(), getHeight(), this);
+                updateButtonColor();
+            }
+
+
         }
     }
-
 }

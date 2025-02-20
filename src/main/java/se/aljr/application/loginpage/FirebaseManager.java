@@ -3,17 +3,17 @@ package se.aljr.application.loginpage;
 import com.google.api.core.ApiFuture;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.firestore.*;
-import com.google.cloud.storage.BlobId;
-import com.google.cloud.storage.BlobInfo;
+import com.google.cloud.storage.*;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
-import com.google.cloud.storage.Storage;
-import com.google.cloud.storage.StorageOptions;
 import com.google.firebase.auth.UserRecord;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
+import se.aljr.application.Friends.Friend;
+import se.aljr.application.Friends.FriendsList;
 import se.aljr.application.UserData;
 import se.aljr.application.programplanner.ProgramPanel;
 import se.aljr.application.programplanner.Workout;
@@ -69,6 +69,196 @@ public class FirebaseManager {
         }
     }
 
+    public static void writeDBsendFriendRequest(String email){
+        HashMap<String,String> newFriendRequest= readDBgetFriendRequests(email);
+        HashMap<String,String> usersFriends = readDBfriends(email,true);
+        if(!newFriendRequest.containsKey(UserData.getEmail())&&!usersFriends.containsKey(UserData.getEmail())&&!email.equals(UserData.getEmail())){
+            newFriendRequest.put(UserData.getEmail(), UserData.getUserName());
+
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            String json = gson.toJson(newFriendRequest);
+
+            Map<String, Object> user = new HashMap<>();
+            user.put("friendrequests", json);
+
+
+
+            // Referens till dokumentet i "users" collection
+            DocumentReference docRef = db.collection("users").document(email);
+
+            // Skriv data och vänta på resultat
+            ApiFuture<WriteResult> result = docRef.update(user);
+
+            try {
+                System.out.println("Uppdaterat vid: " + result.get().getUpdateTime());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static HashMap<String,String> readDBgetFriendRequests(String email){
+        try {
+            Gson gson = new Gson();
+            HashMap<String, String> friendRequestsMap = new HashMap<>();
+
+            // Hämta dokumentet från Firestore
+            ApiFuture<DocumentSnapshot> snapshot = db.collection("users").document(email).get();
+            DocumentSnapshot document = snapshot.get();
+
+            if (document.exists()) {
+                // Hämta JSON-strängen från "friends"
+                HashMap<String,String> friendsJson = (HashMap<String,String>) document.get("friendrequests");
+
+                if (friendsJson != null) {;
+                    // Skriv ut resultatet
+                    System.out.println("Friends Map: " + friendRequestsMap);
+                }
+            }
+
+            return friendRequestsMap;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new HashMap<String,String>();
+        }
+
+    }
+
+    public static void writeDBonlineStatus(){
+
+        Map<String, Object> user = new HashMap<>();
+        user.put("isOnline", UserData.isIsOnline()?"true":"false");
+
+
+        // Referens till dokumentet i "users" collection
+        DocumentReference docRef = db.collection("users").document(UserData.getEmail());
+
+        // Skriv data och vänta på resultat
+        ApiFuture<WriteResult> result = docRef.update(user);
+
+        try {
+            System.out.println("Uppdaterat vid: " + result.get().getUpdateTime());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void readDBlistenToFriendsOnlineStatus() throws InterruptedException {
+
+                for(Friend friend : FriendsList.getFriendArrayList()){
+                    new Thread(()->{
+                    // Referens till användarens dokument
+                    DocumentReference docRef = db.collection("users").document(friend.getFriendEmail());
+
+                    // Lyssna på ändringar i fältet "isOnline"
+                    docRef.addSnapshotListener((snapshot, e) -> {
+                        if (e != null) {
+                            System.err.println("Listen failed: " + e);
+                            return;
+                        }
+
+                        if (snapshot != null && snapshot.exists()) {
+                            // Hämta fältet "isOnline" som en String
+                            String newIsOnline = snapshot.getString("isOnline");
+
+                            if (newIsOnline != null) {
+                                friend.setOnline(newIsOnline.equals("true")?true:false); // Uppdatera variabeln
+                                friend.updateOnlineStatus();
+                                System.out.println("Updated isOnline: " + newIsOnline);
+                            }
+                        } else {
+                            System.out.println("Document does not exist.");
+                        }
+                    });
+
+                    // Håll programmet igång
+                    System.out.println("Listening for Firestore changes on 'isOnline'...");
+                    try {
+                        Thread.sleep(Long.MAX_VALUE);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                    }).start();
+                }
+
+    }
+
+    public static void writeDBfriends(){
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+        Map<String, String> friends = new HashMap<>();
+
+        for(Friend friend : FriendsList.getFriendArrayList()){
+            friends.put(friend.getFriendEmail(), friend.getFriendName());
+        }
+        String json = gson.toJson(friends);
+
+        Map<String, Object> user = new HashMap<>();
+        user.put("friends", json);
+
+
+        // Referens till dokumentet i "users" collection
+        DocumentReference docRef = db.collection("users").document(UserData.getEmail());
+
+        // Skriv data och vänta på resultat
+        ApiFuture<WriteResult> result = docRef.update(user);
+
+        try {
+            System.out.println("Uppdaterat vid: " + result.get().getUpdateTime());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+    }
+    public static HashMap<String,String> readDBfriends(String email, boolean readOnly){
+        try {
+            Gson gson = new Gson();
+            HashMap<String, String> friendsMap = new HashMap<>();
+
+            // Hämta dokumentet från Firestore
+            ApiFuture<DocumentSnapshot> snapshot = db.collection("users").document(email).get();
+            DocumentSnapshot document = snapshot.get();
+
+            if (document.exists()) {
+                // Hämta JSON-strängen från "friends"
+                String friendsJson = (String) document.get("friends");
+
+                if (friendsJson != null) {
+                    // Konvertera JSON-strängen till HashMap
+                    friendsMap = gson.fromJson(friendsJson, HashMap.class);
+
+                    // Skriv ut resultatet
+                    System.out.println("Friends Map: " + friendsMap);
+                } else {
+                    System.out.println("Nyckeln 'friends' är null eller existerar inte.");
+                }
+            } else {
+                System.out.println("Dokumentet existerar inte.");
+            }
+
+           if(!readOnly){
+               for(Map.Entry<String, String> entry : friendsMap.entrySet()){
+                   HashMap<String, String> finalUserData = friendsMap;
+                   FriendsList.getFriendArrayList().add(new Friend(true){
+                       {
+                           setFriendEmail(entry.getKey());
+                           setFriendName(entry.getValue());
+                       }
+                   });
+               }
+           }
+            return friendsMap;
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new HashMap<String,String>();
+        }
+
+    }
+
     public static void writeDBnewUser(String name, String email) throws IOException {
 
         Map<String, Object> user = new HashMap<>();
@@ -79,6 +269,10 @@ public class FirebaseManager {
         user.put("weight", "");
         user.put("workouts", "");
         user.put("profilepicture","");
+        user.put("theme","dark");
+        user.put("friends","");
+        user.put("isOnline","");
+        user.put("friendrequests","");
 
 
         // Referens till dokumentet i "users" collection
@@ -101,6 +295,8 @@ public class FirebaseManager {
         user.put("age", String.valueOf(UserData.getUserAge()));
         user.put("height", String.valueOf(UserData.getUserHeight()));
         user.put("weight", String.valueOf(UserData.getUserWeight()));
+        user.put("theme", UserData.getTheme());
+
 
 
         // Referens till dokumentet i "users" collection
@@ -134,52 +330,216 @@ public class FirebaseManager {
             UserData.setUserWeight(userData.get("weight").toString().isEmpty() ? 0:Float.parseFloat(userData.get("weight").toString())); //If no user weight is set, return 0
             UserData.setUserAge(userData.get("age").toString().isEmpty() ?0:Integer.parseInt(userData.get("age").toString())); //If no user age is set, return 0
             UserData.setUserHeight(userData.get("height").toString().isEmpty() ?0:Integer.parseInt(userData.get("height").toString())); //If no user height is set, return 0
+            UserData.setTheme(userData.get("theme").toString());
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    private static void removeWorkoutIcons(WorkoutsList workoutsList){
+        for(Workout workout : workoutsList){
+            for (Component comp1 : workout.getComponents()) {
+                if(comp1.getName()!=null){
+                    if (comp1.getName().equals("mainExercisePanel")) {
+                        JPanel mainExercisePanel = (JPanel) comp1;
+                        for (Component comp2 : mainExercisePanel.getComponents()) {
+                            if ("addSet".equals(comp2.getName())) {
+                                JButton addSet = (JButton) comp2;
+                                /**/
+                                addSet.setIcon(null);
+                            }
+                            if ("setPanel".equals(comp2.getName())) {
+                                JPanel setPanel = (JPanel) comp2;
+                                for (Component compRight : setPanel.getComponents()){
+                                    if(compRight.getName()!=null){
+                                        if("rightPanel".equals(compRight.getName())){
+                                            JPanel rightPanel = (JPanel) compRight;
+                                            for(Component compMoveSetUp : rightPanel.getComponents()){
+                                                if(compMoveSetUp.getName()!=null){
+                                                    if("moveSetUp".equals(compMoveSetUp.getName())){
+                                                        JButton moveSetUp = (JButton) compMoveSetUp;
+                                                        /**/
+                                                        moveSetUp.setIcon(null);
+                                                    }
+                                                    if("moveSetDown".equals(compMoveSetUp.getName())){
+                                                        JButton moveSetDown = (JButton) compMoveSetUp;
+                                                        /**/
+                                                        moveSetDown.setIcon(null);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+                                for (Component compLeftPanel : setPanel.getComponents()) {
+                                    if ("leftPanel".equals(compLeftPanel.getName())) {
+                                        JPanel leftPanel = (JPanel) compLeftPanel;
+                                        for (Component compDeleteSet : leftPanel.getComponents()) {
+                                            if (compDeleteSet.getName() != null) {
+                                                if ("deleteSet".equals(compDeleteSet.getName())) {
+                                                    JButton deleteSet = (JButton) compDeleteSet;
+                                                    /**/
+                                                    deleteSet.setIcon(null);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            if (comp2.getName() != null) {
+
+                                if (comp2.getName().equals("exerciseNameTitlePanel")) {
+
+                                    JPanel exerciseNameTitlePanel = (JPanel) comp2;
+
+                                    for (Component comp3 : exerciseNameTitlePanel.getComponents()) {
+
+                                        if (comp3.getName().equals("removeExercise")) {
+
+                                            JButton removeExercise = (JButton) comp3;
+                                            /**/
+                                            removeExercise.setIcon(null);
+
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private static void addWorkoutIcons(WorkoutsList workoutsList){
+        for(Workout workout : workoutsList){
+            for (Component comp1 : workout.getComponents()) {
+                if(comp1.getName()!=null){
+                    if (comp1.getName().equals("mainExercisePanel")) {
+                        JPanel mainExercisePanel = (JPanel) comp1;
+                        for (Component comp2 : mainExercisePanel.getComponents()) {
+                            if ("addSet".equals(comp2.getName())) {
+                                JButton addSet = (JButton) comp2;
+                                /**/
+                                addSet.setIcon(ProgramPanel.scaledNewSetIcon);
+
+                            }
+                            if ("setPanel".equals(comp2.getName())) {
+                                JPanel setPanel = (JPanel) comp2;
+                                for (Component compRight : setPanel.getComponents()){
+                                    if(compRight.getName()!=null){
+                                        if("rightPanel".equals(compRight.getName())){
+                                            JPanel rightPanel = (JPanel) compRight;
+                                            for(Component compMoveSetUp : rightPanel.getComponents()){
+                                                if(compMoveSetUp.getName()!=null){
+                                                    if("moveSetUp".equals(compMoveSetUp.getName())){
+                                                        JButton moveSetUp = (JButton) compMoveSetUp;
+                                                        /**/
+                                                        moveSetUp.setIcon(ProgramPanel.scaledMoveSetUpIcon);
+                                                    }
+                                                    if("moveSetDown".equals(compMoveSetUp.getName())){
+                                                        JButton moveSetDown = (JButton) compMoveSetUp;
+                                                        /**/
+                                                        moveSetDown.setIcon(ProgramPanel.scaledMoveSetDownIcon);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+                                for (Component compLeftPanel : setPanel.getComponents()) {
+                                    if ("leftPanel".equals(compLeftPanel.getName())) {
+                                        JPanel leftPanel = (JPanel) compLeftPanel;
+                                        for (Component compDeleteSet : leftPanel.getComponents()) {
+                                            if (compDeleteSet.getName() != null) {
+                                                if ("deleteSet".equals(compDeleteSet.getName())) {
+                                                    JButton deleteSet = (JButton) compDeleteSet;
+                                                    /**/
+                                                    deleteSet.setIcon(ProgramPanel.scaledRemoveSetIcon);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            if (comp2.getName() != null) {
+
+                                if (comp2.getName().equals("exerciseNameTitlePanel")) {
+
+                                    JPanel exerciseNameTitlePanel = (JPanel) comp2;
+
+                                    for (Component comp3 : exerciseNameTitlePanel.getComponents()) {
+
+                                        if (comp3.getName().equals("removeExercise")) {
+
+                                            JButton removeExercise = (JButton) comp3;
+                                            /**/
+                                            removeExercise.setIcon(ProgramPanel.scaledRemoveExerciseIcon);
+
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     public static void writeDBworkout(WorkoutsList workoutsList) throws IOException {
+        removeWorkoutIcons(workoutsList);
+
+        /*---------Creates a storage object connected to the database---------*/
         Storage storage = storageOptions.getService();
+
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
         objectOutputStream.writeObject(workoutsList);
         objectOutputStream.close();
 
+        /*---------Writes the byte stream into a string representation---------*/
         String workoutBase64 = Base64.getEncoder().encodeToString(byteArrayOutputStream.toByteArray());
 
 
-        String bucketName = "brogress-7499c.firebasestorage.app"; // Ersätt med ditt bucket-namn
-        String fileName = UserData.getEmail() + "_workouts.txt"; // Filnamn med användarnamn
+        /*---------Specifies the cloud storage url and the name of the file to save---------*/
+        String bucketName = "brogress-7499c.firebasestorage.app"; // Bucket name
+        String fileName = UserData.getEmail() + "_workouts.txt"; // workout file name
 
         // Konvertera String till byte-array
         byte[] bytes = workoutBase64.getBytes(StandardCharsets.UTF_8);
         ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
 
-        // Skapa en Blob (fil) i Firebase Storage
+        /*---------Creates a blob file in the cloud storage---------*/
         BlobId blobId = BlobId.of(bucketName, fileName);
         BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("text/plain").build();
 
-        // Ladda upp innehållet
+        /*---------uploads the file to the database---------*/
         storage.create(blobInfo, inputStream);
 
+        /*---------Specifies the url to the file created---------*/
         String publicUrl = "https://storage.googleapis.com/" + bucketName + "/" + fileName;
 
+        /*---------Key value pair to save the workouts url---------*/
         Map<String, Object> ref = new HashMap<>();
         ref.put("workouts", publicUrl);
 
-        // Referens till dokumentet i "users" collection
+        /*---------Document reference where the url is to be saved---------*/
         DocumentReference docRef = db.collection("users").document(UserData.getEmail());
 
-        // Skriv data och vänta på resultat
+        /*---------Writes the url to the firestore database---------*/
         ApiFuture<WriteResult> result = docRef.update(ref);
 
         System.out.println("Text har laddats upp som fil: " + fileName);
         System.out.println("Publik URL: " + "https://storage.googleapis.com/" + bucketName + "/" + fileName);
 
-
+        addWorkoutIcons(workoutsList);
 
     }
 
@@ -188,21 +548,28 @@ public class FirebaseManager {
             Gson gson = new Gson();
             HashMap<String, Object> userData = new HashMap<>();
 
+            /*---------Gets a snapshot of the document of the user in the firestore database---------*/
             ApiFuture<DocumentSnapshot> snapshot = db.collection("users").document(UserData.getEmail()).get();
 
+            /*---------Converts the documentSnapshot to a json element--------*/
             DocumentSnapshot document = snapshot.get();
             JsonElement jsonElement = gson.toJsonTree(document.getData());
 
+            /*---------Converts the json to a HashMap---------*/
             userData = gson.fromJson(jsonElement, HashMap.class);
 
             int height = programPanel.getHeight();
 
             System.out.print(programPanel.getHeight());
+            /*---------Checks if the user has stored a workout or not---------*/
             if (!userData.get("workouts").toString().isEmpty()) {
+                /*---------Creates a storage object connected to the database---------*/
                 Storage storage = storageOptions.getService();
 
+                /*---------Gets the workout url stored in the firestore of the user---------*/
                 String fileName = userData.get("workouts").toString();
 
+                /*---------Sets up the variables needed for collecting the workout data from the cloud storage---------*/
                 URL url = new URL(fileName);
                 String path = url.getPath();
                 String bucketName = "brogress-7499c.firebasestorage.app";
@@ -211,11 +578,13 @@ public class FirebaseManager {
                 byte[] data1 = storage.get(BlobId.of(bucketName,userWorkoutFileName)).getContent();
                 String fileContent = new String(data1, StandardCharsets.UTF_8);
 
-
+                /*---------Decodes the base64 string to an object (WorkoutsList)---------*/
                 byte[] data = Base64.getDecoder().decode(fileContent);
                 ObjectInputStream objectInputStream = new ObjectInputStream(new ByteArrayInputStream(data));
                 WorkoutsList workoutsList = (WorkoutsList) objectInputStream.readObject();
                 objectInputStream.close();
+
+                /*---------Reattaches all buttons listeners and data needed to load the WorkoutsList back to the program---------*/
                 for(Workout workout : workoutsList){
                     workout.getWorkoutData().setTotalWorkoutHeight(0);
                     int exerciseId = 1;
@@ -368,6 +737,7 @@ public class FirebaseManager {
                     workout.repaint();
                     workout.revalidate();
                 }
+                addWorkoutIcons(workoutsList);
                 return workoutsList;
             }
 
@@ -378,12 +748,12 @@ public class FirebaseManager {
         return new WorkoutsList();
     }
 
-    public static ImageIcon readDBprofilePicture() {
+    public static ImageIcon readDBprofilePicture(String email) {
         try {
             Gson gson = new Gson();
             HashMap<String, Object> userData = new HashMap<>();
 
-            ApiFuture<DocumentSnapshot> snapshot = db.collection("users").document(UserData.getEmail()).get();
+            ApiFuture<DocumentSnapshot> snapshot = db.collection("users").document(email).get();
 
             DocumentSnapshot document = snapshot.get();
             JsonElement jsonElement = gson.toJsonTree(document.getData());

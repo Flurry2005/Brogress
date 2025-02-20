@@ -45,4 +45,10 @@ public class Exercises {
 		return exercises;
 	}
 
+	public void removeGif(){
+		for(Exercise exercise: exercises){
+			exercise.removeImageIcon();
+		}
+	}
+
 }

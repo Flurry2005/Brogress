@@ -11,8 +11,10 @@ public class UserData {
     private static int userAge;
     private static float userWeight;
     private static String userEmail;
+    private static String userTheme;
     private static HashSet<Exercise> favoriteExercises = new HashSet<>();
     private static ArrayList<Exercise> createdExercises = new ArrayList<>();
+    private static boolean isOnline;
 
     public static void setUserName(String userName) {
         UserData.userName = userName;
@@ -54,6 +56,10 @@ public class UserData {
         return UserData.userEmail;
     }
 
+    public static void setTheme(String theme){UserData.userTheme = theme;}
+
+    public static String getTheme(){return UserData.userTheme;}
+
 
     public static HashSet<Exercise> getFavoriteExercises() {
         return (favoriteExercises != null) ? favoriteExercises : new HashSet<>();
@@ -86,4 +92,12 @@ public class UserData {
     public static void setCreatedExercises(Exercise exercise) {
         createdExercises.add(exercise);
     }
+
+    public static boolean isIsOnline() {
+        return isOnline;
     }
+
+    public static void setIsOnline(boolean isOnline) {
+        UserData.isOnline = isOnline;
+    }
+}

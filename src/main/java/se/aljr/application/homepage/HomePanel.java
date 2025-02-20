@@ -1,16 +1,22 @@
 package se.aljr.application.homepage;
 
 import com.google.cloud.storage.Acl;
+import kotlinx.coroutines.flow.Flow;
 import se.aljr.application.CustomFont;
+import se.aljr.application.Friends.Friend;
+import se.aljr.application.Friends.FriendsList;
 import se.aljr.application.ImageAvatar;
 import se.aljr.application.NutritionCalculator;
 import se.aljr.application.UserData;
 import se.aljr.application.loginpage.FirebaseManager;
+import se.aljr.application.programplanner.ProgramPanel;
+import se.aljr.application.settings.SettingsPanel;
 
 import javax.imageio.ImageIO;
 import javax.imageio.stream.ImageInputStream;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -24,6 +30,11 @@ public class HomePanel extends JPanel {
     ImageIcon moduleIcon;
     protected ImageIcon scaledContentBackgroundPanel;
     Image scaledContentBackground;
+
+    protected ImageIcon lightHomePanelBackground;
+    protected ImageIcon scaledLightContentBackgroundPanel;
+    Image scaledLightContentBackground;
+
     private String resourcePath;
 
     private Image scaledProfilePicture;
@@ -35,23 +46,33 @@ public class HomePanel extends JPanel {
     private static JLabel userAge;
     private static JLabel userHeight;
     private static JLabel userWeight;
+    private static JLabel bmiLabel;
+    private static JLabel bmrLabel;
+    private static JLabel tdeeLabel;
+    private static JLabel proteinNeedLabel;
+
 
     public HomePanel(int width, int height){
-        this.setSize(new Dimension(width, height));
+        this.setPreferredSize(new Dimension(width, height));
         resourcePath = getClass().getClassLoader().getResource("resource.path").getPath().replace("resource.path","");
         homePanelBackground = new ImageIcon(resourcePath+ "bottom_right_bar.png");
         moduleIcon = new ImageIcon(resourcePath+"module.png");
         scaledContentBackground = homePanelBackground.getImage().getScaledInstance(width,height,Image.SCALE_SMOOTH);
         scaledContentBackgroundPanel = new ImageIcon(scaledContentBackground);
 
+        lightHomePanelBackground = new ImageIcon(resourcePath+"bottom_right_bar_light.png");
+        scaledLightContentBackground = lightHomePanelBackground.getImage().getScaledInstance(width,height,Image.SCALE_SMOOTH);
+        scaledLightContentBackgroundPanel = new ImageIcon(scaledLightContentBackground);
+
+
         //profilePictureIcon = new ImageIcon(resourcePath + "Johan.png");
-        profilePictureIcon = FirebaseManager.readDBprofilePicture();
+        profilePictureIcon = FirebaseManager.readDBprofilePicture(UserData.getEmail());
         if(profilePictureIcon==null){
             profilePictureIcon = new ImageIcon(resourcePath + "agile_small_icon.png");
         }
         avatar = new ImageAvatar();
-        avatar.setPreferredSize(new Dimension(getWidth()/25,getWidth()/25));
-        scaledProfilePicture = profilePictureIcon.getImage().getScaledInstance(getWidth()/25,getWidth()/25,Image.SCALE_SMOOTH);
+        avatar.setPreferredSize(new Dimension(getPreferredSize().width/25,getPreferredSize().width/25));
+        scaledProfilePicture = profilePictureIcon.getImage().getScaledInstance(getPreferredSize().width/25,getPreferredSize().width/25,Image.SCALE_SMOOTH);
         scaledProfilePictureIcon = new ImageIcon(scaledProfilePicture);
         avatar.setImage(scaledProfilePictureIcon);
 
@@ -64,18 +85,18 @@ public class HomePanel extends JPanel {
         this.setBackground(Color.BLACK);
         this.setLayout(new BorderLayout(0,0));
 
-        System.out.println("HomePanel Width: "+getWidth()+" HomePanel Height :"+getHeight());
+        System.out.println("HomePanel Width: "+getPreferredSize().width+" HomePanel Height :"+getPreferredSize().height);
         JPanel userInfoPanel = new JPanel(){
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 // Draw the image to fill the entire panel
                 if (moduleIcon != null) {
-                    Image scale = moduleIcon.getImage().getScaledInstance((int) (HomePanel.this.getWidth()/3.7695035461),
-                            (int)(HomePanel.this.getHeight()/4.22292993631),
+                    Image scale = moduleIcon.getImage().getScaledInstance((int) (HomePanel.this.getPreferredSize().width/3.7695035461),
+                            (int)(HomePanel.this.getPreferredSize().height/4.22292993631),
                             Image.SCALE_SMOOTH);
                     ImageIcon scaleImage = new ImageIcon(scale);
-                    g.drawImage(scaleImage.getImage(), 0, 0, (int) (HomePanel.this.getWidth()/3.7695035461), (int)(HomePanel.this.getHeight()/4.22292993631), this);
+                    g.drawImage(scaleImage.getImage(), 0, 0, (int) (HomePanel.this.getPreferredSize().width/3.7695035461), (int)(HomePanel.this.getPreferredSize().height/4.22292993631), this);
                 }
                 else{
                     System.out.println("Error");
@@ -83,7 +104,7 @@ public class HomePanel extends JPanel {
             }
         };
         userInfoPanel.setOpaque(false);
-        userInfoPanel.setPreferredSize(new Dimension((int) (HomePanel.this.getWidth()/3.7695035461),(int)(HomePanel.this.getHeight()/4.22292993631)));
+        userInfoPanel.setPreferredSize(new Dimension((int) (getPreferredSize().width/3.7695035461),(int)(getPreferredSize().height/4.22292993631)));
         userInfoPanel.setMaximumSize(userInfoPanel.getPreferredSize());
         userInfoPanel.setLayout(new BoxLayout(userInfoPanel, BoxLayout.Y_AXIS));
         userInfoPanel.setBorder(new EmptyBorder(0,userInfoPanel.getPreferredSize().width/16,0,0));
@@ -132,8 +153,12 @@ public class HomePanel extends JPanel {
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 // Draw the image to fill the entire panel
-                if (homePanelBackground != null) {
-                    g.drawImage(moduleIcon.getImage(), 0, 0, moduleIcon.getIconWidth(), moduleIcon.getIconHeight(), this);
+                if (moduleIcon != null) {
+                    Image scale = moduleIcon.getImage().getScaledInstance((int) (HomePanel.this.getPreferredSize().width/3.7695035461),
+                            (int)(HomePanel.this.getPreferredSize().height/4.22292993631),
+                            Image.SCALE_SMOOTH);
+                    ImageIcon scaleImage = new ImageIcon(scale);
+                    g.drawImage(scaleImage.getImage(), 0, 0, (int) (HomePanel.this.getPreferredSize().width/3.7695035461), (int)(HomePanel.this.getPreferredSize().height/4.22292993631), this);
                 }
                 else{
                     System.out.println("Error");
@@ -146,22 +171,22 @@ public class HomePanel extends JPanel {
         userMacrosPanel.setMaximumSize(userInfoPanel.getPreferredSize());
         userMacrosPanel.setBorder(new EmptyBorder(0,userInfoPanel.getPreferredSize().width/16,0,0));
 
-        JLabel bmiLabel = new JLabel();
+        bmiLabel = new JLabel();
         bmiLabel.setText("BMI: "+ NutritionCalculator.getBmi(UserData.getUserWeight(), UserData.getUserHeight()));
         bmiLabel.setFont(CustomFont.getFont().deriveFont(getWidth()/50f));
         bmiLabel.setForeground(Color.WHITE);
 
-        JLabel bmrLabel = new JLabel();
+        bmrLabel = new JLabel();
         bmrLabel.setText("BMR: "+ NutritionCalculator.getBMR(UserData.getUserWeight(), UserData.getUserHeight(),UserData.getUserAge())+" kcal");
         bmrLabel.setFont(CustomFont.getFont().deriveFont(getWidth()/50f));
         bmrLabel.setForeground(Color.WHITE);
 
-        JLabel tdeeLabel = new JLabel();
+        tdeeLabel = new JLabel();
         tdeeLabel.setText("TDEE: "+ NutritionCalculator.getTDEE(UserData.getUserWeight(), UserData.getUserHeight(),UserData.getUserAge(),1.2f)+" kcal");
         tdeeLabel.setFont(CustomFont.getFont().deriveFont(getWidth()/50f));
         tdeeLabel.setForeground(Color.WHITE);
 
-        JLabel proteinNeedLabel = new JLabel();
+        proteinNeedLabel = new JLabel();
         proteinNeedLabel.setText("Protein: "+ NutritionCalculator.getProteinNeed(UserData.getUserWeight()));
         proteinNeedLabel.setFont(CustomFont.getFont().deriveFont(getWidth()/50f));
         proteinNeedLabel.setForeground(Color.WHITE);
@@ -185,9 +210,117 @@ public class HomePanel extends JPanel {
         userMacrosPanel.add(Box.createVerticalGlue());
 
         JPanel topPanel = new JPanel();
-        topPanel.setPreferredSize(new Dimension(getWidth(),(int)(getHeight()/3.171974)+getHeight()/20));
+        topPanel.setPreferredSize(new Dimension(getPreferredSize().width,(int)(getPreferredSize().height/3.171974)+getPreferredSize().height/20));
         topPanel.setOpaque(false);
         topPanel.setLayout(new BoxLayout(topPanel,BoxLayout.X_AXIS));
+
+        JPanel bottomPanel = new JPanel();
+        bottomPanel.setPreferredSize(new Dimension(getPreferredSize().width,getPreferredSize().height-topPanel.getPreferredSize().height));
+        bottomPanel.setOpaque(false);
+        bottomPanel.setBackground(Color.green);
+        bottomPanel.setLayout(new BoxLayout(bottomPanel,BoxLayout.X_AXIS));
+
+
+        JPanel friendsPanel = new JPanel();
+        friendsPanel.setLayout(new BoxLayout(friendsPanel, BoxLayout.Y_AXIS));
+        friendsPanel.setOpaque(false);
+
+        JScrollPane friendsListScrollPane = new JScrollPane(friendsPanel);
+        friendsListScrollPane.setBackground(new Color(104, 8, 218, 255));
+        friendsListScrollPane.setPreferredSize(new Dimension((int)(getPreferredSize().width/3.7695035461),bottomPanel.getPreferredSize().height/2));
+        friendsListScrollPane.setMinimumSize(friendsListScrollPane.getPreferredSize());
+        friendsListScrollPane.setMaximumSize(friendsListScrollPane.getPreferredSize());
+        friendsListScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        friendsListScrollPane.getVerticalScrollBar().setPreferredSize(new Dimension(0, 0));
+        friendsListScrollPane.getViewport().setOpaque(false);
+        friendsListScrollPane.setBorder(new LineBorder(new Color(136, 56, 255), 2,false));
+        friendsListScrollPane.getVerticalScrollBar().setUnitIncrement(getPreferredSize().width/140);
+
+        /*
+        FriendsList.getFriendArrayList().add(new Friend(true){
+            {
+                setFriendName("Anton");
+                setFriendEmail("drievmc@gmail.com");
+            }
+        });
+        FriendsList.getFriendArrayList().add(new Friend(true){
+            {
+                setFriendName("Johan");
+                setFriendEmail("kronholmjohan@gmail.com");
+            }
+        });
+        */
+
+
+        FirebaseManager.readDBfriends(UserData.getEmail(),false);
+        try{
+            FirebaseManager.readDBlistenToFriendsOnlineStatus();
+        }catch (Exception e){
+
+        }
+
+        for(Friend friend:FriendsList.getFriendArrayList()){
+            ImageIcon userIcon = FirebaseManager.readDBprofilePicture(friend.getFriendEmail());
+            Image scaledFriendProfilePicture = userIcon.getImage().getScaledInstance(getPreferredSize().width/25,getPreferredSize().width/25,Image.SCALE_SMOOTH);
+            ImageIcon scaledFriendProfilePictureIcon = new ImageIcon(scaledFriendProfilePicture);
+
+            friend.getImageAvatar().setPreferredSize(new Dimension(getPreferredSize().width/25,getPreferredSize().width/25));
+            friend.getImageAvatar().setMinimumSize(friend.getImageAvatar().getPreferredSize());
+            friend.getImageAvatar().setMaximumSize(friend.getImageAvatar().getPreferredSize());
+            friend.getImageAvatar().setImage(scaledFriendProfilePictureIcon);
+            friend.getImageAvatar().setAlignmentY(Component.CENTER_ALIGNMENT);
+
+
+
+            JPanel friendPanel = new JPanel();
+            friendPanel.setOpaque(false);
+            friendPanel.setPreferredSize(new Dimension(friendsListScrollPane.getPreferredSize().width, (int) (friend.getImageAvatar().getPreferredSize().height*1.1)));
+            friendPanel.setLayout(new BoxLayout(friendPanel,BoxLayout.X_AXIS));
+
+            JLabel friendNameLabel = new JLabel(FriendsList.getFriendArrayList().get(FriendsList.getFriendArrayList().indexOf(friend)).getFriendName());
+            friendNameLabel.setFont(CustomFont.getFont().deriveFont(getPreferredSize().width/50f));
+            friendNameLabel.setMaximumSize(new Dimension(friendsListScrollPane.getPreferredSize().width-friend.getImageAvatar().getPreferredSize().width,friendPanel.getPreferredSize().height));
+            friendNameLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+            friendNameLabel.setForeground(Color.WHITE);
+
+            JPanel friendAvatarPanel = new JPanel();
+            friendAvatarPanel.setOpaque(false);
+            friendAvatarPanel.setLayout(new BoxLayout(friendAvatarPanel,BoxLayout.X_AXIS));
+            friendAvatarPanel.setPreferredSize(new Dimension((int) (friend.getImageAvatar().getPreferredSize().width*1.3),friend.getImageAvatar().getPreferredSize().height));
+            friendAvatarPanel.setMaximumSize(friendAvatarPanel.getPreferredSize());
+            friendAvatarPanel.setAlignmentY(Component.CENTER_ALIGNMENT);
+
+            friendAvatarPanel.add(Box.createHorizontalGlue());
+            friendAvatarPanel.add(FriendsList.getFriendArrayList().get(FriendsList.getFriendArrayList().indexOf(friend)).getImageAvatar());
+            friendAvatarPanel.add(Box.createHorizontalGlue());
+
+            friendPanel.add(friendAvatarPanel);
+            friendPanel.add(friendNameLabel);
+            friendPanel.add(Box.createHorizontalGlue());
+
+            friendsPanel.add(friendPanel);
+
+
+        }
+
+
+        bottomPanel.add(Box.createHorizontalGlue());
+        bottomPanel.add(friendsListScrollPane);
+        bottomPanel.add(Box.createHorizontalGlue());
+        bottomPanel.add(Box.createHorizontalGlue());
+        bottomPanel.add(Box.createHorizontalGlue());
+        bottomPanel.add(Box.createHorizontalGlue());
+        bottomPanel.add(Box.createHorizontalGlue());
+        bottomPanel.add(Box.createHorizontalGlue());
+        bottomPanel.add(Box.createHorizontalGlue());
+        bottomPanel.add(Box.createHorizontalGlue());
+        bottomPanel.add(Box.createHorizontalGlue());
+        bottomPanel.add(Box.createHorizontalGlue());
+        bottomPanel.add(Box.createHorizontalGlue());
+        bottomPanel.add(Box.createHorizontalGlue());
+        bottomPanel.add(Box.createHorizontalGlue());
+
+
 
 
 
@@ -207,6 +340,7 @@ public class HomePanel extends JPanel {
 
 
         this.add(topPanel, BorderLayout.NORTH);
+        this.add(bottomPanel, BorderLayout.SOUTH);
         this.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
@@ -221,6 +355,18 @@ public class HomePanel extends JPanel {
                 userAge.setFont(CustomFont.getFont().deriveFont(getWidth()/60f));
                 userHeight.setFont(CustomFont.getFont().deriveFont(getWidth()/60f));
                 userWeight.setFont(CustomFont.getFont().deriveFont(getWidth()/60f));
+
+                userMacrosPanel.repaint();
+                userMacrosPanel.setPreferredSize(new Dimension((int) (HomePanel.this.getWidth()/3.7695035461),(int)(HomePanel.this.getHeight()/4.22292993631)));
+                userMacrosPanel.setMaximumSize(userMacrosPanel.getPreferredSize());
+                userMacrosPanel.setBorder(new EmptyBorder(0,userMacrosPanel.getPreferredSize().width/16,0,0));
+
+                bmiLabel.setFont(CustomFont.getFont().deriveFont(getWidth()/50f));
+                bmrLabel.setFont(CustomFont.getFont().deriveFont(getWidth()/50f));
+                tdeeLabel.setFont(CustomFont.getFont().deriveFont(getWidth()/50f));
+                proteinNeedLabel.setFont(CustomFont.getFont().deriveFont(getWidth()/50f));
+                macroLabel.setFont(CustomFont.getFont().deriveFont(getWidth()/40f));
+
 
 
                 avatar.setPreferredSize(new Dimension(getWidth()/25,getWidth()/25));
@@ -237,6 +383,11 @@ public class HomePanel extends JPanel {
         userAge.setText("Age: "+UserData.getUserAge());
         userHeight.setText("Height: "+ UserData.getUserHeight()+" Cm");
         userWeight.setText("Weight: "+ UserData.getUserWeight()+" Kg");
+        bmiLabel.setText("BMI: "+ NutritionCalculator.getBmi(UserData.getUserWeight(), UserData.getUserHeight()));
+        bmrLabel.setText("BMR: "+ NutritionCalculator.getBMR(UserData.getUserWeight(), UserData.getUserHeight(),UserData.getUserAge())+" kcal");
+        tdeeLabel.setText("TDEE: "+ NutritionCalculator.getTDEE(UserData.getUserWeight(), UserData.getUserHeight(),UserData.getUserAge(),1.2f)+" kcal");
+        proteinNeedLabel.setText("Protein: "+ NutritionCalculator.getProteinNeed(UserData.getUserWeight()));
+
 
     }
 
@@ -256,12 +407,21 @@ public class HomePanel extends JPanel {
         super.paintComponent(g);
         // Draw the image to fill the entire panel
         if (homePanelBackground != null) {
-            g.drawImage(scaledContentBackgroundPanel.getImage(), 0, 0, getWidth(), getHeight(), this);
+            if(!SettingsPanel.lightMode){
+
+
+                g.drawImage(scaledContentBackgroundPanel.getImage(), 0, 0, getWidth(), getHeight(), this);
+            }else{
+
+                g.drawImage(scaledLightContentBackgroundPanel.getImage(), 0, 0, getWidth(), getHeight(), this);
+            }
+
         }
         else{
             System.out.println("Error");
         }
-    }
+        }
+
     public void reScaleBackground(){
         scaledContentBackground = homePanelBackground.getImage().getScaledInstance(getWidth(),getHeight(),Image.SCALE_SMOOTH);
         scaledContentBackgroundPanel = new ImageIcon(scaledContentBackground);

@@ -1,22 +1,24 @@
 package se.aljr.application.settings;
 
+import se.aljr.application.AppThemeColors;
+import se.aljr.application.ApplicationWindow;
 import se.aljr.application.UserData;
+import se.aljr.application.exercise.CreateExerciseModule;
 import se.aljr.application.homepage.HomePanel;
+import se.aljr.application.homepage.MenuPanel;
+import se.aljr.application.homepage.TopBar;
 import se.aljr.application.loginpage.FirebaseManager;
-import se.aljr.application.settings.custom.SteelCheckBox;
+import se.aljr.application.programplanner.ProgramPanel;
 import se.aljr.application.settings.custom.SteelCheckBoxUI;
-import se.aljr.application.settings.tools.ColorDef;
 
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import javax.swing.event.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 
@@ -35,11 +37,18 @@ public class SettingsPanel extends JPanel{
     Font font;
     private String resourcePath;
 
+    //Icons for the settings buttons
     ImageIcon generalSettingsIcon;
     ImageIcon themeSettingsIcon;
     ImageIcon notificationsSettingsIcon;
     ImageIcon accountSettingsIcon;
     ImageIcon privacySettingsIcon;
+
+    ImageIcon darkGeneralSettingsIcon;
+    ImageIcon darkThemeSettingsIcon;
+    ImageIcon darkNotificationsSettingsIcon;
+    ImageIcon darkAccountSettingsIcon;
+    ImageIcon darkPrivacySettingsIcon;
 
     private ImageIcon scaledGeneralSettingsIcon;
     private ImageIcon scaledThemeSettingsIcon;
@@ -47,13 +56,22 @@ public class SettingsPanel extends JPanel{
     private ImageIcon scaledAccountSettingsIcon;
     private ImageIcon scaledPrivacySettingsIcon;
 
+    private ImageIcon scaledDarkGeneralSettingsIcon;
+    private ImageIcon scaledDarkThemeSettingsIcon;
+    private ImageIcon scaledDarkNotificationsSettingsIcon;
+    private ImageIcon scaledDarkAccountSettingsIcon;
+    private ImageIcon scaledDarkPrivacySettingsIcon;
+
+
+    //Array lists for the various dropdown menus
     ArrayList<Integer> agesList = new ArrayList<>();
+    ArrayList<String> themeList = new ArrayList<>();
 
+    public static boolean lightMode = false;
+    public static String currentTheme = "Dark";
 
-
-
-    public boolean lightMode = false;
-
+    //Various colors
+    Color settingsPanelBackgroundColor = new Color(51,51,51);
     Color settingsPanelColor = new Color(21,21,21);
     Color innerSettingPanelColor = new Color(31,31,31);
 
@@ -61,10 +79,47 @@ public class SettingsPanel extends JPanel{
     Color buttonBGHovered = new Color(40,40,40);
     Color buttonBGPressed = new Color(30,30,30);
 
+    //Buttons
+    JButton generalSettingsButton = new JButton("General", scaledGeneralSettingsIcon);
+    JButton themeSettingsButton = new JButton("Theme", scaledThemeSettingsIcon);
+    JButton notificationsSettingsButton = new JButton("Notifications", scaledNotificationsSettingsIcon);
+    JButton accountSettingsButton = new JButton("Account", scaledAccountSettingsIcon);
+    JButton privacySettingsButton = new JButton("Privacy", scaledPrivacySettingsIcon);
+
+    //General Panel
+    JPanel test2 = new JPanel();
+    JPanel test3 = new JPanel();
+    JPanel test4 = new JPanel();
+    JPanel test5 = new JPanel();
+
+    //Theme panel
+    JPanel themeSelectionPanel = new JPanel();
+    JPanel test33 = new JPanel();
+    JPanel test44 = new JPanel();
+    JPanel test55 = new JPanel();
+
+    //Notifications Panel
+    JPanel notificationsPanel = new JPanel();
+
+
+
+
+    //Account Panel
+    JPanel accountPanel = new JPanel();
+    JPanel accountScrollPanel = new JPanel();
+    JPanel test222 = new JPanel();
+    JPanel test333 = new JPanel();
+    JPanel test444 = new JPanel();
+    JPanel test555 = new JPanel();
+    //Privacy Panel
+
+    JLabel settingsLabel = new JLabel("Settings");
+
     public static int currentPage = 0;
 
 
     public SettingsPanel(int width, int height){
+        this.setPreferredSize(new Dimension(width, height));
         resourcePath = getClass().getClassLoader().getResource("resource.path").getPath().replace("resource.path","");
         settingsPanelBackground = new ImageIcon(resourcePath+"emptyBackground.png");
         scaleSettingsPanelBackground = settingsPanelBackground.getImage().getScaledInstance(width,height, Image.SCALE_SMOOTH);
@@ -80,13 +135,50 @@ public class SettingsPanel extends JPanel{
         accountSettingsIcon = new ImageIcon(resourcePath+"settings_account.png");
         privacySettingsIcon = new ImageIcon(resourcePath+"settings_privacy.png");
 
-        this.setPreferredSize(new Dimension(width, height));
+        Image scaledgeneralSettingsIcon = generalSettingsIcon.getImage().getScaledInstance(width-width/5*4,height/12, Image.SCALE_SMOOTH);
+        scaledGeneralSettingsIcon = new ImageIcon(scaledgeneralSettingsIcon);
+        Image scaledthemeSettingsIcon = themeSettingsIcon.getImage().getScaledInstance(width-width/5*4, height/12, Image.SCALE_SMOOTH);
+        scaledThemeSettingsIcon = new ImageIcon(scaledthemeSettingsIcon);
+        Image scalednotificationsSettingsIcon = notificationsSettingsIcon.getImage().getScaledInstance(width-width/5*4, height/12, Image.SCALE_SMOOTH);
+        scaledNotificationsSettingsIcon = new ImageIcon(scalednotificationsSettingsIcon);
+        Image scaledaccountSettingsIcon = accountSettingsIcon.getImage().getScaledInstance(width-width/5*4, height/12, Image.SCALE_SMOOTH);
+        scaledAccountSettingsIcon = new ImageIcon(scaledaccountSettingsIcon);
+        Image scaledprivacySettingsIcon = privacySettingsIcon.getImage().getScaledInstance(width-width/5*4, height/12, Image.SCALE_SMOOTH);
+        scaledPrivacySettingsIcon = new ImageIcon(scaledprivacySettingsIcon);
+
+        darkGeneralSettingsIcon = new ImageIcon(resourcePath + "settings_general_dark.png");
+        darkThemeSettingsIcon = new ImageIcon(resourcePath+"settings_theme_dark.png");
+        darkNotificationsSettingsIcon = new ImageIcon(resourcePath+"settings_notifications_dark.png");
+        darkAccountSettingsIcon = new ImageIcon(resourcePath+"settings_account_dark.png");
+        darkPrivacySettingsIcon = new ImageIcon(resourcePath+"settings_privacy_dark.png");
+
+        Image scaleddarkGeneralSettingsIcon = darkGeneralSettingsIcon.getImage().getScaledInstance(width-width/5*4,height/12, Image.SCALE_SMOOTH);
+        scaledDarkGeneralSettingsIcon = new ImageIcon(scaleddarkGeneralSettingsIcon);
+        Image scaleddarkThemeSettingsIcon = darkThemeSettingsIcon.getImage().getScaledInstance(width-width/5*4, height/12, Image.SCALE_SMOOTH);
+        scaledDarkThemeSettingsIcon = new ImageIcon(scaleddarkThemeSettingsIcon);
+        Image scaleddarkNotificationsSettingsIcon = darkNotificationsSettingsIcon.getImage().getScaledInstance(width-width/5*4, height/12, Image.SCALE_SMOOTH);
+        scaledDarkNotificationsSettingsIcon = new ImageIcon(scaleddarkNotificationsSettingsIcon);
+        Image scaleddarkAccountSettingsIcon = darkAccountSettingsIcon.getImage().getScaledInstance(width-width/5*4, height/12, Image.SCALE_SMOOTH);
+        scaledDarkAccountSettingsIcon = new ImageIcon(scaleddarkAccountSettingsIcon);
+        Image scaleddarkPrivacySettingsIcon = darkPrivacySettingsIcon.getImage().getScaledInstance(width-width/5*4, height/12, Image.SCALE_SMOOTH);
+        scaledDarkPrivacySettingsIcon = new ImageIcon(scaleddarkPrivacySettingsIcon);
+
+        switch (UserData.getTheme()){
+            case "dark"->{
+                lightMode = false;
+            }
+            case "light"->{
+                lightMode = true;
+            }
+        }
+
+
         this.setOpaque(false);
         this.setLayout(new BorderLayout(0,0));
         this.setBorder(new EmptyBorder(15,15,15,15));
         init(width, height);
-
     }
+
 
     private void init(int width, int height){
         try{
@@ -96,188 +188,340 @@ public class SettingsPanel extends JPanel{
             font = new Font("Arial", Font.BOLD, 40);
             e.printStackTrace();
         }
-
-        //------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-
-
-
-        //
         //Set the SIZE of the CheckBoxes
        SteelCheckBoxUI.SIZE = new Dimension(width/20, width/40);
-
-
-
-
-
-
-
-
+        //--------------------------------------------------------------------------------------------------------------------------------------------------------------
         /**Container for all the panels*/
         JPanel containerPanel = new JPanel();
         containerPanel.setLayout(new BoxLayout(containerPanel, BoxLayout.X_AXIS));
         containerPanel.setSize(new Dimension(width, height));
         containerPanel.setOpaque(false);
 
+
+
         /**Creating the left panel*/
         JPanel leftPanel = new JPanel();
-        leftPanel.setLayout(new BorderLayout(0,0));
+        leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.X_AXIS));
         leftPanel.setPreferredSize(new Dimension(width/4, height));
-        leftPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
         leftPanel.setBackground(Color.black);
         leftPanel.setOpaque(false);
 
         /**Right panel*/
         JPanel rightPanel = new JPanel();
         rightPanel.setOpaque(true);
-        rightPanel.setLayout(new BorderLayout(0,0));
-        rightPanel.setPreferredSize(new Dimension(width-width/4, height));
-        rightPanel.setBorder(BorderFactory.createMatteBorder(0, 20, 0, 0, new Color(51,51,51)));
+        rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.X_AXIS));
+        rightPanel.setPreferredSize(new Dimension(width-width/10*7, height));
+        rightPanel.setBorder(BorderFactory.createMatteBorder(height/20, 0, height/20, 0, settingsPanelBackgroundColor));
         rightPanel.setBackground(new Color(30,30,51));
+        //----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
         /**Label Panel*/
-        JPanel labelPanel = new JPanel();
-        labelPanel.setPreferredSize(new Dimension(width, height/9));
-        labelPanel.setOpaque(false);
+        JPanel settingsLabelPanel = new JPanel();
+        settingsLabelPanel.setPreferredSize(new Dimension(width, height/9));
+        settingsLabelPanel.setOpaque(false);
 
         /**General Panel*/
+        //----------------------------------------------------------------------------------------------------------------------------------
         JPanel generalPanel = new JPanel();
         generalPanel.setBackground(settingsPanelColor);
+        generalPanel.setPreferredSize(new Dimension(width/2, height));
         generalPanel.setVisible(true);
-        generalPanel.setLayout(new BorderLayout());
+        generalPanel.setLayout(new BoxLayout(generalPanel, BoxLayout.X_AXIS));
 
 
         //Panel within the scrollPane
         JPanel generalScrollPanel = new JPanel();
-        generalScrollPanel.setPreferredSize(new Dimension(width/5, height));
+        generalScrollPanel.setPreferredSize(new Dimension(width-width/10*7, height));
         generalScrollPanel.setBackground(settingsPanelColor);
         generalScrollPanel.setLayout(new FlowLayout());
 
-        JScrollPane generalScroll = new JScrollPane(generalScrollPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        generalScroll.setPreferredSize(new Dimension(100, 500));
+        JScrollPane generalScroll = new JScrollPane(generalScrollPanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
         generalPanel.add(generalScroll, BorderLayout.CENTER);
 
         //Panels within the scrollable window that will hold various settings--------
-        JPanel test2 = new JPanel();
+
         test2.setBackground(innerSettingPanelColor);
         test2.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
-        test2.setPreferredSize(new Dimension(width-width/3, height/10));
+        test2.setPreferredSize(new Dimension(width-width/10*7, height/15));
+        JLabel testLabel = new JLabel("Testink");
+        test2.add(testLabel);
 
-        JPanel test3 = new JPanel();
         test3.setBackground(innerSettingPanelColor);
-        test3.setPreferredSize(new Dimension(width-width/3, height/10));
+        test3.setPreferredSize(new Dimension(width-width/10*7, height/10));
 
-        JPanel test4 = new JPanel();
         test4.setBackground(innerSettingPanelColor);
-        test4.setPreferredSize(new Dimension(width-width/3, height/10));
+        test4.setPreferredSize(new Dimension(width-width/10*7, height/10));
 
-        JPanel test5 = new JPanel();
         test5.setBackground(innerSettingPanelColor);
-        test5.setPreferredSize(new Dimension(width-width/3, height/10));
+        test5.setPreferredSize(new Dimension(width-width/10*7, height/10));
 
         generalScrollPanel.add(test2);
         generalScrollPanel.add(test3);
         generalScrollPanel.add(test4);
         generalScrollPanel.add(test5);
 
-
-
-
         /**Theme Panel*/
-        //-------------------------------------------------------------------------------------------
+        //----------------------------------------------------------------------------------------------------------------------------------------------------
         JPanel themePanel = new JPanel();
         themePanel.setBackground(settingsPanelColor);
-        themePanel.setLayout(new BorderLayout());
+        themePanel.setLayout(new BoxLayout(themePanel, BoxLayout.X_AXIS));
         themePanel.setVisible(false);
 
         //Panel within the scrollPane
         JPanel themeScrollPanel = new JPanel();
-        themeScrollPanel.setPreferredSize(new Dimension(width/5, height));
+        themeScrollPanel.setPreferredSize(new Dimension(width/15, height));
         themeScrollPanel.setBackground(settingsPanelColor);
         themeScrollPanel.setLayout(new FlowLayout());
 
-        JScrollPane themeScroll = new JScrollPane(themeScrollPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        themeScroll.setPreferredSize(new Dimension(100, 500));
-
+        JScrollPane themeScroll = new JScrollPane(themeScrollPanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         themePanel.add(themeScroll, BorderLayout.CENTER);
 
-        //Panels within the scrollable window that will hold various settings----------------------------------------------------
-        JPanel lightModeDarkModePanel = new JPanel();
-        lightModeDarkModePanel.setBackground(innerSettingPanelColor);
-        lightModeDarkModePanel.setLayout(new BoxLayout(lightModeDarkModePanel, BoxLayout.Y_AXIS));
-        lightModeDarkModePanel.setPreferredSize(new Dimension(width-width/3, height/10));
+        //Panels within the scrollable window that will hold various settings
 
-        //Panel used to center the light mode / dark mode label and switch
-        JPanel lightModeDarkModeCenteringPanel = new JPanel();
-        lightModeDarkModeCenteringPanel.setOpaque(false);
-        lightModeDarkModeCenteringPanel.setLayout(new FlowLayout(FlowLayout.RIGHT, width/40, 0));
-        lightModeDarkModeCenteringPanel.setPreferredSize(new Dimension(width-width/2, height/50));
+        themeSelectionPanel.setBackground(innerSettingPanelColor);
+        themeSelectionPanel.setLayout(new BoxLayout(themeSelectionPanel, BoxLayout.X_AXIS));
+        themeSelectionPanel.setPreferredSize(new Dimension(width-width/10*7, height/15));
 
-        JLabel lightModeDarkModeLabel = new JLabel("Light Mode / Dark Mode");
-        lightModeDarkModeLabel.setFont(new Font("Arial", Font.BOLD,height/55));
-        lightModeDarkModeLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, width/50*22));
-        lightModeDarkModeLabel.setForeground(Color.WHITE);
+        JLabel themeSelectionLabel = new JLabel("Select theme");
+        themeSelectionLabel.setForeground(Color.WHITE);
 
-        //Custom "library" to create the switch
-        SteelCheckBox lightModeDarkModeSwitch = new SteelCheckBox();
-        lightModeDarkModeSwitch.setSelectedColor(ColorDef.YELLOW);
-        lightModeDarkModeSwitch.setRised(false);
-        lightModeDarkModeSwitch.setText(" "); //For some reason the entire Brogress app starts acting up if I dont include this lmao
-        lightModeDarkModeSwitch.setOpaque(false);
-        //lightModeDarkModeSwitch.setBackground(Color.BLUE);
-        lightModeDarkModeSwitch.setPreferredSize(new Dimension(width/20,height/25));
+        themeList.add("Light");
+        themeList.add("Dark");
 
-        if(!lightMode){
-            lightModeDarkModeSwitch.setSelected(true);
-        }else{
-            lightModeDarkModeSwitch.setSelected(false);
-        }
+        JComboBox themeDropDown = new JComboBox(themeList.toArray());
+
+        themeDropDown.setPreferredSize(new Dimension(width/15, height/10));
+        themeDropDown.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+
+                    switch (themeDropDown.getSelectedIndex()){
+                        //Light Mode
+                        case 0->{
+                            lightMode = true;
+                            currentTheme = "light";
+                            AppThemeColors.updateThemeColors();
+
+                            //Change the text colors to black
+                            settingsLabel.setForeground(AppThemeColors.foregroundColor);
+                            generalSettingsButton.setForeground(AppThemeColors.foregroundColor);
+                            themeSettingsButton.setForeground(AppThemeColors.foregroundColor);
+                            notificationsSettingsButton.setForeground(AppThemeColors.foregroundColor);
+                            accountSettingsButton.setForeground(AppThemeColors.foregroundColor);
+                            privacySettingsButton.setForeground(AppThemeColors.foregroundColor);
+
+                            //change the button image to black
+                            generalSettingsButton.setIcon(scaledDarkGeneralSettingsIcon);
+                            themeSettingsButton.setIcon(scaledDarkThemeSettingsIcon);
+                            notificationsSettingsButton.setIcon(scaledDarkNotificationsSettingsIcon);
+                            accountSettingsButton.setIcon(scaledDarkAccountSettingsIcon);
+                            privacySettingsButton.setIcon(scaledDarkPrivacySettingsIcon);
+
+
+                            //General Settings panel
+                            generalScrollPanel.setBackground(AppThemeColors.panelColor);
+                            test2.setBackground(AppThemeColors.SECONDARY);
+                            test3.setBackground(AppThemeColors.SECONDARY);
+                            test4.setBackground(AppThemeColors.SECONDARY);
+                            test5.setBackground(AppThemeColors.SECONDARY);
+
+                            //Theme Settings panel
+                            themeScrollPanel.setBackground(AppThemeColors.panelColor);
+                            themeSelectionPanel.setBackground(AppThemeColors.SECONDARY);
+                            themeSelectionLabel.setForeground(AppThemeColors.foregroundColor);
+                            test33.setBackground(AppThemeColors.SECONDARY);
+                            test44.setBackground(AppThemeColors.SECONDARY);
+                            test55.setBackground(AppThemeColors.SECONDARY);
+
+                            //Notifications Settings Panel
+
+                            //Account Settings Panel
+                            accountScrollPanel.setBackground(AppThemeColors.panelColor);
+                            test222.setBackground(AppThemeColors.SECONDARY);
+                            test333.setBackground(AppThemeColors.SECONDARY);
+                            test444.setBackground(AppThemeColors.SECONDARY);
+                            test555.setBackground(AppThemeColors.SECONDARY);
+
+                            System.out.println("Light Mode");
+
+                            MenuPanel.instance.repaint();
+                            MenuPanel.instance.revalidate();
+
+                            TopBar.instance.repaint();
+                            TopBar.instance.revalidate();
+
+                            ProgramPanel.instance.repaint();
+                            ProgramPanel.instance.revalidate();
+
+                            CreateExerciseModule.instance.repaint();
+                            CreateExerciseModule.instance.revalidate();
+
+                            UserData.setTheme("light");
+                            try {
+                                FirebaseManager.writeDBUser(UserData.getEmail());
+                            } catch (IOException ex) {
+                                throw new RuntimeException(ex);
+                            }
+                            ApplicationWindow.updateBackground();
+
+
+                            repaint();
+                            revalidate();
+                        }
+
+                        //Dark Mode
+                        case 1->{
+                            lightMode = false;
+                            currentTheme = "dark";
+                            AppThemeColors.updateThemeColors();
+
+                            //Change the Text color of the buttons to white
+                            settingsLabel.setForeground(AppThemeColors.foregroundColor);
+                            generalSettingsButton.setForeground(AppThemeColors.foregroundColor);
+                            themeSettingsButton.setForeground(AppThemeColors.foregroundColor);
+                            notificationsSettingsButton.setForeground(AppThemeColors.foregroundColor);
+                            accountSettingsButton.setForeground(AppThemeColors.foregroundColor);
+                            privacySettingsButton.setForeground(AppThemeColors.foregroundColor);
+
+                            //Change the button image to white
+                            generalSettingsButton.setIcon(scaledGeneralSettingsIcon);
+                            themeSettingsButton.setIcon(scaledThemeSettingsIcon);
+                            notificationsSettingsButton.setIcon(scaledNotificationsSettingsIcon);
+                            accountSettingsButton.setIcon(scaledAccountSettingsIcon);
+                            privacySettingsButton.setIcon(scaledPrivacySettingsIcon);
+
+                            //General Settings panel
+                            generalScrollPanel.setBackground(AppThemeColors.panelColor);
+                            test2.setBackground(AppThemeColors.SECONDARY);
+                            test3.setBackground(AppThemeColors.SECONDARY);
+                            test4.setBackground(AppThemeColors.SECONDARY);
+                            test5.setBackground(AppThemeColors.SECONDARY);
+
+                            //Theme Settings panel
+                            themeScrollPanel.setBackground(AppThemeColors.panelColor);
+                            themeSelectionPanel.setBackground(AppThemeColors.SECONDARY);
+                            themeSelectionLabel.setForeground(AppThemeColors.foregroundColor);
+                            test33.setBackground(AppThemeColors.SECONDARY);
+                            test44.setBackground(AppThemeColors.SECONDARY);
+                            test55.setBackground(AppThemeColors.SECONDARY);
+
+                            //Notifications Settings Panel
+
+                            //Account Settings Panel
+                            accountScrollPanel.setBackground(AppThemeColors.panelColor);
+                            test222.setBackground(AppThemeColors.SECONDARY);
+                            test333.setBackground(AppThemeColors.SECONDARY);
+                            test444.setBackground(AppThemeColors.SECONDARY);
+                            test555.setBackground(AppThemeColors.SECONDARY);
 
 
 
-        //Centers the panel that holds the lightmode / darkmode switch and label
-        lightModeDarkModePanel.add(Box.createVerticalGlue());
-        lightModeDarkModePanel.add(lightModeDarkModeCenteringPanel, BorderLayout.CENTER);
-        lightModeDarkModePanel.add(Box.createVerticalGlue());
+                            MenuPanel.instance.repaint();
+                            MenuPanel.instance.revalidate();
 
-        //Adds the switch and label for Lightmode / Darkmode
-        lightModeDarkModeCenteringPanel.add(lightModeDarkModeLabel);
-        lightModeDarkModeCenteringPanel.add(lightModeDarkModeSwitch);
+                            TopBar.instance.repaint();
+                            TopBar.instance.revalidate();
 
-        JPanel test33 = new JPanel();
+                            ProgramPanel.instance.repaint();
+                            ProgramPanel.instance.revalidate();
+
+                            CreateExerciseModule.instance.repaint();
+                            CreateExerciseModule.instance.revalidate();
+
+                            UserData.setTheme("dark");
+                            try {
+                                FirebaseManager.writeDBUser(UserData.getEmail());
+                            } catch (IOException ex) {
+                                throw new RuntimeException(ex);
+                            }
+                            ApplicationWindow.updateBackground();
+
+                            System.out.println("Dark Mode");
+                            repaint();
+                            revalidate();
+                        }
+                    }
+
+                    rightPanel.setBorder(BorderFactory.createMatteBorder(getHeight()/20, 0, getHeight()/20, 0, AppThemeColors.PRIMARY));
+                    generalSettingsButton.setBackground(AppThemeColors.buttonBG);
+                    themeSettingsButton.setBackground(AppThemeColors.buttonBG);
+                    notificationsSettingsButton.setBackground(AppThemeColors.buttonBG);
+                    accountSettingsButton.setBackground(AppThemeColors.buttonBG);
+                    privacySettingsButton.setBackground(AppThemeColors.buttonBG);
+
+
+
+
+                    switch (currentPage){
+                        case 0->{
+                            generalSettingsButton.setBackground(AppThemeColors.buttonBGSelected);
+                        }
+                        case 1->{
+                            themeSettingsButton.setBackground(AppThemeColors.buttonBGSelected);
+                        }
+                        case 2->{
+                            notificationsSettingsButton.setBackground(AppThemeColors.buttonBGSelected);
+                        }
+                        case 3->{
+                            generalSettingsButton.setBackground(AppThemeColors.buttonBGSelected);
+                        }
+                        case 4->{
+                            generalSettingsButton.setBackground(AppThemeColors.buttonBGSelected);
+                        }
+                    }
+
+
+            }
+        });
+
+
+
+
         test33.setBackground(innerSettingPanelColor);
         test33.setLayout(new BoxLayout(test33, BoxLayout.Y_AXIS));
-        test33.setPreferredSize(new Dimension(width-width/3, height/10));
+        test33.setPreferredSize(new Dimension(width-width/10*7, height/10));
 
-        JPanel test44 = new JPanel();
+
         test44.setBackground(innerSettingPanelColor);
-        test44.setPreferredSize(new Dimension(width-width/3, height/10));
+        test44.setPreferredSize(new Dimension(width-width/10*7, height/10));
 
-        JPanel test55 = new JPanel();
+
         test55.setBackground(innerSettingPanelColor);
-        test55.setPreferredSize(new Dimension(width-width/3, height/10));
+        test55.setPreferredSize(new Dimension(width-width/10*7, height/10));
 
-        themeScrollPanel.add(lightModeDarkModePanel);
+        themeScrollPanel.add(themeSelectionPanel);
         themeScrollPanel.add(test33);
         themeScrollPanel.add(test44);
         themeScrollPanel.add(test55);
+
+        themeSelectionPanel.add(Box.createHorizontalGlue());
+        themeSelectionPanel.add(themeSelectionLabel);
+        themeSelectionPanel.add(Box.createHorizontalGlue());
+        themeSelectionPanel.add(Box.createHorizontalGlue());
+        themeSelectionPanel.add(Box.createHorizontalGlue());
+        themeSelectionPanel.add(Box.createHorizontalGlue());
+        themeSelectionPanel.add(Box.createHorizontalGlue());
+        themeSelectionPanel.add(themeDropDown);
         //-------------------------------------------------------------------------------------------------------------------------
 
         /**Notifications Panel*/
-        JPanel notificationsPanel = new JPanel();
+        //----------------------------------------------------------------------------------------------------------------------------------
+
         notificationsPanel.setBackground(settingsPanelColor);
         notificationsPanel.setVisible(false);
 
         /**Acount Panel*/
-        JPanel accountPanel = new JPanel();
+        //----------------------------------------------------------------------------------------------------------------------------------
+
         accountPanel.setBackground(settingsPanelColor);
-        accountPanel.setLayout(new BorderLayout());
+        accountPanel.setLayout(new BoxLayout(accountPanel, BoxLayout.X_AXIS));
         accountPanel.setVisible(false);
 
         //Panel within the scrollPane
-        JPanel accountScrollPanel = new JPanel();
-        accountScrollPanel.setPreferredSize(new Dimension(width/5, height));
+
+
+        accountScrollPanel.setPreferredSize(new Dimension(width-width/10*9, height));
         accountScrollPanel.setBackground(settingsPanelColor);
         accountScrollPanel.setLayout(new FlowLayout());
 
@@ -289,10 +533,10 @@ public class SettingsPanel extends JPanel{
 
 
         //Panels within the scrollable window that will hold various settings--------
-        JPanel test222 = new JPanel();
+
         test222.setBackground(innerSettingPanelColor);
         test222.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
-        test222.setPreferredSize(new Dimension(width-width/3, height/10));
+        test222.setPreferredSize(new Dimension(width-width/10*9, height/10));
 
         //GeneralSettingsPanel1, age, weight and height settings
         JLabel ageLabel = new JLabel("Age: ");
@@ -365,9 +609,9 @@ public class SettingsPanel extends JPanel{
         test222.add(heightDropDown);
         //-------------------------------------------------------------------------------------------
 
-        JPanel test333 = new JPanel();
+
         test333.setBackground(innerSettingPanelColor);
-        test333.setPreferredSize(new Dimension(width-width/3, height/10));
+        test333.setPreferredSize(new Dimension(width-width/10*9, height/10));
 
         JButton chooseProfilePictureButton = new JButton("Open Image File Chooser");
         chooseProfilePictureButton.addMouseListener(new MouseAdapter() {
@@ -386,13 +630,13 @@ public class SettingsPanel extends JPanel{
 
         test333.add(chooseProfilePictureButton);
 
-        JPanel test444 = new JPanel();
-        test444.setBackground(innerSettingPanelColor);
-        test444.setPreferredSize(new Dimension(width-width/3, height/10));
 
-        JPanel test555 = new JPanel();
+        test444.setBackground(innerSettingPanelColor);
+        test444.setPreferredSize(new Dimension(width-width/10*9, height/10));
+
+
         test555.setBackground(innerSettingPanelColor);
-        test555.setPreferredSize(new Dimension(width-width/3, height/10));
+        test555.setPreferredSize(new Dimension(width-width/10*9, height/10));
 
         accountScrollPanel.add(test222);
         accountScrollPanel.add(test333);
@@ -407,37 +651,37 @@ public class SettingsPanel extends JPanel{
         /**Button Panel*/
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
-        buttonPanel.setPreferredSize(new Dimension(width/4, height));
+        buttonPanel.setPreferredSize(new Dimension(width/10, height));
         buttonPanel.setBackground(new Color(10,10,10));
         buttonPanel.setOpaque(false);
 
         this.add(containerPanel);
         containerPanel.add(leftPanel);
         containerPanel.add(rightPanel);
+        containerPanel.add(Box.createHorizontalGlue());
+        containerPanel.add(Box.createHorizontalGlue());
+        containerPanel.add(Box.createHorizontalGlue());
+        containerPanel.add(Box.createHorizontalGlue());
+        containerPanel.add(Box.createHorizontalGlue());
+        containerPanel.add(Box.createHorizontalGlue());
+        containerPanel.add(Box.createHorizontalGlue());
+        containerPanel.add(Box.createHorizontalGlue());
+        containerPanel.add(Box.createHorizontalGlue());
+        containerPanel.add(Box.createHorizontalGlue());
+        containerPanel.add(Box.createHorizontalGlue());
+        containerPanel.add(Box.createHorizontalGlue());
+        containerPanel.add(Box.createHorizontalGlue());
+        containerPanel.add(Box.createHorizontalGlue());
         leftPanel.add(buttonPanel);
 
         rightPanel.add(generalPanel);
-
         //------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-        Image scaledgeneralSettingsIcon = generalSettingsIcon.getImage().getScaledInstance(width-width/2*3,height/8, Image.SCALE_SMOOTH);
-        scaledGeneralSettingsIcon = new ImageIcon(scaledgeneralSettingsIcon);
-
-        Image scaledthemeSettingsIcon = themeSettingsIcon.getImage().getScaledInstance(width-width/2*3, height/8, Image.SCALE_SMOOTH);
-        scaledThemeSettingsIcon = new ImageIcon(scaledthemeSettingsIcon);
-
-        Image scalednotificationsSettingsIcon = notificationsSettingsIcon.getImage().getScaledInstance(width-width/2*3, height/8, Image.SCALE_SMOOTH);
-        scaledNotificationsSettingsIcon = new ImageIcon(scalednotificationsSettingsIcon);
-
-        Image scaledaccountSettingsIcon = accountSettingsIcon.getImage().getScaledInstance(width-width/2*3, height/8, Image.SCALE_SMOOTH);
-        scaledAccountSettingsIcon = new ImageIcon(scaledaccountSettingsIcon);
-
-        Image scaledprivacySettingsIcon = privacySettingsIcon.getImage().getScaledInstance(width-width/2*3, height/8, Image.SCALE_SMOOTH);
-        scaledPrivacySettingsIcon = new ImageIcon(scaledprivacySettingsIcon);
 
 
 
-        JLabel settingsLabel = new JLabel("Settings");
+
+        settingsLabel = new JLabel("Settings");
         settingsLabel.setFont(new Font("Arial", Font.BOLD,height/15));
         settingsLabel.setHorizontalAlignment(SwingConstants.CENTER);
         settingsLabel.setVerticalAlignment(SwingConstants.CENTER);
@@ -446,40 +690,34 @@ public class SettingsPanel extends JPanel{
 
         /**Buttons*/
 
-        JButton button1 = new JButton("General", scaledGeneralSettingsIcon);
-        JButton button2 = new JButton("Theme", scaledThemeSettingsIcon);
-        JButton button3 = new JButton("Notifications", scaledNotificationsSettingsIcon);
-        JButton button4 = new JButton("Account", scaledAccountSettingsIcon);
-        JButton button5 = new JButton("Privacy", scaledPrivacySettingsIcon);
+        generalSettingsButton.setFont(new Font("Arial", Font.PLAIN,height/30));
+        generalSettingsButton.setHorizontalTextPosition(SwingConstants.CENTER);
+        generalSettingsButton.setVerticalTextPosition(SwingConstants.CENTER);
+        generalSettingsButton.setFocusPainted(false);
+        generalSettingsButton.setFocusable(false);
+        generalSettingsButton.setBorderPainted(false);
+        generalSettingsButton.setContentAreaFilled(false);
+        generalSettingsButton.setOpaque(true);
+        generalSettingsButton.setBackground(AppThemeColors.buttonBGSelected);
+        generalSettingsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        generalSettingsButton.setForeground(Color.WHITE);
 
-        button1.setFont(new Font("Arial", Font.BOLD,height/25));
-        button1.setHorizontalTextPosition(SwingConstants.CENTER);
-        button1.setVerticalTextPosition(SwingConstants.CENTER);
-        button1.setFocusPainted(false);
-        button1.setFocusable(false);
-        button1.setBorderPainted(false);
-        button1.setContentAreaFilled(false);
-        button1.setOpaque(true);
-        button1.setBackground(buttonBGPressed);
-        button1.setAlignmentX(Component.CENTER_ALIGNMENT);
-        button1.setForeground(Color.WHITE);
-
-        button1.addMouseListener(new MouseAdapter() {
+        generalSettingsButton.addMouseListener(new MouseAdapter() {
             private boolean isHovered = false;
             @Override
             public void mousePressed(MouseEvent e) {
-                button1.setBackground(buttonBGPressed);
+                generalSettingsButton.setBackground(AppThemeColors.buttonBGSelected);
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
                 if(isHovered){
                     currentPage = 0;
-                    button1.setBackground(buttonBGPressed);
-                    button2.setBackground(buttonBG);
-                    button3.setBackground(buttonBG);
-                    button4.setBackground(buttonBG);
-                    button5.setBackground(buttonBG);
+                    generalSettingsButton.setBackground(AppThemeColors.buttonBGSelected);
+                    themeSettingsButton.setBackground(AppThemeColors.buttonBG);
+                    notificationsSettingsButton.setBackground(AppThemeColors.buttonBG);
+                    accountSettingsButton.setBackground(AppThemeColors.buttonBG);
+                    privacySettingsButton.setBackground(AppThemeColors.buttonBG);
                     rightPanel.remove(privacyPanel);
                     rightPanel.remove(accountPanel);
                     rightPanel.remove(notificationsPanel);
@@ -491,7 +729,7 @@ public class SettingsPanel extends JPanel{
                     themePanel.setVisible(false);
                     generalPanel.setVisible(true);
                 }else{
-                    button1.setBackground(buttonBG);
+                    generalSettingsButton.setBackground(AppThemeColors.buttonBG);
                 }
             }
 
@@ -499,7 +737,7 @@ public class SettingsPanel extends JPanel{
             public void mouseEntered(MouseEvent e) {
                 isHovered = true;
                 if(currentPage != 0 ){
-                    button1.setBackground(buttonBGHovered);
+                    generalSettingsButton.setBackground(AppThemeColors.buttonBGHovered);
                 }
 
             }
@@ -508,40 +746,40 @@ public class SettingsPanel extends JPanel{
             public void mouseExited(MouseEvent e) {
                 isHovered = false;
                 if(currentPage != 0){
-                    button1.setBackground(buttonBG);
+                    generalSettingsButton.setBackground(AppThemeColors.buttonBG);
                 }
 
             }
         });
 
-        button2.setFont(new Font("Arial", Font.BOLD,height/25));
-        button2.setHorizontalTextPosition(SwingConstants.CENTER);
-        button2.setVerticalTextPosition(SwingConstants.CENTER);
-        button2.setFocusPainted(false);
-        button2.setFocusable(false);
-        button2.setBorderPainted(false);
-        button2.setContentAreaFilled(false);
-        button2.setOpaque(true);
-        button2.setBackground(buttonBG);
-        button2.setAlignmentX(Component.CENTER_ALIGNMENT);
-        button2.setForeground(Color.WHITE);
+        themeSettingsButton.setFont(new Font("Arial", Font.PLAIN,height/30));
+        themeSettingsButton.setHorizontalTextPosition(SwingConstants.CENTER);
+        themeSettingsButton.setVerticalTextPosition(SwingConstants.CENTER);
+        themeSettingsButton.setFocusPainted(false);
+        themeSettingsButton.setFocusable(false);
+        themeSettingsButton.setBorderPainted(false);
+        themeSettingsButton.setContentAreaFilled(false);
+        themeSettingsButton.setOpaque(true);
+        themeSettingsButton.setBackground(AppThemeColors.buttonBG);
+        themeSettingsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        themeSettingsButton.setForeground(AppThemeColors.foregroundColor);
 
-        button2.addMouseListener(new MouseAdapter() {
+        themeSettingsButton.addMouseListener(new MouseAdapter() {
             private boolean isHovered = false;
             @Override
             public void mousePressed(MouseEvent e) {
-                button2.setBackground(buttonBGPressed);
+                themeSettingsButton.setBackground(AppThemeColors.buttonBGSelected);
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
                 if(isHovered){
                     currentPage = 1;
-                    button1.setBackground(buttonBG);
-                    button2.setBackground(buttonBGPressed);
-                    button3.setBackground(buttonBG);
-                    button4.setBackground(buttonBG);
-                    button5.setBackground(buttonBG);
+                    generalSettingsButton.setBackground(AppThemeColors.buttonBG);
+                    themeSettingsButton.setBackground(AppThemeColors.buttonBGSelected);
+                    notificationsSettingsButton.setBackground(AppThemeColors.buttonBG);
+                    accountSettingsButton.setBackground(AppThemeColors.buttonBG);
+                    privacySettingsButton.setBackground(AppThemeColors.buttonBG);
                     rightPanel.remove(privacyPanel);
                     rightPanel.remove(accountPanel);
                     rightPanel.remove(notificationsPanel);
@@ -553,7 +791,7 @@ public class SettingsPanel extends JPanel{
                     generalPanel.setVisible(false);
                     themePanel.setVisible(true);
                 }else{
-                    button2.setBackground(buttonBG);
+                    themeSettingsButton.setBackground(AppThemeColors.buttonBG);
                 }
 
 
@@ -563,7 +801,7 @@ public class SettingsPanel extends JPanel{
             public void mouseEntered(MouseEvent e) {
                 isHovered = true;
                 if(currentPage != 1){
-                    button2.setBackground(buttonBGHovered);
+                    themeSettingsButton.setBackground(AppThemeColors.buttonBGHovered);
                 }
 
             }
@@ -572,40 +810,40 @@ public class SettingsPanel extends JPanel{
             public void mouseExited(MouseEvent e) {
                 isHovered = false;
                 if(currentPage != 1){
-                    button2.setBackground(buttonBG);
+                    themeSettingsButton.setBackground(AppThemeColors.buttonBG);
                 }
 
             }
         });
 
-        button3.setFont(new Font("Arial", Font.BOLD,height/25));
-        button3.setHorizontalTextPosition(SwingConstants.CENTER);
-        button3.setVerticalTextPosition(SwingConstants.CENTER);
-        button3.setFocusPainted(false);
-        button3.setFocusable(false);
-        button3.setBorderPainted(false);
-        button3.setContentAreaFilled(false);
-        button3.setOpaque(true);
-        button3.setBackground(buttonBG);
-        button3.setAlignmentX(Component.CENTER_ALIGNMENT);
-        button3.setForeground(Color.WHITE);
+        notificationsSettingsButton.setFont(new Font("Arial", Font.PLAIN,height/30));
+        notificationsSettingsButton.setHorizontalTextPosition(SwingConstants.CENTER);
+        notificationsSettingsButton.setVerticalTextPosition(SwingConstants.CENTER);
+        notificationsSettingsButton.setFocusPainted(false);
+        notificationsSettingsButton.setFocusable(false);
+        notificationsSettingsButton.setBorderPainted(false);
+        notificationsSettingsButton.setContentAreaFilled(false);
+        notificationsSettingsButton.setOpaque(true);
+        notificationsSettingsButton.setBackground(buttonBG);
+        notificationsSettingsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        notificationsSettingsButton.setForeground(Color.WHITE);
 
-        button3.addMouseListener(new MouseAdapter() {
+        notificationsSettingsButton.addMouseListener(new MouseAdapter() {
             private boolean isHovered = false;
             @Override
             public void mousePressed(MouseEvent e) {
-                button3.setBackground(buttonBGPressed);
+                notificationsSettingsButton.setBackground(AppThemeColors.buttonBGSelected);
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
                 if(isHovered){
                     currentPage = 2;
-                    button1.setBackground(buttonBG);
-                    button2.setBackground(buttonBG);
-                    button3.setBackground(buttonBGPressed);
-                    button4.setBackground(buttonBG);
-                    button5.setBackground(buttonBG);
+                    generalSettingsButton.setBackground(AppThemeColors.buttonBG);
+                    themeSettingsButton.setBackground(AppThemeColors.buttonBG);
+                    notificationsSettingsButton.setBackground(AppThemeColors.buttonBGSelected);
+                    accountSettingsButton.setBackground(AppThemeColors.buttonBG);
+                    privacySettingsButton.setBackground(AppThemeColors.buttonBG);
                     rightPanel.remove(privacyPanel);
                     rightPanel.remove(accountPanel);
                     rightPanel.remove(generalPanel);
@@ -617,7 +855,7 @@ public class SettingsPanel extends JPanel{
                     themePanel.setVisible(false);
                     notificationsPanel.setVisible(true);
                 }else{
-                    button3.setBackground(buttonBG);
+                    notificationsSettingsButton.setBackground(AppThemeColors.buttonBG);
                 }
 
 
@@ -627,48 +865,46 @@ public class SettingsPanel extends JPanel{
             public void mouseEntered(MouseEvent e) {
                 isHovered = true;
                 if(currentPage!=2)
-                button3.setBackground(buttonBGHovered);
+                notificationsSettingsButton.setBackground(AppThemeColors.buttonBGHovered);
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
                 isHovered = false;
                 if(currentPage!=2){
-                    button3.setBackground(buttonBG);
+                    notificationsSettingsButton.setBackground(AppThemeColors.buttonBG);
                 }
-
-
             }
         });
 
-        button4.setFont(new Font("Arial", Font.BOLD,height/25));
-        button4.setHorizontalTextPosition(SwingConstants.CENTER);
-        button4.setVerticalTextPosition(SwingConstants.CENTER);
-        button4.setFocusPainted(false);
-        button4.setFocusable(false);
-        button4.setBorderPainted(false);
-        button4.setContentAreaFilled(false);
-        button4.setOpaque(true);
-        button4.setBackground(buttonBG);
-        button4.setAlignmentX(Component.CENTER_ALIGNMENT);
-        button4.setForeground(Color.WHITE);
+        accountSettingsButton.setFont(new Font("Arial", Font.PLAIN,height/30));
+        accountSettingsButton.setHorizontalTextPosition(SwingConstants.CENTER);
+        accountSettingsButton.setVerticalTextPosition(SwingConstants.CENTER);
+        accountSettingsButton.setFocusPainted(false);
+        accountSettingsButton.setFocusable(false);
+        accountSettingsButton.setBorderPainted(false);
+        accountSettingsButton.setContentAreaFilled(false);
+        accountSettingsButton.setOpaque(true);
+        accountSettingsButton.setBackground(AppThemeColors.buttonBG);
+        accountSettingsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        accountSettingsButton.setForeground(AppThemeColors.foregroundColor);
 
-        button4.addMouseListener(new MouseAdapter() {
+        accountSettingsButton.addMouseListener(new MouseAdapter() {
             private boolean isHovered = false;
             @Override
             public void mousePressed(MouseEvent e) {
-                button4.setBackground(buttonBGPressed);
+                accountSettingsButton.setBackground(AppThemeColors.buttonBGSelected);
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
                 if(isHovered){
                     currentPage = 3;
-                    button1.setBackground(buttonBG);
-                    button2.setBackground(buttonBG);
-                    button3.setBackground(buttonBG);
-                    button4.setBackground(buttonBGPressed);
-                    button5.setBackground(buttonBG);
+                    generalSettingsButton.setBackground(AppThemeColors.buttonBG);
+                    themeSettingsButton.setBackground(AppThemeColors.buttonBG);
+                    notificationsSettingsButton.setBackground(AppThemeColors.buttonBG);
+                    accountSettingsButton.setBackground(AppThemeColors.buttonBGSelected);
+                    privacySettingsButton.setBackground(AppThemeColors.buttonBG);
                     rightPanel.remove(privacyPanel);
                     rightPanel.remove(generalPanel);
                     rightPanel.remove(themePanel);
@@ -680,59 +916,55 @@ public class SettingsPanel extends JPanel{
                     notificationsPanel.setVisible(false);
                     accountPanel.setVisible(true);
                 }else{
-                    button4.setBackground(buttonBG);
+                    accountSettingsButton.setBackground(AppThemeColors.buttonBG);
                 }
-
-
             }
 
             @Override
             public void mouseEntered(MouseEvent e) {
                 isHovered = true;
                 if(currentPage!=3){
-                    button4.setBackground(buttonBGHovered);
+                    accountSettingsButton.setBackground(AppThemeColors.buttonBGHovered);
                 }
-
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
                 isHovered = false;
                 if(currentPage!=3){
-                    button4.setBackground(buttonBG);
+                    accountSettingsButton.setBackground(AppThemeColors.buttonBG);
                 }
-
             }
         });
 
-        button5.setFont(new Font("Arial", Font.BOLD,height/25));
-        button5.setHorizontalTextPosition(SwingConstants.CENTER);
-        button5.setVerticalTextPosition(SwingConstants.CENTER);
-        button5.setFocusPainted(false);
-        button5.setFocusable(false);
-        button5.setBorderPainted(false);
-        button5.setContentAreaFilled(false);
-        button5.setOpaque(true);
-        button5.setBackground(buttonBG);
-        button5.setAlignmentX(Component.CENTER_ALIGNMENT);
-        button5.setForeground(Color.WHITE);
+        privacySettingsButton.setFont(new Font("Arial", Font.PLAIN,height/30));
+        privacySettingsButton.setHorizontalTextPosition(SwingConstants.CENTER);
+        privacySettingsButton.setVerticalTextPosition(SwingConstants.CENTER);
+        privacySettingsButton.setFocusPainted(false);
+        privacySettingsButton.setFocusable(false);
+        privacySettingsButton.setBorderPainted(false);
+        privacySettingsButton.setContentAreaFilled(false);
+        privacySettingsButton.setOpaque(true);
+        privacySettingsButton.setBackground(AppThemeColors.buttonBG);
+        privacySettingsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        privacySettingsButton.setForeground(AppThemeColors.foregroundColor);
 
-        button5.addMouseListener(new MouseAdapter() {
+        privacySettingsButton.addMouseListener(new MouseAdapter() {
             private boolean isHovered = false;
             @Override
             public void mousePressed(MouseEvent e) {
-                button5.setBackground(buttonBGPressed);
+                privacySettingsButton.setBackground(AppThemeColors.buttonBGSelected);
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
                 if(isHovered){
                     currentPage = 4;
-                    button1.setBackground(buttonBG);
-                    button2.setBackground(buttonBG);
-                    button3.setBackground(buttonBG);
-                    button4.setBackground(buttonBG);
-                    button5.setBackground(buttonBGPressed);
+                    generalSettingsButton.setBackground(AppThemeColors.buttonBG);
+                    themeSettingsButton.setBackground(AppThemeColors.buttonBG);
+                    notificationsSettingsButton.setBackground(AppThemeColors.buttonBG);
+                    accountSettingsButton.setBackground(AppThemeColors.buttonBG);
+                    privacySettingsButton.setBackground(AppThemeColors.buttonBGSelected);
                     rightPanel.remove(generalPanel);
                     rightPanel.remove(themePanel);
                     rightPanel.remove(notificationsPanel);
@@ -744,57 +976,52 @@ public class SettingsPanel extends JPanel{
                     accountPanel.setVisible(false);
                     privacyPanel.setVisible(true);
                 }else{
-                    button5.setBackground(buttonBG);
+                    privacySettingsButton.setBackground(AppThemeColors.buttonBG);
                 }
-
-
             }
 
             @Override
             public void mouseEntered(MouseEvent e) {
                 isHovered = true;
                 if(currentPage != 4){
-                    button5.setBackground(buttonBGHovered);
+                    privacySettingsButton.setBackground(AppThemeColors.buttonBGHovered);
                 }
-
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
                 isHovered = false;
                 if(currentPage!=4){
-                    button5.setBackground(buttonBG);
+                    privacySettingsButton.setBackground(AppThemeColors.buttonBG);
                 }
 
             }
         });
 
-        button1.setPreferredSize(new Dimension(width, height/9));
-        button1.setMaximumSize(new Dimension(width-width/4*3, height/3));
+        generalSettingsButton.setPreferredSize(new Dimension(width, height/9));
+        generalSettingsButton.setMaximumSize(new Dimension(width-width/4*3, height/3));
 
-        button2.setPreferredSize(new Dimension(width, height/9));
-        button2.setMaximumSize(new Dimension(width-width/4*3, height/3));
+        themeSettingsButton.setPreferredSize(new Dimension(width, height/9));
+        themeSettingsButton.setMaximumSize(new Dimension(width-width/4*3, height/3));
 
-        button3.setPreferredSize(new Dimension(width, height/9));
-        button3.setMaximumSize(new Dimension(width-width/4*3, height/3));
+        notificationsSettingsButton.setPreferredSize(new Dimension(width, height/9));
+        notificationsSettingsButton.setMaximumSize(new Dimension(width-width/4*3, height/3));
 
-        button4.setPreferredSize(new Dimension(width, height/9));
-        button4.setMaximumSize(new Dimension(width-width/4*3, height/3));
+        accountSettingsButton.setPreferredSize(new Dimension(width, height/9));
+        accountSettingsButton.setMaximumSize(new Dimension(width-width/4*3, height/3));
 
-        button5.setPreferredSize(new Dimension(width, height/9));
-        button5.setMaximumSize(new Dimension(width-width/4*3, height/3));
+        privacySettingsButton.setPreferredSize(new Dimension(width, height/9));
+        privacySettingsButton.setMaximumSize(new Dimension(width-width/4*3, height/3));
 
-        buttonPanel.add(labelPanel);
-        labelPanel.add(settingsLabel);
-        buttonPanel.add(button1);
+        buttonPanel.add(settingsLabelPanel);
+        settingsLabelPanel.add(settingsLabel);
+        buttonPanel.add(generalSettingsButton);
+        buttonPanel.add(themeSettingsButton);
+        buttonPanel.add(notificationsSettingsButton);
+        buttonPanel.add(accountSettingsButton);
+        buttonPanel.add(privacySettingsButton);
         buttonPanel.add(Box.createVerticalGlue());
-        buttonPanel.add(button2);
         buttonPanel.add(Box.createVerticalGlue());
-        buttonPanel.add(button3);
-        buttonPanel.add(Box.createVerticalGlue());
-        buttonPanel.add(button4);
-        buttonPanel.add(Box.createVerticalGlue());
-        buttonPanel.add(button5);
         buttonPanel.add(Box.createVerticalGlue());
         buttonPanel.add(Box.createVerticalGlue());
         buttonPanel.add(Box.createVerticalGlue());
@@ -803,272 +1030,119 @@ public class SettingsPanel extends JPanel{
         buttonPanel.add(Box.createVerticalGlue());
         buttonPanel.add(Box.createVerticalGlue());
 
-        lightModeDarkModeSwitch.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                if(e.getStateChange() == ItemEvent.SELECTED){
-                    lightMode = false;
-                    System.out.println("Checkbox is ON!!");
-                    settingsPanelColor = new Color(21,21,21);
-                    innerSettingPanelColor = new Color(31,31,31);
-
-                    generalPanel.setBackground(settingsPanelColor);
-                    generalScrollPanel.setBackground(settingsPanelColor);
-                    test2.setBackground(innerSettingPanelColor);
-                    test3.setBackground(innerSettingPanelColor);
-                    test4.setBackground(innerSettingPanelColor);
-                    test5.setBackground(innerSettingPanelColor);
-
-
-                    themePanel.setBackground(settingsPanelColor);
-                    themeScrollPanel.setBackground(settingsPanelColor);
-                    lightModeDarkModePanel.setBackground(innerSettingPanelColor);
-                    lightModeDarkModeLabel.setForeground(Color.WHITE);
-                    test33.setBackground(innerSettingPanelColor);
-                    test44.setBackground(innerSettingPanelColor);
-                    test55.setBackground(innerSettingPanelColor);
-
-                    notificationsPanel.setBackground(settingsPanelColor);
-
-                    accountPanel.setBackground(settingsPanelColor);
-                    accountScroll.setBackground(settingsPanelColor);
-                    test222.setBackground(innerSettingPanelColor);
-                    test333.setBackground(innerSettingPanelColor);
-                    test444.setBackground(innerSettingPanelColor);
-                    test555.setBackground(innerSettingPanelColor);
-
-                    privacyPanel.setBackground(settingsPanelColor);
-
-                    buttonBG = new Color(51, 51, 51,255);
-                    buttonBGHovered = new Color(40,40,40);
-                    buttonBGPressed = new Color(30,30,30);
-
-                    button1.setForeground(Color.WHITE);
-                    button2.setForeground(Color.WHITE);
-                    button3.setForeground(Color.WHITE);
-                    button4.setForeground(Color.WHITE);
-                    button5.setForeground(Color.WHITE);
-
-                    switch (currentPage){
-                        case 0 ->{
-                            button1.setBackground(buttonBGPressed);
-                            button2.setBackground(buttonBG);
-                            button3.setBackground(buttonBG);
-                            button4.setBackground(buttonBG);
-                            button5.setBackground(buttonBG);
-                        }
-                        case 1 ->{
-
-                            button1.setBackground(buttonBG);
-                            button2.setBackground(buttonBGPressed);
-                            button3.setBackground(buttonBG);
-                            button4.setBackground(buttonBG);
-                            button5.setBackground(buttonBG);
-                        }
-                        case 2 ->{
-                            button1.setBackground(buttonBG);
-                            button2.setBackground(buttonBG);
-                            button3.setBackground(buttonBGPressed);
-                            button4.setBackground(buttonBG);
-                            button5.setBackground(buttonBG);
-                        }
-                        case 3 ->{
-
-                            button1.setBackground(buttonBG);
-                            button2.setBackground(buttonBG);
-                            button3.setBackground(buttonBG);
-                            button4.setBackground(buttonBGPressed);
-                            button5.setBackground(buttonBG);
-                        }
-                        case 4 ->{
-
-                            button1.setBackground(buttonBG);
-                            button2.setBackground(buttonBG);
-                            button3.setBackground(buttonBG);
-                            button4.setBackground(buttonBG);
-                            button5.setBackground(buttonBGPressed);
-                        }
-                    }
-
-                    SettingsPanel.this.repaint();
-                    SettingsPanel.this.revalidate();
-
-
-                }else {
-                    lightMode = true;
-                    System.out.println("Checkbox is OFF!!");
-                    settingsPanelColor = new Color(255, 255, 255);
-                    innerSettingPanelColor = new Color(200, 200, 200);
-                    generalPanel.setBackground(settingsPanelColor);
-                    generalScrollPanel.setBackground(settingsPanelColor);
-
-
-                    themePanel.setBackground(settingsPanelColor);
-                    themeScrollPanel.setBackground(settingsPanelColor);
-                    lightModeDarkModePanel.setBackground(innerSettingPanelColor);
-                    lightModeDarkModeLabel.setForeground(Color.BLACK);
-
-                    test2.setBackground(innerSettingPanelColor);
-                    test3.setBackground(innerSettingPanelColor);
-                    test4.setBackground(innerSettingPanelColor);
-                    test5.setBackground(innerSettingPanelColor);
-
-                    test33.setBackground(innerSettingPanelColor);
-                    test44.setBackground(innerSettingPanelColor);
-                    test55.setBackground(innerSettingPanelColor);
-
-                    notificationsPanel.setBackground(settingsPanelColor);
-
-                    accountPanel.setBackground(settingsPanelColor);
-                    accountScrollPanel.setBackground(settingsPanelColor);
-                    test222.setBackground(innerSettingPanelColor);
-                    test333.setBackground(innerSettingPanelColor);
-                    test444.setBackground(innerSettingPanelColor);
-                    test555.setBackground(innerSettingPanelColor);
-
-                    privacyPanel.setBackground(settingsPanelColor);
-
-
-                    buttonBG = new Color(255, 255, 255, 255);
-                    buttonBGHovered = new Color(220, 220, 220);
-                    buttonBGPressed = new Color(180, 180, 180);
-
-                    button1.setForeground(Color.BLACK);
-                    button2.setForeground(Color.BLACK);
-                    button3.setForeground(Color.BLACK);
-                    button4.setForeground(Color.BLACK);
-                    button5.setForeground(Color.BLACK);
-
-                    switch (currentPage){
-                        case 0 ->{
-                            button1.setBackground(buttonBGPressed);
-                            button2.setBackground(buttonBG);
-                            button3.setBackground(buttonBG);
-                            button4.setBackground(buttonBG);
-                            button5.setBackground(buttonBG);
-                        }
-                        case 1 ->{
-
-                            button1.setBackground(buttonBG);
-                            button2.setBackground(buttonBGPressed);
-                            button3.setBackground(buttonBG);
-                            button4.setBackground(buttonBG);
-                            button5.setBackground(buttonBG);
-                        }
-                        case 2 ->{
-
-                            button1.setBackground(buttonBG);
-                            button2.setBackground(buttonBG);
-                            button3.setBackground(buttonBGPressed);
-                            button4.setBackground(buttonBG);
-                            button5.setBackground(buttonBG);
-                        }
-                        case 3 ->{
-
-                            button1.setBackground(buttonBG);
-                            button2.setBackground(buttonBG);
-                            button3.setBackground(buttonBG);
-                            button4.setBackground(buttonBGPressed);
-                            button5.setBackground(buttonBG);
-                        }
-                        case 4 ->{
-
-                            button1.setBackground(buttonBG);
-                            button2.setBackground(buttonBG);
-                            button3.setBackground(buttonBG);
-                            button4.setBackground(buttonBG);
-                            button5.setBackground(buttonBGPressed);
-                        }
-                    }
-
-
-                    SettingsPanel.this.repaint();
-                    SettingsPanel.this.revalidate();
-
-                }
-            }
-        });
-
-
+        //------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         this.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
                 SwingUtilities.invokeLater(()->{
                     leftPanel.setPreferredSize(new Dimension(getWidth()/4, getHeight()));
                     buttonPanel.setPreferredSize(new Dimension(getWidth()/4,getHeight()));
-                    rightPanel.setPreferredSize(new Dimension(getWidth()-getWidth()/4, getHeight()));
-                    labelPanel.setPreferredSize(new Dimension(getWidth(), getHeight()/9));
+
+                    rightPanel.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()));
+
+                    generalScroll.setPreferredSize(new Dimension(getWidth()-getWidth()/2, getHeight()));
+                    settingsLabelPanel.setPreferredSize(new Dimension(getWidth(), getHeight()/9));
 
 
-                    settingsLabel.setFont(new Font("Arial", Font.BOLD,getHeight()/15));
+                    settingsLabel.setFont(new Font("Arial", Font.PLAIN,getHeight()/15));
                     settingsLabel.setPreferredSize(new Dimension(getWidth(), getHeight()/9));
-                    //paddingPanel.setPreferredSize(new Dimension(getWidth()/10, getHeight()));
 
-                    Image scaledgeneralSettingsIcon = generalSettingsIcon.getImage().getScaledInstance(getWidth()-getWidth()/4*3,getHeight()/10, Image.SCALE_SMOOTH);
-                    scaledGeneralSettingsIcon = new ImageIcon(scaledgeneralSettingsIcon);
-                    button1.setIcon(scaledGeneralSettingsIcon);
-                    button1.setFont(new Font("Arial", Font.BOLD,getHeight()/25));
-                    button1.setPreferredSize(new Dimension(getWidth(), getHeight()/10));
-                    button1.setMaximumSize(new Dimension(getWidth()-getWidth()/3*2, getHeight()/3));
-
-                    Image scaledthemeSettingsIcon = themeSettingsIcon.getImage().getScaledInstance(getWidth()-getWidth()/4*3, getHeight()/10, Image.SCALE_SMOOTH);
-                    scaledThemeSettingsIcon = new ImageIcon(scaledthemeSettingsIcon);
-                    button2.setIcon(scaledThemeSettingsIcon);
-                    button2.setFont(new Font("Arial", Font.BOLD,getHeight()/25));
-                    button2.setPreferredSize(new Dimension(getWidth(), getHeight()/10));
-                    button2.setMaximumSize(new Dimension(getWidth()-getWidth()/3*2, getHeight()/3));
-
-                    Image scalednotificationsSettingsIcon = notificationsSettingsIcon.getImage().getScaledInstance(getWidth()-getWidth()/4*3, getHeight()/10, Image.SCALE_SMOOTH);
-                    scaledNotificationsSettingsIcon = new ImageIcon(scalednotificationsSettingsIcon);
-                    button3.setIcon(scaledNotificationsSettingsIcon);
-                    button3.setFont(new Font("Arial", Font.BOLD,getHeight()/25));
-                    button3.setPreferredSize(new Dimension(getWidth(), getHeight()/10));
-                    button3.setMaximumSize(new Dimension(getWidth()-getWidth()/3*2, getHeight()/3));
-
-                    Image scaledaccountSettingsIcon = accountSettingsIcon.getImage().getScaledInstance(getWidth()-getWidth()/4*3, getHeight()/10, Image.SCALE_SMOOTH);
-                    scaledAccountSettingsIcon = new ImageIcon(scaledaccountSettingsIcon);
-                    button4.setIcon(scaledAccountSettingsIcon);
-                    button4.setFont(new Font("Arial", Font.BOLD,getHeight()/25));
-                    button4.setPreferredSize(new Dimension(getWidth(), getHeight()/10));
-                    button4.setMaximumSize(new Dimension(getWidth()-getWidth()/3*2, getHeight()/3));
+                    rightPanel.setBorder(BorderFactory.createMatteBorder(getHeight()/20, 0, getHeight()/20, 0, AppThemeColors.PRIMARY));
 
 
-                    Image scaledprivacySettingsIcon = privacySettingsIcon.getImage().getScaledInstance(getWidth()-getWidth()/4*3, getHeight()/10, Image.SCALE_SMOOTH);
-                    scaledPrivacySettingsIcon = new ImageIcon(scaledprivacySettingsIcon);
-                    button5.setIcon(scaledPrivacySettingsIcon);
-                    button5.setFont(new Font("Arial", Font.BOLD,getHeight()/25));
-                    button5.setPreferredSize(new Dimension(getWidth(), getHeight()/10));
-                    button5.setMaximumSize(new Dimension(getWidth()-getWidth()/3*2, getHeight()/3));
+                    if(!lightMode){
+                        Image scaledgeneralSettingsIcon = generalSettingsIcon.getImage().getScaledInstance(getWidth()-getWidth()/5*4,getHeight()/12, Image.SCALE_SMOOTH);
+                        scaledGeneralSettingsIcon = new ImageIcon(scaledgeneralSettingsIcon);
+                        generalSettingsButton.setIcon(scaledGeneralSettingsIcon);
+                        Image scaledthemeSettingsIcon = themeSettingsIcon.getImage().getScaledInstance(getWidth()-getWidth()/5*4, getHeight()/12, Image.SCALE_SMOOTH);
+                        scaledThemeSettingsIcon = new ImageIcon(scaledthemeSettingsIcon);
+                        themeSettingsButton.setIcon(scaledThemeSettingsIcon);
+                        Image scalednotificationsSettingsIcon = notificationsSettingsIcon.getImage().getScaledInstance(getWidth()-getWidth()/5*4, getHeight()/12, Image.SCALE_SMOOTH);
+                        scaledNotificationsSettingsIcon = new ImageIcon(scalednotificationsSettingsIcon);
+                        notificationsSettingsButton.setIcon(scaledNotificationsSettingsIcon);
+                        Image scaledaccountSettingsIcon = accountSettingsIcon.getImage().getScaledInstance(getWidth()-getWidth()/5*4, getHeight()/12, Image.SCALE_SMOOTH);
+                        scaledAccountSettingsIcon = new ImageIcon(scaledaccountSettingsIcon);
+                        accountSettingsButton.setIcon(scaledAccountSettingsIcon);
+                        Image scaledprivacySettingsIcon = privacySettingsIcon.getImage().getScaledInstance(getWidth()-getWidth()/5*4, getHeight()/12, Image.SCALE_SMOOTH);
+                        scaledPrivacySettingsIcon = new ImageIcon(scaledprivacySettingsIcon);
+                        privacySettingsButton.setIcon(scaledPrivacySettingsIcon);
+                    }else{
+                        Image scaleddarkGeneralSettingsIcon = darkGeneralSettingsIcon.getImage().getScaledInstance(getWidth()-getWidth()/5*4,getHeight()/12, Image.SCALE_SMOOTH);
+                        scaledDarkGeneralSettingsIcon = new ImageIcon(scaleddarkGeneralSettingsIcon);
+                        generalSettingsButton.setIcon(scaledDarkGeneralSettingsIcon);
+                        Image scaleddarkThemeSettingsIcon = darkThemeSettingsIcon.getImage().getScaledInstance(getWidth()-getWidth()/5*4, getHeight()/12, Image.SCALE_SMOOTH);
+                        scaledDarkThemeSettingsIcon = new ImageIcon(scaleddarkThemeSettingsIcon);
+                        themeSettingsButton.setIcon(scaledDarkThemeSettingsIcon);
+                        Image scaleddarkNotificationsSettingsIcon = darkNotificationsSettingsIcon.getImage().getScaledInstance(getWidth()-getWidth()/5*4, getHeight()/12, Image.SCALE_SMOOTH);
+                        scaledDarkNotificationsSettingsIcon = new ImageIcon(scaleddarkNotificationsSettingsIcon);
+                        notificationsSettingsButton.setIcon(scaledDarkNotificationsSettingsIcon);
+                        Image scaleddarkAccountSettingsIcon = darkAccountSettingsIcon.getImage().getScaledInstance(getWidth()-getWidth()/5*4, getHeight()/12, Image.SCALE_SMOOTH);
+                        scaledDarkAccountSettingsIcon = new ImageIcon(scaleddarkAccountSettingsIcon);
+                        accountSettingsButton.setIcon(scaledDarkAccountSettingsIcon);
+                        Image scaleddarkPrivacySettingsIcon = darkPrivacySettingsIcon.getImage().getScaledInstance(getWidth()-getWidth()/5*4, getHeight()/12, Image.SCALE_SMOOTH);
+                        scaledDarkPrivacySettingsIcon = new ImageIcon(scaleddarkPrivacySettingsIcon);
+                        privacySettingsButton.setIcon(scaledDarkPrivacySettingsIcon);
+                    }
 
 
-                    test2.setPreferredSize(new Dimension(getWidth()-getWidth()/3, getHeight()/10));
-                    test3.setPreferredSize(new Dimension(getWidth()-getWidth()/3, getHeight()/10));
-                    test4.setPreferredSize(new Dimension(getWidth()-getWidth()/3, getHeight()/10));
-                    test5.setPreferredSize(new Dimension(getWidth()-getWidth()/3, getHeight()/10));
 
+                    generalSettingsButton.setFont(new Font("Arial", Font.PLAIN,getHeight()/30));
+                    generalSettingsButton.setPreferredSize(new Dimension(getWidth(), getHeight()/12));
+                    generalSettingsButton.setMaximumSize(new Dimension(getWidth()-getWidth()/5*4, getHeight()/3));
+
+
+
+                    themeSettingsButton.setFont(new Font("Arial", Font.PLAIN,getHeight()/30));
+                    themeSettingsButton.setPreferredSize(new Dimension(getWidth(), getHeight()/12));
+                    themeSettingsButton.setMaximumSize(new Dimension(getWidth()-getWidth()/5*4, getHeight()/3));
+
+
+
+                    notificationsSettingsButton.setFont(new Font("Arial", Font.PLAIN,getHeight()/30));
+                    notificationsSettingsButton.setPreferredSize(new Dimension(getWidth(), getHeight()/12));
+                    notificationsSettingsButton.setMaximumSize(new Dimension(getWidth()-getWidth()/5*4, getHeight()/3));
+
+
+                    accountSettingsButton.setFont(new Font("Arial", Font.PLAIN,getHeight()/30));
+                    accountSettingsButton.setPreferredSize(new Dimension(getWidth(), getHeight()/12));
+                    accountSettingsButton.setMaximumSize(new Dimension(getWidth()-getWidth()/5*4, getHeight()/3));
+
+
+
+                    privacySettingsButton.setFont(new Font("Arial", Font.PLAIN,getHeight()/30));
+                    privacySettingsButton.setPreferredSize(new Dimension(getWidth(), getHeight()/12));
+                    privacySettingsButton.setMaximumSize(new Dimension(getWidth()-getWidth()/5*4, getHeight()/3));
+
+
+                    test2.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/10));
+                    test3.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/10));
+                    test4.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/10));
+                    test5.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/10));
 
                     SteelCheckBoxUI.SIZE = new Dimension(getWidth()/20, getWidth()/40);
-                    lightModeDarkModePanel.setPreferredSize(new Dimension(getWidth()-getWidth()/3, getHeight()/10));
-                    lightModeDarkModeLabel.setFont(new Font("Arial", Font.BOLD,getHeight()/55));
-                    lightModeDarkModeLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, getWidth()/50*22));
+                    themeSelectionPanel.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/15));
 
+                    test33.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/10));
+                    test44.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/10));
+                    test55.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/10));
 
-                    test33.setPreferredSize(new Dimension(getWidth()-getWidth()/3, getHeight()/10));
-                    test44.setPreferredSize(new Dimension(getWidth()-getWidth()/3, getHeight()/10));
-                    test55.setPreferredSize(new Dimension(getWidth()-getWidth()/3, getHeight()/10));
-
-                    test222.setPreferredSize(new Dimension(getWidth()-getWidth()/3, getHeight()/10));
-                    test333.setPreferredSize(new Dimension(getWidth()-getWidth()/3, getHeight()/10));
-                    test444.setPreferredSize(new Dimension(getWidth()-getWidth()/3, getHeight()/10));
-                    test555.setPreferredSize(new Dimension(getWidth()-getWidth()/3, getHeight()/10));
+                    test222.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/10));
+                    test333.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/10));
+                    test444.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/10));
+                    test555.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/10));
 
                 });
 
             }
         });
+
+        themeDropDown.setSelectedIndex(-1);
+        if(lightMode){
+            themeDropDown.setSelectedIndex(0);
+        }else{
+            themeDropDown.setSelectedIndex(1);
+        }
     }
-
-
 
 
     @Override
@@ -1079,13 +1153,9 @@ public class SettingsPanel extends JPanel{
 
             if(!lightMode){
                 g.drawImage(scaledSettingsPanelBackgroundIcon.getImage(), 0, 0, getWidth(), getHeight(), this);
-                System.out.println("SNÄLLA LÅT MAG KÅMMA EINNNNN");
             }else{
                 g.drawImage(lightScaledSettingsPanelBackgroundIcon.getImage(), 0, 0, getWidth(), getHeight(), this);
-                System.out.println("FAN HOMOSEX");
             }
-
-
         }
         else{
             System.out.println("Error");
