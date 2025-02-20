@@ -10,7 +10,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
+import se.aljr.application.Friends.Friend;
+import se.aljr.application.Friends.FriendsList;
 import se.aljr.application.UserData;
 import se.aljr.application.programplanner.ProgramPanel;
 import se.aljr.application.programplanner.Workout;
@@ -65,6 +68,128 @@ public class FirebaseManager {
             e.printStackTrace();
         }
     }
+    public static void writeDBonlineStatus(){
+
+        Map<String, Object> user = new HashMap<>();
+        user.put("isOnline", UserData.isIsOnline()?"true":"false");
+
+
+        // Referens till dokumentet i "users" collection
+        DocumentReference docRef = db.collection("users").document(UserData.getEmail());
+
+        // Skriv data och vänta på resultat
+        ApiFuture<WriteResult> result = docRef.update(user);
+
+        try {
+            System.out.println("Uppdaterat vid: " + result.get().getUpdateTime());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void readDBlistenToFriendsOnlineStatus() throws InterruptedException {
+        for(Friend friend : FriendsList.getFriendArrayList()){
+            // Referens till användarens dokument
+            DocumentReference docRef = db.collection("users").document(friend.getFriendEmail());
+
+            // Lyssna på ändringar i fältet "isOnline"
+            docRef.addSnapshotListener((snapshot, e) -> {
+                if (e != null) {
+                    System.err.println("Listen failed: " + e);
+                    return;
+                }
+
+                if (snapshot != null && snapshot.exists()) {
+                    // Hämta fältet "isOnline" som en String
+                    String newIsOnline = snapshot.getString("isOnline");
+
+                    if (newIsOnline != null) {
+                        friend.setOnline(newIsOnline.equals("true")?true:false); // Uppdatera variabeln
+                        System.out.println("Updated isOnline: " + newIsOnline);
+                    }
+                } else {
+                    System.out.println("Document does not exist.");
+                }
+            });
+
+            // Håll programmet igång
+            System.out.println("Listening for Firestore changes on 'isOnline'...");
+            Thread.sleep(Long.MAX_VALUE);
+        }
+    }
+
+    public static void writeDBfriends(){
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+        Map<String, String> friends = new HashMap<>();
+
+        for(Friend friend : FriendsList.getFriendArrayList()){
+            friends.put(friend.getFriendEmail(), friend.getFriendName());
+        }
+        String json = gson.toJson(friends);
+
+        Map<String, Object> user = new HashMap<>();
+        user.put("friends", json);
+
+
+        // Referens till dokumentet i "users" collection
+        DocumentReference docRef = db.collection("users").document(UserData.getEmail());
+
+        // Skriv data och vänta på resultat
+        ApiFuture<WriteResult> result = docRef.update(user);
+
+        try {
+            System.out.println("Uppdaterat vid: " + result.get().getUpdateTime());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+    }
+    public static void readDBfriends(){
+        try {
+            Gson gson = new Gson();
+            HashMap<String, String> friendsMap = new HashMap<>();
+
+            // Hämta dokumentet från Firestore
+            ApiFuture<DocumentSnapshot> snapshot = db.collection("users").document(UserData.getEmail()).get();
+            DocumentSnapshot document = snapshot.get();
+
+            if (document.exists()) {
+                // Hämta JSON-strängen från "friends"
+                String friendsJson = (String) document.get("friends");
+
+                if (friendsJson != null) {
+                    // Konvertera JSON-strängen till HashMap
+                    friendsMap = gson.fromJson(friendsJson, HashMap.class);
+
+                    // Skriv ut resultatet
+                    System.out.println("Friends Map: " + friendsMap);
+                } else {
+                    System.out.println("Nyckeln 'friends' är null eller existerar inte.");
+                }
+            } else {
+                System.out.println("Dokumentet existerar inte.");
+            }
+
+            for(Map.Entry<String, String> entry : friendsMap.entrySet()){
+                HashMap<String, String> finalUserData = friendsMap;
+                FriendsList.getFriendArrayList().add(new Friend(true){
+                    {
+                        setFriendEmail(entry.getKey());
+                        setFriendName(entry.getValue());
+                    }
+                });
+
+            }
+
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
 
     public static void writeDBnewUser(String name, String email) throws IOException {
 
@@ -77,6 +202,8 @@ public class FirebaseManager {
         user.put("workouts", "");
         user.put("profilepicture","");
         user.put("theme","dark");
+        user.put("friends","");
+        user.put("isOnline","");
 
 
         // Referens till dokumentet i "users" collection
@@ -100,6 +227,7 @@ public class FirebaseManager {
         user.put("height", String.valueOf(UserData.getUserHeight()));
         user.put("weight", String.valueOf(UserData.getUserWeight()));
         user.put("theme", UserData.getTheme());
+
 
 
         // Referens till dokumentet i "users" collection
@@ -551,12 +679,12 @@ public class FirebaseManager {
         return new WorkoutsList();
     }
 
-    public static ImageIcon readDBprofilePicture() {
+    public static ImageIcon readDBprofilePicture(String email) {
         try {
             Gson gson = new Gson();
             HashMap<String, Object> userData = new HashMap<>();
 
-            ApiFuture<DocumentSnapshot> snapshot = db.collection("users").document(UserData.getEmail()).get();
+            ApiFuture<DocumentSnapshot> snapshot = db.collection("users").document(email).get();
 
             DocumentSnapshot document = snapshot.get();
             JsonElement jsonElement = gson.toJsonTree(document.getData());
