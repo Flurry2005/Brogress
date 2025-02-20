@@ -119,7 +119,7 @@ public class FirebaseManager {
 
 
                 // Referens till dokumentet i "users" collection
-                DocumentReference docRef = db.collection("users").document(email);
+                DocumentReference docRef = db.collection("users").document(UserData.getEmail());
 
                 // Skriv data och vänta på resultat
                 ApiFuture<WriteResult> result = docRef.update(newUserFriendRequests);
