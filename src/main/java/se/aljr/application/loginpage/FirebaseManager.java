@@ -72,27 +72,29 @@ public class FirebaseManager {
     public static void writeDBsendFriendRequest(String email){
         HashMap<String,String> newFriendRequest= readDBgetFriendRequests(email);
         HashMap<String,String> usersFriends = readDBfriends(email,true);
-        if(!newFriendRequest.containsKey(UserData.getEmail())&&!usersFriends.containsKey(UserData.getEmail())&&!email.equals(UserData.getEmail())){
-            newFriendRequest.put(UserData.getEmail(), UserData.getUserName());
+        if(newFriendRequest!=null&&usersFriends!=null){
+            if(!newFriendRequest.containsKey(UserData.getEmail())&&!usersFriends.containsKey(UserData.getEmail())&&!email.equals(UserData.getEmail())){
+                newFriendRequest.put(UserData.getEmail(), UserData.getUserName());
 
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            String json = gson.toJson(newFriendRequest);
+                Gson gson = new GsonBuilder().setPrettyPrinting().create();
+                String json = gson.toJson(newFriendRequest);
 
-            Map<String, Object> user = new HashMap<>();
-            user.put("friendrequests", json);
+                Map<String, Object> user = new HashMap<>();
+                user.put("friendrequests", json);
 
 
 
-            // Referens till dokumentet i "users" collection
-            DocumentReference docRef = db.collection("users").document(email);
+                // Referens till dokumentet i "users" collection
+                DocumentReference docRef = db.collection("users").document(email);
 
-            // Skriv data och vänta på resultat
-            ApiFuture<WriteResult> result = docRef.update(user);
+                // Skriv data och vänta på resultat
+                ApiFuture<WriteResult> result = docRef.update(user);
 
-            try {
-                System.out.println("Uppdaterat vid: " + result.get().getUpdateTime());
-            } catch (Exception e) {
-                e.printStackTrace();
+                try {
+                    System.out.println("Uppdaterat vid: " + result.get().getUpdateTime());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -124,6 +126,7 @@ public class FirebaseManager {
             e.printStackTrace();
             return new HashMap<String,String>();
         }
+
 
     }
 
