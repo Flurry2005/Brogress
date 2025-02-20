@@ -104,7 +104,11 @@ public class FirebaseManager {
         HashMap<String,String> usersFriends = readDBfriends(email,true);
         if(myFriendRequests!=null&&usersFriends!=null){
             if(!myFriendRequests.containsKey(UserData.getEmail())&&!usersFriends.containsKey(UserData.getEmail())&&!email.equals(UserData.getEmail())){
-                myFriendRequests.remove(email);
+                for(Map.Entry<String,String> entry : myFriendRequests.entrySet()){
+                    if(entry.getValue().equals(email)){
+                        myFriendRequests.remove(entry);
+                    }
+                }
 
                 Gson gson = new GsonBuilder().setPrettyPrinting().create();
                 String json = gson.toJson(myFriendRequests);
