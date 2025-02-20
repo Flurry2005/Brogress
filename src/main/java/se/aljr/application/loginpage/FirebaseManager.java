@@ -124,7 +124,7 @@ public class FirebaseManager {
                 // Skriv data och vänta på resultat
                 ApiFuture<WriteResult> result = docRef.update(newUserFriendRequests);
 
-                writeDBfriends();
+                writeDBfriends(UserData.getEmail());
 
                 try {
                     System.out.println("Uppdaterat vid: " + result.get().getUpdateTime());
@@ -226,13 +226,18 @@ public class FirebaseManager {
 
     }
 
-    public static void writeDBfriends(){
+    public static void writeDBfriends(String email){
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
         Map<String, String> friends = new HashMap<>();
 
-        for(Friend friend : FriendsList.getFriendArrayList()){
-            friends.put(friend.getFriendEmail(), friend.getFriendName());
+        if(email.equals(UserData.getEmail())){
+            for(Friend friend : FriendsList.getFriendArrayList()){
+                friends.put(friend.getFriendEmail(), friend.getFriendName());
+            }
+        }else{
+            friends = readDBfriends(email,true);
+            friends.put(UserData.getEmail(),UserData.getUserName());
         }
         String json = gson.toJson(friends);
 
@@ -241,7 +246,7 @@ public class FirebaseManager {
 
 
         // Referens till dokumentet i "users" collection
-        DocumentReference docRef = db.collection("users").document(UserData.getEmail());
+        DocumentReference docRef = db.collection("users").document(email);
 
         // Skriv data och vänta på resultat
         ApiFuture<WriteResult> result = docRef.update(user);
