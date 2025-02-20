@@ -216,7 +216,6 @@ public class FirebaseManager {
                         } else {
                             System.out.println("Document does not exist.");
                         }
-
                     });
 
                     // Håll programmet igång
@@ -224,7 +223,7 @@ public class FirebaseManager {
                     try {
 
                         Thread.sleep(Long.MAX_VALUE);
-                        HomePanel.updateFriends();
+
                         //Thread.currentThread().interrupt();
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
@@ -232,6 +231,47 @@ public class FirebaseManager {
 
                     }).start();
                 }
+
+    }
+
+    public static void readDBlistenToClientUserFriendsList() throws InterruptedException {
+
+            new Thread(()->{
+                // Referens till användarens dokument
+                DocumentReference docRef = db.collection("users").document(UserData.getEmail());
+
+                // Lyssna på ändringar i fältet "isOnline"
+                docRef.addSnapshotListener((snapshot, e) -> {
+                    if (e != null) {
+                        System.err.println("Listen failed: " + e);
+                        return;
+                    }
+
+                    if (snapshot != null && snapshot.exists()) {
+                        // Hämta fältet "isOnline" som en String
+                        String friends = snapshot.getString("friends");
+
+                        if (friends != null) {
+                            HomePanel.updateFriends();
+                        }
+                    } else {
+                        System.out.println("Document does not exist.");
+                    }
+                });
+
+                // Håll programmet igång
+                System.out.println("Listening for Firestore changes on 'isOnline'...");
+                try {
+
+                    Thread.sleep(Long.MAX_VALUE);
+
+                    //Thread.currentThread().interrupt();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+
+            }).start();
+
 
     }
 
