@@ -108,7 +108,9 @@ public class FirebaseManager {
 
             if (document.exists()) {
                 // Hämta JSON-strängen från "friends"
-                HashMap<String,String> friendsJson = (HashMap<String,String>) document.get("friendrequests");
+                String friendsJson = (String) document.get("friendrequests");
+                friendRequestsMap = gson.fromJson(friendsJson, HashMap.class);
+
 
                 if (friendsJson != null) {;
                     // Skriv ut resultatet
