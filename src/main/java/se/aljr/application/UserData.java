@@ -1,9 +1,12 @@
 package se.aljr.application;
 
 import se.aljr.application.exercise.Excercise.Exercise;
+import se.aljr.application.loginpage.FirebaseManager;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.concurrent.ExecutionException;
 
 public class UserData {
     private static String userName;
@@ -60,11 +63,9 @@ public class UserData {
 
     public static String getTheme(){return UserData.userTheme;}
 
-
     public static HashSet<Exercise> getFavoriteExercises() {
-        return (favoriteExercises != null) ? favoriteExercises : new HashSet<>();
+        return favoriteExercises;
     }
-
     public static boolean removeFavoriteExercises(Exercise exercise) {
         if (favoriteExercises.contains(exercise)) {
             favoriteExercises.remove(exercise);
@@ -74,7 +75,6 @@ public class UserData {
             return false;
         }
     }
-
     public static boolean setFavoriteExercises(Exercise exercise) {
         if (!favoriteExercises.contains(exercise)) {
             favoriteExercises.add(exercise);
@@ -84,13 +84,26 @@ public class UserData {
             return false;
         }
     }
+    public static void updateFavoriteExercises() throws IOException, ExecutionException, InterruptedException, ClassNotFoundException {
+        HashSet<Exercise> temp = FirebaseManager.readDBfavoriteExercises();
+        favoriteExercises.clear();
+        favoriteExercises.addAll(temp);
+    }
+    public static void updateCreatedExercise() throws IOException, ExecutionException, ClassNotFoundException, InterruptedException {
+        ArrayList <Exercise> temp = FirebaseManager.readDBcreatedExercises();
+        createdExercises.clear();
+        createdExercises.addAll(temp);
 
+    }
     public static ArrayList<Exercise> getCreatedExercises() {
         return (createdExercises != null) ? createdExercises : new ArrayList<>();
     }
 
     public static void setCreatedExercises(Exercise exercise) {
         createdExercises.add(exercise);
+    }
+    public static void friendList() {
+
     }
 
     public static boolean isIsOnline() {

@@ -15,6 +15,7 @@ import com.google.gson.JsonElement;
 import se.aljr.application.Friends.Friend;
 import se.aljr.application.Friends.FriendsList;
 import se.aljr.application.UserData;
+import se.aljr.application.exercise.Excercise.Exercise;
 import se.aljr.application.chatpanel.ChatPanel;
 import se.aljr.application.homepage.HomePanel;
 import se.aljr.application.programplanner.ProgramPanel;
@@ -30,6 +31,9 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -354,7 +358,7 @@ public class FirebaseManager {
 
         } catch (Exception e) {
             e.printStackTrace();
-            return new HashMap<String,String>();
+            return new HashMap<String, String>();
         }
 
     }
@@ -396,7 +400,6 @@ public class FirebaseManager {
         user.put("height", String.valueOf(UserData.getUserHeight()));
         user.put("weight", String.valueOf(UserData.getUserWeight()));
         user.put("theme", UserData.getTheme());
-
 
 
         // Referens till dokumentet i "users" collection
@@ -590,6 +593,37 @@ public class FirebaseManager {
                 }
             }
         }
+    }
+    public static void writeDBCreatedExercises(ArrayList<Exercise> createdExerciseList) throws IOException {
+
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        ObjectOutputStream outputStream = new ObjectOutputStream(byteArrayOutputStream);
+
+        outputStream.writeObject(createdExerciseList);
+        outputStream.close();
+
+        String exercise64 = Base64.getEncoder().encodeToString(byteArrayOutputStream.toByteArray());
+
+        DocumentReference documentReference = db.collection("users").document(UserData.getEmail());
+        documentReference.update("Created_Exercises", exercise64);
+    }
+
+    public static void writeDBFavoriteExercises(HashSet<Exercise> favoriteList) throws IOException {
+        HashSet<Exercise> temp = new HashSet<>();
+        temp.addAll(favoriteList);
+        for (Exercise exercise : temp) {
+            exercise.removeImageIcon();
+        }
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+        objectOutputStream.writeObject(temp);
+        objectOutputStream.close();
+
+        String exercise64 = Base64.getEncoder().encodeToString(byteArrayOutputStream.toByteArray());
+        DocumentReference documentReference = db.collection("users").document(UserData.getEmail());
+        documentReference.update("Favorite_Exercises", exercise64);
+
     }
 
     public static void writeDBworkout(WorkoutsList workoutsList) throws IOException {
@@ -846,6 +880,36 @@ public class FirebaseManager {
             e.printStackTrace();
         }
         return new WorkoutsList();
+    }
+    public static HashSet<Exercise> readDBfavoriteExercises () throws ExecutionException, InterruptedException, IOException, ClassNotFoundException {
+        DocumentReference documentReference = db.collection("users").document(UserData.getEmail());
+
+        DocumentSnapshot documentSnapshot = documentReference.get().get();
+
+        String base64String = documentSnapshot.getString("Favorite_Exercises");
+
+        byte[] decodedBytes = Base64.getDecoder().decode(base64String);
+        ByteArrayInputStream bis = new ByteArrayInputStream(decodedBytes);
+        ObjectInputStream inStream = new ObjectInputStream(bis);
+        inStream.close();
+
+        return (HashSet<Exercise>) inStream.readObject();
+    }
+
+    public static ArrayList<Exercise> readDBcreatedExercises() throws IOException, ClassNotFoundException, ExecutionException, InterruptedException {
+
+        DocumentReference documentReference = db.collection("users").document(UserData.getEmail());
+
+        DocumentSnapshot documentSnapshot = documentReference.get().get();
+        String base64String = documentSnapshot.getString("Created_Exercises");
+
+
+            byte[] decodedBytes = Base64.getDecoder().decode(base64String);
+            ByteArrayInputStream bis = new ByteArrayInputStream(decodedBytes);
+            ObjectInputStream inStream = new ObjectInputStream(bis);
+            inStream.close();
+
+        return (ArrayList<Exercise>) inStream.readObject();
     }
 
     public static ImageIcon readDBprofilePicture(String email) {

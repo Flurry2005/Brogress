@@ -1,15 +1,15 @@
 package se.aljr.application.exercise;
 
-import com.google.cloud.storage.Acl;
 import se.aljr.application.AppThemeColors;
 import se.aljr.application.ResourcePath;
-import org.checkerframework.checker.units.qual.C;
 import se.aljr.application.UserData;
 import se.aljr.application.exercise.Excercise.*;
 import se.aljr.application.exercise.Muscle.Muscle;
 import se.aljr.application.exercise.Muscle.MuscleList;
 import se.aljr.application.exercise.Program.Exercises;
+import se.aljr.application.loginpage.FirebaseManager;
 import se.aljr.application.settings.SettingsPanel;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
@@ -18,7 +18,8 @@ import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
-import java.sql.SQLOutput;
+import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 import javax.sound.sampled.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -71,8 +72,6 @@ public class ExercisePanel extends JPanel {
     Image scaledLightContentBackground;
 
 
-
-
     public static ExercisePanel instance;
 
     public ExercisePanel(int width, int height) throws InterruptedException {
@@ -81,8 +80,8 @@ public class ExercisePanel extends JPanel {
         scaledContentBackground = homePanelBackground.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
         scaledContentBackgroundPanel = new ImageIcon(scaledContentBackground);
 
-        lightHomePanelBackground = new ImageIcon(resourcePath+"lightEmptyBackground.png");
-        scaledLightContentBackground = lightHomePanelBackground.getImage().getScaledInstance(width,height,Image.SCALE_SMOOTH);
+        lightHomePanelBackground = new ImageIcon(resourcePath + "lightEmptyBackground.png");
+        scaledLightContentBackground = lightHomePanelBackground.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
         scaledLightContentBackgroundPanel = new ImageIcon(scaledLightContentBackground);
 
         instance = this;
@@ -102,7 +101,6 @@ public class ExercisePanel extends JPanel {
         init(width, height);
     }
 
-
     public void init(int width, int height) {
 
         //-------------------Initialize components---------------------------
@@ -119,7 +117,7 @@ public class ExercisePanel extends JPanel {
         editButton.setFocusPainted(false);
         editButton.setContentAreaFilled(false);
         editButton.setBackground(AppThemeColors.PRIMARY);
-        editButton.setForeground(new Color(204,204,204));
+        editButton.setForeground(new Color(204, 204, 204));
         editButton.setFont(emojiFont);
         editButton.setBorder(null);
         editButton.setPreferredSize(new Dimension(mainPanel.getPreferredSize().width / 22, mainPanel.getPreferredSize().height / 10));
@@ -135,14 +133,14 @@ public class ExercisePanel extends JPanel {
         removeButton.setPreferredSize(new Dimension(mainPanel.getPreferredSize().width / 22, mainPanel.getPreferredSize().height / 10));
         removeButton.setVisible(false);
 
-        JButton favouriteButton = new JButton("\uD83D\uDCAA");
-        favouriteButton.setFocusPainted(false);
-        favouriteButton.setContentAreaFilled(false);
-        favouriteButton.setBackground(new Color(51, 51, 51));
-        favouriteButton.setForeground(new Color(21, 21, 21));
-        favouriteButton.setFont(emojiFont);
-        favouriteButton.setBorder(null);
-        favouriteButton.setPreferredSize(new Dimension(mainPanel.getPreferredSize().width / 22, mainPanel.getPreferredSize().height / 10));
+        JButton favoriteButton = new JButton("\uD83D\uDCAA");
+        favoriteButton.setFocusPainted(false);
+        favoriteButton.setContentAreaFilled(false);
+        favoriteButton.setBackground(new Color(51, 51, 51));
+        favoriteButton.setForeground(new Color(21, 21, 21));
+        favoriteButton.setFont(emojiFont);
+        favoriteButton.setBorder(null);
+        favoriteButton.setPreferredSize(new Dimension(mainPanel.getPreferredSize().width / 22, mainPanel.getPreferredSize().height / 10));
 
         titleLabel = new JTextArea();
         titleLabel.setFont(font.deriveFont(65.f));
@@ -201,8 +199,6 @@ public class ExercisePanel extends JPanel {
         menuList.setSelectionBackground(new Color(49, 84, 122));
         menuList.setSelectionForeground(new Color(204, 204, 204));
 
-
-
         JScrollPane exerciseScrollPanel = new JScrollPane(menuList);
         exerciseScrollPanel.setBorder(new LineBorder(new Color(80, 73, 69)));
         exerciseScrollPanel.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
@@ -222,7 +218,6 @@ public class ExercisePanel extends JPanel {
         searchContainer.setMaximumSize(new Dimension(westPanel.getPreferredSize().width, getPreferredSize().height / 8));
         searchContainer.setMinimumSize(new Dimension(westPanel.getPreferredSize().width, getPreferredSize().height / 8));
 
-
         sortMuscleButton.setBackground(new Color(51, 51, 51));
         sortMuscleButton.setForeground(new Color(204, 204, 204));
         sortMuscleButton.setPreferredSize(new Dimension((int) (searchContainer.getPreferredSize().getWidth() / 4), getPreferredSize().height / 20));
@@ -230,14 +225,12 @@ public class ExercisePanel extends JPanel {
         sortMuscleButton.setMinimumSize(new Dimension((int) (searchContainer.getPreferredSize().getWidth() / 4), getPreferredSize().height / 20));
         sortMuscleButton.setBorder(new LineBorder(new Color(80, 73, 69), 1, true));
 
-
         showFavorites.setForeground(new Color(204, 204, 204));
         showFavorites.setBackground(new Color(51, 51, 51));
-        showFavorites.setPreferredSize(new Dimension((int) (searchContainer.getPreferredSize().width / 4), getPreferredSize().height/20));
-        showFavorites.setMaximumSize(new Dimension((int) (searchContainer.getPreferredSize().width / 4), getPreferredSize().height/20));
-        showFavorites.setMinimumSize(new Dimension((int) (searchContainer.getPreferredSize().width / 4), getPreferredSize().height/20));
+        showFavorites.setPreferredSize(new Dimension((int) (searchContainer.getPreferredSize().width / 4), getPreferredSize().height / 20));
+        showFavorites.setMaximumSize(new Dimension((int) (searchContainer.getPreferredSize().width / 4), getPreferredSize().height / 20));
+        showFavorites.setMinimumSize(new Dimension((int) (searchContainer.getPreferredSize().width / 4), getPreferredSize().height / 20));
         showFavorites.setBorder(new LineBorder(new Color(80, 73, 69), 1, true));
-
 
         myExercises.setForeground(new Color(204, 204, 204));
         myExercises.setBackground(new Color(51, 51, 51));
@@ -253,7 +246,6 @@ public class ExercisePanel extends JPanel {
         createExerciseButton.setPreferredSize(new Dimension(westPanel.getPreferredSize().width, getPreferredSize().height / 24));
         createExerciseButton.setMaximumSize(new Dimension(westPanel.getPreferredSize().width, getPreferredSize().height / 24));
         createExerciseButton.setMinimumSize(new Dimension(westPanel.getPreferredSize().width, getPreferredSize().height / 24));
-
 
         centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
         centerPanel.setBackground(new Color(51, 51, 51));
@@ -276,7 +268,6 @@ public class ExercisePanel extends JPanel {
 
         exerciseScrollPanel.setPreferredSize(new Dimension(getPreferredSize().width, getPreferredSize().height));
         exerciseScrollPanel.setMaximumSize(new Dimension(getPreferredSize().width, getPreferredSize().height));
-
 
         aboutContainer.setLayout(new BorderLayout());
         aboutContainer.setForeground(new Color(204, 204, 204));
@@ -323,14 +314,12 @@ public class ExercisePanel extends JPanel {
         aboutText.setBorder(new LineBorder(new Color(80, 73, 69), 1, true));
         aboutText.setLineWrap(true);
 
-
         formText.setBackground(new Color(21, 21, 21));
         formText.setForeground(new Color(204, 204, 204));
         formText.setEditable(false);
         formText.setFont(new Font("Arial", Font.TRUETYPE_FONT, 15));
         formText.setFocusable(false);
         formText.setBorder(new LineBorder(new Color(80, 73, 69), 1, true));
-
 
         northPanel.setBackground(new Color(51, 51, 51));
         northPanel.setLayout(new BorderLayout());
@@ -339,7 +328,6 @@ public class ExercisePanel extends JPanel {
         JPanel northEastPanel = new JPanel();
         northEastPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         northEastPanel.setOpaque(false);
-
 
         northWestPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         northWestPanel.setBackground(new Color(51, 51, 51));
@@ -388,7 +376,7 @@ public class ExercisePanel extends JPanel {
         // NORTH
         northEastPanel.add(editButton);
         northEastPanel.add(removeButton);
-        northEastPanel.add(favouriteButton);
+        northEastPanel.add(favoriteButton);
 
         northWestPanel.add(titleLabel);
         northWestPanel.add(musclesWorkedLabel);
@@ -437,9 +425,8 @@ public class ExercisePanel extends JPanel {
             Image scaledTest = exerciseImageIcon.getImage().getScaledInstance(centerPanel.getPreferredSize().width, centerPanel.getPreferredSize().height, Image.SCALE_DEFAULT);
             ImageIcon scaledExerciseIcon = new ImageIcon(scaledTest);
             imageLabel.setIcon(scaledExerciseIcon);
-
-
         }
+
         editButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -451,7 +438,7 @@ public class ExercisePanel extends JPanel {
                     searchField.setFocusable(false);
                     searchField.setEditable(false);
                     searchField.setText("");
-                    searchField.setBackground(new Color(51,51,51));
+                    searchField.setBackground(new Color(51, 51, 51));
                     sortMuscleButton.setEnabled(false);
                     showFavorites.setEnabled(false);
                     editState = true;
@@ -492,8 +479,8 @@ public class ExercisePanel extends JPanel {
                     searchField.setEnabled(true);
                     searchField.setFocusable(true);
                     searchField.setEditable(true);
-                    searchField.setBackground(new Color(21,21,21));
-                    searchField.setForeground(new Color(214,214,214));
+                    searchField.setBackground(new Color(21, 21, 21));
+                    searchField.setForeground(new Color(214, 214, 214));
                     sortMuscleButton.setEnabled(true);
                     showFavorites.setEnabled(true);
                     int selectedIndex = menuList.getSelectedIndex();
@@ -512,6 +499,12 @@ public class ExercisePanel extends JPanel {
                     updateMenuList("myExerciseModel");
                     menuList.setSelectedIndex(selectedIndex);
                     System.out.println("edit mode off");
+                }
+                try {
+                    FirebaseManager.writeDBCreatedExercises(UserData.getCreatedExercises());
+                    FirebaseManager.writeDBFavoriteExercises(UserData.getFavoriteExercises());
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
                 }
                 revalidate();
                 repaint();
@@ -537,47 +530,51 @@ public class ExercisePanel extends JPanel {
         });
 
         // EVENT TRIGGERS FOR "ADD TO FAVOURITES"-BUTTON
-        favouriteButton.addActionListener(new ActionListener() {
+        favoriteButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
                 if (selectedExercise != null) {
-                    if (!UserData.getFavoriteExercises().contains(selectedExercise)) {
-                        UserData.setFavoriteExercises(selectedExercise);
+                    if (UserData.getFavoriteExercises().add(selectedExercise)) {
                         String addedStatus = (selectedExercise.getName() + " has been added to favorites!");
-                        statusPanel.setBackground(new Color(46, 148, 76));
                         activateStatus(new Color(46, 148, 76), addedStatus);
+                        statusPanel.setBackground(new Color(46, 148, 76));
                         status.setLength(0);
-                        favouriteButton.setForeground(new Color(196, 196, 49));
-                        updateMenuList("favExerciseModel");
+                        favoriteButton.setForeground(new Color(196, 196, 49));
+
                     } else {
                         UserData.removeFavoriteExercises(selectedExercise);
                         String removedStatus = (selectedExercise.getName() + " has been removed from favorites!");
-                        statusPanel.setBackground(new Color(204, 20, 20));
                         activateStatus(new Color(204, 20, 20), removedStatus);
+                        statusPanel.setBackground(new Color(204, 20, 20));
                         status.setLength(0);
-                        favouriteButton.setForeground(new Color(22, 22, 22));
-                        updateMenuList("favExerciseModel");
+                        favoriteButton.setForeground(new Color(22, 22, 22));
+                    }
+                    updateMenuList("favExerciseModel");
+                    try {
+                        FirebaseManager.writeDBFavoriteExercises(UserData.getFavoriteExercises());
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
                     }
                 }
             }
         });
 
         // VISUAL INTERACTION WITH "ADD TO FAVOURITE"-BUTTON
-        favouriteButton.addMouseListener(new MouseAdapter() {
+        favoriteButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
                 super.mouseEntered(e);
-                favouriteButton.setForeground(new Color(196, 196, 49));
+                favoriteButton.setForeground(new Color(196, 196, 49));
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
                 super.mouseExited(e);
                 if (UserData.getFavoriteExercises().contains(selectedExercise)) {
-                    favouriteButton.setForeground(new Color(196, 196, 49));
+                    favoriteButton.setForeground(new Color(196, 196, 49));
                 } else {
-                    favouriteButton.setForeground(new Color(22, 22, 22));
+                    favoriteButton.setForeground(new Color(22, 22, 22));
                 }
             }
         });
@@ -597,6 +594,7 @@ public class ExercisePanel extends JPanel {
 
             }
         });
+
         // TRIGGERS THE EXERCISE CREATION MODULE
         createExerciseButton.addActionListener(new ActionListener() {
             @Override
@@ -628,16 +626,24 @@ public class ExercisePanel extends JPanel {
         showFavorites.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                menuList.setModel(favExerciseModel);
                 muscleScroll.setVisible(false);
                 showFavorites.setBackground(new Color(49, 84, 122));
                 sortMuscleButton.setBackground(new Color(51, 51, 51));
                 myExercises.setBackground(new Color(51, 51, 51));
-                favExerciseModel = new DefaultListModel<>();
-                menuList.setModel(favExerciseModel);
                 menuList.setSelectionBackground(new Color(49, 84, 122));
-                for (Exercise exercise : UserData.getFavoriteExercises()) {
-                    favExerciseModel.addElement(exercise);
+                try {
+                    UserData.updateFavoriteExercises();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                } catch (ExecutionException ex) {
+                    throw new RuntimeException(ex);
+                } catch (InterruptedException ex) {
+                    throw new RuntimeException(ex);
+                } catch (ClassNotFoundException ex) {
+                    throw new RuntimeException(ex);
                 }
+                updateMenuList("favExerciseModel");
                 repaint();
                 revalidate();
             }
@@ -647,18 +653,29 @@ public class ExercisePanel extends JPanel {
         myExercises.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (UserData.getFavoriteExercises().isEmpty()) {
-                    imageLabel.setText("No Favorites Yet!");
+                // READ FROM DB AND UPDATE MY EXERCISES
+                try {
+                    UserData.updateCreatedExercise();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                } catch (ExecutionException ex) {
+                    throw new RuntimeException(ex);
+                } catch (ClassNotFoundException ex) {
+                    throw new RuntimeException(ex);
+                } catch (InterruptedException ex) {
+                    throw new RuntimeException(ex);
                 }
                 myExercises.setBackground(new Color(49, 84, 122));
                 sortMuscleButton.setBackground(new Color(51, 51, 51));
                 showFavorites.setBackground(new Color(51, 51, 51));
                 muscleScroll.setVisible(false);
+                updateMenuList("myExerciseModel");
                 menuList.setModel(myExerciseModel);
                 repaint();
                 revalidate();
             }
         });
+
         // VISUAL INTERACTION WITH SEARCH FIELD
         searchField.addMouseListener(new MouseAdapter() {
             @Override
@@ -738,6 +755,7 @@ public class ExercisePanel extends JPanel {
                 });
             }
         });
+
         // EVENT ACTIONS FOR REMOVEBUTTON
         removeButton.addActionListener(new ActionListener() {
             @Override
@@ -749,23 +767,28 @@ public class ExercisePanel extends JPanel {
                     updateMenuList("favExerciseModel");
                 }
                 updateMenuList("myExerciseModel");
-                // RESET AFTER REMOVAL AND SEND TO EXERCISE CREATOR
+
+                // RESET AFTER REMOVAL
                 editButton.doClick();
                 activateStatus(Color.RED, "Exercise removed!");
                 revalidate();
                 repaint();
                 if (!UserData.getCreatedExercises().isEmpty()) {
                     menuList.setSelectedIndex(currentIndex);
-                }
-                else {
+                } else {
                     titleLabel.setText("");
                     musclesWorkedLabel.setText("");
                     aboutText.setText("");
                     formText.setText("");
                     editButton.setVisible(false);
-                    favouriteButton.setVisible(false);
+                    favoriteButton.setVisible(false);
                     createExerciseButton.doClick();
                     selectedExercise = null;
+                }
+                try {
+                    FirebaseManager.writeDBCreatedExercises(UserData.getCreatedExercises());
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
                 }
 
             }
@@ -776,36 +799,35 @@ public class ExercisePanel extends JPanel {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 if (menuList.getSelectedIndex() != -1) {
-                    if (selectedExercise != null) {
-                        favouriteButton.setVisible(true);
-                    }
                     selectedExercise = menuList.getSelectedValue();
-
-                    if (selectedExercise.getInfo().isEmpty() || selectedExercise.getInfo() == null) {
-                        aboutText.setText("No information added...");
-                    } else {
-                        aboutText.setText(selectedExercise.getInfo());
-                    }
+                    favoriteButton.setVisible(true);
                     imageLabel.setVisible(true);
-
-                    formText.setText(selectedExercise.getInfo());
-                    formText.setText(selectedExercise.getForm());
-                    titleLabel.setText(selectedExercise.getName());
-
+                    // SHOW IMAGE
                     try {
                         ImageIcon exerciseImageIcon = selectedExercise.getImageIcon();
                         Image scaledTest = exerciseImageIcon.getImage().getScaledInstance(centerPanel.getPreferredSize().width, centerPanel.getPreferredSize().height, Image.SCALE_DEFAULT);
                         ImageIcon scaledExerciseIcon = new ImageIcon(scaledTest);
                         formInfoContainer.setVisible(true);
                         imageLabel.setIcon(scaledExerciseIcon);
-
-                    } catch (Exception f) {
-                        ImageIcon test = new ImageIcon(ResourcePath.getResourcePath() + "bottom_right_bar.png");
-                        Image scaledTest = test.getImage().getScaledInstance(centerPanel.getPreferredSize().width, centerPanel.getPreferredSize().height, Image.SCALE_SMOOTH);
+                    // DISPLAY DEFAULT IF IMAGE NOT FOUND
+                    } catch (Exception ex) {
+                        ImageIcon temp = new ImageIcon(ResourcePath.getResourcePath() + "bottom_right_bar.png");
+                        Image scaledTest = temp.getImage().getScaledInstance(centerPanel.getPreferredSize().width, centerPanel.getPreferredSize().height, Image.SCALE_SMOOTH);
                         ImageIcon scaledTestIcon = new ImageIcon(scaledTest);
-                        formInfoContainer.setVisible(false);
                         imageLabel.setIcon(scaledTestIcon);
+                        formInfoContainer.setVisible(false);
                     }
+                    // UPDATE EXERCISE CONTENT
+                    formText.setText(selectedExercise.getInfo());
+                    formText.setText(selectedExercise.getForm());
+                    titleLabel.setText(selectedExercise.getName());
+                    // DISPLAY IF INFO IS EMPTY
+                    if (selectedExercise.getInfo().isEmpty() || selectedExercise.getInfo() == null) {
+                        aboutText.setText("No information added...");
+                    } else {
+                        aboutText.setText(selectedExercise.getInfo());
+                    }
+                    // RESTRICT CHARACTER LENGTH IN MUSCLES USED
                     if (selectedExercise.getMusclesUsed().length() > 32) {
                         String muscles = selectedExercise.getMusclesUsed();
                         muscles = muscles.substring(0, 32);
@@ -813,19 +835,22 @@ public class ExercisePanel extends JPanel {
                     } else {
                         musclesWorkedLabel.setText(selectedExercise.getMusclesUsed());
                     }
+                    // DISPLAY FAVORITE BUTTON COLOR DEPENDING ON EXERCISE
                     if (UserData.getFavoriteExercises().contains(selectedExercise)) {
-                        favouriteButton.setForeground(new Color(196, 196, 49));
+                        favoriteButton.setForeground(new Color(196, 196, 49));
                     } else {
-                        favouriteButton.setForeground(new Color(22, 22, 22));
+                        favoriteButton.setForeground(new Color(22, 22, 22));
                     }
+                    // DISPLAY EDIT BUTTON DEPENDING ON EXERCISE
                     if (UserData.getCreatedExercises().contains(selectedExercise)) {
                         editButton.setVisible(true);
-                    }
-                    else {
+                    } else {
                         editButton.setVisible(false);
                     }
+
                     repaint();
                     revalidate();
+
                 }
             }
         });
@@ -849,16 +874,12 @@ public class ExercisePanel extends JPanel {
             for (Exercise exercise : UserData.getCreatedExercises()) {
                 myExerciseModel.addElement(exercise);
             }
-        }
-
-        else if (modelName.equals("favExerciseModel")) {
+        } else if (modelName.equals("favExerciseModel")) {
             favExerciseModel.clear();
-                for (Exercise exercise : UserData.getFavoriteExercises()) {
-                    favExerciseModel.addElement(exercise);
-                }
-
-        }
-        else {
+            for (Exercise exercise : UserData.getFavoriteExercises()) {
+                favExerciseModel.addElement(exercise);
+            }
+        } else {
             exerciseModel.clear();
             Exercises exercises = new Exercises();
             for (Exercise exercise : exercises.getList()) {
@@ -869,7 +890,7 @@ public class ExercisePanel extends JPanel {
         menuList.repaint();
     }
 
-    public void updateColors(){
+    public void updateColors() {
         statusText.setForeground(AppThemeColors.foregroundColor);
         mainPanel.setBackground(AppThemeColors.PRIMARY);
         menuList.setBackground(AppThemeColors.panelColor);
@@ -887,7 +908,6 @@ public class ExercisePanel extends JPanel {
         searchField.setBackground(AppThemeColors.textFieldColor);
         centerPanel.setBackground(AppThemeColors.PRIMARY);
 
-
         aboutText.setForeground(AppThemeColors.foregroundColor);
         formText.setForeground(AppThemeColors.foregroundColor);
 
@@ -902,28 +922,27 @@ public class ExercisePanel extends JPanel {
         titleLabel.setForeground(AppThemeColors.foregroundColor);
         musclesWorkedLabel.setForeground(AppThemeColors.foregroundColor);
         searchField.setForeground(AppThemeColors.foregroundColor);
-
     }
 
-    //ANTONS SKIT
+    // THEME HANDLER
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         updateColors();
         // Draw the image to fill the entire panel
         if (homePanelBackground != null) {
-            if(!SettingsPanel.lightMode){
+            if (!SettingsPanel.lightMode) {
                 g.drawImage(scaledContentBackgroundPanel.getImage(), 0, 0, getWidth(), getHeight(), this);
-            }else{
+            } else {
                 g.drawImage(scaledLightContentBackgroundPanel.getImage(), 0, 0, getWidth(), getHeight(), this);
             }
 
-        }
-        else{
+        } else {
             System.out.println("Error");
         }
     }
-    // LIAMS SKIT
+
+    // SCALING WAITING TO BE USED...
     public void reScaleBackground() {
         scaledContentBackground = homePanelBackground.getImage().getScaledInstance(getWidth(), getHeight(), Image.SCALE_SMOOTH);
         scaledContentBackgroundPanel = new ImageIcon(scaledContentBackground);
@@ -932,7 +951,6 @@ public class ExercisePanel extends JPanel {
     public void updateWindow() {
 
     }
-
 }
 
 
