@@ -108,6 +108,7 @@ public class FirebaseManager {
                 for(Map.Entry<String,String> entry : myFriendRequests.entrySet()){
                     if(entry.getKey().equals(email)){
                         myFriendRequests.remove(entry.getKey());
+                        break;
                     }
                 }
 
@@ -215,15 +216,20 @@ public class FirebaseManager {
                         } else {
                             System.out.println("Document does not exist.");
                         }
+
                     });
 
                     // Håll programmet igång
                     System.out.println("Listening for Firestore changes on 'isOnline'...");
                     try {
+
                         Thread.sleep(Long.MAX_VALUE);
+                        HomePanel.updateFriends();
+                        //Thread.currentThread().interrupt();
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
+
                     }).start();
                 }
 
