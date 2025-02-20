@@ -250,6 +250,12 @@ public class HomePanel extends JPanel {
 
 
         FirebaseManager.readDBfriends();
+        try{
+            FirebaseManager.readDBlistenToFriendsOnlineStatus();
+        }catch (Exception e){
+
+        }
+
         for(Friend friend:FriendsList.getFriendArrayList()){
             ImageIcon userIcon = FirebaseManager.readDBprofilePicture(friend.getFriendEmail());
             Image scaledFriendProfilePicture = userIcon.getImage().getScaledInstance(getPreferredSize().width/25,getPreferredSize().width/25,Image.SCALE_SMOOTH);

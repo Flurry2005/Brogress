@@ -88,34 +88,43 @@ public class FirebaseManager {
     }
 
     public static void readDBlistenToFriendsOnlineStatus() throws InterruptedException {
-        for(Friend friend : FriendsList.getFriendArrayList()){
-            // Referens till användarens dokument
-            DocumentReference docRef = db.collection("users").document(friend.getFriendEmail());
 
-            // Lyssna på ändringar i fältet "isOnline"
-            docRef.addSnapshotListener((snapshot, e) -> {
-                if (e != null) {
-                    System.err.println("Listen failed: " + e);
-                    return;
-                }
+                for(Friend friend : FriendsList.getFriendArrayList()){
+                    new Thread(()->{
+                    // Referens till användarens dokument
+                    DocumentReference docRef = db.collection("users").document(friend.getFriendEmail());
 
-                if (snapshot != null && snapshot.exists()) {
-                    // Hämta fältet "isOnline" som en String
-                    String newIsOnline = snapshot.getString("isOnline");
+                    // Lyssna på ändringar i fältet "isOnline"
+                    docRef.addSnapshotListener((snapshot, e) -> {
+                        if (e != null) {
+                            System.err.println("Listen failed: " + e);
+                            return;
+                        }
 
-                    if (newIsOnline != null) {
-                        friend.setOnline(newIsOnline.equals("true")?true:false); // Uppdatera variabeln
-                        System.out.println("Updated isOnline: " + newIsOnline);
+                        if (snapshot != null && snapshot.exists()) {
+                            // Hämta fältet "isOnline" som en String
+                            String newIsOnline = snapshot.getString("isOnline");
+
+                            if (newIsOnline != null) {
+                                friend.setOnline(newIsOnline.equals("true")?true:false); // Uppdatera variabeln
+                                friend.updateOnlineStatus();
+                                System.out.println("Updated isOnline: " + newIsOnline);
+                            }
+                        } else {
+                            System.out.println("Document does not exist.");
+                        }
+                    });
+
+                    // Håll programmet igång
+                    System.out.println("Listening for Firestore changes on 'isOnline'...");
+                    try {
+                        Thread.sleep(Long.MAX_VALUE);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
                     }
-                } else {
-                    System.out.println("Document does not exist.");
+                    }).start();
                 }
-            });
 
-            // Håll programmet igång
-            System.out.println("Listening for Firestore changes on 'isOnline'...");
-            Thread.sleep(Long.MAX_VALUE);
-        }
     }
 
     public static void writeDBfriends(){

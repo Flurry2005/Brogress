@@ -24,6 +24,17 @@ public class Friend {
 
         imageAvatar.setLayout(new FlowLayout(FlowLayout.LEFT,0,0));
         imageAvatar.setAlignmentX(JComponent.LEFT_ALIGNMENT);
+
+    }
+
+    public void updateOnlineStatus(){
+        if(isOnline){
+            imageAvatar.setGradientColor1(Color.GREEN);
+            imageAvatar.setGradientColor2(new Color(4, 89, 1));
+        }else {
+            imageAvatar.setGradientColor1(Color.RED);
+            imageAvatar.setGradientColor2(new Color(255, 87, 87));
+        }
     }
 
     public ImageAvatar getImageAvatar(){
