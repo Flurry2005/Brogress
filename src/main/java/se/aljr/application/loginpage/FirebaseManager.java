@@ -105,7 +105,7 @@ public class FirebaseManager {
         if(myFriendRequests!=null&&usersFriends!=null){
             if(!myFriendRequests.containsKey(UserData.getEmail())&&!usersFriends.containsKey(UserData.getEmail())&&!email.equals(UserData.getEmail())){
                 for(Map.Entry<String,String> entry : myFriendRequests.entrySet()){
-                    if(entry.getValue().equals(email)){
+                    if(entry.getKey().equals(email)){
                         myFriendRequests.remove(entry);
                     }
                 }
