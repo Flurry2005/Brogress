@@ -15,6 +15,7 @@ import com.google.gson.JsonElement;
 import se.aljr.application.Friends.Friend;
 import se.aljr.application.Friends.FriendsList;
 import se.aljr.application.UserData;
+import se.aljr.application.exercise.Excercise.Exercise;
 import se.aljr.application.programplanner.ProgramPanel;
 import se.aljr.application.programplanner.Workout;
 import se.aljr.application.programplanner.WorkoutSet;
@@ -28,10 +29,9 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 public class FirebaseManager {
@@ -39,12 +39,13 @@ public class FirebaseManager {
     private static Firestore db;
     private static FirestoreOptions firestoreOptions;
     private static StorageOptions storageOptions;
+
     static {
         try {
             resourcePath = FirebaseManager.class.getClassLoader().getResource("resource.path")
-                    .getPath().replace("resource.path","");
+                    .getPath().replace("resource.path", "");
 
-            FileInputStream serviceAccount = new FileInputStream(resourcePath + "serviceKey.json" );
+            FileInputStream serviceAccount = new FileInputStream(resourcePath + "serviceKey.json");
             GoogleCredentials credentials = GoogleCredentials.fromStream(serviceAccount);
             FirebaseOptions options = FirebaseOptions.builder()
                     .setCredentials(credentials)
@@ -69,10 +70,10 @@ public class FirebaseManager {
         }
     }
 
-    public static void writeDBsendFriendRequest(String email){
-        HashMap<String,String> newFriendRequest= readDBgetFriendRequests(email);
-        HashMap<String,String> usersFriends = readDBfriends(email,true);
-        if(!newFriendRequest.containsKey(UserData.getEmail())&&!usersFriends.containsKey(UserData.getEmail())&&!email.equals(UserData.getEmail())){
+    public static void writeDBsendFriendRequest(String email) {
+        HashMap<String, String> newFriendRequest = readDBgetFriendRequests(email);
+        HashMap<String, String> usersFriends = readDBfriends(email, true);
+        if (!newFriendRequest.containsKey(UserData.getEmail()) && !usersFriends.containsKey(UserData.getEmail()) && !email.equals(UserData.getEmail())) {
             newFriendRequest.put(UserData.getEmail(), UserData.getUserName());
 
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -80,7 +81,6 @@ public class FirebaseManager {
 
             Map<String, Object> user = new HashMap<>();
             user.put("friendrequests", json);
-
 
 
             // Referens till dokumentet i "users" collection
@@ -97,7 +97,7 @@ public class FirebaseManager {
         }
     }
 
-    public static HashMap<String,String> readDBgetFriendRequests(String email){
+    public static HashMap<String, String> readDBgetFriendRequests(String email) {
         try {
             Gson gson = new Gson();
             HashMap<String, String> friendRequestsMap = new HashMap<>();
@@ -108,9 +108,10 @@ public class FirebaseManager {
 
             if (document.exists()) {
                 // Hämta JSON-strängen från "friends"
-                HashMap<String,String> friendsJson = (HashMap<String,String>) document.get("friendrequests");
+                HashMap<String, String> friendsJson = (HashMap<String, String>) document.get("friendrequests");
 
-                if (friendsJson != null) {;
+                if (friendsJson != null) {
+                    ;
                     // Skriv ut resultatet
                     System.out.println("Friends Map: " + friendRequestsMap);
                 }
@@ -120,15 +121,15 @@ public class FirebaseManager {
 
         } catch (Exception e) {
             e.printStackTrace();
-            return new HashMap<String,String>();
+            return new HashMap<String, String>();
         }
 
     }
 
-    public static void writeDBonlineStatus(){
+    public static void writeDBonlineStatus() {
 
         Map<String, Object> user = new HashMap<>();
-        user.put("isOnline", UserData.isIsOnline()?"true":"false");
+        user.put("isOnline", UserData.isIsOnline() ? "true" : "false");
 
 
         // Referens till dokumentet i "users" collection
@@ -146,50 +147,50 @@ public class FirebaseManager {
 
     public static void readDBlistenToFriendsOnlineStatus() throws InterruptedException {
 
-                for(Friend friend : FriendsList.getFriendArrayList()){
-                    new Thread(()->{
-                    // Referens till användarens dokument
-                    DocumentReference docRef = db.collection("users").document(friend.getFriendEmail());
+        for (Friend friend : FriendsList.getFriendArrayList()) {
+            new Thread(() -> {
+                // Referens till användarens dokument
+                DocumentReference docRef = db.collection("users").document(friend.getFriendEmail());
 
-                    // Lyssna på ändringar i fältet "isOnline"
-                    docRef.addSnapshotListener((snapshot, e) -> {
-                        if (e != null) {
-                            System.err.println("Listen failed: " + e);
-                            return;
-                        }
-
-                        if (snapshot != null && snapshot.exists()) {
-                            // Hämta fältet "isOnline" som en String
-                            String newIsOnline = snapshot.getString("isOnline");
-
-                            if (newIsOnline != null) {
-                                friend.setOnline(newIsOnline.equals("true")?true:false); // Uppdatera variabeln
-                                friend.updateOnlineStatus();
-                                System.out.println("Updated isOnline: " + newIsOnline);
-                            }
-                        } else {
-                            System.out.println("Document does not exist.");
-                        }
-                    });
-
-                    // Håll programmet igång
-                    System.out.println("Listening for Firestore changes on 'isOnline'...");
-                    try {
-                        Thread.sleep(Long.MAX_VALUE);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
+                // Lyssna på ändringar i fältet "isOnline"
+                docRef.addSnapshotListener((snapshot, e) -> {
+                    if (e != null) {
+                        System.err.println("Listen failed: " + e);
+                        return;
                     }
-                    }).start();
+
+                    if (snapshot != null && snapshot.exists()) {
+                        // Hämta fältet "isOnline" som en String
+                        String newIsOnline = snapshot.getString("isOnline");
+
+                        if (newIsOnline != null) {
+                            friend.setOnline(newIsOnline.equals("true") ? true : false); // Uppdatera variabeln
+                            friend.updateOnlineStatus();
+                            System.out.println("Updated isOnline: " + newIsOnline);
+                        }
+                    } else {
+                        System.out.println("Document does not exist.");
+                    }
+                });
+
+                // Håll programmet igång
+                System.out.println("Listening for Firestore changes on 'isOnline'...");
+                try {
+                    Thread.sleep(Long.MAX_VALUE);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
                 }
+            }).start();
+        }
 
     }
 
-    public static void writeDBfriends(){
+    public static void writeDBfriends() {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
         Map<String, String> friends = new HashMap<>();
 
-        for(Friend friend : FriendsList.getFriendArrayList()){
+        for (Friend friend : FriendsList.getFriendArrayList()) {
             friends.put(friend.getFriendEmail(), friend.getFriendName());
         }
         String json = gson.toJson(friends);
@@ -212,7 +213,8 @@ public class FirebaseManager {
 
 
     }
-    public static HashMap<String,String> readDBfriends(String email, boolean readOnly){
+
+    public static HashMap<String, String> readDBfriends(String email, boolean readOnly) {
         try {
             Gson gson = new Gson();
             HashMap<String, String> friendsMap = new HashMap<>();
@@ -238,23 +240,23 @@ public class FirebaseManager {
                 System.out.println("Dokumentet existerar inte.");
             }
 
-           if(!readOnly){
-               for(Map.Entry<String, String> entry : friendsMap.entrySet()){
-                   HashMap<String, String> finalUserData = friendsMap;
-                   FriendsList.getFriendArrayList().add(new Friend(true){
-                       {
-                           setFriendEmail(entry.getKey());
-                           setFriendName(entry.getValue());
-                       }
-                   });
-               }
-           }
+            if (!readOnly) {
+                for (Map.Entry<String, String> entry : friendsMap.entrySet()) {
+                    HashMap<String, String> finalUserData = friendsMap;
+                    FriendsList.getFriendArrayList().add(new Friend(true) {
+                        {
+                            setFriendEmail(entry.getKey());
+                            setFriendName(entry.getValue());
+                        }
+                    });
+                }
+            }
             return friendsMap;
 
 
         } catch (Exception e) {
             e.printStackTrace();
-            return new HashMap<String,String>();
+            return new HashMap<String, String>();
         }
 
     }
@@ -268,11 +270,11 @@ public class FirebaseManager {
         user.put("height", "");
         user.put("weight", "");
         user.put("workouts", "");
-        user.put("profilepicture","");
-        user.put("theme","dark");
-        user.put("friends","");
-        user.put("isOnline","");
-        user.put("friendrequests","");
+        user.put("profilepicture", "");
+        user.put("theme", "dark");
+        user.put("friends", "");
+        user.put("isOnline", "");
+        user.put("friendrequests", "");
 
 
         // Referens till dokumentet i "users" collection
@@ -296,7 +298,6 @@ public class FirebaseManager {
         user.put("height", String.valueOf(UserData.getUserHeight()));
         user.put("weight", String.valueOf(UserData.getUserWeight()));
         user.put("theme", UserData.getTheme());
-
 
 
         // Referens till dokumentet i "users" collection
@@ -327,9 +328,9 @@ public class FirebaseManager {
 
             UserData.setUserName(userData.get("name").toString());
             UserData.setEmail(userData.get("email").toString());
-            UserData.setUserWeight(userData.get("weight").toString().isEmpty() ? 0:Float.parseFloat(userData.get("weight").toString())); //If no user weight is set, return 0
-            UserData.setUserAge(userData.get("age").toString().isEmpty() ?0:Integer.parseInt(userData.get("age").toString())); //If no user age is set, return 0
-            UserData.setUserHeight(userData.get("height").toString().isEmpty() ?0:Integer.parseInt(userData.get("height").toString())); //If no user height is set, return 0
+            UserData.setUserWeight(userData.get("weight").toString().isEmpty() ? 0 : Float.parseFloat(userData.get("weight").toString())); //If no user weight is set, return 0
+            UserData.setUserAge(userData.get("age").toString().isEmpty() ? 0 : Integer.parseInt(userData.get("age").toString())); //If no user age is set, return 0
+            UserData.setUserHeight(userData.get("height").toString().isEmpty() ? 0 : Integer.parseInt(userData.get("height").toString())); //If no user height is set, return 0
             UserData.setTheme(userData.get("theme").toString());
 
         } catch (Exception e) {
@@ -337,10 +338,10 @@ public class FirebaseManager {
         }
     }
 
-    private static void removeWorkoutIcons(WorkoutsList workoutsList){
-        for(Workout workout : workoutsList){
+    private static void removeWorkoutIcons(WorkoutsList workoutsList) {
+        for (Workout workout : workoutsList) {
             for (Component comp1 : workout.getComponents()) {
-                if(comp1.getName()!=null){
+                if (comp1.getName() != null) {
                     if (comp1.getName().equals("mainExercisePanel")) {
                         JPanel mainExercisePanel = (JPanel) comp1;
                         for (Component comp2 : mainExercisePanel.getComponents()) {
@@ -351,18 +352,18 @@ public class FirebaseManager {
                             }
                             if ("setPanel".equals(comp2.getName())) {
                                 JPanel setPanel = (JPanel) comp2;
-                                for (Component compRight : setPanel.getComponents()){
-                                    if(compRight.getName()!=null){
-                                        if("rightPanel".equals(compRight.getName())){
+                                for (Component compRight : setPanel.getComponents()) {
+                                    if (compRight.getName() != null) {
+                                        if ("rightPanel".equals(compRight.getName())) {
                                             JPanel rightPanel = (JPanel) compRight;
-                                            for(Component compMoveSetUp : rightPanel.getComponents()){
-                                                if(compMoveSetUp.getName()!=null){
-                                                    if("moveSetUp".equals(compMoveSetUp.getName())){
+                                            for (Component compMoveSetUp : rightPanel.getComponents()) {
+                                                if (compMoveSetUp.getName() != null) {
+                                                    if ("moveSetUp".equals(compMoveSetUp.getName())) {
                                                         JButton moveSetUp = (JButton) compMoveSetUp;
                                                         /**/
                                                         moveSetUp.setIcon(null);
                                                     }
-                                                    if("moveSetDown".equals(compMoveSetUp.getName())){
+                                                    if ("moveSetDown".equals(compMoveSetUp.getName())) {
                                                         JButton moveSetDown = (JButton) compMoveSetUp;
                                                         /**/
                                                         moveSetDown.setIcon(null);
@@ -414,10 +415,10 @@ public class FirebaseManager {
         }
     }
 
-    private static void addWorkoutIcons(WorkoutsList workoutsList){
-        for(Workout workout : workoutsList){
+    private static void addWorkoutIcons(WorkoutsList workoutsList) {
+        for (Workout workout : workoutsList) {
             for (Component comp1 : workout.getComponents()) {
-                if(comp1.getName()!=null){
+                if (comp1.getName() != null) {
                     if (comp1.getName().equals("mainExercisePanel")) {
                         JPanel mainExercisePanel = (JPanel) comp1;
                         for (Component comp2 : mainExercisePanel.getComponents()) {
@@ -429,18 +430,18 @@ public class FirebaseManager {
                             }
                             if ("setPanel".equals(comp2.getName())) {
                                 JPanel setPanel = (JPanel) comp2;
-                                for (Component compRight : setPanel.getComponents()){
-                                    if(compRight.getName()!=null){
-                                        if("rightPanel".equals(compRight.getName())){
+                                for (Component compRight : setPanel.getComponents()) {
+                                    if (compRight.getName() != null) {
+                                        if ("rightPanel".equals(compRight.getName())) {
                                             JPanel rightPanel = (JPanel) compRight;
-                                            for(Component compMoveSetUp : rightPanel.getComponents()){
-                                                if(compMoveSetUp.getName()!=null){
-                                                    if("moveSetUp".equals(compMoveSetUp.getName())){
+                                            for (Component compMoveSetUp : rightPanel.getComponents()) {
+                                                if (compMoveSetUp.getName() != null) {
+                                                    if ("moveSetUp".equals(compMoveSetUp.getName())) {
                                                         JButton moveSetUp = (JButton) compMoveSetUp;
                                                         /**/
                                                         moveSetUp.setIcon(ProgramPanel.scaledMoveSetUpIcon);
                                                     }
-                                                    if("moveSetDown".equals(compMoveSetUp.getName())){
+                                                    if ("moveSetDown".equals(compMoveSetUp.getName())) {
                                                         JButton moveSetDown = (JButton) compMoveSetUp;
                                                         /**/
                                                         moveSetDown.setIcon(ProgramPanel.scaledMoveSetDownIcon);
@@ -490,6 +491,37 @@ public class FirebaseManager {
                 }
             }
         }
+    }
+    public static void writeDBCreatedExercises(ArrayList<Exercise> createdExerciseList) throws IOException {
+
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        ObjectOutputStream outputStream = new ObjectOutputStream(byteArrayOutputStream);
+
+        outputStream.writeObject(createdExerciseList);
+        outputStream.close();
+
+        String exercise64 = Base64.getEncoder().encodeToString(byteArrayOutputStream.toByteArray());
+
+        DocumentReference documentReference = db.collection("users").document(UserData.getEmail());
+        documentReference.update("Created_Exercises", exercise64);
+    }
+
+    public static void writeDBFavoriteExercises(HashSet<Exercise> favoriteList) throws IOException {
+        HashSet<Exercise> temp = new HashSet<>();
+        temp.addAll(favoriteList);
+        for (Exercise exercise : temp) {
+            exercise.removeImageIcon();
+        }
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+        objectOutputStream.writeObject(temp);
+        objectOutputStream.close();
+
+        String exercise64 = Base64.getEncoder().encodeToString(byteArrayOutputStream.toByteArray());
+        DocumentReference documentReference = db.collection("users").document(UserData.getEmail());
+        documentReference.update("Favorite_Exercises", exercise64);
+
     }
 
     public static void writeDBworkout(WorkoutsList workoutsList) throws IOException {
@@ -543,7 +575,7 @@ public class FirebaseManager {
 
     }
 
-    public static WorkoutsList readDBworkout(ProgramPanel programPanel){
+    public static WorkoutsList readDBworkout(ProgramPanel programPanel) {
         try {
             Gson gson = new Gson();
             HashMap<String, Object> userData = new HashMap<>();
@@ -575,7 +607,7 @@ public class FirebaseManager {
                 String bucketName = "brogress-7499c.firebasestorage.app";
                 String userWorkoutFileName = path.substring(1).split("/")[1];
 
-                byte[] data1 = storage.get(BlobId.of(bucketName,userWorkoutFileName)).getContent();
+                byte[] data1 = storage.get(BlobId.of(bucketName, userWorkoutFileName)).getContent();
                 String fileContent = new String(data1, StandardCharsets.UTF_8);
 
                 /*---------Decodes the base64 string to an object (WorkoutsList)---------*/
@@ -585,15 +617,15 @@ public class FirebaseManager {
                 objectInputStream.close();
 
                 /*---------Reattaches all buttons listeners and data needed to load the WorkoutsList back to the program---------*/
-                for(Workout workout : workoutsList){
+                for (Workout workout : workoutsList) {
                     workout.getWorkoutData().setTotalWorkoutHeight(0);
                     int exerciseId = 1;
                     for (Component comp1 : workout.getComponents()) {
-                        if(comp1.getName()!=null){
+                        if (comp1.getName() != null) {
                             System.out.println("Added 4 panels : " + (float) (4 * height) / 19);
 
                             if (comp1.getName().equals("mainExercisePanel")) {
-                                workout.getWorkoutData().setTotalWorkoutHeight(workout.getWorkoutData().getTotalWorkoutHeight()+(4 * ProgramPanel.setPanelHeight));
+                                workout.getWorkoutData().setTotalWorkoutHeight(workout.getWorkoutData().getTotalWorkoutHeight() + (4 * ProgramPanel.setPanelHeight));
                                 JPanel mainExercisePanel = (JPanel) comp1;
                                 int setCounterMoveUp = 0;
                                 for (Component comp2 : mainExercisePanel.getComponents()) {
@@ -614,17 +646,17 @@ public class FirebaseManager {
                                         JPanel setPanel = (JPanel) comp2;
                                         System.out.println("Added hieght for set panel: " + (float) height / 19);
 
-                                        for (Component compRight : setPanel.getComponents()){
+                                        for (Component compRight : setPanel.getComponents()) {
 
-                                            if(compRight.getName()!=null){
+                                            if (compRight.getName() != null) {
 
-                                                if("rightPanel".equals(compRight.getName())){
-                                                    System.out.println("Found right panel, set: "+setCounterMoveUp);
+                                                if ("rightPanel".equals(compRight.getName())) {
+                                                    System.out.println("Found right panel, set: " + setCounterMoveUp);
                                                     JPanel rightPanel = (JPanel) compRight;
-                                                    for(Component compMoveSetUp : rightPanel.getComponents()){
-                                                        if(compMoveSetUp.getName()!=null){
-                                                            if("moveSetUp".equals(compMoveSetUp.getName())){
-                                                                System.out.println("Found moveSetUp, set: "+setCounterMoveUp);
+                                                    for (Component compMoveSetUp : rightPanel.getComponents()) {
+                                                        if (compMoveSetUp.getName() != null) {
+                                                            if ("moveSetUp".equals(compMoveSetUp.getName())) {
+                                                                System.out.println("Found moveSetUp, set: " + setCounterMoveUp);
                                                                 JButton moveSetUp = (JButton) compMoveSetUp;
                                                                 int finalExerciseId2 = exerciseId;
                                                                 int finalSetCounter1 = setCounterMoveUp;
@@ -638,8 +670,8 @@ public class FirebaseManager {
                                                                     }
                                                                 });
                                                             }
-                                                            if("moveSetDown".equals(compMoveSetUp.getName())){
-                                                                System.out.println("Found moveSetDown, set: "+setCounterMoveUp);
+                                                            if ("moveSetDown".equals(compMoveSetUp.getName())) {
+                                                                System.out.println("Found moveSetDown, set: " + setCounterMoveUp);
                                                                 JButton moveSetDown = (JButton) compMoveSetUp;
                                                                 int finalExerciseId2 = exerciseId;
                                                                 int finalSetCounter1 = setCounterMoveUp;
@@ -681,7 +713,7 @@ public class FirebaseManager {
                                                 }
                                             }
                                         }
-                                        workout.getWorkoutData().setTotalWorkoutHeight(workout.getWorkoutData().getTotalWorkoutHeight()+(ProgramPanel.setPanelHeight));
+                                        workout.getWorkoutData().setTotalWorkoutHeight(workout.getWorkoutData().getTotalWorkoutHeight() + (ProgramPanel.setPanelHeight));
                                     }
 
                                     if (comp2.getName() != null) {
@@ -698,12 +730,12 @@ public class FirebaseManager {
 
                                                     removeExercise.addActionListener(e -> {
 
-                                                        workout.getWorkoutData().setTotalWorkoutHeight(workout.getWorkoutData().getTotalWorkoutHeight()-(4 * ProgramPanel.setPanelHeight));
+                                                        workout.getWorkoutData().setTotalWorkoutHeight(workout.getWorkoutData().getTotalWorkoutHeight() - (4 * ProgramPanel.setPanelHeight));
                                                         int i = 1;// For settings the numbers of the sets correctly
                                                         for (Component comp : mainExercisePanel.getComponents()) {
 
                                                             if ("setPanel".equals(comp.getName())) {
-                                                                workout.getWorkoutData().setTotalWorkoutHeight(workout.getWorkoutData().getTotalWorkoutHeight()-(ProgramPanel.setPanelHeight));
+                                                                workout.getWorkoutData().setTotalWorkoutHeight(workout.getWorkoutData().getTotalWorkoutHeight() - (ProgramPanel.setPanelHeight));
                                                             }
 
                                                         }
@@ -731,8 +763,8 @@ public class FirebaseManager {
                         }
                     }
                     workout.setPreferredSize(new Dimension(workout.getWidth(), workout.getWorkoutData().getTotalWorkoutHeight()));
-                    workout.setMinimumSize(new Dimension(workout.getWidth(),  workout.getWorkoutData().getTotalWorkoutHeight()));
-                    workout.setMaximumSize(new Dimension(workout.getWidth(),  workout.getWorkoutData().getTotalWorkoutHeight()));
+                    workout.setMinimumSize(new Dimension(workout.getWidth(), workout.getWorkoutData().getTotalWorkoutHeight()));
+                    workout.setMaximumSize(new Dimension(workout.getWidth(), workout.getWorkoutData().getTotalWorkoutHeight()));
 
                     workout.repaint();
                     workout.revalidate();
@@ -746,6 +778,36 @@ public class FirebaseManager {
             e.printStackTrace();
         }
         return new WorkoutsList();
+    }
+    public static HashSet<Exercise> readDBfavoriteExercises () throws ExecutionException, InterruptedException, IOException, ClassNotFoundException {
+        DocumentReference documentReference = db.collection("users").document(UserData.getEmail());
+
+        DocumentSnapshot documentSnapshot = documentReference.get().get();
+
+        String base64String = documentSnapshot.getString("Favorite_Exercises");
+
+        byte[] decodedBytes = Base64.getDecoder().decode(base64String);
+        ByteArrayInputStream bis = new ByteArrayInputStream(decodedBytes);
+        ObjectInputStream inStream = new ObjectInputStream(bis);
+        inStream.close();
+
+        return (HashSet<Exercise>) inStream.readObject();
+    }
+
+    public static ArrayList<Exercise> readDBcreatedExercises() throws IOException, ClassNotFoundException, ExecutionException, InterruptedException {
+
+        DocumentReference documentReference = db.collection("users").document(UserData.getEmail());
+
+        DocumentSnapshot documentSnapshot = documentReference.get().get();
+        String base64String = documentSnapshot.getString("Created_Exercises");
+
+
+            byte[] decodedBytes = Base64.getDecoder().decode(base64String);
+            ByteArrayInputStream bis = new ByteArrayInputStream(decodedBytes);
+            ObjectInputStream inStream = new ObjectInputStream(bis);
+            inStream.close();
+
+        return (ArrayList<Exercise>) inStream.readObject();
     }
 
     public static ImageIcon readDBprofilePicture(String email) {

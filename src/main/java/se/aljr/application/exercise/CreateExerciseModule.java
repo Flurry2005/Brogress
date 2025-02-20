@@ -6,7 +6,7 @@ import se.aljr.application.UserData;
 import se.aljr.application.exercise.Excercise.Exercise;
 import se.aljr.application.exercise.Muscle.Muscle;
 import se.aljr.application.exercise.Muscle.MuscleList;
-import se.aljr.application.settings.SettingsPanel;
+import se.aljr.application.loginpage.FirebaseManager;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -23,7 +23,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.Set;
 
 public class CreateExerciseModule extends JPanel {
 
@@ -57,14 +56,11 @@ public class CreateExerciseModule extends JPanel {
 
         //---------------INITIALIZE COMPONENTS-----
 
-
         headerPanel.setLayout(new BorderLayout());
         headerPanel.setPreferredSize(new Dimension(parentPanel.getPreferredSize().width, parentPanel.getPreferredSize().height / 18));
         headerPanel.setMaximumSize(new Dimension(parentPanel.getPreferredSize().width, parentPanel.getPreferredSize().height / 18));
         headerPanel.setBackground(AppThemeColors.PRIMARY);
         headerPanel.setBorder(new LineBorder(new Color(80, 73, 69)));
-
-
 
         headerLabel.setMaximumSize(new Dimension(parentPanel.getPreferredSize().width, parentPanel.getPreferredSize().height / 18));
         headerLabel.setForeground(AppThemeColors.foregroundColor);
@@ -72,10 +68,8 @@ public class CreateExerciseModule extends JPanel {
         headerLabel.setAlignmentX(Component.RIGHT_ALIGNMENT);
         headerLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
-
         eastPanel.setLayout(new BoxLayout(eastPanel, BoxLayout.Y_AXIS));
         eastPanel.setBackground(AppThemeColors.PRIMARY);
-
 
         textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.Y_AXIS));
         textPanel.setBackground(AppThemeColors.PRIMARY);
@@ -103,10 +97,8 @@ public class CreateExerciseModule extends JPanel {
         previewLabel.setOpaque(true);
         previewLabel.setBorder(new LineBorder(new Color(80, 73, 69)));
 
-
         nameAndFavPanel.setLayout(new BorderLayout());
         nameAndFavPanel.setBackground(AppThemeColors.PRIMARY);
-
 
         exerciseName.setText("Enter exercise name...");
         exerciseName.setBorder(new LineBorder(new Color(80, 73, 69)));
@@ -116,11 +108,9 @@ public class CreateExerciseModule extends JPanel {
         exerciseName.setBackground(AppThemeColors.panelColor);
         exerciseName.setForeground(AppThemeColors.foregroundColor);
 
-
         setFav.setBackground(AppThemeColors.PRIMARY);
         setFav.setBorder(null);
         setFav.setForeground(AppThemeColors.foregroundColor);
-
 
         exerciseInfo.setText("Enter exercise info (optional)");
         exerciseInfo.setForeground(AppThemeColors.foregroundColor);
@@ -132,7 +122,6 @@ public class CreateExerciseModule extends JPanel {
         exerciseInfo.setBackground(AppThemeColors.panelColor);
         exerciseInfo.setLineWrap(true);
 
-
         muscleLabel.setHorizontalAlignment(SwingConstants.CENTER);
         muscleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         muscleLabel.setFont(CustomFont.getFont().deriveFont(18f));
@@ -142,18 +131,15 @@ public class CreateExerciseModule extends JPanel {
         muscleLabel.setOpaque(true);
         muscleLabel.setBorder(new LineBorder(new Color(80, 73, 69)));
 
-
         MuscleList muscleList = new MuscleList();
         for (Muscle muscle : muscleList) {
             muscleListModel.addElement(muscle);
         }
 
-
         previewPanel.setLayout(new BoxLayout(previewPanel, BoxLayout.Y_AXIS));
         previewPanel.setBackground(AppThemeColors.panelColor);
         previewPanel.setMaximumSize(new Dimension(textPanel.getPreferredSize().width, parentPanel.getPreferredSize().height));
         previewPanel.setBorder(new LineBorder(new Color(80, 73, 69)));
-
 
         namePreviewLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         namePreviewLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -163,7 +149,6 @@ public class CreateExerciseModule extends JPanel {
         namePreviewLabel.setMaximumSize(new Dimension(textPanel.getPreferredSize().width, parentPanel.getPreferredSize().height / 10));
         namePreviewLabel.setMinimumSize(new Dimension(textPanel.getPreferredSize().width, parentPanel.getPreferredSize().height / 10));
         namePreviewLabel.setBackground(AppThemeColors.panelColor);
-
 
         infoPreviewLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         infoPreviewLabel.setFont(CustomFont.getFont().deriveFont(24f));
@@ -175,7 +160,6 @@ public class CreateExerciseModule extends JPanel {
         infoPreviewLabel.setBackground(AppThemeColors.panelColor);
         infoPreviewLabel.setLineWrap(true);
 
-
         musclePreviewLabel.setEditable(false);
         musclePreviewLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         musclePreviewLabel.setFont(CustomFont.getFont().deriveFont(24f));
@@ -184,7 +168,6 @@ public class CreateExerciseModule extends JPanel {
         musclePreviewLabel.setPreferredSize(new Dimension(textPanel.getPreferredSize().width, parentPanel.getPreferredSize().height / 7));
         musclePreviewLabel.setMaximumSize(new Dimension(textPanel.getPreferredSize().width, parentPanel.getPreferredSize().height / 7));
         musclePreviewLabel.setMinimumSize(new Dimension(textPanel.getPreferredSize().width, parentPanel.getPreferredSize().height / 7));
-
 
         muscleJlist.setForeground(AppThemeColors.foregroundColor);
         muscleJlist.setBackground(AppThemeColors.panelColor);
@@ -198,8 +181,8 @@ public class CreateExerciseModule extends JPanel {
         addExercise.setForeground(AppThemeColors.foregroundColor);
         addExercise.setBorder(new LineBorder(new Color(80, 73, 69), 1));
 
-
         //---------------ADD COMPONENTS---------------------
+
         headerPanel.add(headerLabel, BorderLayout.CENTER);
 
         textPanel.add(detailsLabel);
@@ -229,6 +212,7 @@ public class CreateExerciseModule extends JPanel {
         add(eastPanel, BorderLayout.EAST);
 
         //---------------------METHODS AND LISTENERS-----------------
+
         muscleJlist.setSelectionModel(new DefaultListSelectionModel() {
             private boolean gestureStarted = false;
 
@@ -385,22 +369,25 @@ public class CreateExerciseModule extends JPanel {
                     musclePreviewLabel.setFont(CustomFont.getFont().deriveFont(24f));
                     musclePreviewLabel.setText(muscleJlist.getSelectedValuesList().toString());
                 }
-            }
-            else {
+            } else {
                 musclePreviewLabel.setText("");
             }
         });
+
         // ADD TO PUBLIC ARRAYLIST
         addExercise.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!exerciseName.getText().isEmpty() && !exerciseName.getText().equals("Name required") && !exerciseName.getText().equals("Enter exercise name...") && !muscleJlist.getSelectedValuesList().isEmpty()) {
+
                     Exercise exercise = new Exercise();
                     exercise.createExercise(exerciseName.getText(), exerciseInfo.getText(), (ArrayList<Muscle>) muscleJlist.getSelectedValuesList());
                     UserData.setCreatedExercises(exercise);
+
                     if (setFav.isSelected()) {
                         UserData.setFavoriteExercises(exercise);
                     }
+
                     exerciseName.setText("");
                     exerciseInfo.setText("");
                     muscleJlist.clearSelection();
@@ -409,15 +396,27 @@ public class CreateExerciseModule extends JPanel {
                     repaint();
                     revalidate();
                     ExercisePanel.updateMenuList("myExerciseModel");
-                    ExercisePanel.activateStatus(new Color(46, 148, 76), "New exercise " + exercise.getName()+ " has been created!");
+                    ExercisePanel.updateMenuList("favExerciseModel");
+                    //WRITE TO DB
+                    try {
+                        FirebaseManager.writeDBCreatedExercises(UserData.getCreatedExercises());
+                        FirebaseManager.writeDBFavoriteExercises(UserData.getFavoriteExercises());
+                    } catch (Exception f) {
+                        f.printStackTrace();
+                    }
+                    ExercisePanel.activateStatus(new Color(46, 148, 76), "New exercise " + exercise.getName() + " has been created!");
+
                 } else {
+
                     if (exerciseName.getText().isEmpty() || exerciseName.getText().equals("Enter exercise name...")) {
+
                         exerciseName.setForeground(Color.RED);
                         exerciseName.setText("Name required");
                         exerciseName.revalidate();
                         exerciseName.repaint();
                     }
                     if (muscleJlist.getSelectedValuesList().isEmpty()) {
+
                         musclePreviewLabel.setText(("Select at least one muscle..."));
                         musclePreviewLabel.revalidate();
                         musclePreviewLabel.repaint();
@@ -428,7 +427,7 @@ public class CreateExerciseModule extends JPanel {
         });
     }
 
-    public void updateColors(){
+    public void updateColors() {
         headerPanel.setBackground(AppThemeColors.PRIMARY);
         headerLabel.setForeground(AppThemeColors.foregroundColor);
         eastPanel.setBackground(AppThemeColors.PRIMARY);
@@ -449,7 +448,6 @@ public class CreateExerciseModule extends JPanel {
         infoPreviewLabel.setForeground(AppThemeColors.foregroundColor);
         musclePreviewLabel.setForeground(AppThemeColors.foregroundColor);
         muscleJlist.setForeground(AppThemeColors.foregroundColor);
-
 
         this.setBackground(AppThemeColors.PRIMARY);
 
