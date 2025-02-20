@@ -1233,7 +1233,7 @@ public class ProgramPanel extends JPanel {
                                         }
                                         if(comp2.getName().equals("setRepWeightRirTitleNPanel")){
                                             JPanel setRepWeightRirTitleNPanel = (JPanel) comp2;
-                                            setRepWeightRirTitleNPanel.setBackground(AppThemeColors.SECONDARY);
+                                            setRepWeightRirTitleNPanel.setBackground(AppThemeColors.PRIMARY);
                                             for (Component compRight : setRepWeightRirTitleNPanel.getComponents()){
                                                 if(compRight.getName()!=null){
                                                     if("rightPanel".equals(compRight.getName())){
@@ -1346,7 +1346,7 @@ public class ProgramPanel extends JPanel {
                                         }
                                         if(comp2.getName().equals("setRepWeightRirTitleNPanel")){
                                             JPanel setRepWeightRirTitleNPanel = (JPanel) comp2;
-                                            setRepWeightRirTitleNPanel.setBackground(AppThemeColors.SECONDARY);
+                                            setRepWeightRirTitleNPanel.setBackground(AppThemeColors.PRIMARY);
                                             for (Component compRight : setRepWeightRirTitleNPanel.getComponents()){
                                                 if(compRight.getName()!=null){
                                                     if("rightPanel".equals(compRight.getName())){
