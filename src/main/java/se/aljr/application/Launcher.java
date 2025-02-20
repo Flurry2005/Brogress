@@ -30,6 +30,7 @@ public class Launcher {
                 loginWindow.dispose();
                 UserData.setIsOnline(true);
                 FirebaseManager.writeDBonlineStatus();
+                FirebaseManager.writeDBsendFriendRequest("drievmc@gmail.com");
                 ApplicationWindow applicationWindow = new ApplicationWindow((int)(Monitorsize.getWidth()/1.5), (int)(Monitorsize.getWidth()/2.66666666667), "Brogress - Gym tracker");
                 break;
             }

@@ -68,6 +68,63 @@ public class FirebaseManager {
             e.printStackTrace();
         }
     }
+
+    public static void writeDBsendFriendRequest(String email){
+        HashMap<String,String> newFriendRequest= readDBgetFriendRequests(email);
+        HashMap<String,String> usersFriends = readDBfriends(email,true);
+        if(!newFriendRequest.containsKey(UserData.getEmail())&&!usersFriends.containsKey(UserData.getEmail())){
+            newFriendRequest.put(UserData.getEmail(), UserData.getUserName());
+
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            String json = gson.toJson(newFriendRequest);
+
+            Map<String, Object> user = new HashMap<>();
+            user.put("friendrequests", json);
+
+
+
+            // Referens till dokumentet i "users" collection
+            DocumentReference docRef = db.collection("users").document(email);
+
+            // Skriv data och vänta på resultat
+            ApiFuture<WriteResult> result = docRef.update(user);
+
+            try {
+                System.out.println("Uppdaterat vid: " + result.get().getUpdateTime());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static HashMap<String,String> readDBgetFriendRequests(String email){
+        try {
+            Gson gson = new Gson();
+            HashMap<String, String> friendRequestsMap = new HashMap<>();
+
+            // Hämta dokumentet från Firestore
+            ApiFuture<DocumentSnapshot> snapshot = db.collection("users").document(email).get();
+            DocumentSnapshot document = snapshot.get();
+
+            if (document.exists()) {
+                // Hämta JSON-strängen från "friends"
+                HashMap<String,String> friendsJson = (HashMap<String,String>) document.get("friendrequests");
+
+                if (friendsJson != null) {;
+                    // Skriv ut resultatet
+                    System.out.println("Friends Map: " + friendRequestsMap);
+                }
+            }
+
+            return friendRequestsMap;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new HashMap<String,String>();
+        }
+
+    }
+
     public static void writeDBonlineStatus(){
 
         Map<String, Object> user = new HashMap<>();
@@ -155,13 +212,13 @@ public class FirebaseManager {
 
 
     }
-    public static void readDBfriends(){
+    public static HashMap<String,String> readDBfriends(String email, boolean readOnly){
         try {
             Gson gson = new Gson();
             HashMap<String, String> friendsMap = new HashMap<>();
 
             // Hämta dokumentet från Firestore
-            ApiFuture<DocumentSnapshot> snapshot = db.collection("users").document(UserData.getEmail()).get();
+            ApiFuture<DocumentSnapshot> snapshot = db.collection("users").document(email).get();
             DocumentSnapshot document = snapshot.get();
 
             if (document.exists()) {
@@ -181,21 +238,23 @@ public class FirebaseManager {
                 System.out.println("Dokumentet existerar inte.");
             }
 
-            for(Map.Entry<String, String> entry : friendsMap.entrySet()){
-                HashMap<String, String> finalUserData = friendsMap;
-                FriendsList.getFriendArrayList().add(new Friend(true){
-                    {
-                        setFriendEmail(entry.getKey());
-                        setFriendName(entry.getValue());
-                    }
-                });
-
-            }
-
+           if(!readOnly){
+               for(Map.Entry<String, String> entry : friendsMap.entrySet()){
+                   HashMap<String, String> finalUserData = friendsMap;
+                   FriendsList.getFriendArrayList().add(new Friend(true){
+                       {
+                           setFriendEmail(entry.getKey());
+                           setFriendName(entry.getValue());
+                       }
+                   });
+               }
+           }
+            return friendsMap;
 
 
         } catch (Exception e) {
             e.printStackTrace();
+            return new HashMap<String,String>();
         }
 
     }
@@ -213,6 +272,7 @@ public class FirebaseManager {
         user.put("theme","dark");
         user.put("friends","");
         user.put("isOnline","");
+        user.put("friendrequests","");
 
 
         // Referens till dokumentet i "users" collection
