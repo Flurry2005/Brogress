@@ -125,6 +125,7 @@ public class FirebaseManager {
                 ApiFuture<WriteResult> result = docRef.update(newUserFriendRequests);
 
                 writeDBfriends(UserData.getEmail());
+                writeDBfriends(email);
 
                 try {
                     System.out.println("Uppdaterat vid: " + result.get().getUpdateTime());
