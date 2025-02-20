@@ -50,10 +50,14 @@ public class HomePanel extends JPanel {
     private static JLabel bmrLabel;
     private static JLabel tdeeLabel;
     private static JLabel proteinNeedLabel;
-
+    private static JPanel friendsPanel = new JPanel();
+    private static JScrollPane friendsListScrollPane = new JScrollPane(friendsPanel);
+    private static HomePanel instance;
 
     public HomePanel(int width, int height){
+
         this.setPreferredSize(new Dimension(width, height));
+        instance = this;
         resourcePath = getClass().getClassLoader().getResource("resource.path").getPath().replace("resource.path","");
         homePanelBackground = new ImageIcon(resourcePath+ "bottom_right_bar.png");
         moduleIcon = new ImageIcon(resourcePath+"module.png");
@@ -221,11 +225,11 @@ public class HomePanel extends JPanel {
         bottomPanel.setLayout(new BoxLayout(bottomPanel,BoxLayout.X_AXIS));
 
 
-        JPanel friendsPanel = new JPanel();
+        friendsPanel = new JPanel();
         friendsPanel.setLayout(new BoxLayout(friendsPanel, BoxLayout.Y_AXIS));
         friendsPanel.setOpaque(false);
 
-        JScrollPane friendsListScrollPane = new JScrollPane(friendsPanel);
+
         friendsListScrollPane.setBackground(new Color(104, 8, 218, 255));
         friendsListScrollPane.setPreferredSize(new Dimension((int)(getPreferredSize().width/3.7695035461),bottomPanel.getPreferredSize().height/2));
         friendsListScrollPane.setMinimumSize(friendsListScrollPane.getPreferredSize());
@@ -251,57 +255,9 @@ public class HomePanel extends JPanel {
         });
         */
 
-
-        FirebaseManager.readDBfriends(UserData.getEmail(),false);
-        try{
-            FirebaseManager.readDBlistenToFriendsOnlineStatus();
-        }catch (Exception e){
-
-        }
-
-        for(Friend friend:FriendsList.getFriendArrayList()){
-            ImageIcon userIcon = FirebaseManager.readDBprofilePicture(friend.getFriendEmail());
-            Image scaledFriendProfilePicture = userIcon.getImage().getScaledInstance(getPreferredSize().width/25,getPreferredSize().width/25,Image.SCALE_SMOOTH);
-            ImageIcon scaledFriendProfilePictureIcon = new ImageIcon(scaledFriendProfilePicture);
-
-            friend.getImageAvatar().setPreferredSize(new Dimension(getPreferredSize().width/25,getPreferredSize().width/25));
-            friend.getImageAvatar().setMinimumSize(friend.getImageAvatar().getPreferredSize());
-            friend.getImageAvatar().setMaximumSize(friend.getImageAvatar().getPreferredSize());
-            friend.getImageAvatar().setImage(scaledFriendProfilePictureIcon);
-            friend.getImageAvatar().setAlignmentY(Component.CENTER_ALIGNMENT);
+        updateFriends();
 
 
-
-            JPanel friendPanel = new JPanel();
-            friendPanel.setOpaque(false);
-            friendPanel.setPreferredSize(new Dimension(friendsListScrollPane.getPreferredSize().width, (int) (friend.getImageAvatar().getPreferredSize().height*1.1)));
-            friendPanel.setLayout(new BoxLayout(friendPanel,BoxLayout.X_AXIS));
-
-            JLabel friendNameLabel = new JLabel(FriendsList.getFriendArrayList().get(FriendsList.getFriendArrayList().indexOf(friend)).getFriendName());
-            friendNameLabel.setFont(CustomFont.getFont().deriveFont(getPreferredSize().width/50f));
-            friendNameLabel.setMaximumSize(new Dimension(friendsListScrollPane.getPreferredSize().width-friend.getImageAvatar().getPreferredSize().width,friendPanel.getPreferredSize().height));
-            friendNameLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-            friendNameLabel.setForeground(Color.WHITE);
-
-            JPanel friendAvatarPanel = new JPanel();
-            friendAvatarPanel.setOpaque(false);
-            friendAvatarPanel.setLayout(new BoxLayout(friendAvatarPanel,BoxLayout.X_AXIS));
-            friendAvatarPanel.setPreferredSize(new Dimension((int) (friend.getImageAvatar().getPreferredSize().width*1.3),friend.getImageAvatar().getPreferredSize().height));
-            friendAvatarPanel.setMaximumSize(friendAvatarPanel.getPreferredSize());
-            friendAvatarPanel.setAlignmentY(Component.CENTER_ALIGNMENT);
-
-            friendAvatarPanel.add(Box.createHorizontalGlue());
-            friendAvatarPanel.add(FriendsList.getFriendArrayList().get(FriendsList.getFriendArrayList().indexOf(friend)).getImageAvatar());
-            friendAvatarPanel.add(Box.createHorizontalGlue());
-
-            friendPanel.add(friendAvatarPanel);
-            friendPanel.add(friendNameLabel);
-            friendPanel.add(Box.createHorizontalGlue());
-
-            friendsPanel.add(friendPanel);
-
-
-        }
 
 
         bottomPanel.add(Box.createHorizontalGlue());
@@ -389,6 +345,60 @@ public class HomePanel extends JPanel {
         proteinNeedLabel.setText("Protein: "+ NutritionCalculator.getProteinNeed(UserData.getUserWeight()));
 
 
+    }
+
+    public static void updateFriends(){
+        FirebaseManager.readDBfriends(UserData.getEmail(),false);
+        try {
+            FirebaseManager.readDBlistenToFriendsOnlineStatus();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        for(Friend friend:FriendsList.getFriendArrayList()){
+            ImageIcon userIcon = FirebaseManager.readDBprofilePicture(friend.getFriendEmail());
+            Image scaledFriendProfilePicture = userIcon.getImage().getScaledInstance(instance.getPreferredSize().width/25,instance.getPreferredSize().width/25,Image.SCALE_SMOOTH);
+            ImageIcon scaledFriendProfilePictureIcon = new ImageIcon(scaledFriendProfilePicture);
+
+            friend.getImageAvatar().setPreferredSize(new Dimension(instance.getPreferredSize().width/25,instance.getPreferredSize().width/25));
+            friend.getImageAvatar().setMinimumSize(friend.getImageAvatar().getPreferredSize());
+            friend.getImageAvatar().setMaximumSize(friend.getImageAvatar().getPreferredSize());
+            friend.getImageAvatar().setImage(scaledFriendProfilePictureIcon);
+            friend.getImageAvatar().setAlignmentY(Component.CENTER_ALIGNMENT);
+
+
+
+            JPanel friendPanel = new JPanel();
+            friendPanel.setOpaque(false);
+            friendPanel.setPreferredSize(new Dimension(friendsListScrollPane.getPreferredSize().width, (int) (friend.getImageAvatar().getPreferredSize().height*1.1)));
+            friendPanel.setLayout(new BoxLayout(friendPanel,BoxLayout.X_AXIS));
+
+            JLabel friendNameLabel = new JLabel(FriendsList.getFriendArrayList().get(FriendsList.getFriendArrayList().indexOf(friend)).getFriendName());
+            friendNameLabel.setFont(CustomFont.getFont().deriveFont(instance.getPreferredSize().width/50f));
+            friendNameLabel.setMaximumSize(new Dimension(friendsListScrollPane.getPreferredSize().width-friend.getImageAvatar().getPreferredSize().width,friendPanel.getPreferredSize().height));
+            friendNameLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+            friendNameLabel.setForeground(Color.WHITE);
+
+            JPanel friendAvatarPanel = new JPanel();
+            friendAvatarPanel.setOpaque(false);
+            friendAvatarPanel.setLayout(new BoxLayout(friendAvatarPanel,BoxLayout.X_AXIS));
+            friendAvatarPanel.setPreferredSize(new Dimension((int) (friend.getImageAvatar().getPreferredSize().width*1.3),friend.getImageAvatar().getPreferredSize().height));
+            friendAvatarPanel.setMaximumSize(friendAvatarPanel.getPreferredSize());
+            friendAvatarPanel.setAlignmentY(Component.CENTER_ALIGNMENT);
+
+            friendAvatarPanel.add(Box.createHorizontalGlue());
+            friendAvatarPanel.add(FriendsList.getFriendArrayList().get(FriendsList.getFriendArrayList().indexOf(friend)).getImageAvatar());
+            friendAvatarPanel.add(Box.createHorizontalGlue());
+
+            friendPanel.add(friendAvatarPanel);
+            friendPanel.add(friendNameLabel);
+            friendPanel.add(Box.createHorizontalGlue());
+
+            friendsPanel.add(friendPanel);
+            System.out.println("ADDED");
+
+
+        }
+        friendsListScrollPane.setViewportView(friendsPanel);
     }
 
     public static void updateProfilePicture(ImageIcon profilePicture){

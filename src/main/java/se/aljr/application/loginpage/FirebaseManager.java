@@ -15,6 +15,7 @@ import com.google.gson.JsonElement;
 import se.aljr.application.Friends.Friend;
 import se.aljr.application.Friends.FriendsList;
 import se.aljr.application.UserData;
+import se.aljr.application.homepage.HomePanel;
 import se.aljr.application.programplanner.ProgramPanel;
 import se.aljr.application.programplanner.Workout;
 import se.aljr.application.programplanner.WorkoutSet;
@@ -126,6 +127,7 @@ public class FirebaseManager {
 
                 writeDBfriends(UserData.getEmail());
                 writeDBfriends(email);
+                HomePanel.updateFriends();
 
                 try {
                     System.out.println("Uppdaterat vid: " + result.get().getUpdateTime());
@@ -260,6 +262,7 @@ public class FirebaseManager {
 
 
     }
+
     public static HashMap<String,String> readDBfriends(String email, boolean readOnly){
         try {
             Gson gson = new Gson();
