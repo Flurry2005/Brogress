@@ -7,6 +7,7 @@ import java.awt.*;
 
 public class Friend {
     private ImageAvatar imageAvatar;
+    private ImageAvatar imageAvatarSocial;
     private String friendName;
     private String friendEmail;
     private boolean isOnline;
@@ -14,14 +15,18 @@ public class Friend {
     public Friend(boolean isOnline){
         this.isOnline = isOnline;
         imageAvatar = new ImageAvatar();
+        imageAvatarSocial = new ImageAvatar();
         if(isOnline){
             imageAvatar.setGradientColor1(Color.GREEN);
             imageAvatar.setGradientColor2(new Color(4, 89, 1));
+            imageAvatarSocial.setGradientColor1(Color.GREEN);
+            imageAvatarSocial.setGradientColor2(new Color(4, 89, 1));
         }else {
             imageAvatar.setGradientColor1(Color.RED);
             imageAvatar.setGradientColor2(new Color(255, 87, 87));
+            imageAvatarSocial.setGradientColor1(Color.RED);
+            imageAvatarSocial.setGradientColor2(new Color(255, 87, 87));
         }
-
         imageAvatar.setLayout(new FlowLayout(FlowLayout.LEFT,0,0));
         imageAvatar.setAlignmentX(JComponent.LEFT_ALIGNMENT);
 
@@ -31,14 +36,22 @@ public class Friend {
         if(isOnline){
             imageAvatar.setGradientColor1(Color.GREEN);
             imageAvatar.setGradientColor2(new Color(4, 89, 1));
+            imageAvatarSocial.setGradientColor1(Color.GREEN);
+            imageAvatarSocial.setGradientColor2(new Color(4, 89, 1));
         }else {
             imageAvatar.setGradientColor1(Color.RED);
             imageAvatar.setGradientColor2(new Color(255, 87, 87));
+            imageAvatarSocial.setGradientColor1(Color.RED);
+            imageAvatarSocial.setGradientColor2(new Color(255, 87, 87));
         }
     }
 
     public ImageAvatar getImageAvatar(){
         return imageAvatar;
+    }
+
+    public ImageAvatar getImageAvatarSocial(){
+        return imageAvatarSocial;
     }
 
     public String getFriendName() {
