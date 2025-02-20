@@ -99,6 +99,39 @@ public class FirebaseManager {
         }
     }
 
+    public static void writeDBacceptFriendRequest(String email){
+        HashMap<String,String> myFriendRequests= readDBgetFriendRequests(UserData.getEmail());
+        HashMap<String,String> usersFriends = readDBfriends(email,true);
+        if(myFriendRequests!=null&&usersFriends!=null){
+            if(!myFriendRequests.containsKey(UserData.getEmail())&&!usersFriends.containsKey(UserData.getEmail())&&!email.equals(UserData.getEmail())){
+                myFriendRequests.remove(email);
+
+                Gson gson = new GsonBuilder().setPrettyPrinting().create();
+                String json = gson.toJson(myFriendRequests);
+
+                Map<String, Object> newUserFriendRequests = new HashMap<>();
+                newUserFriendRequests.put("friendrequests", json);
+
+
+
+                // Referens till dokumentet i "users" collection
+                DocumentReference docRef = db.collection("users").document(email);
+
+                // Skriv data och vänta på resultat
+                ApiFuture<WriteResult> result = docRef.update(newUserFriendRequests);
+
+                writeDBfriends();
+
+                try {
+                    System.out.println("Uppdaterat vid: " + result.get().getUpdateTime());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+
     public static HashMap<String,String> readDBgetFriendRequests(String email){
         try {
             Gson gson = new Gson();
