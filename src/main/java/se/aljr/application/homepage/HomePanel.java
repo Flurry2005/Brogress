@@ -348,6 +348,7 @@ public class HomePanel extends JPanel {
     }
 
     public static void updateFriends(){
+        friendsPanel.removeAll();
         FriendsList.getFriendArrayList().clear();
         FirebaseManager.readDBfriends(UserData.getEmail(),false);
         try {
