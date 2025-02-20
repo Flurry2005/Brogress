@@ -1,5 +1,6 @@
 package se.aljr.application;
 
+import se.aljr.application.chatpanel.ChatPanel;
 import se.aljr.application.exercise.ExercisePanel;
 import se.aljr.application.homepage.*;
 import se.aljr.application.programplanner.ProgramPanel;
