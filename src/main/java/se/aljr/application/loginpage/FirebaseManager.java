@@ -15,6 +15,7 @@ import com.google.gson.JsonElement;
 import se.aljr.application.Friends.Friend;
 import se.aljr.application.Friends.FriendsList;
 import se.aljr.application.UserData;
+import se.aljr.application.chatpanel.ChatPanel;
 import se.aljr.application.homepage.HomePanel;
 import se.aljr.application.programplanner.ProgramPanel;
 import se.aljr.application.programplanner.Workout;
@@ -253,6 +254,7 @@ public class FirebaseManager {
 
                         if (friends != null) {
                             HomePanel.updateFriends();
+                            ChatPanel.updateRequestsPanel();
                         }
                     } else {
                         System.out.println("Document does not exist.");
