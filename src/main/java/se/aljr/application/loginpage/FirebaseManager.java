@@ -72,7 +72,7 @@ public class FirebaseManager {
     public static void writeDBsendFriendRequest(String email){
         HashMap<String,String> newFriendRequest= readDBgetFriendRequests(email);
         HashMap<String,String> usersFriends = readDBfriends(email,true);
-        if(!newFriendRequest.containsKey(UserData.getEmail())&&!usersFriends.containsKey(UserData.getEmail())){
+        if(!newFriendRequest.containsKey(UserData.getEmail())&&!usersFriends.containsKey(UserData.getEmail())&&!email.equals(UserData.getEmail())){
             newFriendRequest.put(UserData.getEmail(), UserData.getUserName());
 
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
