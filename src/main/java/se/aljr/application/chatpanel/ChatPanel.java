@@ -4,6 +4,7 @@ import se.aljr.application.AppThemeColors;
 import se.aljr.application.CustomFont;
 import se.aljr.application.Friends.Friend;
 import se.aljr.application.Friends.FriendsList;
+import se.aljr.application.ImageAvatar;
 import se.aljr.application.UserData;
 import se.aljr.application.loginpage.FirebaseManager;
 
@@ -27,6 +28,14 @@ public class ChatPanel extends JPanel {
     private static JPanel requestsPanel = new JPanel();
     private static JScrollPane friendsScrollPane = new JScrollPane();
     private static ChatPanel instance;
+
+    private Image scaledProfilePicture;
+    private static ImageIcon scaledProfilePictureIcon;
+    private static ImageAvatar leftAvatar;
+    private static ImageAvatar rightAvatar;
+    private static ImageIcon profilePictureIcon;
+
+
 
     public ChatPanel(int width, int height) {
         resourcePath = getClass().getClassLoader().getResource("resource.path").getPath().replace("resource.path","");
@@ -62,48 +71,250 @@ public class ChatPanel extends JPanel {
         JPanel mainRightPanel = new JPanel();
         mainRightPanel.setLayout(new BorderLayout());
         mainRightPanel.setOpaque(true);
-        mainRightPanel.setBackground(Color.RED);
+        mainRightPanel.setBackground(AppThemeColors.textFieldColor);
         mainRightPanel.setPreferredSize(new Dimension(getPreferredSize().width / 2, getPreferredSize().height));
         mainRightPanel.setMinimumSize(mainRightPanel.getPreferredSize());
         mainRightPanel.setMaximumSize(mainRightPanel.getPreferredSize());
 
-        JPanel rightBelowPanel = new JPanel();
-        rightBelowPanel.setLayout(new BoxLayout(rightBelowPanel, BoxLayout.Y_AXIS));
-        rightBelowPanel.setOpaque(true);
-        rightBelowPanel.setBackground(Color.ORANGE);
-        rightBelowPanel.setPreferredSize(new Dimension((int)(mainRightPanel.getPreferredSize().width), mainRightPanel.getPreferredSize().height/8));
-        rightBelowPanel.setMinimumSize(mainRightPanel.getPreferredSize());
-        rightBelowPanel.setMaximumSize(mainRightPanel.getPreferredSize());
 
-        JPanel leftSideBelowPanel = new JPanel();
-        leftSideBelowPanel.setOpaque(true);
-        leftSideBelowPanel.setBackground(Color.BLUE);
-        leftSideBelowPanel.setPreferredSize(new Dimension((int)(rightBelowPanel.getPreferredSize().width/8), rightBelowPanel.getPreferredSize().height));
-        leftSideBelowPanel.setMinimumSize(leftSideBelowPanel.getPreferredSize());
-        leftSideBelowPanel.setMaximumSize(leftSideBelowPanel.getPreferredSize());
-
-        JPanel rightSideBelowPanel = new JPanel();
-        rightSideBelowPanel.setOpaque(true);
-        rightSideBelowPanel.setBackground(Color.RED);
-        rightSideBelowPanel.setPreferredSize(new Dimension((int)(rightBelowPanel.getPreferredSize().width/4), rightBelowPanel.getPreferredSize().height));
-        rightSideBelowPanel.setMinimumSize(rightSideBelowPanel.getPreferredSize());
-        rightSideBelowPanel.setMaximumSize(rightSideBelowPanel.getPreferredSize());
-
-        JPanel middleBelowPanel = new JPanel();
-        middleBelowPanel.setOpaque(true);
-        middleBelowPanel.setBackground(Color.WHITE);
-        middleBelowPanel.setPreferredSize(new Dimension((int)(rightBelowPanel.getPreferredSize().width/8), rightBelowPanel.getPreferredSize().height));
-        middleBelowPanel.setMinimumSize(middleBelowPanel.getPreferredSize());
-        middleBelowPanel.setMaximumSize(middleBelowPanel.getPreferredSize());
+        JPanel belowPanel = new JPanel();
+        belowPanel.setLayout(new BoxLayout(belowPanel, BoxLayout.X_AXIS));
+        belowPanel.setOpaque(true);
+        belowPanel.setBackground(AppThemeColors.textFieldColor);
+        belowPanel.setPreferredSize(new Dimension((int)(mainRightPanel.getPreferredSize().width), mainRightPanel.getPreferredSize().height/8));
+        belowPanel.setMinimumSize(mainRightPanel.getPreferredSize());
+        belowPanel.setMaximumSize(mainRightPanel.getPreferredSize());
 
 
-//        JTextField messengerTextBox = new JTextField();
-//        messengerTextBox.setFont(new Font("Arial", Font.BOLD, (int) (getPreferredSize().width / 100f)));
-//        messengerTextBox.setPreferredSize(new Dimension((int)(rightBelowPanel.getPreferredSize().width / 1.5),(int)(rightBelowPanel.getPreferredSize().height / 2)));
-//        messengerTextBox.setMinimumSize(messengerTextBox.getPreferredSize());
-//        messengerTextBox.setMaximumSize(messengerTextBox.getPreferredSize());
-//        messengerTextBox.setForeground(AppThemeColors.foregroundColor);
-//        messengerTextBox.setBackground(AppThemeColors.textFieldColor);
+
+
+        JPanel rightSideTopPanel = new JPanel();
+        rightSideTopPanel.setOpaque(false);
+        rightSideTopPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        rightSideTopPanel.setLayout(new BoxLayout(rightSideTopPanel, BoxLayout.X_AXIS));
+        rightSideTopPanel.setPreferredSize(new Dimension((int) (mainRightPanel.getPreferredSize().width / 1.2), (int) (mainRightPanel.getPreferredSize().height / 10)));
+        rightSideTopPanel.setMinimumSize(rightSideTopPanel.getPreferredSize());
+        rightSideTopPanel.setMaximumSize(rightSideTopPanel.getPreferredSize());
+        rightSideTopPanel.setBackground(Color.BLACK);
+
+
+
+
+        JPanel messageStorage = new JPanel();
+        messageStorage.setLayout(new BoxLayout(messageStorage, BoxLayout.Y_AXIS));
+        messageStorage.setOpaque(true);
+//        messageStorage.setBackground(Color.YELLOW);
+        messageStorage.setBackground(AppThemeColors.textFieldColor);
+        messageStorage.setPreferredSize(null);
+
+        JScrollPane messagesScrollPane = new JScrollPane();
+        messagesScrollPane.setOpaque(true);
+        messagesScrollPane.setPreferredSize(new Dimension((int)(mainRightPanel.getPreferredSize().width), (int)(mainRightPanel.getPreferredSize().height /1.05 -belowPanel.getPreferredSize().height)));
+        messagesScrollPane.setMinimumSize(messagesScrollPane.getPreferredSize());
+        messagesScrollPane.setMaximumSize(messagesScrollPane.getPreferredSize());
+        messagesScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        messagesScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        messagesScrollPane.getVerticalScrollBar().setPreferredSize(new Dimension(0,0));
+        messagesScrollPane.getVerticalScrollBar().setUnitIncrement(6);
+        messagesScrollPane.getViewport().setBackground(Color.GREEN);
+        messagesScrollPane.setBorder(new LineBorder(AppThemeColors.textFieldColor));
+
+
+
+
+        JTextArea messengerTextBox = new JTextArea();
+        messengerTextBox.setFont(new Font("Arial", Font.BOLD, (int) (getPreferredSize().width / 100f)));
+        messengerTextBox.setPreferredSize(new Dimension((int)(belowPanel.getPreferredSize().width / 1.2),(int)(belowPanel.getPreferredSize().height / 1.2)));
+        messengerTextBox.setMinimumSize(messengerTextBox.getPreferredSize());
+        messengerTextBox.setMaximumSize(messengerTextBox.getPreferredSize());
+        messengerTextBox.setForeground(AppThemeColors.foregroundColor);
+        messengerTextBox.setBackground(AppThemeColors.buttonBG);
+        messengerTextBox.setLineWrap(true);
+        messengerTextBox.setWrapStyleWord(true);
+
+
+
+        JPanel belowRightPanel = new JPanel();
+        belowRightPanel.setLayout(new BoxLayout(belowRightPanel, BoxLayout.X_AXIS));
+        belowRightPanel.setOpaque(true);
+        belowRightPanel.setBackground(AppThemeColors.textFieldColor);
+        belowRightPanel.setPreferredSize(new Dimension((int)(belowPanel.getPreferredSize().width / 10), (int)(belowPanel.getPreferredSize().height/ 1.2)));
+        belowRightPanel.setMinimumSize(belowRightPanel.getPreferredSize());
+        belowRightPanel.setMaximumSize(belowRightPanel.getPreferredSize());
+
+
+        JButton clickToSendButton = new JButton("✉");
+        clickToSendButton.setFont(new Font("Ariel", Font.BOLD, 50));
+        clickToSendButton.setMargin(new Insets(0, 0, 0, 0));
+//        clickToSendButton.setBackground(Color.RED);
+        clickToSendButton.setForeground(AppThemeColors.foregroundColor);
+        clickToSendButton.setBackground(AppThemeColors.buttonBG);
+        clickToSendButton.setPreferredSize(new Dimension((int)(belowRightPanel.getPreferredSize().width/1.6),(int)(belowRightPanel.getPreferredSize().height/1.6)));
+        clickToSendButton.setAlignmentY(Component.CENTER_ALIGNMENT);
+        clickToSendButton.setMinimumSize(clickToSendButton.getPreferredSize());
+        clickToSendButton.setMaximumSize(clickToSendButton.getPreferredSize());
+        clickToSendButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                {
+                    {
+
+
+
+                            /*--------------------Left side of chat--------------------*/
+                            JPanel leftEachMessageSent = new JPanel();
+                            leftEachMessageSent.setAlignmentX(Component.CENTER_ALIGNMENT);
+                            leftEachMessageSent.setLayout(new BoxLayout(leftEachMessageSent, BoxLayout.X_AXIS));
+                            leftEachMessageSent.setOpaque(false);
+                            leftEachMessageSent.setBackground(Color.PINK);
+                            leftEachMessageSent.setPreferredSize(new Dimension((int) (mainRightPanel.getPreferredSize().width / 1.2), (int) (mainRightPanel.getPreferredSize().height / 10)));
+                            leftEachMessageSent.setMinimumSize(leftEachMessageSent.getPreferredSize());
+                            leftEachMessageSent.setMaximumSize(leftEachMessageSent.getPreferredSize());
+
+
+                            JPanel leftOwnProfilePictureInTextMessage = new JPanel();
+                            leftOwnProfilePictureInTextMessage.setAlignmentY(Component.TOP_ALIGNMENT);
+                            leftOwnProfilePictureInTextMessage.setLayout(new BoxLayout(leftOwnProfilePictureInTextMessage, BoxLayout.X_AXIS));
+                            leftOwnProfilePictureInTextMessage.setOpaque(true);
+//                            leftOwnProfilePictureInTextMessage.setBackground(Color.BLACK);
+                            leftOwnProfilePictureInTextMessage.setBackground(AppThemeColors.textFieldColor);
+                            leftOwnProfilePictureInTextMessage.setPreferredSize(new Dimension((int) (leftEachMessageSent.getPreferredSize().width / 8), (int) (getPreferredSize().width/25)));
+                            leftOwnProfilePictureInTextMessage.setMinimumSize(leftOwnProfilePictureInTextMessage.getPreferredSize());
+                            leftOwnProfilePictureInTextMessage.setMaximumSize(leftOwnProfilePictureInTextMessage.getPreferredSize());
+
+
+
+                            profilePictureIcon = FirebaseManager.readDBprofilePicture(UserData.getEmail());
+                            leftAvatar = new ImageAvatar();
+                            leftAvatar.setAlignmentY(Component.TOP_ALIGNMENT);
+                            leftAvatar.setPreferredSize(new Dimension(getPreferredSize().width/25,getPreferredSize().width/25));
+                            scaledProfilePicture = profilePictureIcon.getImage().getScaledInstance(getPreferredSize().width/25,getPreferredSize().width/25,Image.SCALE_SMOOTH);
+                            scaledProfilePictureIcon = new ImageIcon(scaledProfilePicture);
+                            leftAvatar.setImage(scaledProfilePictureIcon);
+
+                            leftOwnProfilePictureInTextMessage.add(Box.createHorizontalGlue());
+                            leftOwnProfilePictureInTextMessage.add(leftAvatar);
+
+
+
+                            JPanel leftMessageOutPrintedOnScreen = new JPanel();
+                            leftMessageOutPrintedOnScreen.setAlignmentY(Component.TOP_ALIGNMENT);
+                            leftMessageOutPrintedOnScreen.setLayout(new BoxLayout(leftMessageOutPrintedOnScreen, BoxLayout.Y_AXIS));
+                            leftMessageOutPrintedOnScreen.setOpaque(true);
+                            leftMessageOutPrintedOnScreen.setBackground(Color.BLUE);
+//                            leftMessageOutPrintedOnScreen.setPreferredSize(new Dimension((int) (leftEachMessageSent.getPreferredSize().width - leftOwnProfilePictureInTextMessage.getPreferredSize().width)- sizeToCalculateNumberLenght.getPreferredSize().width +messengerTextBox.getText().length()*11, (int) (leftEachMessageSent.getPreferredSize().height)));
+//                            if (leftMessageOutPrintedOnScreen.getPreferredSize().width >= leftEachMessageSent.getPreferredSize().width/1.3){
+//                                leftMessageOutPrintedOnScreen.setPreferredSize(new Dimension((int)(leftEachMessageSent.getPreferredSize().width/1.5),leftEachMessageSent.getPreferredSize().height));
+//                                System.out.println("Hello");
+//                            }
+//                            leftMessageOutPrintedOnScreen.setMinimumSize(leftMessageOutPrintedOnScreen.getPreferredSize());
+//                            leftMessageOutPrintedOnScreen.setMaximumSize(leftMessageOutPrintedOnScreen.getPreferredSize());
+
+
+                            /*--------------------right side of chat--------------------*/
+                            JPanel rightEachMessageSent = new JPanel();
+                            rightEachMessageSent.setAlignmentX(Component.CENTER_ALIGNMENT);
+                            rightEachMessageSent.add(Box.createHorizontalGlue());
+                            rightEachMessageSent.setLayout(new BoxLayout(rightEachMessageSent, BoxLayout.X_AXIS));
+                            rightEachMessageSent.setOpaque(true);
+                            rightEachMessageSent.setBackground(Color.PINK);
+                            rightEachMessageSent.setPreferredSize(new Dimension((int) (mainRightPanel.getPreferredSize().width / 1.2), (int) (mainRightPanel.getPreferredSize().height / 10)));
+                            rightEachMessageSent.setMinimumSize(rightEachMessageSent.getPreferredSize());
+                            rightEachMessageSent.setMaximumSize(rightEachMessageSent.getPreferredSize());
+
+                            JPanel rightOwnProfilePictureInTextMessage = new JPanel();
+                            rightOwnProfilePictureInTextMessage.setAlignmentY(Component.TOP_ALIGNMENT);
+                            rightOwnProfilePictureInTextMessage.setLayout(new BoxLayout(rightOwnProfilePictureInTextMessage, BoxLayout.X_AXIS));
+                            rightOwnProfilePictureInTextMessage.setOpaque(true);
+//                            rightOwnProfilePictureInTextMessage.setBackground(Color.BLACK);
+                            rightOwnProfilePictureInTextMessage.setBackground(AppThemeColors.textFieldColor);
+
+                            rightOwnProfilePictureInTextMessage.setPreferredSize(new Dimension((int) (rightEachMessageSent.getPreferredSize().width / 8), (int) (getPreferredSize().width/25)));
+                            rightOwnProfilePictureInTextMessage.setMinimumSize(rightOwnProfilePictureInTextMessage.getPreferredSize());
+                            rightOwnProfilePictureInTextMessage.setMaximumSize(rightOwnProfilePictureInTextMessage.getPreferredSize());
+
+                            rightAvatar = new ImageAvatar();
+                            rightAvatar.setAlignmentY(Component.CENTER_ALIGNMENT);
+                            rightAvatar.setPreferredSize(new Dimension(getPreferredSize().width/25,getPreferredSize().width/25));
+                            scaledProfilePicture = profilePictureIcon.getImage().getScaledInstance(getPreferredSize().width/25,getPreferredSize().width/25,Image.SCALE_SMOOTH);
+                            scaledProfilePictureIcon = new ImageIcon(scaledProfilePicture);
+                            rightAvatar.setImage(scaledProfilePictureIcon);
+
+                            rightOwnProfilePictureInTextMessage.add(Box.createHorizontalGlue());
+                            rightOwnProfilePictureInTextMessage.add(rightAvatar);
+
+                            JPanel rightMessageOutPrintedOnScreen = new JPanel();
+                            rightMessageOutPrintedOnScreen.setAlignmentY(Component.TOP_ALIGNMENT);
+                            rightMessageOutPrintedOnScreen.setLayout(new BoxLayout(rightMessageOutPrintedOnScreen, BoxLayout.Y_AXIS));
+                            rightMessageOutPrintedOnScreen.setOpaque(true);
+                            rightMessageOutPrintedOnScreen.setBackground(Color.BLUE);
+                        //    rightMessageOutPrintedOnScreen.setPreferredSize(new Dimension((int) (rightEachMessageSent.getPreferredSize().width - rightOwnProfilePictureInTextMessage.getPreferredSize().width)- sizeToCalculateNumberLenght.getPreferredSize().width +messengerTextBox.getText().length()*11, (int) (rightEachMessageSent.getPreferredSize().height)));
+//                            rightMessageOutPrintedOnScreen.setMinimumSize(rightMessageOutPrintedOnScreen.getPreferredSize());
+//                            rightMessageOutPrintedOnScreen.setMaximumSize(rightMessageOutPrintedOnScreen.getPreferredSize());
+
+
+
+
+
+                            /*--------------------text recived from TextBox--------------------*/
+
+                            JTextArea holdTextMessage = new JTextArea();
+                            holdTextMessage.append(messengerTextBox.getText());
+                            holdTextMessage.setFont(new Font("Arial", Font.BOLD, 20));
+                            holdTextMessage.setOpaque(true);
+                            holdTextMessage.setLineWrap(true);
+                            holdTextMessage.setWrapStyleWord(true);
+                            holdTextMessage.setEditable(false);
+                            holdTextMessage.setMinimumSize(new Dimension(leftEachMessageSent.getPreferredSize().width-leftOwnProfilePictureInTextMessage.getPreferredSize().width,100));
+                            holdTextMessage.setForeground(Color.WHITE);
+                            holdTextMessage.setBackground(Color.green);
+
+                            leftMessageOutPrintedOnScreen.add(holdTextMessage);
+
+
+
+
+
+
+
+                            JTextArea holdTextMessage1 = new JTextArea(messengerTextBox.getText());
+                            holdTextMessage1.setFont(new Font("Arial", Font.BOLD, 20));
+                            holdTextMessage1.setOpaque(true);
+                            holdTextMessage1.setLineWrap(true);
+                            holdTextMessage1.setWrapStyleWord(true);
+                            holdTextMessage1.setEditable(false);
+                            holdTextMessage1.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+                            holdTextMessage1.setAlignmentX(Component.RIGHT_ALIGNMENT);
+                            rightMessageOutPrintedOnScreen.add(holdTextMessage1);
+                            messengerTextBox.setText("");
+
+
+
+
+                            leftEachMessageSent.add(leftOwnProfilePictureInTextMessage);
+                            leftEachMessageSent.add(holdTextMessage);
+                            messageStorage.add(Box.createRigidArea(new Dimension(leftEachMessageSent.getPreferredSize().width, leftEachMessageSent.getPreferredSize().height/10)));
+                            messageStorage.add(leftEachMessageSent);
+
+
+                            rightEachMessageSent.add(holdTextMessage1);
+                            rightEachMessageSent.add(rightOwnProfilePictureInTextMessage);
+                            messageStorage.add(Box.createRigidArea(new Dimension(rightEachMessageSent.getPreferredSize().width,rightEachMessageSent.getPreferredSize().height/10)));
+                            messageStorage.add(rightEachMessageSent);
+
+
+
+                            messageStorage.revalidate();
+                            messageStorage.repaint();
+                            SwingUtilities.invokeLater(() -> messagesScrollPane.getVerticalScrollBar().setValue(messagesScrollPane.getVerticalScrollBar().getMaximum()));
+
+                    }
+                };
+            }
+        });
+
+
+
 
 
 
@@ -149,7 +360,6 @@ public class ChatPanel extends JPanel {
         friendsScrollPane.getVerticalScrollBar().setUnitIncrement(6);
         friendsScrollPane.getViewport().setBackground(AppThemeColors.panelColor);
         friendsScrollPane.setBorder(new LineBorder(Color.BLACK));
-
 
 
 
@@ -458,19 +668,34 @@ public class ChatPanel extends JPanel {
 
 
 
-
         /*--------------------(Right panel) add panels to Right panel--------------------*/
 
 
 
 
 
-        /*--------------------(Right panel) Chatlog--------------------*/
-        mainRightPanel.add(leftSideBelowPanel, BorderLayout.SOUTH);
+        /*--------------------(Right panel) Chat--------------------*/
+        mainRightPanel.add(belowPanel, BorderLayout.SOUTH);
+        mainRightPanel.add(rightSideTopPanel);
 
-        rightBelowPanel.add(leftSideBelowPanel);
-        rightBelowPanel.add(middleBelowPanel);
-        rightBelowPanel.add(rightSideBelowPanel);
+        /*--------------------(Right panel) Chatwrite--------------------*/
+        belowPanel.add(Box.createHorizontalGlue());
+        belowPanel.add(messengerTextBox);
+        belowPanel.add(Box.createHorizontalGlue());
+        belowPanel.add(belowRightPanel);
+        belowPanel.add(Box.createHorizontalGlue());
+        belowRightPanel.add(Box.createHorizontalGlue());
+        belowRightPanel.add(clickToSendButton);
+        belowRightPanel.add(Box.createHorizontalGlue());
+
+
+
+
+        /*--------------------(Right panel) ChatBox--------------------*/
+        mainRightPanel.add(messagesScrollPane, BorderLayout.NORTH);
+        messagesScrollPane.setViewportView(messageStorage);
+
+
 
 
 
@@ -488,6 +713,15 @@ public class ChatPanel extends JPanel {
         this.revalidate();
         this.repaint();
     }
+
+
+
+
+
+
+
+
+
 
 
     public static void updateRequestsPanel(){
@@ -542,10 +776,11 @@ public class ChatPanel extends JPanel {
             friendAvatarPanel.setAlignmentY(Component.CENTER_ALIGNMENT);
 
             JButton acceptFriendRequestButton = new JButton("✓");
-            acceptFriendRequestButton.setFont(new Font("SansSerif", Font.BOLD, 10));
+            acceptFriendRequestButton.setFont(new Font("SansSerif", Font.BOLD, 20));
+            acceptFriendRequestButton.setMargin(new Insets(0, 0, 0, 0));
             acceptFriendRequestButton.setBackground(Color.GREEN);
             acceptFriendRequestButton.setForeground(AppThemeColors.foregroundColor);
-            acceptFriendRequestButton.setPreferredSize(new Dimension(40,25));
+            acceptFriendRequestButton.setPreferredSize(new Dimension(30,25));
             acceptFriendRequestButton.setAlignmentY(Component.CENTER_ALIGNMENT);
             acceptFriendRequestButton.setMinimumSize(acceptFriendRequestButton.getPreferredSize());
             acceptFriendRequestButton.setMaximumSize(acceptFriendRequestButton.getPreferredSize());
@@ -567,6 +802,26 @@ public class ChatPanel extends JPanel {
                 }
             });
 
+            JButton denyFriendRequestButton = new JButton("X");
+            denyFriendRequestButton.setFont(new Font("Ariel", Font.BOLD, 20));
+            denyFriendRequestButton.setMargin(new Insets(0, 0, 0, 0));
+            denyFriendRequestButton.setBackground(Color.RED);
+            denyFriendRequestButton.setForeground(AppThemeColors.foregroundColor);
+            denyFriendRequestButton.setPreferredSize(new Dimension(30,25));
+            denyFriendRequestButton.setAlignmentY(Component.CENTER_ALIGNMENT);
+            denyFriendRequestButton.setMinimumSize(denyFriendRequestButton.getPreferredSize());
+            denyFriendRequestButton.setMaximumSize(denyFriendRequestButton.getPreferredSize());
+            denyFriendRequestButton.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    {
+                        {
+                            System.out.println("HelloBabyGIRL");
+                        }
+                    };
+                }
+            });
+
 
             friendAvatarPanel.add(Box.createHorizontalGlue());
             friendAvatarPanel.add(FriendRequestList.getFriendRequestList().get(FriendRequestList.getFriendRequestList().indexOf(friendRequest)).getImageAvatarFriendRequest());
@@ -576,6 +831,7 @@ public class ChatPanel extends JPanel {
             friendRequestPanel.add(friendNameLabel);
             friendRequestPanel.add(Box.createHorizontalGlue());
             friendRequestPanel.add(acceptFriendRequestButton);
+            friendRequestPanel.add(denyFriendRequestButton);
 
             requestsPanel.add(friendRequestPanel);
 
