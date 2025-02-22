@@ -60,6 +60,7 @@ public class ExercisePanel extends JPanel {
     JButton myExercises = new JButton("Created");
     JTextField searchField = new JTextField("Search for exercise...");
     JPanel centerPanel = new JPanel();
+    JLabel imageLabel = new JLabel();
 
     Font font;
 
@@ -241,7 +242,7 @@ public class ExercisePanel extends JPanel {
 
         JButton createExerciseButton = new JButton("New exercise");
         createExerciseButton.setBackground(new Color(46, 148, 76));
-        createExerciseButton.setForeground(new Color(204, 204, 204));
+        createExerciseButton.setForeground(Color.WHITE);
         createExerciseButton.setBorder(new LineBorder(new Color(80, 73, 69), 1, true));
         createExerciseButton.setPreferredSize(new Dimension(westPanel.getPreferredSize().width, getPreferredSize().height / 24));
         createExerciseButton.setMaximumSize(new Dimension(westPanel.getPreferredSize().width, getPreferredSize().height / 24));
@@ -253,7 +254,7 @@ public class ExercisePanel extends JPanel {
         centerPanel.setBorder(new EmptyBorder(0, centerPanel.getPreferredSize().width / 20, 0, centerPanel.getPreferredSize().width / 20));
 
         //Label displaying the exercise image
-        JLabel imageLabel = new JLabel();
+
         imageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         imageLabel.setPreferredSize(new Dimension(centerPanel.getPreferredSize().width, centerPanel.getPreferredSize().height));
         imageLabel.setMaximumSize(new Dimension(centerPanel.getPreferredSize().width, centerPanel.getPreferredSize().height));
@@ -933,8 +934,42 @@ public class ExercisePanel extends JPanel {
         if (homePanelBackground != null) {
             if (!SettingsPanel.lightMode) {
                 g.drawImage(scaledContentBackgroundPanel.getImage(), 0, 0, getWidth(), getHeight(), this);
+                if (menuList.getSelectedIndex() != -1) {
+                    selectedExercise = menuList.getSelectedValue();
+                    imageLabel.setVisible(true);
+                    // SHOW IMAGE
+                    try {
+                        ImageIcon exerciseImageIcon = selectedExercise.getImageIcon();
+                        Image scaledTest = exerciseImageIcon.getImage().getScaledInstance(centerPanel.getPreferredSize().width, centerPanel.getPreferredSize().height, Image.SCALE_DEFAULT);
+                        ImageIcon scaledExerciseIcon = new ImageIcon(scaledTest);
+                        imageLabel.setIcon(scaledExerciseIcon);
+                        // DISPLAY DEFAULT IF IMAGE NOT FOUND
+                    } catch (Exception ex) {
+                        ImageIcon temp = new ImageIcon(ResourcePath.getResourcePath() + "bottom_right_bar.png");
+                        Image scaledTest = temp.getImage().getScaledInstance(centerPanel.getPreferredSize().width, centerPanel.getPreferredSize().height, Image.SCALE_SMOOTH);
+                        ImageIcon scaledTestIcon = new ImageIcon(scaledTest);
+                        imageLabel.setIcon(scaledTestIcon);
+                    }
+                }
             } else {
                 g.drawImage(scaledLightContentBackgroundPanel.getImage(), 0, 0, getWidth(), getHeight(), this);
+                if (menuList.getSelectedIndex() != -1) {
+                    selectedExercise = menuList.getSelectedValue();
+                    imageLabel.setVisible(true);
+                    // SHOW IMAGE
+                    try {
+                        ImageIcon exerciseImageIcon = selectedExercise.getImageIcon();
+                        Image scaledTest = exerciseImageIcon.getImage().getScaledInstance(centerPanel.getPreferredSize().width, centerPanel.getPreferredSize().height, Image.SCALE_DEFAULT);
+                        ImageIcon scaledExerciseIcon = new ImageIcon(scaledTest);
+                        imageLabel.setIcon(scaledExerciseIcon);
+                        // DISPLAY DEFAULT IF IMAGE NOT FOUND
+                    } catch (Exception ex) {
+                        ImageIcon temp = new ImageIcon(ResourcePath.getResourcePath() + "bottom_right_bar_light.png");
+                        Image scaledTest = temp.getImage().getScaledInstance(centerPanel.getPreferredSize().width, centerPanel.getPreferredSize().height, Image.SCALE_SMOOTH);
+                        ImageIcon scaledTestIcon = new ImageIcon(scaledTest);
+                        imageLabel.setIcon(scaledTestIcon);
+                    }
+                }
             }
 
         } else {

@@ -1,5 +1,6 @@
 package se.aljr.application.loginpage;
 
+import com.google.api.client.json.Json;
 import com.google.api.core.ApiFuture;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.firestore.*;
@@ -12,6 +13,7 @@ import com.google.firebase.auth.UserRecord;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
+import com.google.gson.reflect.TypeToken;
 import se.aljr.application.Friends.Friend;
 import se.aljr.application.Friends.FriendsList;
 import se.aljr.application.UserData;
@@ -28,6 +30,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
+import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -70,6 +73,66 @@ public class FirebaseManager {
         } catch (Exception e) {
             System.out.println("An error occurred during Firebase initialization");
             e.printStackTrace();
+        }
+    }
+
+    public static void writeDBwriteMessageHistory(String friendEmail,String yourEmail, String message){
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+        ArrayList<HashMap<String,String>> myMessageHistory = readDBreadMessageHistory(friendEmail, yourEmail);
+
+        HashMap<String,String> messageTemp = new HashMap<>();
+        messageTemp.put(UserData.getEmail(),message);
+
+        myMessageHistory.add(messageTemp);
+
+        JsonElement json = gson.toJsonTree(myMessageHistory);
+        FieldPath field = FieldPath.of(friendEmail);
+
+        DocumentReference docRef = db.collection("chats").document(yourEmail);
+
+        ApiFuture<WriteResult> result = docRef.update(field,gson.toJson(json));
+
+        if(!friendEmail.equals(UserData.getEmail())){
+            writeDBwriteMessageHistory(UserData.getEmail(),friendEmail,message);
+        }
+
+        try {
+            System.out.println("Uppdaterat vid: " + result.get().getUpdateTime());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static ArrayList<HashMap<String, String>> readDBreadMessageHistory(String friendEmail, String yourEmail) {
+        try {
+            Gson gson = new Gson();
+            ArrayList<HashMap<String, String>> friendsMap = new ArrayList<>();
+
+            ApiFuture<DocumentSnapshot> snapshot = db.collection("chats").document(yourEmail).get();
+            DocumentSnapshot document = snapshot.get();
+
+            if (document.exists()) {
+                FieldPath field = FieldPath.of(friendEmail);
+                Object rawData = document.get(field);
+
+                if (rawData != null && rawData instanceof String && !((String) rawData).isEmpty()) {
+                    String jsonString = (String) rawData;
+
+                    Type listType = new TypeToken<ArrayList<HashMap<String, String>>>() {}.getType();
+                    friendsMap = gson.fromJson(jsonString, listType);
+                    return friendsMap;
+                }else{
+                    return new ArrayList<HashMap<String,String>>();
+                }
+            }else{
+                throw new NullPointerException();
+            }
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ArrayList<HashMap<String,String>>();
         }
     }
 
@@ -132,6 +195,14 @@ public class FirebaseManager {
                 writeDBfriends(UserData.getEmail());
                 writeDBfriends(email);
                 HomePanel.updateFriends();
+
+
+                FieldPath fieldClientUser = FieldPath.of(UserData.getEmail());
+                FieldPath fieldFriend = FieldPath.of(email);
+
+                db.collection("chats").document(UserData.getEmail()).update(fieldFriend,"");
+
+                db.collection("chats").document(email).update(fieldClientUser,"");
 
                 try {
                     System.out.println("Uppdaterat vid: " + result.get().getUpdateTime());
@@ -374,13 +445,20 @@ public class FirebaseManager {
         user.put("workouts", "");
         user.put("profilepicture","");
         user.put("theme","dark");
-        user.put("friends","");
+        user.put("friends","{}");
         user.put("isOnline","");
-        user.put("friendrequests","");
+        user.put("friendrequests","{}");
+        user.put("Created_Exercises","");
+        user.put("Favorite_Exercises","");
 
 
         // Referens till dokumentet i "users" collection
         DocumentReference docRef = db.collection("users").document(email);
+
+        //Create document for chats of the user
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("createdAt", FieldValue.serverTimestamp());
+        db.collection("chats").document(email).set(data);
 
         // Skriv data och vänta på resultat
         ApiFuture<WriteResult> result = docRef.set(user);
@@ -594,6 +672,7 @@ public class FirebaseManager {
             }
         }
     }
+
     public static void writeDBCreatedExercises(ArrayList<Exercise> createdExerciseList) throws IOException {
 
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -881,6 +960,7 @@ public class FirebaseManager {
         }
         return new WorkoutsList();
     }
+
     public static HashSet<Exercise> readDBfavoriteExercises () throws ExecutionException, InterruptedException, IOException, ClassNotFoundException {
         DocumentReference documentReference = db.collection("users").document(UserData.getEmail());
 

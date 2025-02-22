@@ -3,6 +3,7 @@ package se.aljr.application;
 import se.aljr.application.chatpanel.ChatPanel;
 import se.aljr.application.exercise.ExercisePanel;
 import se.aljr.application.homepage.*;
+import se.aljr.application.loginpage.FirebaseManager;
 import se.aljr.application.programplanner.ProgramPanel;
 import se.aljr.application.settings.SettingsPanel;
 
@@ -86,7 +87,6 @@ public class ApplicationWindow extends JFrame  {
 
 
         right_panel.add(content_panel);
-
         //Handles the resizing of the components
         this.addComponentListener(new ComponentAdapter() {
             @Override

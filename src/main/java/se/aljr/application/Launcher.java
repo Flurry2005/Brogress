@@ -19,7 +19,6 @@ public class Launcher {
             UserData.setIsOnline(false);
             FirebaseManager.writeDBonlineStatus();
         }));
-
         LoginWindow loginWindow = new LoginWindow((int)(Monitorsize.getWidth()/3),(int)(Monitorsize.getWidth()/6));
         loginWindow.setMinimumSize(new Dimension((int)(Monitorsize.getWidth()/3),(int)(Monitorsize.getWidth()/6)));
         while(!isLoggedIn){
