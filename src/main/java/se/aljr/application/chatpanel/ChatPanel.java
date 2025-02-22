@@ -28,6 +28,7 @@ public class ChatPanel extends JPanel {
     private static JPanel requestsPanel = new JPanel();
     private static JScrollPane friendsScrollPane = new JScrollPane();
     private static ChatPanel instance;
+    private static boolean requestPanelIsActive;
 
     private Image scaledProfilePicture;
     private static ImageIcon scaledProfilePictureIcon;
@@ -553,6 +554,7 @@ public class ChatPanel extends JPanel {
                 mainMiddlePanel.add(friendsScrollPane);
                 mainMiddlePanel.remove(addPanel);
                 friendsScrollPane.setViewportView(friendsPanel);
+                requestPanelIsActive = false;
                 addPanelIsActive = false;
                 revalidate();
                 repaint();
@@ -574,6 +576,7 @@ public class ChatPanel extends JPanel {
                 mainMiddlePanel.add(friendsScrollPane);
                 mainMiddlePanel.remove(addPanel);
                 friendsScrollPane.setViewportView(requestsPanel);
+                requestPanelIsActive = true;
                 addPanelIsActive = false;
                 revalidate();
                 repaint();
@@ -595,6 +598,7 @@ public class ChatPanel extends JPanel {
                 mainMiddlePanel.add(friendsScrollPane);
                 mainMiddlePanel.remove(addPanel);
                 friendsScrollPane.setViewportView(groupsPanel);
+                requestPanelIsActive = false;
                 addPanelIsActive = false;
                 revalidate();
                 repaint();
@@ -615,6 +619,7 @@ public class ChatPanel extends JPanel {
             public void mouseClicked(MouseEvent e) {
                 if (!addPanelIsActive) {
                     mainMiddlePanel.add(addPanel, 1);
+                    requestPanelIsActive = false;
                     addPanelIsActive = true;
                 }
                 try {
@@ -663,7 +668,7 @@ public class ChatPanel extends JPanel {
 
         /*--------------------(Middle panel) add panels to Middle panel--------------------*/
         mainMiddlePanel.add(friendsScrollPane);
-
+        friendsScrollPane.setViewportView(friendsPanel);
 
 
 
@@ -829,7 +834,9 @@ public class ChatPanel extends JPanel {
 
 
         }
-        friendsScrollPane.setViewportView(requestsPanel);
+        if (requestPanelIsActive){
+            friendsScrollPane.setViewportView(requestsPanel);
+        }
     }
 
 
