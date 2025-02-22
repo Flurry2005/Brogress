@@ -76,6 +76,47 @@ public class FirebaseManager {
         }
     }
 
+    public static void readDBlistenToClientChats() throws InterruptedException {
+
+        new Thread(()->{
+            // Referens till användarens dokument
+            DocumentReference docRef = db.collection("chats").document(UserData.getEmail());
+
+            // Lyssna på ändringar i fältet "isOnline"
+            docRef.addSnapshotListener((snapshot, e) -> {
+                if (e != null) {
+                    System.err.println("Couldnt listen to chats document of user: "+UserData.getEmail() + e);
+                    return;
+                }
+
+                if (snapshot != null && snapshot.exists()) {
+                    for(Friend friend : FriendsList.getFriendArrayList()){
+                        System.out.println("Updated chat"+FriendsList.getFriendArrayList().size());
+                        ArrayList<HashMap<String,String>> newChat = readDBreadMessageHistory(friend.getFriendEmail(), UserData.getEmail());
+                        System.out.println(newChat);
+                        friend.setChat(newChat);
+                        if(friend==ChatPanel.selectedFriend){
+
+                        }
+
+                    }
+
+                }
+                ChatPanel.updateChat();
+            });
+            try {
+
+                Thread.sleep(Long.MAX_VALUE);
+
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
+        }).start();
+
+
+    }
+
     public static void writeDBwriteMessageHistory(String friendEmail,String yourEmail, String message){
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
