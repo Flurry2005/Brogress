@@ -866,7 +866,8 @@ public class ChatPanel extends JPanel {
             messagesScrollPane.setViewportView(messageStorage);
             SwingUtilities.invokeLater(() -> messagesScrollPane.getVerticalScrollBar().setValue(messagesScrollPane.getVerticalScrollBar().getMaximum()));
         }
-    isFirstRun = false;
+        messagesScrollPane.setViewportView(messageStorage);
+        isFirstRun = false;
     }
 
     @Override
