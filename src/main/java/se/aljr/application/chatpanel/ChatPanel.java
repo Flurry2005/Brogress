@@ -235,6 +235,8 @@ public class ChatPanel extends JPanel {
                 public void mouseClicked(MouseEvent e) {
                     super.mouseClicked(e);
                     selectedFriend = friend;
+                    messageStorage.removeAll();
+                    isFirstRun = true;
                     updateChat();
                     System.out.println(friend.getFriendName());
                 }
