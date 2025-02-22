@@ -82,7 +82,7 @@ public class CreateExerciseModule extends JPanel {
         detailsLabel.setHorizontalAlignment(SwingConstants.CENTER);
         detailsLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         detailsLabel.setFont(CustomFont.getFont().deriveFont(18f));
-        detailsLabel.setForeground(AppThemeColors.foregroundColor);
+        detailsLabel.setForeground(Color.WHITE);
         detailsLabel.setBackground(new Color(49, 84, 122));
         detailsLabel.setBorder(new LineBorder(new Color(80, 73, 69)));
         detailsLabel.setOpaque(true);
@@ -92,7 +92,7 @@ public class CreateExerciseModule extends JPanel {
         previewLabel.setHorizontalAlignment(SwingConstants.CENTER);
         previewLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         previewLabel.setFont(CustomFont.getFont().deriveFont(18f));
-        previewLabel.setForeground(AppThemeColors.foregroundColor);
+        previewLabel.setForeground(Color.WHITE);
         previewLabel.setBackground(new Color(49, 84, 122));
         previewLabel.setOpaque(true);
         previewLabel.setBorder(new LineBorder(new Color(80, 73, 69)));
@@ -126,7 +126,7 @@ public class CreateExerciseModule extends JPanel {
         muscleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         muscleLabel.setFont(CustomFont.getFont().deriveFont(18f));
         muscleLabel.setMaximumSize(new Dimension(parentPanel.getPreferredSize().width, parentPanel.getPreferredSize().height / 20));
-        muscleLabel.setForeground(AppThemeColors.foregroundColor);
+        muscleLabel.setForeground(Color.WHITE);
         muscleLabel.setBackground(new Color(49, 84, 122));
         muscleLabel.setOpaque(true);
         muscleLabel.setBorder(new LineBorder(new Color(80, 73, 69)));
@@ -178,7 +178,7 @@ public class CreateExerciseModule extends JPanel {
         addExercise.setPreferredSize(new Dimension(textPanel.getPreferredSize().width, parentPanel.getPreferredSize().height / 18));
         addExercise.setAlignmentX(Component.CENTER_ALIGNMENT);
         addExercise.setBackground(new Color(46, 148, 76));
-        addExercise.setForeground(AppThemeColors.foregroundColor);
+        addExercise.setForeground(Color.WHITE);
         addExercise.setBorder(new LineBorder(new Color(80, 73, 69), 1));
 
         //---------------ADD COMPONENTS---------------------

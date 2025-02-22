@@ -70,6 +70,7 @@ public class SettingsPanel extends JPanel{
     public static boolean lightMode = false;
     public static String currentTheme = "Dark";
 
+
     //Various colors
     Color settingsPanelBackgroundColor = new Color(51,51,51);
     Color settingsPanelColor = new Color(21,21,21);
@@ -107,10 +108,10 @@ public class SettingsPanel extends JPanel{
     //Account Panel
     JPanel accountPanel = new JPanel();
     JPanel accountScrollPanel = new JPanel();
-    JPanel test222 = new JPanel();
-    JPanel test333 = new JPanel();
-    JPanel test444 = new JPanel();
-    JPanel test555 = new JPanel();
+    JPanel accountAgePanel = new JPanel();
+    JPanel accountWeightPanel = new JPanel();
+    JPanel accountHeightPanel = new JPanel();
+    JPanel accountNamePanel = new JPanel();
     //Privacy Panel
 
     JLabel settingsLabel = new JLabel("Settings");
@@ -338,10 +339,10 @@ public class SettingsPanel extends JPanel{
 
                             //Account Settings Panel
                             accountScrollPanel.setBackground(AppThemeColors.panelColor);
-                            test222.setBackground(AppThemeColors.SECONDARY);
-                            test333.setBackground(AppThemeColors.SECONDARY);
-                            test444.setBackground(AppThemeColors.SECONDARY);
-                            test555.setBackground(AppThemeColors.SECONDARY);
+                            accountAgePanel.setBackground(AppThemeColors.SECONDARY);
+                            accountWeightPanel.setBackground(AppThemeColors.SECONDARY);
+                            accountHeightPanel.setBackground(AppThemeColors.SECONDARY);
+                            accountNamePanel.setBackground(AppThemeColors.SECONDARY);
 
                             System.out.println("Light Mode");
 
@@ -410,10 +411,10 @@ public class SettingsPanel extends JPanel{
 
                             //Account Settings Panel
                             accountScrollPanel.setBackground(AppThemeColors.panelColor);
-                            test222.setBackground(AppThemeColors.SECONDARY);
-                            test333.setBackground(AppThemeColors.SECONDARY);
-                            test444.setBackground(AppThemeColors.SECONDARY);
-                            test555.setBackground(AppThemeColors.SECONDARY);
+                            accountAgePanel.setBackground(AppThemeColors.SECONDARY);
+                            accountWeightPanel.setBackground(AppThemeColors.SECONDARY);
+                            accountHeightPanel.setBackground(AppThemeColors.SECONDARY);
+                            accountNamePanel.setBackground(AppThemeColors.SECONDARY);
 
 
 
@@ -534,9 +535,9 @@ public class SettingsPanel extends JPanel{
 
         //Panels within the scrollable window that will hold various settings--------
 
-        test222.setBackground(innerSettingPanelColor);
-        test222.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
-        test222.setPreferredSize(new Dimension(width-width/10*9, height/10));
+        accountAgePanel.setBackground(innerSettingPanelColor);
+        accountAgePanel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        accountAgePanel.setPreferredSize(new Dimension(width-width/10*9, height/10));
 
         //GeneralSettingsPanel1, age, weight and height settings
         JLabel ageLabel = new JLabel("Age: ");
@@ -549,12 +550,15 @@ public class SettingsPanel extends JPanel{
         heightLabel.setPreferredSize(new Dimension(50, test2.getPreferredSize().height));
 
 
+
+
         for (Integer i=0; i<200;i++){
             agesList.add(i);
         }
 
         JComboBox ageDropDown = new JComboBox(agesList.toArray(new Integer[0]));
         ageDropDown.setSelectedIndex(UserData.getUserAge());
+        ageDropDown.setEditable(true);
         ageDropDown.setPreferredSize(new Dimension(width/15, height/15));
         ageDropDown.addItemListener(new ItemListener() {
             @Override
@@ -570,6 +574,7 @@ public class SettingsPanel extends JPanel{
         });
 
         JComboBox weightDropDown = new JComboBox(agesList.toArray(new Integer[0]));
+        weightDropDown.setEditable(true);
         weightDropDown.setSelectedIndex((int)(UserData.getUserWeight()));
         weightDropDown.setPreferredSize(new Dimension(width/15, height/15));
         weightDropDown.addItemListener(new ItemListener() {
@@ -578,6 +583,7 @@ public class SettingsPanel extends JPanel{
                 UserData.setUserWeight(weightDropDown.getSelectedIndex()); //Updates the local user age in the userdata
                 try {
                     FirebaseManager.writeDBUser(UserData.getEmail()); //Updates the user data on the database
+                    System.out.println(weightDropDown.getEditor().getItem().toString());
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -601,17 +607,22 @@ public class SettingsPanel extends JPanel{
             }
         });
 
-        test222.add(ageLabel);
-        test222.add(ageDropDown);
-        test222.add(weightLabel);
-        test222.add(weightDropDown);
-        test222.add(heightLabel);
-        test222.add(heightDropDown);
+        accountAgePanel.add(ageLabel);
+        accountAgePanel.add(ageDropDown);
+
+
+
+
         //-------------------------------------------------------------------------------------------
 
 
-        test333.setBackground(innerSettingPanelColor);
-        test333.setPreferredSize(new Dimension(width-width/10*9, height/10));
+        accountWeightPanel.setBackground(innerSettingPanelColor);
+        accountWeightPanel.setPreferredSize(new Dimension(width-width/10*9, height/10));
+
+
+        accountWeightPanel.add(weightLabel);
+        accountWeightPanel.add(weightDropDown);
+
 
         JButton chooseProfilePictureButton = new JButton("Open Image File Chooser");
         chooseProfilePictureButton.addMouseListener(new MouseAdapter() {
@@ -628,20 +639,22 @@ public class SettingsPanel extends JPanel{
             }
         });
 
-        test333.add(chooseProfilePictureButton);
+        accountWeightPanel.add(chooseProfilePictureButton);
 
 
-        test444.setBackground(innerSettingPanelColor);
-        test444.setPreferredSize(new Dimension(width-width/10*9, height/10));
+        accountHeightPanel.setBackground(innerSettingPanelColor);
+        accountHeightPanel.setPreferredSize(new Dimension(width-width/10*9, height/10));
 
+        accountHeightPanel.add(heightLabel);
+        accountHeightPanel.add(heightDropDown);
 
-        test555.setBackground(innerSettingPanelColor);
-        test555.setPreferredSize(new Dimension(width-width/10*9, height/10));
+        accountNamePanel.setBackground(innerSettingPanelColor);
+        accountNamePanel.setPreferredSize(new Dimension(width-width/10*9, height/10));
 
-        accountScrollPanel.add(test222);
-        accountScrollPanel.add(test333);
-        accountScrollPanel.add(test444);
-        accountScrollPanel.add(test555);
+        accountScrollPanel.add(accountAgePanel);
+        accountScrollPanel.add(accountWeightPanel);
+        accountScrollPanel.add(accountHeightPanel);
+        accountScrollPanel.add(accountNamePanel);
 
         /**Privacy Panel*/
         JPanel privacyPanel = new JPanel();
@@ -1126,10 +1139,10 @@ public class SettingsPanel extends JPanel{
                     test44.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/10));
                     test55.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/10));
 
-                    test222.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/10));
-                    test333.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/10));
-                    test444.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/10));
-                    test555.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/10));
+                    accountAgePanel.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/10));
+                    accountWeightPanel.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/10));
+                    accountHeightPanel.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/10));
+                    accountNamePanel.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/10));
 
                 });
 
