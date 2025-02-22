@@ -14,6 +14,8 @@ public class Friend {
     private String friendEmail;
     private boolean isOnline;
     private ArrayList<HashMap<String, String>> chat;
+    private JPanel messageStorage;
+    public boolean firstLoadIn = true;
 
     public Friend(boolean isOnline){
         this.isOnline = isOnline;
@@ -87,5 +89,13 @@ public class Friend {
 
     public void setChat(ArrayList<HashMap<String, String>> chat) {
         this.chat = chat;
+    }
+
+    public JPanel getMessageStorage() {
+        return messageStorage;
+    }
+
+    public void setMessageStorage(JPanel messageStorage) {
+        this.messageStorage = messageStorage;
     }
 }

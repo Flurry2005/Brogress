@@ -91,18 +91,27 @@ public class FirebaseManager {
 
                 if (snapshot != null && snapshot.exists()) {
                     for(Friend friend : FriendsList.getFriendArrayList()){
+
+
                         System.out.println("Updated chat"+FriendsList.getFriendArrayList().size());
                         ArrayList<HashMap<String,String>> newChat = readDBreadMessageHistory(friend.getFriendEmail(), UserData.getEmail());
-                        System.out.println(newChat);
-                        friend.setChat(newChat);
-                        if(friend==ChatPanel.selectedFriend){
 
+                        friend.setChat(newChat);
+                        if(friend.firstLoadIn){
+                            ChatPanel.selectedFriend = friend;
+                            ChatPanel.updateChat();
                         }
 
+
+                    }
+                    if(ChatPanel.canSelectChat){
+                        ChatPanel.updateChat();
                     }
 
+                    ChatPanel.canSelectChat = true;
                 }
-                ChatPanel.updateChat();
+
+
             });
             try {
 
