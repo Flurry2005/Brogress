@@ -15,6 +15,7 @@ import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,7 +42,7 @@ public class ChatPanel extends JPanel {
     private static final JPanel mainRightPanel = new JPanel();
     private static final JPanel messageStorage = new JPanel();
     private static final JScrollPane messagesScrollPane = new JScrollPane();
-
+    private static boolean isFirstRun = true;
 
     public ChatPanel(int width, int height) {
         resourcePath = getClass().getClassLoader().getResource("resource.path").getPath().replace("resource.path", "");
@@ -660,9 +661,16 @@ public class ChatPanel extends JPanel {
     }
 
     public static void updateChat(){
-        messageStorage.removeAll();
+        //messageStorage.removeAll();
         System.out.println(selectedFriend);
-        for(HashMap<String,String> chatLog:selectedFriend.getChat()){
+        ArrayList<HashMap<String,String>> newMessages;
+        if(isFirstRun){
+            newMessages = selectedFriend.getChat();
+        }else{
+            newMessages =  new ArrayList(selectedFriend.getChat().subList((messageStorage.getComponentCount()/2), selectedFriend.getChat().size()));
+        }
+
+        for(HashMap<String,String> chatLog:newMessages){
             String message = chatLog.get(UserData.getEmail());
             if(message!=null){
 
@@ -712,7 +720,7 @@ public class ChatPanel extends JPanel {
                     FontMetrics metrics = holdTextMessage.getFontMetrics(holdTextMessage.getFont());
                     int lineHeight = metrics.getHeight();
 
-                    int areaWidth = holdTextMessage.getWidth();
+                    int areaWidth = leftSentMessageContainer.getPreferredSize().width - leftProfilePictureContainer.getPreferredSize().width;
                     int areaHeight = holdTextMessage.getHeight();
 
                     int charsPerLine = areaWidth / metrics.charWidth('m');
@@ -800,7 +808,7 @@ public class ChatPanel extends JPanel {
                     FontMetrics metrics = holdTextMessage1.getFontMetrics(holdTextMessage1.getFont());
                     int lineHeight = metrics.getHeight();
 
-                    int areaWidth = holdTextMessage1.getWidth();
+                    int areaWidth = rightSentMessageContainer.getPreferredSize().width - rightProfilePictureContainer.getPreferredSize().width;
                     int areaHeight = holdTextMessage1.getHeight();
 
                     int charsPerLine = areaWidth / metrics.charWidth('m');
@@ -849,7 +857,7 @@ public class ChatPanel extends JPanel {
             messagesScrollPane.setViewportView(messageStorage);
             SwingUtilities.invokeLater(() -> messagesScrollPane.getVerticalScrollBar().setValue(messagesScrollPane.getVerticalScrollBar().getMaximum()));
         }
-
+    isFirstRun = false;
     }
 
     @Override
