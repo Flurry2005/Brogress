@@ -4,6 +4,8 @@ import se.aljr.application.ImageAvatar;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Friend {
     private ImageAvatar imageAvatar;
@@ -11,6 +13,7 @@ public class Friend {
     private String friendName;
     private String friendEmail;
     private boolean isOnline;
+    private ArrayList<HashMap<String, String>> chat;
 
     public Friend(boolean isOnline){
         this.isOnline = isOnline;
@@ -35,7 +38,7 @@ public class Friend {
     public void updateOnlineStatus(){
         if(isOnline){
             imageAvatar.setGradientColor1(Color.GREEN);
-            imageAvatar.setGradientColor2(new Color(4, 89, 1));
+            imageAvatar.setGradientColor2(new Color(12, 176, 9));
             imageAvatarSocial.setGradientColor1(Color.GREEN);
             imageAvatarSocial.setGradientColor2(new Color(4, 89, 1));
         }else {
@@ -76,5 +79,13 @@ public class Friend {
 
     public void setOnline(boolean online) {
         isOnline = online;
+    }
+
+    public ArrayList<HashMap<String, String>> getChat() {
+        return chat;
+    }
+
+    public void setChat(ArrayList<HashMap<String, String>> chat) {
+        this.chat = chat;
     }
 }
