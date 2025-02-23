@@ -100,6 +100,7 @@ public class FirebaseManager {
                         if(friend.firstLoadIn){
                             ChatPanel.selectedFriend = friend;
                             ChatPanel.updateChat();
+                            ChatPanel.selectedFriend=null;
                         }
 
 
