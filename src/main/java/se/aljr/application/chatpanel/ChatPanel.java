@@ -324,6 +324,8 @@ public class ChatPanel extends JPanel {
             friend.getImageAvatarSocial().setMaximumSize(friend.getImageAvatarSocial().getPreferredSize());
             friend.getImageAvatarSocial().setImage(scaledFriendProfilePictureIcon);
             friend.getImageAvatarSocial().setAlignmentY(Component.CENTER_ALIGNMENT);
+            friend.getImageAvatarSocial().setBorderSize(instance.getPreferredSize().height/221);
+            friend.getImageAvatarSocial().setBorderSpace((int) (instance.getPreferredSize().height/331.5));
 
             friend.setMessageStorage(new JPanel(){
                 {
@@ -825,6 +827,9 @@ public class ChatPanel extends JPanel {
                 Image scaledProfilePicture = profilePictureIcon.getImage().getScaledInstance(instance.getPreferredSize().width / 25, instance.getPreferredSize().width / 25, Image.SCALE_SMOOTH);
                 scaledProfilePictureIcon = new ImageIcon(scaledProfilePicture);
                 leftAvatar.setImage(scaledProfilePictureIcon);
+                leftAvatar.setBorderSize(instance.getPreferredSize().height/221);
+                leftAvatar.setBorderSpace((int) (instance.getPreferredSize().height/331.5));
+
                 leftProfilePictureContainer.add(Box.createHorizontalGlue());
                 leftProfilePictureContainer.add(leftAvatar);
                 leftProfilePictureContainer.add(Box.createHorizontalGlue());
@@ -904,6 +909,8 @@ public class ChatPanel extends JPanel {
                 Image scaledProfilePicture = profilePictureIconFriend.getImage().getScaledInstance(instance.getPreferredSize().width / 25, instance.getPreferredSize().width / 25, Image.SCALE_SMOOTH);
                 scaledProfilePictureIcon = new ImageIcon(scaledProfilePicture);
                 rightAvatar.setImage(scaledProfilePictureIcon);
+                rightAvatar.setBorderSize(instance.getPreferredSize().height/221);
+                rightAvatar.setBorderSpace((int) (instance.getPreferredSize().height/331.5));
 
                 rightProfilePictureContainer.add(Box.createHorizontalGlue());
                 rightProfilePictureContainer.add(rightAvatar);
