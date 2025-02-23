@@ -184,31 +184,30 @@ public class FirebaseManager {
         }
     }
 
-    public static void writeDBsendFriendRequest(String email){
+    public static void writeDBsendFriendRequest(String email) throws ExecutionException, InterruptedException {
         HashMap<String,String> newFriendRequest= readDBgetFriendRequests(email);
         HashMap<String,String> usersFriends = readDBfriends(email,true);
         if(newFriendRequest!=null&&usersFriends!=null){
             if(!newFriendRequest.containsKey(UserData.getEmail())&&!usersFriends.containsKey(UserData.getEmail())&&!email.equals(UserData.getEmail())){
-                newFriendRequest.put(UserData.getEmail(), UserData.getUserName());
-
-                Gson gson = new GsonBuilder().setPrettyPrinting().create();
-                String json = gson.toJson(newFriendRequest);
-
-                Map<String, Object> user = new HashMap<>();
-                user.put("friendrequests", json);
-
-
-
                 // Referens till dokumentet i "users" collection
                 DocumentReference docRef = db.collection("users").document(email);
+                if(docRef.get().get().exists()){
+                    newFriendRequest.put(UserData.getEmail(), UserData.getUserName());
 
-                // Skriv data och vänta på resultat
-                ApiFuture<WriteResult> result = docRef.update(user);
+                    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+                    String json = gson.toJson(newFriendRequest);
 
-                try {
-                    System.out.println("Uppdaterat vid: " + result.get().getUpdateTime());
-                } catch (Exception e) {
-                    e.printStackTrace();
+                    Map<String, Object> user = new HashMap<>();
+                    user.put("friendrequests", json);
+
+                    // Skriv data och vänta på resultat
+                    ApiFuture<WriteResult> result = docRef.update(user);
+
+                    try {
+                        System.out.println("Uppdaterat vid: " + result.get().getUpdateTime());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }

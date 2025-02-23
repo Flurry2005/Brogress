@@ -21,6 +21,9 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ChatPanel extends JPanel {
 
@@ -375,8 +378,31 @@ public class ChatPanel extends JPanel {
         addbutton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                FirebaseManager.writeDBsendFriendRequest(friendRequestMailText.getText());
-                friendRequestMailText.setText("");
+                String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+                Pattern pattern = Pattern.compile(emailRegex);
+                Matcher matcher = pattern.matcher(friendRequestMailText.getText());
+                if(matcher.matches()){
+                    try {
+                        FirebaseManager.writeDBsendFriendRequest(friendRequestMailText.getText());
+                    } catch (ExecutionException | InterruptedException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                    friendRequestMailText.setText("");
+                }else{
+                    friendRequestMailText.setText("Invalid email adress");
+                    new Timer(1000,_->{
+                        friendRequestMailText.setText("");
+
+                    }){
+                        {
+                            setRepeats(false);
+                        }
+                    }.start();
+
+                }
+
+
+
             }
         });
 
