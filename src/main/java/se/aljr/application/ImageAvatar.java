@@ -1,5 +1,8 @@
 package se.aljr.application;
 
+import se.aljr.application.chatpanel.ChatPanel;
+import se.aljr.application.programplanner.ProgramPanel;
+
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Composite;
@@ -67,6 +70,7 @@ public class ImageAvatar extends JComponent {
 
     private ImageIcon image;
     private int borderSize = 3;
+
     private int borderSpace = 2;
     private Color gradientColor1 = new Color(87, 255, 165);
     private Color gradientColor2 = new Color(0, 128, 255);

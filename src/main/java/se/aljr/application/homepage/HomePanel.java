@@ -140,6 +140,8 @@ public class HomePanel extends JPanel {
 
         avatar.setLayout(new FlowLayout(FlowLayout.LEFT,0,0));
         avatar.setAlignmentX(JComponent.LEFT_ALIGNMENT);
+        avatar.setBorderSize(instance.getPreferredSize().height/221);
+        avatar.setBorderSpace((int) (instance.getPreferredSize().height/331.5));
 
         userInfoPanel.add(Box.createVerticalGlue());
         userInfoPanel.add(Box.createVerticalGlue());
@@ -372,6 +374,8 @@ public class HomePanel extends JPanel {
             friend.getImageAvatar().setMaximumSize(friend.getImageAvatar().getPreferredSize());
             friend.getImageAvatar().setImage(scaledFriendProfilePictureIcon);
             friend.getImageAvatar().setAlignmentY(Component.CENTER_ALIGNMENT);
+            friend.getImageAvatar().setBorderSize(instance.getPreferredSize().height/221);
+            friend.getImageAvatar().setBorderSpace((int) (instance.getPreferredSize().height/331.5));
 
 
 
