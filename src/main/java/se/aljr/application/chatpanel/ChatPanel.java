@@ -250,8 +250,10 @@ public class ChatPanel extends JPanel {
         clickToSendButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                FirebaseManager.writeDBwriteMessageHistory(selectedFriend.getFriendEmail(),UserData.getEmail(),messengerTextBox.getText());
-                messengerTextBox.setText(null);
+               if(selectedFriend!=null){
+                   FirebaseManager.writeDBwriteMessageHistory(selectedFriend.getFriendEmail(),UserData.getEmail(),messengerTextBox.getText());
+                   messengerTextBox.setText(null);
+               }
             }
         });
 
