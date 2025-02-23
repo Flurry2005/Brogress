@@ -1,7 +1,5 @@
 package se.aljr.application;
 
-import se.aljr.application.chatpanel.ChatPanel;
-import se.aljr.application.programplanner.ProgramPanel;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -24,7 +22,7 @@ import javax.swing.JComponent;
 public class ImageAvatar extends JComponent {
 
     public ImageIcon getImage() {
-        return (ImageIcon) image;
+        return image;
     }
 
     public void setImage(ImageIcon image) {
@@ -120,12 +118,10 @@ public class ImageAvatar extends JComponent {
     }
 
     private Rectangle getAutoSize(Icon image, int size) {
-        int w = size;
-        int h = size;
         int iw = image.getIconWidth();
         int ih = image.getIconHeight();
-        double xScale = (double) w / iw;
-        double yScale = (double) h / ih;
+        double xScale = (double) size / iw;
+        double yScale = (double) size / ih;
         double scale = Math.max(xScale, yScale);
         int width = (int) (scale * iw);
         int height = (int) (scale * ih);
@@ -135,10 +131,8 @@ public class ImageAvatar extends JComponent {
         if (height < 1) {
             height = 1;
         }
-        int cw = size;
-        int ch = size;
-        int x = (cw - width) / 2;
-        int y = (ch - height) / 2;
+        int x = (size - width) / 2;
+        int y = (size - height) / 2;
         return new Rectangle(new Point(x, y), new Dimension(width, height));
     }
 
