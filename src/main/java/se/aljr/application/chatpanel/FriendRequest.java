@@ -6,7 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class FriendRequest {
-    private ImageAvatar imageAvatarFriendRequest;
+    private final ImageAvatar imageAvatarFriendRequest;
     private String friendName;
     private String friendEmail;
 

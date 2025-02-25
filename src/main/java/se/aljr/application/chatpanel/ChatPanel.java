@@ -741,7 +741,7 @@ public class ChatPanel extends JPanel {
             acceptFriendRequestButton.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
-                    FriendsList.getFriendArrayList().add(new Friend(true) {
+                    FriendsList.getFriendArrayList().add(new Friend() {
                         {
                             setFriendEmail(friendRequest.getFriendEmail());
                             setFriendName(friendRequest.getFriendName());
