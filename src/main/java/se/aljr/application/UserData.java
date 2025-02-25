@@ -15,8 +15,8 @@ public class UserData {
     private static float userWeight;
     private static String userEmail;
     private static String userTheme;
-    private static HashSet<Exercise> favoriteExercises = new HashSet<>();
-    private static ArrayList<Exercise> createdExercises = new ArrayList<>();
+    private static final HashSet<Exercise> favoriteExercises = new HashSet<>();
+    private static final ArrayList<Exercise> createdExercises = new ArrayList<>();
     private static boolean isOnline;
 
     public static void setUserName(String userName) {
@@ -66,23 +66,12 @@ public class UserData {
     public static HashSet<Exercise> getFavoriteExercises() {
         return favoriteExercises;
     }
-    public static boolean removeFavoriteExercises(Exercise exercise) {
-        if (favoriteExercises.contains(exercise)) {
-            favoriteExercises.remove(exercise);
-            return true;
-        }
-        else {
-            return false;
-        }
+    public static void removeFavoriteExercises(Exercise exercise) {
+        favoriteExercises.remove(exercise);
+
     }
-    public static boolean setFavoriteExercises(Exercise exercise) {
-        if (!favoriteExercises.contains(exercise)) {
-            favoriteExercises.add(exercise);
-            return true;
-        }
-        else {
-            return false;
-        }
+    public static void setFavoriteExercises(Exercise exercise) {
+        favoriteExercises.add(exercise);
     }
     public static void updateFavoriteExercises() throws IOException, ExecutionException, InterruptedException, ClassNotFoundException {
         HashSet<Exercise> temp = FirebaseManager.readDBfavoriteExercises();
@@ -101,9 +90,6 @@ public class UserData {
 
     public static void setCreatedExercises(Exercise exercise) {
         createdExercises.add(exercise);
-    }
-    public static void friendList() {
-
     }
 
     public static boolean isIsOnline() {

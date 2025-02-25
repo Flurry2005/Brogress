@@ -1,6 +1,5 @@
 package se.aljr.application.loginpage;
 
-import com.google.api.client.json.Json;
 import com.google.api.core.ApiFuture;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.firestore.*;
@@ -16,6 +15,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
 import se.aljr.application.Friends.Friend;
 import se.aljr.application.Friends.FriendsList;
+import se.aljr.application.ResourcePath;
 import se.aljr.application.UserData;
 import se.aljr.application.exercise.Excercise.Exercise;
 import se.aljr.application.chatpanel.ChatPanel;
@@ -27,31 +27,27 @@ import se.aljr.application.programplanner.WorkoutsList;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.*;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
 
+@SuppressWarnings("CallToPrintStackTrace")
 public class FirebaseManager {
-    private static String resourcePath;
     private static Firestore db;
-    private static FirestoreOptions firestoreOptions;
     private static StorageOptions storageOptions;
     private static final ArrayList<Thread> activeThreads = new ArrayList<>();
-    static {
-        try {
-            resourcePath = FirebaseManager.class.getClassLoader().getResource("resource.path")
-                    .getPath().replace("resource.path","");
 
-            FileInputStream serviceAccount = new FileInputStream(resourcePath + "serviceKey.json" );
+
+    static {
+
+        try {
+
+            FileInputStream serviceAccount = new FileInputStream(ResourcePath.getResourcePath() + "serviceKey.json" );
             GoogleCredentials credentials = GoogleCredentials.fromStream(serviceAccount);
             FirebaseOptions options = FirebaseOptions.builder()
                     .setCredentials(credentials)
@@ -60,7 +56,7 @@ public class FirebaseManager {
 
             FirebaseApp.initializeApp(options);
 
-            firestoreOptions = FirestoreOptions.newBuilder()
+            FirestoreOptions firestoreOptions = FirestoreOptions.newBuilder()
                     .setProjectId("brogress-7499c")
                     .setCredentials(credentials)
                     .build();
@@ -76,7 +72,7 @@ public class FirebaseManager {
         }
     }
 
-    public static void readDBlistenToClientChats() throws InterruptedException {
+    public static void readDBlistenToClientChats() {
 
         new Thread(()->{
             // Referens till användarens dokument
@@ -158,7 +154,7 @@ public class FirebaseManager {
     public static ArrayList<HashMap<String, String>> readDBreadMessageHistory(String friendEmail, String yourEmail) {
         try {
             Gson gson = new Gson();
-            ArrayList<HashMap<String, String>> friendsMap = new ArrayList<>();
+            ArrayList<HashMap<String, String>> friendsMap;
 
             ApiFuture<DocumentSnapshot> snapshot = db.collection("chats").document(yourEmail).get();
             DocumentSnapshot document = snapshot.get();
@@ -167,14 +163,15 @@ public class FirebaseManager {
                 FieldPath field = FieldPath.of(friendEmail);
                 Object rawData = document.get(field);
 
-                if (rawData != null && rawData instanceof String && !((String) rawData).isEmpty()) {
-                    String jsonString = (String) rawData;
+                if (rawData instanceof String && !((String) rawData).isEmpty()) {
+                    String jsonString;
+                    jsonString = (String) rawData;
 
                     Type listType = new TypeToken<ArrayList<HashMap<String, String>>>() {}.getType();
                     friendsMap = gson.fromJson(jsonString, listType);
                     return friendsMap;
                 }else{
-                    return new ArrayList<HashMap<String,String>>();
+                    return new ArrayList<>();
                 }
             }else{
                 throw new NullPointerException();
@@ -183,35 +180,34 @@ public class FirebaseManager {
 
         } catch (Exception e) {
             e.printStackTrace();
-            return new ArrayList<HashMap<String,String>>();
+            return new ArrayList<>();
         }
     }
 
-    public static void writeDBsendFriendRequest(String email){
+    public static void writeDBsendFriendRequest(String email) throws ExecutionException, InterruptedException {
         HashMap<String,String> newFriendRequest= readDBgetFriendRequests(email);
         HashMap<String,String> usersFriends = readDBfriends(email,true);
         if(newFriendRequest!=null&&usersFriends!=null){
             if(!newFriendRequest.containsKey(UserData.getEmail())&&!usersFriends.containsKey(UserData.getEmail())&&!email.equals(UserData.getEmail())){
-                newFriendRequest.put(UserData.getEmail(), UserData.getUserName());
-
-                Gson gson = new GsonBuilder().setPrettyPrinting().create();
-                String json = gson.toJson(newFriendRequest);
-
-                Map<String, Object> user = new HashMap<>();
-                user.put("friendrequests", json);
-
-
-
                 // Referens till dokumentet i "users" collection
                 DocumentReference docRef = db.collection("users").document(email);
+                if(docRef.get().get().exists()){
+                    newFriendRequest.put(UserData.getEmail(), UserData.getUserName());
 
-                // Skriv data och vänta på resultat
-                ApiFuture<WriteResult> result = docRef.update(user);
+                    Gson gson = new GsonBuilder().setPrettyPrinting().create();
+                    String json = gson.toJson(newFriendRequest);
 
-                try {
-                    System.out.println("Uppdaterat vid: " + result.get().getUpdateTime());
-                } catch (Exception e) {
-                    e.printStackTrace();
+                    Map<String, Object> user = new HashMap<>();
+                    user.put("friendrequests", json);
+
+                    // Skriv data och vänta på resultat
+                    ApiFuture<WriteResult> result = docRef.update(user);
+
+                    try {
+                        System.out.println("Uppdaterat vid: " + result.get().getUpdateTime());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
@@ -246,6 +242,7 @@ public class FirebaseManager {
                 writeDBfriends(UserData.getEmail());
                 writeDBfriends(email);
                 HomePanel.updateFriends();
+                ChatPanel.updateFriends();
 
 
                 FieldPath fieldClientUser = FieldPath.of(UserData.getEmail());
@@ -285,7 +282,7 @@ public class FirebaseManager {
 
         } catch (Exception e) {
             e.printStackTrace();
-            return new HashMap<String,String>();
+            return new HashMap<>();
         }
 
 
@@ -310,7 +307,7 @@ public class FirebaseManager {
         }
     }
 
-    public static void readDBlistenToFriendsOnlineStatus() throws InterruptedException {
+    public static void readDBlistenToFriendsOnlineStatus() {
 
                 for(Thread thread : activeThreads){
                     thread.interrupt();
@@ -334,7 +331,7 @@ public class FirebaseManager {
                             String newIsOnline = snapshot.getString("isOnline");
 
                             if (newIsOnline != null) {
-                                friend.setOnline(newIsOnline.equals("true")?true:false); // Uppdatera variabeln
+                                friend.setOnline(newIsOnline.equals("true")); // Uppdatera variabeln
                                 friend.updateOnlineStatus();
                                 System.out.println("Updated isOnline "+friend.getFriendEmail()+" :" + newIsOnline);
                             }
@@ -382,6 +379,7 @@ public class FirebaseManager {
                         if (friends != null) {
                             HomePanel.updateFriends();
                             ChatPanel.updateRequestsPanel();
+                            ChatPanel.updateFriends();
                         }
                     } else {
                         System.out.println("Document does not exist.");
@@ -466,7 +464,7 @@ public class FirebaseManager {
 
            if(!readOnly){
                for(Map.Entry<String, String> entry : friendsMap.entrySet()){
-                   HashMap<String, String> finalUserData = friendsMap;
+
                    FriendsList.getFriendArrayList().add(new Friend(true){
                        {
                            setFriendEmail(entry.getKey());
@@ -480,7 +478,7 @@ public class FirebaseManager {
 
         } catch (Exception e) {
             e.printStackTrace();
-            return new HashMap<String, String>();
+            return new HashMap<>();
         }
 
     }
@@ -548,7 +546,7 @@ public class FirebaseManager {
 
         try {
             Gson gson = new Gson();
-            HashMap<String, Object> userData = new HashMap<>();
+            HashMap<String, Object> userData;
 
             ApiFuture<DocumentSnapshot> snapshot = db.collection("users").document(email).get();
 
@@ -739,8 +737,7 @@ public class FirebaseManager {
     }
 
     public static void writeDBFavoriteExercises(HashSet<Exercise> favoriteList) throws IOException {
-        HashSet<Exercise> temp = new HashSet<>();
-        temp.addAll(favoriteList);
+        HashSet<Exercise> temp = new HashSet<>(favoriteList);
         for (Exercise exercise : temp) {
             exercise.removeImageIcon();
         }
@@ -785,7 +782,7 @@ public class FirebaseManager {
         BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("text/plain").build();
 
         /*---------uploads the file to the database---------*/
-        storage.create(blobInfo, inputStream);
+        storage.createFrom(blobInfo, inputStream);
 
         /*---------Specifies the url to the file created---------*/
         String publicUrl = "https://storage.googleapis.com/" + bucketName + "/" + fileName;
@@ -798,7 +795,7 @@ public class FirebaseManager {
         DocumentReference docRef = db.collection("users").document(UserData.getEmail());
 
         /*---------Writes the url to the firestore database---------*/
-        ApiFuture<WriteResult> result = docRef.update(ref);
+        docRef.update(ref);
 
         System.out.println("Text har laddats upp som fil: " + fileName);
         System.out.println("Publik URL: " + "https://storage.googleapis.com/" + bucketName + "/" + fileName);
@@ -810,7 +807,7 @@ public class FirebaseManager {
     public static WorkoutsList readDBworkout(ProgramPanel programPanel){
         try {
             Gson gson = new Gson();
-            HashMap<String, Object> userData = new HashMap<>();
+            HashMap<String, Object> userData;
 
             /*---------Gets a snapshot of the document of the user in the firestore database---------*/
             ApiFuture<DocumentSnapshot> snapshot = db.collection("users").document(UserData.getEmail()).get();
@@ -834,7 +831,8 @@ public class FirebaseManager {
                 String fileName = userData.get("workouts").toString();
 
                 /*---------Sets up the variables needed for collecting the workout data from the cloud storage---------*/
-                URL url = new URL(fileName);
+                URI uri = new URI(fileName);
+                URL url = uri.toURL();
                 String path = url.getPath();
                 String bucketName = "brogress-7499c.firebasestorage.app";
                 String userWorkoutFileName = path.substring(1).split("/")[1];
@@ -865,9 +863,9 @@ public class FirebaseManager {
                                     if ("addSet".equals(comp2.getName())) {
                                         JButton addSet = (JButton) comp2;
                                         int finalExerciseId1 = exerciseId;
-                                        addSet.addActionListener(e -> {
+                                        addSet.addActionListener(_ -> {
                                             ProgramPanel.addSet(finalExerciseId1, workout.getIdToExercise(finalExerciseId1), mainExercisePanel, ProgramPanel.setPanelHeight, workout);
-                                            workout.setPreferredSize(new Dimension(workout.getWidth(), (int) workout.getWorkoutData().getTotalWorkoutHeight()));
+                                            workout.setPreferredSize(new Dimension(workout.getWidth(), workout.getWorkoutData().getTotalWorkoutHeight()));
                                             workout.revalidate();
                                             workout.repaint();
 
@@ -891,29 +889,17 @@ public class FirebaseManager {
                                                                 System.out.println("Found moveSetUp, set: "+setCounterMoveUp);
                                                                 JButton moveSetUp = (JButton) compMoveSetUp;
                                                                 int finalExerciseId2 = exerciseId;
-                                                                int finalSetCounter1 = setCounterMoveUp;
-                                                                WorkoutSet workoutSet = workout.getWorkoutData().getExerciseSets().get(finalExerciseId2).get(finalSetCounter1);
-                                                                moveSetUp.addActionListener(new ActionListener() {
-                                                                    @Override
-                                                                    public void actionPerformed(ActionEvent e) {
-
-
-                                                                        ProgramPanel.moveUp(workout.getExercisePanels().get(finalExerciseId2), finalExerciseId2, workoutSet, workout);
-                                                                    }
-                                                                });
+                                                                WorkoutSet workoutSet = workout.getWorkoutData().getExerciseSets().get(finalExerciseId2).get(setCounterMoveUp);
+                                                                moveSetUp.addActionListener(_ ->
+                                                                        ProgramPanel.moveUp(workout.getExercisePanels().get(finalExerciseId2), finalExerciseId2, workoutSet, workout));
                                                             }
                                                             if("moveSetDown".equals(compMoveSetUp.getName())){
                                                                 System.out.println("Found moveSetDown, set: "+setCounterMoveUp);
                                                                 JButton moveSetDown = (JButton) compMoveSetUp;
                                                                 int finalExerciseId2 = exerciseId;
-                                                                int finalSetCounter1 = setCounterMoveUp;
-                                                                WorkoutSet workoutSet = workout.getWorkoutData().getExerciseSets().get(finalExerciseId2).get(finalSetCounter1);
-                                                                moveSetDown.addActionListener(new ActionListener() {
-                                                                    @Override
-                                                                    public void actionPerformed(ActionEvent e) {
-                                                                        ProgramPanel.moveDown(workout.getExercisePanels().get(finalExerciseId2), finalExerciseId2, workoutSet, workout);
-                                                                    }
-                                                                });
+                                                                WorkoutSet workoutSet = workout.getWorkoutData().getExerciseSets().get(finalExerciseId2).get(setCounterMoveUp);
+                                                                moveSetDown.addActionListener(_ ->
+                                                                        ProgramPanel.moveDown(workout.getExercisePanels().get(finalExerciseId2), finalExerciseId2, workoutSet, workout));
                                                             }
                                                         }
                                                     }
@@ -935,10 +921,8 @@ public class FirebaseManager {
                                                             JButton deleteSet = (JButton) compDeleteSet;
                                                             int finalExerciseId2 = exerciseId;
                                                             int finalSetCounter = setCounter;
-                                                            deleteSet.addActionListener(e -> {
-                                                                ProgramPanel.deleteSet(workout.getExercisePanels().get(finalExerciseId2), finalExerciseId2, workout.getWorkoutData().getExerciseSets().get(finalExerciseId2).get(finalSetCounter), workout, ProgramPanel.setPanelHeight, setPanel, workout);
-
-                                                            });
+                                                            deleteSet.addActionListener(_ ->
+                                                                    ProgramPanel.deleteSet(workout.getExercisePanels().get(finalExerciseId2), finalExerciseId2, workout.getWorkoutData().getExerciseSets().get(finalExerciseId2).get(finalSetCounter), workout, ProgramPanel.setPanelHeight, setPanel, workout));
                                                         }
                                                     }
                                                     setCounter++;
@@ -960,10 +944,9 @@ public class FirebaseManager {
 
                                                     JButton removeExercise = (JButton) comp3;
 
-                                                    removeExercise.addActionListener(e -> {
+                                                    removeExercise.addActionListener(_ -> {
 
                                                         workout.getWorkoutData().setTotalWorkoutHeight(workout.getWorkoutData().getTotalWorkoutHeight()-(4 * ProgramPanel.setPanelHeight));
-                                                        int i = 1;// For settings the numbers of the sets correctly
                                                         for (Component comp : mainExercisePanel.getComponents()) {
 
                                                             if ("setPanel".equals(comp.getName())) {
@@ -1012,6 +995,7 @@ public class FirebaseManager {
         return new WorkoutsList();
     }
 
+    @SuppressWarnings("unchecked")
     public static HashSet<Exercise> readDBfavoriteExercises () throws ExecutionException, InterruptedException, IOException, ClassNotFoundException {
         DocumentReference documentReference = db.collection("users").document(UserData.getEmail());
 
@@ -1019,17 +1003,20 @@ public class FirebaseManager {
 
         String base64String = documentSnapshot.getString("Favorite_Exercises");
 
-        if(!base64String.isEmpty()&&!base64String.equals("")){
-            byte[] decodedBytes = Base64.getDecoder().decode(base64String);
-            ByteArrayInputStream bis = new ByteArrayInputStream(decodedBytes);
-            ObjectInputStream inStream = new ObjectInputStream(bis);
-            inStream.close();
+        if(base64String!=null){
+            if(!base64String.isEmpty()){
+                byte[] decodedBytes = Base64.getDecoder().decode(base64String);
+                ByteArrayInputStream bis = new ByteArrayInputStream(decodedBytes);
+                ObjectInputStream inStream = new ObjectInputStream(bis);
+                inStream.close();
 
-            return (HashSet<Exercise>) inStream.readObject();
+                return (HashSet<Exercise>) inStream.readObject();
+            }else{
+                return new HashSet<>();
+            }
         }else{
-            return new HashSet<Exercise>();
+            return new HashSet<>();
         }
-
 
     }
 
@@ -1040,25 +1027,26 @@ public class FirebaseManager {
         DocumentSnapshot documentSnapshot = documentReference.get().get();
         String base64String = documentSnapshot.getString("Created_Exercises");
 
+        if(base64String!=null){
+            if(!base64String.isEmpty()){
+                byte[] decodedBytes = Base64.getDecoder().decode(base64String);
+                ByteArrayInputStream bis = new ByteArrayInputStream(decodedBytes);
+                ObjectInputStream inStream = new ObjectInputStream(bis);
+                inStream.close();
 
-        if(!base64String.isEmpty()&&!base64String.equals("")){
-            byte[] decodedBytes = Base64.getDecoder().decode(base64String);
-            ByteArrayInputStream bis = new ByteArrayInputStream(decodedBytes);
-            ObjectInputStream inStream = new ObjectInputStream(bis);
-            inStream.close();
-
-            return (ArrayList<Exercise>) inStream.readObject();
+                return (ArrayList<Exercise>) inStream.readObject();
+            }else{
+                return new ArrayList<>();
+            }
         }else{
-            return new ArrayList<Exercise>();
+            return new ArrayList<>();
         }
-
-
     }
-
+    @SuppressWarnings("unchecked")
     public static ImageIcon readDBprofilePicture(String email) {
         try {
             Gson gson = new Gson();
-            HashMap<String, Object> userData = new HashMap<>();
+            HashMap<String, Object> userData;
 
             ApiFuture<DocumentSnapshot> snapshot = db.collection("users").document(email).get();
 
@@ -1115,7 +1103,8 @@ public class FirebaseManager {
                     email, password);
 
             // Create connection
-            URL url = new URL(endpoint);
+            URI uri = new URI(endpoint);
+            URL url = uri.toURL();
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
             connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
@@ -1123,7 +1112,7 @@ public class FirebaseManager {
 
             // Send JSON payload
             OutputStream os = connection.getOutputStream();
-            os.write(payload.getBytes("UTF-8"));
+            os.write(payload.getBytes(StandardCharsets.UTF_8));
             os.close();
 
             // Read response
@@ -1136,7 +1125,7 @@ public class FirebaseManager {
                     response.append(scanner.nextLine());
                 }
                 scanner.close();
-                System.out.println("Authentication successful: " + response.toString());
+                System.out.println("Authentication successful: " + response);
                 return true;
             } else {
                 // Authentication failed
@@ -1146,7 +1135,7 @@ public class FirebaseManager {
                     errorResponse.append(scanner.nextLine());
                 }
                 scanner.close();
-                System.out.println("Authentication failed: " + errorResponse.toString());
+                System.out.println("Authentication failed: " + errorResponse);
                 return false;
             }
         } catch (Exception e) {
