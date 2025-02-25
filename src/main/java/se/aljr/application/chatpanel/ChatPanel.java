@@ -54,6 +54,8 @@ public class ChatPanel extends JPanel {
 
     public static JButton clickToSendButton = new JButton("✉");
 
+    private boolean canSendMessage = true;
+
 
     public ChatPanel(int width, int height) {
         resourcePath = getClass().getClassLoader().getResource("resource.path").getPath().replace("resource.path", "");
@@ -146,6 +148,15 @@ public class ChatPanel extends JPanel {
         messengerTextBox.setBorder(new LineBorder(Color.WHITE));
         messengerTextBox.setFocusable(true);
         messengerTextBox.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+        messengerTextBox.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if(e.getKeyCode() == KeyEvent.VK_ENTER){
+                    //Makes sure a new line isn't created when pressing enter to send a message.
+                    e.consume();
+                }
+            }
+        });
         //messengerTextBox.setRows(1);
         messengerTextBox.addKeyListener(new KeyAdapter() {
             @Override
@@ -238,7 +249,6 @@ public class ChatPanel extends JPanel {
         belowRightPanel.setMaximumSize(belowRightPanel.getPreferredSize());
 
 
-
         clickToSendButton.setFont(new Font("Ariel", Font.BOLD, (int) (getPreferredSize().width / 50f)));
         clickToSendButton.setMargin(new Insets(0, 0, 0, 0));
 //        clickToSendButton.setBackground(Color.RED);
@@ -253,31 +263,27 @@ public class ChatPanel extends JPanel {
         clickToSendButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-               if(selectedFriend!=null){
+               if(selectedFriend!=null&&canSendMessage&&!messengerTextBox.getText().isEmpty()){
+                   messengerTextBox.setEditable(false);
+                   canSendMessage = false;
                    FirebaseManager.writeDBwriteMessageHistory(selectedFriend.getFriendEmail(),UserData.getEmail(),messengerTextBox.getText());
-                   messengerTextBox.setText(null);
+                   messengerTextBox.setText("");
+                   SwingUtilities.invokeLater(()->{
+                       messengerTextBox.setCaretPosition(0);
+                       messengerTextBox.requestFocusInWindow();
+                       messengerTextBox.setEditable(true);
+                   });
+                   new Timer(500, _ ->{
+                        canSendMessage=true;
+                   }){
+                       {
+                           setRepeats(false);
+                       }
+                   }.start();
+
                }
             }
         });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
                 /*--------------------Middle panel--------------------*/
@@ -287,13 +293,6 @@ public class ChatPanel extends JPanel {
         mainMiddlePanel.setPreferredSize(new Dimension(getPreferredSize().width / 5, getPreferredSize().height));
         mainMiddlePanel.setMinimumSize(mainMiddlePanel.getPreferredSize());
         mainMiddlePanel.setMaximumSize(mainMiddlePanel.getPreferredSize());
-
-
-
-
-
-
-
 
 
         /*--------------------(Middle panel) Different scrolls each button--------------------*/
