@@ -3,7 +3,6 @@ package se.aljr.application;
 import se.aljr.application.chatpanel.ChatPanel;
 import se.aljr.application.exercise.ExercisePanel;
 import se.aljr.application.homepage.*;
-import se.aljr.application.loginpage.FirebaseManager;
 import se.aljr.application.programplanner.ProgramPanel;
 import se.aljr.application.settings.SettingsPanel;
 
@@ -14,15 +13,10 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
 public class ApplicationWindow extends JFrame  {
-    private static boolean menu = true;
     final String applicationIconPath = "src/main/resources/agile_small_icon.png";
     private static int pageSelector;
 
     ImageIcon applicationIcon = new ImageIcon(applicationIconPath);
-
-    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    int screenWidth = screenSize.width;
-    int screenHeight = screenSize.height;
 
     public static ApplicationWindow instance;
 
@@ -50,7 +44,7 @@ public class ApplicationWindow extends JFrame  {
         LeftPanel left_panel = new LeftPanel(); //Skapar den vänstra sektionen för fönstret
         left_panel.setPreferredSize(new Dimension((int)((getWidth()/6.4)),getHeight()-getHeight()/18));
         left_panel.setMinimumSize(new Dimension((int)((getWidth()/6.4)), getHeight()/18));
-        left_panel.setLayout(new FlowLayout(FlowLayout.LEFT, (int)((getWidth()/150)), (int)((getWidth()/150))));
+        left_panel.setLayout(new FlowLayout(FlowLayout.LEFT, (getWidth()/150), (getWidth()/150)));
         left_panel.setOpaque(false);
 
 
@@ -60,12 +54,12 @@ public class ApplicationWindow extends JFrame  {
         //right_panel.setLayout(new FlowLayout(FlowLayout.LEFT,(getWidth()/150),getWidth()/150));
         right_panel.setBorder(new EmptyBorder(getWidth()/150,0,getWidth()/150,getWidth()/150));
 
-        MenuPanel menuPanel = new MenuPanel((int)(getWidth()/6.4-(2*getWidth()/150)),(int)(getHeight()-getHeight()/18-(2*getWidth()/150))); //Skapar Meny panelen
-        menuPanel.setMinimumSize(new Dimension((int)(getWidth()/6.4-(2*getWidth()/150)), (int)(getHeight()-getHeight()/18-(2*getWidth()/150))));
-        menuPanel.setPreferredSize(new Dimension((int)(getWidth()/6.4-(2*getWidth()/150)), (int)(getHeight()-getHeight()/18-(2*getWidth()/150))));
+        MenuPanel menuPanel = new MenuPanel((int)(getWidth()/6.4-(2*getWidth()/150)), getHeight()-getHeight()/18-(2*getWidth()/150)); //Skapar Meny panelen
+        menuPanel.setMinimumSize(new Dimension((int)(getWidth()/6.4-(2*getWidth()/150)), getHeight()-getHeight()/18-(2*getWidth()/150)));
+        menuPanel.setPreferredSize(new Dimension((int)(getWidth()/6.4-(2*getWidth()/150)), getHeight()-getHeight()/18-(2*getWidth()/150)));
 
         TopBar top_bar = new TopBar(this); //Skapar toppen baren
-        top_bar.setPreferredSize(new Dimension(getWidth(), (int)(getHeight()/18)));
+        top_bar.setPreferredSize(new Dimension(getWidth(), getHeight()/18));
 
         HomePanel content_panel = new HomePanel((int)(getWidth()-(getWidth()/6.4)-2*getWidth()/150), getHeight()-getHeight()/18-2*getWidth()/150); //Skapar innehålls panelen
         content_panel.setMinimumSize(new Dimension((int)(getWidth()-(getWidth()/6.4)-2*getWidth()/150), getHeight()-top_bar.getHeight()-2*getWidth()/150));
@@ -94,7 +88,7 @@ public class ApplicationWindow extends JFrame  {
                 SwingUtilities.invokeLater(()->{
                     programPanel.setPreferredSize(new Dimension((int)(getWidth()-(getWidth()/6.4)-2*getWidth()/150), getHeight()-top_bar.getHeight()-2*getWidth()/150));
 
-                    left_panel.setLayout(new FlowLayout(FlowLayout.LEFT, (int)((getWidth()/150)), (int)((getWidth()/150))));
+                    left_panel.setLayout(new FlowLayout(FlowLayout.LEFT, (getWidth()/150), (getWidth()/150)));
                     left_panel.setPreferredSize(new Dimension((int)((getWidth()/6.4)),getHeight()-getHeight()/18));
                     left_panel.setMinimumSize(new Dimension((int)((getWidth()/6.4)), getHeight()/18));
 
@@ -102,8 +96,8 @@ public class ApplicationWindow extends JFrame  {
                     right_panel.setPreferredSize(new Dimension(getWidth()-(int)((getWidth()/6.4)), getHeight()));
                     right_panel.setBorder(new EmptyBorder(getWidth()/150,0,getWidth()/150,getWidth()/150));
 
-                    menuPanel.setMinimumSize(new Dimension((int)(getWidth()/6.4-(2*getWidth()/150)), (int)(getHeight()-top_bar.getHeight()-(2*getWidth()/150))));
-                    menuPanel.setPreferredSize(new Dimension((int)(getWidth()/6.4-(2*getWidth()/150)), (int)(getHeight()-top_bar.getHeight()-(2*getWidth()/150))));
+                    menuPanel.setMinimumSize(new Dimension((int)(getWidth()/6.4-(2*getWidth()/150)), getHeight()-top_bar.getHeight()-(2*getWidth()/150)));
+                    menuPanel.setPreferredSize(new Dimension((int)(getWidth()/6.4-(2*getWidth()/150)), getHeight()-top_bar.getHeight()-(2*getWidth()/150)));
                     content_panel.setPreferredSize(new Dimension((int)(getWidth()-(getWidth()/6.4)), getHeight()-top_bar.getHeight()));
                     content_panel.reScaleBackground();
                     settingsPanel.setPreferredSize(new Dimension((int)(getWidth()-(getWidth()/6.4)), getHeight()-top_bar.getHeight()));
@@ -124,7 +118,7 @@ public class ApplicationWindow extends JFrame  {
         this.add(top_bar, BorderLayout.NORTH);
         this.setResizable(false);
         this.setVisible(true);
-        new Timer(100, e -> {
+        new Timer(100, _ -> {
             switch(pageSelector){
 
                 /**Home Panel*/
@@ -201,21 +195,11 @@ public class ApplicationWindow extends JFrame  {
     public static void switchWindow(String window){
 
         switch(window){
-            case "home"->{
-                pageSelector = 1;
-            }
-            case "exercises"->{
-                pageSelector = 2;
-            }
-            case "program"->{
-                pageSelector = 3;
-            }
-            case "settings"->{
-                pageSelector = 4;
-            }
-            case "chat"->{
-                pageSelector = 5;
-            }
+            case "home"-> pageSelector = 1;
+            case "exercises"-> pageSelector = 2;
+            case "program"-> pageSelector = 3;
+            case "settings"-> pageSelector = 4;
+            case "chat"-> pageSelector = 5;
         }
     }
     private void setApplicationLogo(){

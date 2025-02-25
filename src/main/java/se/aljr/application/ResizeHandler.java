@@ -7,7 +7,6 @@ import java.awt.event.MouseEvent;
 
 public class ResizeHandler extends MouseAdapter {
     private final JFrame frame;
-    private final int BORDER_DRAG_THICKNESS = 8; // Bredd på "dragområde" vid kanten
     private final double aspectRatio;           // Fönstrets aspect ratio
     private boolean resizing = false;
     private Point prevPoint = null;
@@ -105,6 +104,8 @@ public class ResizeHandler extends MouseAdapter {
         int width = frame.getWidth();
         int height = frame.getHeight();
 
+        // Bredd på "dragområde" vid kanten
+        int BORDER_DRAG_THICKNESS = 8;
         boolean nearLeft = x < BORDER_DRAG_THICKNESS;
         boolean nearRight = x > width - BORDER_DRAG_THICKNESS;
         boolean nearTop = y < BORDER_DRAG_THICKNESS;

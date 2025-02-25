@@ -57,12 +57,8 @@ public class AppThemeColors {
 
     public static void updateThemeColors(){
         switch (SettingsPanel.currentTheme){
-            case "light"->{
-                lightMode();
-            }
-            case "dark"->{
-                darkMode();
-            }
+            case "light"-> lightMode();
+            case "dark"-> darkMode();
         }
     }
 

@@ -21,6 +21,9 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ChatPanel extends JPanel {
 
@@ -32,7 +35,7 @@ public class ChatPanel extends JPanel {
     private boolean addPanelIsActive;
     private static JPanel requestsPanel = new JPanel();
     private static JScrollPane friendsScrollPane = new JScrollPane();
-    private static ChatPanel instance;
+    private static volatile ChatPanel instance;
 
     private Image scaledProfilePicture;
     private static ImageIcon scaledProfilePictureIcon;
@@ -45,10 +48,13 @@ public class ChatPanel extends JPanel {
     private static final JPanel mainRightPanel = new JPanel();
     private static JPanel messageStorage = new JPanel();
     private static final JScrollPane messagesScrollPane = new JScrollPane();
+    public static final JPanel friendsPanel = new JPanel();
 
     public static boolean canSelectChat = false;
 
     public static JButton clickToSendButton = new JButton("✉");
+
+    private boolean canSendMessage = true;
 
 
     public ChatPanel(int width, int height) {
@@ -142,6 +148,15 @@ public class ChatPanel extends JPanel {
         messengerTextBox.setBorder(new LineBorder(Color.WHITE));
         messengerTextBox.setFocusable(true);
         messengerTextBox.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+        messengerTextBox.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if(e.getKeyCode() == KeyEvent.VK_ENTER){
+                    //Makes sure a new line isn't created when pressing enter to send a message.
+                    e.consume();
+                }
+            }
+        });
         //messengerTextBox.setRows(1);
         messengerTextBox.addKeyListener(new KeyAdapter() {
             @Override
@@ -234,7 +249,6 @@ public class ChatPanel extends JPanel {
         belowRightPanel.setMaximumSize(belowRightPanel.getPreferredSize());
 
 
-
         clickToSendButton.setFont(new Font("Ariel", Font.BOLD, (int) (getPreferredSize().width / 50f)));
         clickToSendButton.setMargin(new Insets(0, 0, 0, 0));
 //        clickToSendButton.setBackground(Color.RED);
@@ -249,31 +263,27 @@ public class ChatPanel extends JPanel {
         clickToSendButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-               if(selectedFriend!=null){
+               if(selectedFriend!=null&&canSendMessage&&!messengerTextBox.getText().isEmpty()){
+                   messengerTextBox.setEditable(false);
+                   canSendMessage = false;
                    FirebaseManager.writeDBwriteMessageHistory(selectedFriend.getFriendEmail(),UserData.getEmail(),messengerTextBox.getText());
-                   messengerTextBox.setText(null);
+                   messengerTextBox.setText("");
+                   SwingUtilities.invokeLater(()->{
+                       messengerTextBox.setCaretPosition(0);
+                       messengerTextBox.requestFocusInWindow();
+                       messengerTextBox.setEditable(true);
+                   });
+                   new Timer(500, _ ->{
+                        canSendMessage=true;
+                   }){
+                       {
+                           setRepeats(false);
+                       }
+                   }.start();
+
                }
             }
         });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
                 /*--------------------Middle panel--------------------*/
@@ -283,13 +293,6 @@ public class ChatPanel extends JPanel {
         mainMiddlePanel.setPreferredSize(new Dimension(getPreferredSize().width / 5, getPreferredSize().height));
         mainMiddlePanel.setMinimumSize(mainMiddlePanel.getPreferredSize());
         mainMiddlePanel.setMaximumSize(mainMiddlePanel.getPreferredSize());
-
-
-
-
-
-
-
 
 
         /*--------------------(Middle panel) Different scrolls each button--------------------*/
@@ -305,7 +308,7 @@ public class ChatPanel extends JPanel {
         friendsScrollPane.setBorder(new LineBorder(Color.BLACK));
 
 
-        JPanel friendsPanel = new JPanel();
+
         friendsPanel.setLayout(new BoxLayout(friendsPanel, BoxLayout.Y_AXIS));
         friendsPanel.setOpaque(false);
 
@@ -315,75 +318,13 @@ public class ChatPanel extends JPanel {
 
         }
 
-        for (Friend friend : FriendsList.getFriendArrayList()) {
-            ImageIcon userIcon = FirebaseManager.readDBprofilePicture(friend.getFriendEmail());
-            Image scaledFriendProfilePicture = userIcon.getImage().getScaledInstance(getPreferredSize().width / 25, getPreferredSize().width / 25, Image.SCALE_SMOOTH);
-            ImageIcon scaledFriendProfilePictureIcon = new ImageIcon(scaledFriendProfilePicture);
 
-            friend.getImageAvatarSocial().setPreferredSize(new Dimension(getPreferredSize().width / 25, getPreferredSize().width / 25));
-            friend.getImageAvatarSocial().setMinimumSize(friend.getImageAvatarSocial().getPreferredSize());
-            friend.getImageAvatarSocial().setMaximumSize(friend.getImageAvatarSocial().getPreferredSize());
-            friend.getImageAvatarSocial().setImage(scaledFriendProfilePictureIcon);
-            friend.getImageAvatarSocial().setAlignmentY(Component.CENTER_ALIGNMENT);
-            friend.getImageAvatarSocial().setBorderSize(instance.getPreferredSize().height/221);
-            friend.getImageAvatarSocial().setBorderSpace((int) (instance.getPreferredSize().height/331.5));
-
-            friend.setMessageStorage(new JPanel(){
-                {
-                    setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-                    setOpaque(true);
-                    setBackground(AppThemeColors.textFieldColor);
-                    setPreferredSize(null);
-                }
-            });
-
-
-            JPanel friendPanel = new JPanel();
-            friendPanel.setOpaque(false);
-            friendPanel.setPreferredSize(new Dimension(friendsScrollPane.getPreferredSize().width, (int) (friend.getImageAvatarSocial().getPreferredSize().height * 1.1)));
-            friendPanel.setLayout(new BoxLayout(friendPanel, BoxLayout.X_AXIS));
-            friendPanel.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    super.mouseClicked(e);
-                    if(canSelectChat){
-                        selectedFriend = friend;
-                        updateChat();
-                        System.out.println(friend.getFriendName());
-                    }
-                }
-            });
-
-            JLabel friendNameLabel = new JLabel(FriendsList.getFriendArrayList().get(FriendsList.getFriendArrayList().indexOf(friend)).getFriendName());
-            friendNameLabel.setFont(CustomFont.getFont().deriveFont(getPreferredSize().width / 65f));
-            friendNameLabel.setMaximumSize(new Dimension(friendsScrollPane.getPreferredSize().width - friend.getImageAvatarSocial().getPreferredSize().width, friendPanel.getPreferredSize().height));
-            friendNameLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-            friendNameLabel.setForeground(AppThemeColors.foregroundColor);
-
-            JPanel friendAvatarPanel = new JPanel();
-            friendAvatarPanel.setOpaque(false);
-            friendAvatarPanel.setLayout(new BoxLayout(friendAvatarPanel, BoxLayout.X_AXIS));
-            friendAvatarPanel.setPreferredSize(new Dimension((int) (friend.getImageAvatarSocial().getPreferredSize().width * 1.3), friend.getImageAvatarSocial().getPreferredSize().height));
-            friendAvatarPanel.setMaximumSize(friendAvatarPanel.getPreferredSize());
-            friendAvatarPanel.setAlignmentY(Component.CENTER_ALIGNMENT);
-
-            friendAvatarPanel.add(Box.createHorizontalGlue());
-            friendAvatarPanel.add(FriendsList.getFriendArrayList().get(FriendsList.getFriendArrayList().indexOf(friend)).getImageAvatarSocial());
-            friendAvatarPanel.add(Box.createHorizontalGlue());
-
-            friendPanel.add(friendAvatarPanel);
-            friendPanel.add(friendNameLabel);
-            friendPanel.add(Box.createHorizontalGlue());
-
-            friendsPanel.add(friendPanel);
-
-
-        }
 
 
         requestsPanel.setLayout(new BoxLayout(requestsPanel, BoxLayout.Y_AXIS));
         requestsPanel.setOpaque(false);
 
+        updateFriends();
         updateRequestsPanel();
 
 
@@ -436,8 +377,31 @@ public class ChatPanel extends JPanel {
         addbutton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                FirebaseManager.writeDBsendFriendRequest(friendRequestMailText.getText());
-                friendRequestMailText.setText("");
+                String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+                Pattern pattern = Pattern.compile(emailRegex);
+                Matcher matcher = pattern.matcher(friendRequestMailText.getText());
+                if(matcher.matches()){
+                    try {
+                        FirebaseManager.writeDBsendFriendRequest(friendRequestMailText.getText());
+                    } catch (ExecutionException | InterruptedException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                    friendRequestMailText.setText("");
+                }else{
+                    friendRequestMailText.setText("Invalid email adress");
+                    new Timer(1000,_->{
+                        friendRequestMailText.setText("");
+
+                    }){
+                        {
+                            setRepeats(false);
+                        }
+                    }.start();
+
+                }
+
+
+
             }
         });
 
@@ -663,6 +627,75 @@ public class ChatPanel extends JPanel {
         this.repaint();
     }
 
+    public static void updateFriends(){
+        friendsPanel.removeAll();
+        if(instance!=null){
+            for (Friend friend : FriendsList.getFriendArrayList()) {
+                ImageIcon userIcon = FirebaseManager.readDBprofilePicture(friend.getFriendEmail());
+                Image scaledFriendProfilePicture = userIcon.getImage().getScaledInstance(instance.getPreferredSize().width / 25, instance.getPreferredSize().width / 25, Image.SCALE_SMOOTH);
+                ImageIcon scaledFriendProfilePictureIcon = new ImageIcon(scaledFriendProfilePicture);
+
+                friend.getImageAvatarSocial().setPreferredSize(new Dimension(instance.getPreferredSize().width / 25, instance.getPreferredSize().width / 25));
+                friend.getImageAvatarSocial().setMinimumSize(friend.getImageAvatarSocial().getPreferredSize());
+                friend.getImageAvatarSocial().setMaximumSize(friend.getImageAvatarSocial().getPreferredSize());
+                friend.getImageAvatarSocial().setImage(scaledFriendProfilePictureIcon);
+                friend.getImageAvatarSocial().setAlignmentY(Component.CENTER_ALIGNMENT);
+                friend.getImageAvatarSocial().setBorderSize(instance.getPreferredSize().height/221);
+                friend.getImageAvatarSocial().setBorderSpace((int) (instance.getPreferredSize().height/331.5));
+
+                friend.setMessageStorage(new JPanel(){
+                    {
+                        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+                        setOpaque(true);
+                        setBackground(AppThemeColors.textFieldColor);
+                        setPreferredSize(null);
+                    }
+                });
+
+
+                JPanel friendPanel = new JPanel();
+                friendPanel.setOpaque(false);
+                friendPanel.setPreferredSize(new Dimension(friendsScrollPane.getPreferredSize().width, (int) (friend.getImageAvatarSocial().getPreferredSize().height * 1.1)));
+                friendPanel.setLayout(new BoxLayout(friendPanel, BoxLayout.X_AXIS));
+                friendPanel.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        super.mouseClicked(e);
+                        if(canSelectChat){
+                            selectedFriend = friend;
+                            updateChat();
+                            System.out.println(friend.getFriendName());
+                        }
+                    }
+                });
+
+                JLabel friendNameLabel = new JLabel(FriendsList.getFriendArrayList().get(FriendsList.getFriendArrayList().indexOf(friend)).getFriendName());
+                friendNameLabel.setFont(CustomFont.getFont().deriveFont(instance.getPreferredSize().width / 65f));
+                friendNameLabel.setMaximumSize(new Dimension(friendsScrollPane.getPreferredSize().width - friend.getImageAvatarSocial().getPreferredSize().width, friendPanel.getPreferredSize().height));
+                friendNameLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+                friendNameLabel.setForeground(AppThemeColors.foregroundColor);
+
+                JPanel friendAvatarPanel = new JPanel();
+                friendAvatarPanel.setOpaque(false);
+                friendAvatarPanel.setLayout(new BoxLayout(friendAvatarPanel, BoxLayout.X_AXIS));
+                friendAvatarPanel.setPreferredSize(new Dimension((int) (friend.getImageAvatarSocial().getPreferredSize().width * 1.3), friend.getImageAvatarSocial().getPreferredSize().height));
+                friendAvatarPanel.setMaximumSize(friendAvatarPanel.getPreferredSize());
+                friendAvatarPanel.setAlignmentY(Component.CENTER_ALIGNMENT);
+
+                friendAvatarPanel.add(Box.createHorizontalGlue());
+                friendAvatarPanel.add(FriendsList.getFriendArrayList().get(FriendsList.getFriendArrayList().indexOf(friend)).getImageAvatarSocial());
+                friendAvatarPanel.add(Box.createHorizontalGlue());
+
+                friendPanel.add(friendAvatarPanel);
+                friendPanel.add(friendNameLabel);
+                friendPanel.add(Box.createHorizontalGlue());
+
+                friendsPanel.add(friendPanel);
+
+
+            }
+        }
+    }
 
     public static void updateRequestsPanel() {
         requestsPanel.removeAll();
