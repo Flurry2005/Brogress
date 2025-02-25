@@ -7,10 +7,7 @@ import se.aljr.application.settings.SettingsPanel;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.io.File;
 
 
@@ -25,7 +22,7 @@ public class MenuPanel extends JPanel{
     ImageIcon buttonIconExercise;
     ImageIcon buttonIconSettings;
     private ImageIcon scaledButtonHomeIcon;
-    private ImageIcon scaledButtonExerciseIcon;
+    private static ImageIcon scaledButtonExerciseIcon;
     private ImageIcon scaledButtonSettingsIcon;
     private ImageIcon scaledLogoIcon;
     public boolean lightMode = false;
@@ -35,7 +32,7 @@ public class MenuPanel extends JPanel{
     Font font;
 
     final JButton homeButton = new JButton("Home",scaledButtonHomeIcon);
-    final JButton exercisesButton = new JButton("Exercises",scaledButtonExerciseIcon);
+    public static final JButton exercisesButton = new JButton("Exercises",scaledButtonExerciseIcon);
     final JButton programButton = new JButton("Program");
     JButton settingsButton = new JButton("Settings",scaledButtonSettingsIcon);
 
@@ -221,6 +218,9 @@ public class MenuPanel extends JPanel{
         exercisesButton.setBorderPainted(false);
         exercisesButton.setContentAreaFilled(true);
         exercisesButton.setBackground(new Color(40,40,40));
+        exercisesButton.addActionListener(e -> {
+
+        });
 
         exercisesButton.addMouseListener(new MouseAdapter() {
             private boolean isHovered = false;
