@@ -1,5 +1,6 @@
 package se.aljr.application.homepage;
 
+import se.aljr.application.ResourcePath;
 import se.aljr.application.settings.SettingsPanel;
 
 import javax.swing.*;
@@ -14,12 +15,11 @@ public class TopBar extends JPanel {
     ImageIcon lightTopBarBackground;
     ImageIcon exitButtonIcon;
     private Point initialClick;
-    private JFrame parent;
-    private String resourcePath;
+    private final JFrame parent;
     Image scaledexitButtonIcon;
     ImageIcon scaledExitButtonIcon;
 
-    JButton exitButton = new JButton("",scaledExitButtonIcon);
+    JButton exitButton = new JButton("");
     JButton minimizeButton = new JButton("—");
     JButton fullscreenButton = new JButton("⬜");
 
@@ -30,15 +30,15 @@ public class TopBar extends JPanel {
     public static TopBar instance;
 
     public TopBar(final JFrame parent){
-        resourcePath = getClass().getClassLoader().getResource("resource.path").getPath().replace("resource.path","");
-        topBarBackground = new ImageIcon(resourcePath+"top_bar.png");
-        lightTopBarBackground = new ImageIcon(resourcePath+"top_bar_light.png");
-        exitButtonIcon = new ImageIcon(resourcePath+"exit_button_icon.png");
-
         instance = this;
 
+        topBarBackground = new ImageIcon(ResourcePath.getResourcePath() +"top_bar.png");
+        lightTopBarBackground = new ImageIcon(ResourcePath.getResourcePath()+"top_bar_light.png");
+
+        exitButtonIcon = new ImageIcon(ResourcePath.getResourcePath()+"exit_button_icon.png");
         scaledexitButtonIcon = exitButtonIcon.getImage().getScaledInstance(16, 16, Image.SCALE_SMOOTH);
         scaledExitButtonIcon = new ImageIcon(scaledexitButtonIcon);
+        exitButton.setIcon(scaledExitButtonIcon);
 
         this.parent = parent;
         addMouseListener(new MouseAdapter() {
@@ -84,7 +84,7 @@ public class TopBar extends JPanel {
         exitButton.setBorderPainted(false);
         exitButton.setOpaque(true);
         exitButton.setPreferredSize(new Dimension(50, 30));
-        exitButton.addActionListener(e -> parent.setExtendedState(JFrame.ICONIFIED));
+        exitButton.addActionListener(_ -> parent.setExtendedState(JFrame.ICONIFIED));
         exitButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -96,7 +96,7 @@ public class TopBar extends JPanel {
                 exitButton.setBackground(bg);
             }
         });
-        exitButton.addActionListener(e -> System.exit(0));
+        exitButton.addActionListener(_ -> System.exit(0));
 
 
         // Mini button
@@ -108,7 +108,7 @@ public class TopBar extends JPanel {
         minimizeButton.setBorderPainted(false);
         minimizeButton.setOpaque(true);
         minimizeButton.setPreferredSize(new Dimension(50, 30));
-        minimizeButton.addActionListener(e -> parent.setExtendedState(JFrame.ICONIFIED));
+        minimizeButton.addActionListener(_ -> parent.setExtendedState(JFrame.ICONIFIED));
         minimizeButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -142,7 +142,7 @@ public class TopBar extends JPanel {
                 fullscreenButton.setBackground(bg);
             }
         });
-        fullscreenButton.addActionListener(e -> toggleFullscreen());
+        fullscreenButton.addActionListener(_ -> toggleFullscreen());
 
 
         buttonPanel.add(minimizeButton);

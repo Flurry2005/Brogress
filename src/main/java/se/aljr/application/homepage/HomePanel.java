@@ -1,28 +1,16 @@
 package se.aljr.application.homepage;
 
-import com.google.cloud.storage.Acl;
-import kotlinx.coroutines.flow.Flow;
-import se.aljr.application.CustomFont;
+import se.aljr.application.*;
 import se.aljr.application.Friends.Friend;
 import se.aljr.application.Friends.FriendsList;
-import se.aljr.application.ImageAvatar;
-import se.aljr.application.NutritionCalculator;
-import se.aljr.application.UserData;
-import se.aljr.application.chatpanel.ChatPanel;
 import se.aljr.application.loginpage.FirebaseManager;
-import se.aljr.application.programplanner.ProgramPanel;
 import se.aljr.application.settings.SettingsPanel;
 
-import javax.imageio.ImageIO;
-import javax.imageio.stream.ImageInputStream;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.geom.Ellipse2D;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 public class HomePanel extends JPanel {
@@ -35,8 +23,6 @@ public class HomePanel extends JPanel {
     protected ImageIcon lightHomePanelBackground;
     protected ImageIcon scaledLightContentBackgroundPanel;
     Image scaledLightContentBackground;
-
-    private String resourcePath;
 
     private Image scaledProfilePicture;
     private static ImageIcon profilePictureIcon;
@@ -61,13 +47,12 @@ public class HomePanel extends JPanel {
 
         this.setPreferredSize(new Dimension(width, height));
         instance = this;
-        resourcePath = getClass().getClassLoader().getResource("resource.path").getPath().replace("resource.path","");
-        homePanelBackground = new ImageIcon(resourcePath+ "bottom_right_bar.png");
-        moduleIcon = new ImageIcon(resourcePath+"module.png");
+        homePanelBackground = new ImageIcon(ResourcePath.getResourcePath() + "bottom_right_bar.png");
+        moduleIcon = new ImageIcon(ResourcePath.getResourcePath()+"module.png");
         scaledContentBackground = homePanelBackground.getImage().getScaledInstance(width,height,Image.SCALE_SMOOTH);
         scaledContentBackgroundPanel = new ImageIcon(scaledContentBackground);
 
-        lightHomePanelBackground = new ImageIcon(resourcePath+"bottom_right_bar_light.png");
+        lightHomePanelBackground = new ImageIcon(ResourcePath.getResourcePath()+"bottom_right_bar_light.png");
         scaledLightContentBackground = lightHomePanelBackground.getImage().getScaledInstance(width,height,Image.SCALE_SMOOTH);
         scaledLightContentBackgroundPanel = new ImageIcon(scaledLightContentBackground);
 
@@ -94,7 +79,7 @@ public class HomePanel extends JPanel {
         //profilePictureIcon = new ImageIcon(resourcePath + "Johan.png");
         profilePictureIcon = FirebaseManager.readDBprofilePicture(UserData.getEmail());
         if(profilePictureIcon==null){
-            profilePictureIcon = new ImageIcon(resourcePath + "agile_small_icon.png");
+            profilePictureIcon = new ImageIcon(ResourcePath.getResourcePath() + "agile_small_icon.png");
         }
         avatar = new ImageAvatar();
         avatar.setPreferredSize(new Dimension(getPreferredSize().width/25,getPreferredSize().width/25));

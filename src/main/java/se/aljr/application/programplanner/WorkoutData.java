@@ -5,7 +5,7 @@ import java.util.*;
 
 public class WorkoutData implements Serializable {
     private String title = "Untitled Workout";
-    private HashMap<Integer, List<WorkoutSet>> exerciseSets = new HashMap<>();
+    private final HashMap<Integer, List<WorkoutSet>> exerciseSets = new HashMap<>();
 
     private int totalWorkoutHeight;
 
@@ -78,20 +78,6 @@ public class WorkoutData implements Serializable {
         }
         System.out.println("Exercise id: "+id+" size: "+ size);
         return size;
-    }
-
-    public String getData() {
-        StringBuilder result = new StringBuilder();
-        result.append(this.title).append("\n");
-        int i = 0;
-        for (Map.Entry<Integer, List<WorkoutSet>> set : exerciseSets.entrySet()) {
-            List<WorkoutSet> sets = set.getValue();
-                for(WorkoutSet set1 : sets) {
-                    result.append(set1. getExercise().getName() + set1.getReps()).append(" ").append(set1.getWeight()).append(" ").append(set1.getRir()).append("\n");
-
-            }
-        }
-        return result.toString();
     }
 
     public void deleteExercise(int exerciseId) {

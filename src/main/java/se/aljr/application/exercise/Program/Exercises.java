@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import se.aljr.application.exercise.Excercise.*;
 
 public class Exercises {
-	private ArrayList<Exercise> exercises = new ArrayList<>();
+	private final ArrayList<Exercise> exercises = new ArrayList<>();
 
 	public Exercises() {
 		exercises.add(new BarbellRow());

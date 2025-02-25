@@ -465,7 +465,7 @@ public class FirebaseManager {
            if(!readOnly){
                for(Map.Entry<String, String> entry : friendsMap.entrySet()){
 
-                   FriendsList.getFriendArrayList().add(new Friend(true){
+                   FriendsList.getFriendArrayList().add(new Friend(){
                        {
                            setFriendEmail(entry.getKey());
                            setFriendName(entry.getValue());
