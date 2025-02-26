@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Friend {
-    private ImageAvatar imageAvatar;
-    private ImageAvatar imageAvatarSocial;
+    private final ImageAvatar imageAvatar;
+    private final ImageAvatar imageAvatarSocial;
     private String friendName;
     private String friendEmail;
     private boolean isOnline;
@@ -17,8 +17,7 @@ public class Friend {
     private JPanel messageStorage;
     public boolean firstLoadIn = true;
 
-    public Friend(boolean isOnline){
-        this.isOnline = isOnline;
+    public Friend(){
         imageAvatar = new ImageAvatar();
         imageAvatarSocial = new ImageAvatar();
         if(isOnline){
@@ -73,10 +72,6 @@ public class Friend {
 
     public void setFriendEmail(String friendEmail) {
         this.friendEmail = friendEmail;
-    }
-
-    public boolean isOnline() {
-        return isOnline;
     }
 
     public void setOnline(boolean online) {
