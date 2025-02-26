@@ -56,7 +56,6 @@ public class ExercisePanel extends JPanel {
     JButton myExercises = new JButton("Created");
     JTextField searchField = new JTextField("Search for exercise...");
     JPanel centerPanel = new JPanel();
-    JButton editButton = new JButton();
     public static JButton createExerciseButton = new JButton();
     JLabel imageLabel = new JLabel();
 
@@ -244,6 +243,7 @@ public class ExercisePanel extends JPanel {
         myExercises.setBorder(new LineBorder(new Color(80, 73, 69), 1, true));
 
         createExerciseButton.setBackground(new Color(46, 148, 76));
+        createExerciseButton.setText("Create new exercise");
         createExerciseButton.setForeground(Color.WHITE);
         createExerciseButton.setBorder(new LineBorder(new Color(80, 73, 69), 1, true));
         createExerciseButton.setPreferredSize(new Dimension(westPanel.getPreferredSize().width, getPreferredSize().height / 24));
@@ -451,18 +451,32 @@ public class ExercisePanel extends JPanel {
                     aboutText.setBackground(new Color(49, 84, 122));
                     System.out.println("edit mode on");
 
+
                     // RESTRICTS FROM EXCEEDING CHARACTER LIMIT WHEN EDITING EXERCISE NAME
                     AbstractDocument document = (AbstractDocument) titleLabel.getDocument();
                     document.setDocumentFilter(new DocumentFilter() {
                         @Override
-                        public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr) throws BadLocationException {
-                            if (fb.getDocument().getLength() + string.length() <= 22) {
-                                super.insertString(fb, offset, string, attr);
+                        public void insertString(FilterBypass fb, int offset, String text, AttributeSet attr) throws BadLocationException {
+                            if (text != null) {
+                                text = text.replace("\n","");
+                                text = text.replace("\r","");
+                                text = text.replace("\t","");
+
+                            }
+
+                            if (fb.getDocument().getLength() + text.length() <= 22) {
+                                super.insertString(fb, offset, text, attr);
                             }
                         }
 
                         @Override
                         public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
+                            if (text != null) {
+                                text = text.replace("\n","");
+                                text = text.replace("\r","");
+                                text = text.replace("\t","");
+                            }
+
                             if (fb.getDocument().getLength() + text.length() <= 22) {
                                 super.replace(fb, offset, length, text, attrs);
                             }
@@ -827,7 +841,7 @@ public class ExercisePanel extends JPanel {
                     formInfoContainer.setVisible(false);
                 }
                 // UPDATE EXERCISE CONTENT
-                formText.setText(selectedExercise.getInfo());
+                aboutText.setText(selectedExercise.getInfo());
                 formText.setText(selectedExercise.getForm());
                 titleLabel.setText(selectedExercise.getName());
                 // DISPLAY IF INFO IS EMPTY

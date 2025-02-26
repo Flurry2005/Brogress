@@ -1,6 +1,7 @@
 package se.aljr.application.programplanner;
 
 import se.aljr.application.AppThemeColors;
+import se.aljr.application.CustomFont;
 import se.aljr.application.ResourcePath;
 import se.aljr.application.UserData;
 import se.aljr.application.exercise.Excercise.Exercise;
@@ -51,6 +52,8 @@ public class ProgramPanel extends JPanel {
     private ImageIcon newWorkoutButtonImage;
     private Image scaledNewWorkoutButtonImage;
     private ImageIcon scaledNewWorkoutIcon;
+
+    private JButton newWorkoutButton;
 
     private ImageIcon removeExerciseButtonImage;
     private Image scaledRemoveExerciseButtonImage;
@@ -243,15 +246,17 @@ public class ProgramPanel extends JPanel {
 
         JPanel savedWorkoutsPanelTop = new JPanel();
         savedWorkoutsPanelTop.setLayout(new BoxLayout(savedWorkoutsPanelTop, BoxLayout.X_AXIS));
-        savedWorkoutsPanelTop.setOpaque(false);
+        savedWorkoutsPanelTop.setOpaque(true);
         savedWorkoutsPanelTop.setPreferredSize(new Dimension(getWidth() / 5, getHeight() / 20));
         savedWorkoutsPanelTop.setMinimumSize(new Dimension(getWidth() / 5, getHeight() / 20));
         savedWorkoutsPanelTop.setMaximumSize(new Dimension(getWidth() / 5, getHeight() / 20));
+        savedWorkoutsPanelTop.setBackground(new Color(51, 51, 51));
+        savedWorkoutsPanelTop.setBorder(new LineBorder(new Color(80, 73, 69)));
 
-        JLabel savedWorkoutsLabel = new JLabel("Workouts");
-        savedWorkoutsLabel.setMaximumSize(new Dimension((int)(getWidth()/16.8730159),(int)(getHeight()/60.2727273)));
-        savedWorkoutsLabel.setFont(new Font("Arial", Font.PLAIN, (int)(getHeight()/44.2)));
-        savedWorkoutsLabel.setForeground(Color.CYAN);
+        JLabel savedWorkoutsLabel = new JLabel("My workouts");
+        savedWorkoutsLabel.setMaximumSize(new Dimension((int)(savedWorkoutsPanelTop.getPreferredSize().width/4),(int)(savedWorkoutsPanelTop.getPreferredSize().height)));
+        savedWorkoutsLabel.setFont(CustomFont.getFont().deriveFont(12));
+        savedWorkoutsLabel.setForeground(Color.white);
         savedWorkoutsLabel.setOpaque(false);
 
         // Select saved workouts
@@ -293,7 +298,7 @@ public class ProgramPanel extends JPanel {
 
         });
 
-        JButton newWorkoutButton = new JButton(scaledNewWorkoutIcon);
+        newWorkoutButton = new JButton(scaledNewWorkoutIcon);
         newWorkoutButton.setContentAreaFilled(false);
         newWorkoutButton.setPreferredSize(new Dimension(scaledNewWorkoutIcon.getIconWidth(),scaledNewWorkoutIcon.getIconHeight()));
         newWorkoutButton.setMaximumSize(newWorkoutButton.getPreferredSize());
@@ -342,13 +347,18 @@ public class ProgramPanel extends JPanel {
 
 
         savedWorkoutsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        savedWorkoutsScrollPane.setPreferredSize(new Dimension(getWidth() / 5, getHeight() * 8 / 10));
-        savedWorkoutsScrollPane.setMinimumSize(new Dimension(getWidth() / 5, getHeight() * 8 / 10));
-        savedWorkoutsScrollPane.setMaximumSize(new Dimension(getWidth() / 5, getHeight() * 8 / 10));
+        savedWorkoutsScrollPane.setPreferredSize(new Dimension(getWidth() / 5, getHeight() * 8 / 10 - newWorkoutButton.getPreferredSize().height));
+        savedWorkoutsScrollPane.setMinimumSize(savedWorkoutsScrollPane.getPreferredSize());
+        savedWorkoutsScrollPane.setMaximumSize(savedWorkoutsScrollPane.getPreferredSize());
         savedWorkoutsScrollPane.getVerticalScrollBar().setPreferredSize(new Dimension(0, 0));
         savedWorkoutsScrollPane.setBorder(new LineBorder(new Color(80, 73, 69), 1));
         savedWorkoutsScrollPane.getViewport().setBackground(new Color(22, 22, 22));
         savedWorkoutsScrollPane.setViewportView(savedWorkoutsList);
+
+        JPanel savedWorkoutsPanelBottom = new JPanel();
+        savedWorkoutsPanelBottom.setLayout(new BoxLayout(savedWorkoutsPanelBottom, BoxLayout.X_AXIS));
+        savedWorkoutsPanelBottom.setOpaque(false);
+
 
         //Label holding workout title
         headerTitle = new JLabel();
@@ -580,17 +590,22 @@ public class ProgramPanel extends JPanel {
         workoutPanel.add(workoutScrollPane);
         workoutPanel.add(Box.createVerticalGlue());
 
+        savedWorkoutsPanelTop.add(Box.createHorizontalGlue());
         savedWorkoutsPanelTop.add(savedWorkoutsLabel);
         savedWorkoutsPanelTop.add(Box.createHorizontalGlue());
-        savedWorkoutsPanelTop.add(deleteWorkout);
-        savedWorkoutsPanelTop.add(Box.createHorizontalGlue());
-        savedWorkoutsPanelTop.add(newWorkoutButton);
+
+        savedWorkoutsPanelBottom.add(Box.createHorizontalGlue());
+        savedWorkoutsPanelBottom.add(newWorkoutButton);
+        savedWorkoutsPanelBottom.add(Box.createHorizontalGlue());
+        savedWorkoutsPanelBottom.add(deleteWorkout);
+        savedWorkoutsPanelBottom.add(Box.createHorizontalGlue());
 
 
         savedWorkoutsPanel.add(Box.createVerticalGlue());
         savedWorkoutsPanel.add(savedWorkoutsPanelTop);
         savedWorkoutsPanel.add(Box.createVerticalGlue());
         savedWorkoutsPanel.add(savedWorkoutsScrollPane);
+        savedWorkoutsPanel.add(savedWorkoutsPanelBottom);
         savedWorkoutsPanel.add(Box.createVerticalGlue());
 
         mainPanel.add(Box.createHorizontalGlue());
