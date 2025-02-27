@@ -171,6 +171,8 @@ public class LoginWindow extends JFrame {
 
         if (userLoginDetails.get("password") != null) {
             passwordField.setText(userLoginDetails.get("password"));
+        }else{
+            passwordField.setEchoChar('\u0000');
         }
         passwordField.addFocusListener(new FocusAdapter() {
             @Override
@@ -178,6 +180,13 @@ public class LoginWindow extends JFrame {
                 if (String.valueOf(passwordField.getPassword()).equals("Enter password")) {
                     passwordField.setText("");
                     passwordField.setEchoChar((Character) UIManager.get("PasswordField.echoChar"));
+                }
+            }
+            @Override
+            public void focusLost(FocusEvent e){
+                if(String.valueOf(passwordField.getPassword()).isEmpty()){
+                    passwordField.setEchoChar('\u0000');
+                    passwordField.setText("Enter password");
                 }
             }
         });

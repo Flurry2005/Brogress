@@ -833,7 +833,7 @@ public class ExercisePanel extends JPanel {
                     ImageIcon scaledExerciseIcon = new ImageIcon(scaledTest);
                     formInfoContainer.setVisible(true);
                     imageLabel.setIcon(scaledExerciseIcon);
-                // DISPLAY DEFAULT IF IMAGE NOT FOUND
+                    // DISPLAY DEFAULT IF IMAGE NOT FOUND
                 } catch (Exception ex) {
                     ImageIcon temp = new ImageIcon(ResourcePath.getResourcePath() + "bottom_right_bar.png");
                     Image scaledTest = temp.getImage().getScaledInstance(centerPanel.getPreferredSize().width, centerPanel.getPreferredSize().height, Image.SCALE_SMOOTH);
