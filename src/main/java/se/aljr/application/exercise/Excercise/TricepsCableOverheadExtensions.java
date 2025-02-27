@@ -4,24 +4,11 @@ import se.aljr.application.exercise.Muscle.Triceps;
 
 public class TricepsCableOverheadExtensions extends Exercise {
     public TricepsCableOverheadExtensions() {
-        name = "Overhead-Extensions (Cable)";
+        name = "Cable Overhead Extensions";
 
-        info = "The overhead triceps extension (cable) is an isolation exercise targeting the triceps. \n" +
-                "It involves extending the arms overhead against resistance, effectively building triceps strength and size while improving upper arm definition.";
+        info = "The cable overhead extension is an isolation exercise that primarily targets the triceps, helping to build arm strength and definition. It provides constant tension throughout the movement, making it an effective alternative to free-weight extensions.";
 
-        form = "Good Form and Tips\n" +
-                "Keep Elbows Close to Your Head: Helps isolate the triceps for maximum activation.\n" +
-                "Engage the Core: Maintains proper posture and prevents lower back arching.\n" +
-                "Control the Movement: Perform slow and steady reps to ensure full muscle engagement.";
-
-        mistakes = "Common Mistakes to Avoid\n" +
-                "Flaring Elbows Out: Reduces triceps engagement and can strain the shoulders.\n" +
-                "Arching the Lower Back: Puts unnecessary stress on the spine.\n" +
-                "Using Momentum: Reduces control and limits muscle activation.";
-
-        link = "https://musclewiki.com/cables/male/triceps/cable-rope-overhead-tricep-extension";
-
-        picture = "https://weighttraining.guide/exercises/standing-dumbbell-overhead-triceps-extension/";
+        form = "To perform a cable overhead extension, attach a rope handle to a low pulley and grip it with both hands. Face away from the machine and extend your arms overhead. Keeping your elbows close to your head, lower the rope behind your head, then extend your arms back up to the starting position. Maintain control and engage your core throughout the movement.";
 
         musclesUsed.add(new Triceps());
     }

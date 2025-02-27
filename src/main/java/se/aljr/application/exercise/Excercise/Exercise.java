@@ -39,10 +39,6 @@ public class Exercise implements Serializable {
         return this.form;
     }
 
-    public String getMistakes() {
-        return this.mistakes;
-    }
-
     public String getMusclesUsed() {
         return musclesUsed.toString();
     }

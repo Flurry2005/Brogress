@@ -6,22 +6,9 @@ public class SumoDeadlift extends Exercise {
     public SumoDeadlift() {
         name = "Sumo Deadlift";
 
-        info = "The sumo deadlift is a variation of the traditional deadlift that emphasizes the glutes, hamstrings, and quadriceps. \n" +
-                "It also engages the traps and lower back for stability and control, making it effective for developing lower-body power";
+        info = "The sumo deadlift is a compound exercise that primarily targets the glutes, hamstrings, quadriceps, and lower back while also engaging the core and grip strength. Its wider stance reduces strain on the lower back and emphasizes the legs more than a conventional deadlift.";
 
-        form = "Good Form and Tips\n" +
-                "Maintain a Neutral Spine: Keep your back straight throughout the lift.\n" +
-                "Drive Through the Heels: Helps engage the glutes and quads for maximum power.\n" +
-                "Keep the Bar Close to Your Body: Prevents strain on the lower back and maximizes control.";
-
-        mistakes = "Common Mistakes to Avoid\n" +
-                "Rounding the Lower Back: Increases the risk of injury during the lift.\n" +
-                "Bar Drifting Away from the Body: Reduces lifting efficiency and places strain on the lower back.\n" +
-                "Incorrect Foot Placement: Too wide or narrow can reduce power and cause imbalance.";
-
-        link = "https://musclewiki.com/barbell/male/lowerback/barbell-sumo-deadlift";
-
-        picture = "https://weighttraining.guide/exercises/barbell-sumo-deadlift/";
+        form = "To perform a sumo deadlift, stand with your feet wider than shoulder-width apart and toes pointed slightly outward. Grip the barbell with hands inside your knees, keep your back straight, and drive through your heels to lift the bar while extending your hips. Lock out at the top, then lower the bar back down with control.";
 
         musclesUsed.add(new Glutes());
         musclesUsed.add(new Hamstrings());

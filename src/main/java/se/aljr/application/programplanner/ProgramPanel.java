@@ -255,7 +255,7 @@ public class ProgramPanel extends JPanel {
 
         JLabel savedWorkoutsLabel = new JLabel("My workouts");
         savedWorkoutsLabel.setMaximumSize(new Dimension((int)(savedWorkoutsPanelTop.getPreferredSize().width/4),(int)(savedWorkoutsPanelTop.getPreferredSize().height)));
-        savedWorkoutsLabel.setFont(CustomFont.getFont().deriveFont(12));
+        savedWorkoutsLabel.setFont(CustomFont.getFont().deriveFont(24f));
         savedWorkoutsLabel.setForeground(Color.white);
         savedWorkoutsLabel.setOpaque(false);
 

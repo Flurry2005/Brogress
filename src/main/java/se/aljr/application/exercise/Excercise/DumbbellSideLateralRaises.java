@@ -6,24 +6,11 @@ import se.aljr.application.exercise.Muscle.Traps;
 
 public class DumbbellSideLateralRaises extends Exercise {
     public DumbbellSideLateralRaises() {
-        name = "Lateral Raises";
+        name = "Dumbbell Side Lateral Raises";
 
-        info = "Dumbbell side lateral raises are an isolation exercise that targets the lateral deltoids, with secondary activation of the traps and anterior deltoids. \n" +
-                "This exercise is great for building shoulder width and definition.";
+        info = "The dumbbell side lateral raise is an isolation exercise that targets the lateral deltoids, helping to build shoulder width and definition. It enhances shoulder strength and aesthetics, making it a staple in many workout routines.";
 
-        form = "Good Form and Tips\n" +
-                "Maintain a Slight Bend in the Elbows: Helps protect the joints and focus on the deltoids.\n" +
-                "Controlled Movement: Lift slowly and avoid using momentum.\n" +
-                "Keep Shoulders Relaxed: Prevent trap overactivation to ensure proper lateral deltoid engagement.";
-
-        mistakes = "Common Mistakes to Avoid\n" +
-                "Shrugging the Shoulders: Over-engages the traps and reduces lateral deltoid activation.\n" +
-                "Swinging the Dumbbells: Using momentum decreases effectiveness.\n" +
-                "Lifting Too High: Can strain the shoulder joints.";
-
-        link = "https://musclewiki.com/dumbbells/male/shoulders/dumbbell-lateral-raise";
-
-        picture = "https://weighttraining.guide/exercises/kettlebell-lateral-raise/";
+        form = "To perform a dumbbell side lateral raise, stand with a dumbbell in each hand, arms at your sides. With a slight bend in your elbows, lift the dumbbells out to the sides until they reach shoulder height, then slowly lower them back down. Maintain controlled movement and avoid using momentum.";
 
         musclesUsed.add(new LateralDeltoid());
         musclesUsed.add(new Traps());
