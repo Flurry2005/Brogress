@@ -4,24 +4,11 @@ import se.aljr.application.exercise.Muscle.Triceps;
 
 public class TricepsFrenchPress extends Exercise {
     public TricepsFrenchPress() {
-        name = "French-Press";
+        name = "Dumbbell French Press";
 
-        info = "The French press is a triceps-focused exercise performed overhead using a dumbbell or barbell. \n" +
-                "It primarily targets the triceps, promoting arm strength and muscle growth.";
+        info = "The dumbbell French press is an isolation exercise that primarily targets the triceps, helping to build arm strength and muscle definition. It emphasizes the long head of the triceps, contributing to overall arm development.";
 
-        form = "Good Form and Tips\n" +
-                "Keep Elbows Close to Your Head: Helps isolate the triceps effectively.\n" +
-                "Engage the Core: Prevents lower back from arching during the movement.\n" +
-                "Control the Descent: Slowly lower the weight to ensure full range of motion and avoid injury.";
-
-        mistakes = "Common Mistakes to Avoid\n" +
-                "Flaring the Elbows: Reduces triceps isolation and can strain the shoulders.\n" +
-                "Arching the Lower Back: Increases risk of lower back injury.\n" +
-                "Using Too Much Weight: Can lead to poor form and reduced muscle engagement.";
-
-        link = "https://musclewiki.com/barbell/male/triceps/barbell-overhead-tricep-extension";
-
-        picture = "https://weighttraining.guide/exercises/standing-overhead-barbell-triceps-extension/";
+        form = "To perform a dumbbell French press, sit or stand while holding a dumbbell with both hands, extending it overhead. Keep your elbows close to your head as you lower the dumbbell behind your head in a controlled motion. Press the dumbbell back up to the starting position, fully extending your arms while keeping tension on the triceps.";
 
         musclesUsed.add(new Triceps());
     }

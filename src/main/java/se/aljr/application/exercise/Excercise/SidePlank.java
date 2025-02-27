@@ -9,21 +9,9 @@ public class SidePlank extends Exercise {
     public SidePlank() {
         name = "Side Plank";
 
-        info = "The side plank is an isometric core exercise that primarily targets the obliques and abs, with secondary engagement of the glutes and anterior deltoids to support shoulder and hip stability. \n" +
-                "This exercise improves core strength, balance, and spinal alignment.";
+        info = "The side plank is a core-strengthening exercise that primarily targets the obliques while also engaging the shoulders, glutes, and overall core for stability. It helps improve balance, posture, and core endurance.";
 
-        form = "Maintain a Straight Line: Keep your body aligned from head to heels.\n" +
-                "Engage the Core and Glutes: Helps maintain proper alignment and balance.\n" +
-                "Breathe Steadily: Maintain steady breathing to hold the position longer and maintain form.";
-
-        mistakes = "Common Mistakes to Avoid\n" +
-                "Sagging Hips: Reduces core activation and places unnecessary strain on the lower back.\n" +
-                "Leaning Forward or Backward: Misaligns the body, reducing effectiveness.\n" +
-                "Holding Breath: Can lead to tension and improper form.";
-
-        link = "https://musclewiki.com/bodyweight/male/obliques/hand-side-plank";
-
-        picture = "https://weighttraining.guide/exercises/high-side-plank/";
+        form = "To perform a side plank, lie on your side with your legs stacked and your forearm directly under your shoulder. Lift your hips off the ground, keeping your body in a straight line from head to feet. Hold the position while engaging your core and maintaining steady breathing. Repeat on the other side.";
 
         musclesUsed.add(new Obliques());
         musclesUsed.add(new Abs());

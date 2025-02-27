@@ -315,6 +315,7 @@ public class ExercisePanel extends JPanel {
         aboutText.setEditable(false);
         aboutText.setBorder(new LineBorder(new Color(80, 73, 69), 1, true));
         aboutText.setLineWrap(true);
+        aboutText.setWrapStyleWord(true);
 
         formText.setBackground(new Color(21, 21, 21));
         formText.setForeground(new Color(204, 204, 204));

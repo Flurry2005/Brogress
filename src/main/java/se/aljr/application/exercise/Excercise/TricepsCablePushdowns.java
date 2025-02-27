@@ -4,24 +4,12 @@ import se.aljr.application.exercise.Muscle.Triceps;
 
 public class TricepsCablePushdowns extends Exercise {
     public TricepsCablePushdowns() {
-        name = "Cable-Pushdowns";
+        name = "Cable Pushdowns";
 
-        info = "The cable triceps pushdown is an isolation exercise that primarily targets the triceps. \n" +
-                "It is performed using a cable machine and is effective for building upper arm strength and size.";
+        info = "The cable pushdown is an isolation exercise that primarily targets the triceps, helping to build strength, size, and definition in the arms. It is a staple in triceps-focused workouts due to its effectiveness and ease of use.";
 
-        form = "Good Form and Tips\n" +
-                "Keep Elbows Tucked In: Helps isolate the triceps for maximum contraction.\n" +
-                "Control the Movement: Perform slow, controlled reps, avoiding fast or jerky motions.\n" +
-                "Maintain a Straight Posture: Engage the core to prevent leaning forward or backward.";
+        form = "To perform a cable pushdown, stand in front of a cable machine with a straight bar or rope attachment. Grip the handle with palms facing down, keep your elbows close to your body, and push the handle down until your arms are fully extended. Slowly return to the starting position while maintaining control and keeping tension on the triceps.";
 
-        mistakes = "Common Mistakes to Avoid\n" +
-                "Flaring Elbows Out: Reduces triceps engagement and increases shoulder involvement.\n" +
-                "Using Momentum: Limits control and reduces muscle activation.\n" +
-                "Partial Range of Motion: Shortens the movement, reducing effectiveness.";
-
-        link = "https://musclewiki.com/cables/male/triceps/cable-rope-pushdown";
-
-        picture = "https://weighttraining.guide/exercises/triceps-push-down/";
 
         musclesUsed.add(new Triceps());
     }

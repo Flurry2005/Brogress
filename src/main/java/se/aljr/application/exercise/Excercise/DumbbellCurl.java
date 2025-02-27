@@ -2,34 +2,23 @@ package se.aljr.application.exercise.Excercise;
 
 import se.aljr.application.ResourcePath;
 import se.aljr.application.exercise.Muscle.Biceps;
+import se.aljr.application.exercise.Muscle.Forearms;
 
 import javax.swing.*;
 
 public class DumbbellCurl extends Exercise {
 
 	public DumbbellCurl() {
-		name = "Dumbbell Curl";
+		name = "Dumbbell Biceps Curl";
 
-		info = "The dumbbell curl is an isolation exercise that primarily targets the biceps brachii. \n" +
-				"It is a staple for building arm strength and muscle definition by flexing the elbow joint.";
+		info = "The dumbbell biceps curl is an isolation exercise that targets the biceps, helping to build arm strength and muscle definition. It is a fundamental movement in many strength-training routines.";
 
-		form = "Good Form and Tips\n" +
-				"Keep Elbows Stationary: Prevent movement to isolate the biceps.\n" +
-				"Controlled Reps: Lift and lower the dumbbells slowly for maximum engagement.\n" +
-				"Maintain a Neutral Spine: Avoid leaning back to keep tension on the biceps.";
-
-		mistakes = "Common Mistakes to Avoid\n" +
-				"Swinging the Dumbbells: Using momentum reduces biceps engagement.\n" +
-				"Lifting the Elbows: Involves the shoulders and takes tension off the biceps.\n" +
-				"Rushing Through Reps: Limits muscle activation and reduces effectiveness.";
-
-		link = "https://musclewiki.com/dumbbells/male/biceps/dumbbell-curl";
-
-		picture = "https://weighttraining.guide/exercises/two-arm-supinated-dumbbell-curl/";
+		form = "To perform a dumbbell biceps curl, hold a dumbbell in each hand with palms facing forward. Keep your elbows close to your torso and curl the weights up toward your shoulders, squeezing your biceps at the top. Lower the dumbbells back down in a controlled manner. Maintain a steady posture and avoid using momentum.";
 
 		musclesUsed.add(new Biceps());
+		musclesUsed.add(new Forearms());
 
-		imageIcon = new ImageIcon(ResourcePath.getResourcePath() +"ExerciseImages\\DumbbelCurl.gif");
+		imageIcon = new ImageIcon(ResourcePath.getResourcePath() +"ExerciseImages\\DumbbelCurl.png");
 	}
 
 }
