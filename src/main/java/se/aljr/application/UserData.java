@@ -66,13 +66,14 @@ public class UserData {
     public static HashSet<Exercise> getFavoriteExercises() {
         return favoriteExercises;
     }
+
     public static void removeFavoriteExercises(Exercise exercise) {
         favoriteExercises.remove(exercise);
-
     }
     public static void setFavoriteExercises(Exercise exercise) {
         favoriteExercises.add(exercise);
     }
+
     public static void updateFavoriteExercises() throws IOException, ExecutionException, InterruptedException, ClassNotFoundException {
         HashSet<Exercise> temp = FirebaseManager.readDBfavoriteExercises();
         favoriteExercises.clear();
@@ -82,7 +83,6 @@ public class UserData {
         ArrayList <Exercise> temp = FirebaseManager.readDBcreatedExercises();
         createdExercises.clear();
         createdExercises.addAll(temp);
-
     }
     public static ArrayList<Exercise> getCreatedExercises() {
         return (createdExercises != null) ? createdExercises : new ArrayList<>();

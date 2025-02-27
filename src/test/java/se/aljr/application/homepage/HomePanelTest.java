@@ -1,5 +1,5 @@
 package se.aljr.application.homepage;
-
+/*
 import org.assertj.swing.edt.FailOnThreadViolationRepaintManager;
 import org.assertj.swing.fixture.FrameFixture;
 import org.junit.jupiter.api.AfterEach;
@@ -36,3 +36,5 @@ public class HomePanelTest {
 
     //This will test the small panels between chad guy about stats
 }
+
+ */

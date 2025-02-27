@@ -42,6 +42,7 @@ public class HomePanel extends JPanel {
     private static JScrollPane friendsListScrollPane;
     private static JScrollPane friendsListScrollPane1;
     private static HomePanel instance;
+    private static final JLabel usernameLabel = new JLabel();
 
     public HomePanel(int width, int height){
 
@@ -120,7 +121,7 @@ public class HomePanel extends JPanel {
         userInfoPanel.setLayout(new BoxLayout(userInfoPanel, BoxLayout.Y_AXIS));
         userInfoPanel.setBorder(new EmptyBorder(0,userInfoPanel.getPreferredSize().width/16,0,0));
 
-        JLabel usernameLabel = new JLabel();
+
         usernameLabel.setText(UserData.getUserName());
         usernameLabel.setFont(CustomFont.getFont().deriveFont(getWidth()/50f));
         usernameLabel.setForeground(Color.WHITE);
@@ -363,6 +364,8 @@ public class HomePanel extends JPanel {
     }
 
     public static void updateUserInfo(){
+
+        usernameLabel.setText(UserData.getUserName());
         userAge.setText("Age: "+UserData.getUserAge());
         userHeight.setText("Height: "+ UserData.getUserHeight()+" Cm");
         userWeight.setText("Weight: "+ UserData.getUserWeight()+" Kg");
