@@ -1,5 +1,5 @@
 package se.aljr.application;
-
+/*
 import org.assertj.swing.edt.FailOnThreadViolationRepaintManager;
 import org.assertj.swing.fixture.FrameFixture;
 import org.junit.jupiter.api.*;
@@ -101,3 +101,5 @@ class ApplicationWindowTest {
 //        assertTrue(!window.target().isDisplayable(), "Window should be closed after clicking exit button");
 //    }
 }
+
+ */

@@ -43,7 +43,7 @@ public class CreateExerciseModule extends JPanel {
     public static CreateExerciseModule instance;
 
     public CreateExerciseModule(JPanel parentPanel) {
-        setBackground(new Color(51, 51, 51));
+        setBackground(AppThemeColors.PRIMARY);
         instance = this;
 
         setLayout(new BorderLayout());

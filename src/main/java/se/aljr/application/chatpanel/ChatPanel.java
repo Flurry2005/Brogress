@@ -4,6 +4,7 @@ import se.aljr.application.*;
 import se.aljr.application.Friends.Friend;
 import se.aljr.application.Friends.FriendsList;
 import se.aljr.application.loginpage.FirebaseManager;
+import se.aljr.application.settings.SettingsPanel;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -24,6 +25,10 @@ public class ChatPanel extends JPanel {
     ImageIcon settingsPanelBackground;
     Image scaleSettingsPanelBackground;
     ImageIcon scaledSettingsPanelBackgroundIcon;
+
+    ImageIcon lightSettingsPanelBackground;
+    Image lightScaleSettingsPanelBackground;
+    ImageIcon lightScaledSettingsPanelBackgroundIcon;
 
     private boolean addPanelIsActive;
     private static final JPanel requestsPanel = new JPanel();
@@ -46,6 +51,21 @@ public class ChatPanel extends JPanel {
 
     public static JButton clickToSendButton = new JButton("✉");
 
+    JPanel buttonlayout;
+    JButton friendsButton;
+    JButton requestButton;
+    JButton groupButton;
+    JButton addButton;
+    JPanel belowPanel;
+    JTextArea messengerTextBox;
+    JPanel belowRightPanel;
+    JPanel mainMiddlePanel;
+    JPanel addPanel;
+    JTextField friendRequestMailText;
+    JButton addbutton;
+    JButton allGroupButtons;
+    JPanel groupsPanel;
+
     private boolean canSendMessage = true;
 
 
@@ -54,9 +74,14 @@ public class ChatPanel extends JPanel {
         scaleSettingsPanelBackground = settingsPanelBackground.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
         scaledSettingsPanelBackgroundIcon = new ImageIcon(scaleSettingsPanelBackground);
 
+        lightSettingsPanelBackground = new ImageIcon(ResourcePath.getResourcePath() +"lightEmptyBackground.png");
+        lightScaleSettingsPanelBackground = lightSettingsPanelBackground.getImage().getScaledInstance(width,height,Image.SCALE_SMOOTH);
+        lightScaledSettingsPanelBackgroundIcon = new ImageIcon(lightScaleSettingsPanelBackground);
+
 
         this.setPreferredSize(new Dimension(width, height));
-        this.setBackground(new Color(31, 31, 31));
+        this.setBackground(AppThemeColors.SECONDARY);
+        this.setOpaque(false);
         this.setLayout(new BorderLayout(0, 0));
         this.setBorder(new EmptyBorder(15, 15, 15, 15));
 
@@ -88,10 +113,11 @@ public class ChatPanel extends JPanel {
         mainRightPanel.setMaximumSize(mainRightPanel.getPreferredSize());
 
 
-        JPanel belowPanel = new JPanel();
+        //Panel where the textfield for the chat is in
+        belowPanel = new JPanel();
         belowPanel.setLayout(new BoxLayout(belowPanel, BoxLayout.X_AXIS));
         belowPanel.setOpaque(true);
-        belowPanel.setBackground(new Color(35, 35, 35));
+        belowPanel.setBackground(AppThemeColors.SECONDARY);
         belowPanel.setPreferredSize(new Dimension(mainRightPanel.getPreferredSize().width, mainRightPanel.getPreferredSize().height / 8));
         belowPanel.setMinimumSize(mainRightPanel.getPreferredSize());
         belowPanel.setMaximumSize(mainRightPanel.getPreferredSize());
@@ -127,7 +153,7 @@ public class ChatPanel extends JPanel {
         messagesScrollPane.setBorder(new LineBorder(AppThemeColors.textFieldColor));
 
 
-        JTextArea messengerTextBox = new JTextArea();
+        messengerTextBox = new JTextArea();
         messengerTextBox.setFont(new Font("Arial", Font.PLAIN, (int) (getPreferredSize().width / 80f)));
         messengerTextBox.setPreferredSize(new Dimension((int) (belowPanel.getPreferredSize().width / 1.2), (int) (belowPanel.getPreferredSize().height / (1.2*4))));
         messengerTextBox.setMinimumSize(messengerTextBox.getPreferredSize());
@@ -229,7 +255,7 @@ public class ChatPanel extends JPanel {
         });
 
 
-        JPanel belowRightPanel = new JPanel();
+        belowRightPanel = new JPanel();
         belowRightPanel.setLayout(new BoxLayout(belowRightPanel, BoxLayout.X_AXIS));
         belowRightPanel.setOpaque(true);
         belowRightPanel.setBackground(AppThemeColors.textFieldColor);
@@ -271,7 +297,7 @@ public class ChatPanel extends JPanel {
 
 
                 /*--------------------Middle panel--------------------*/
-                JPanel mainMiddlePanel = new JPanel();
+        mainMiddlePanel = new JPanel();
         mainMiddlePanel.setOpaque(false);
         mainMiddlePanel.setLayout(new BoxLayout(mainMiddlePanel, BoxLayout.X_AXIS));
         mainMiddlePanel.setPreferredSize(new Dimension(getPreferredSize().width / 5, getPreferredSize().height));
@@ -312,14 +338,16 @@ public class ChatPanel extends JPanel {
         updateRequestsPanel();
 
 
-        JPanel groupsPanel = new JPanel();
+        groupsPanel = new JPanel();
         groupsPanel.setLayout(new BoxLayout(groupsPanel, BoxLayout.Y_AXIS));
 
         for (int i = 1; i <= 25; i++) {
-            JButton allGroupButtons = new JButton("Group " + i);
+            allGroupButtons = new JButton("Group " + i);
+            allGroupButtons.setName("Group"+i);
             allGroupButtons.setFont(new Font("Arial", Font.BOLD, 50));
             allGroupButtons.setBorder(new LineBorder(Color.BLACK));
-            allGroupButtons.setBackground(Color.LIGHT_GRAY);
+            allGroupButtons.setBackground(AppThemeColors.PRIMARY);
+            allGroupButtons.setForeground(AppThemeColors.foregroundColor);
             allGroupButtons.setPreferredSize(new Dimension(friendsScrollPane.getPreferredSize().width, 50));
             allGroupButtons.setMinimumSize(allGroupButtons.getPreferredSize());
             allGroupButtons.setMaximumSize(allGroupButtons.getPreferredSize());
@@ -327,7 +355,7 @@ public class ChatPanel extends JPanel {
         }
 
 
-        JPanel addPanel = new JPanel();
+        addPanel = new JPanel();
         addPanel.setLayout(new BoxLayout(addPanel, BoxLayout.Y_AXIS));
         addPanel.setPreferredSize(new Dimension(mainMiddlePanel.getPreferredSize().width, mainMiddlePanel.getPreferredSize().height / 4));
         addPanel.setMinimumSize(addPanel.getPreferredSize());
@@ -338,7 +366,7 @@ public class ChatPanel extends JPanel {
         /*--------------------Add panel components--------------------*/
 
 
-        JTextField friendRequestMailText = new JTextField();
+        friendRequestMailText = new JTextField();
         friendRequestMailText.setFont(new Font("Arial", Font.BOLD, (int) (getPreferredSize().width / 100f)));
         friendRequestMailText.setPreferredSize(new Dimension((int) (addPanel.getPreferredSize().width * 0.9), (int) (addPanel.getPreferredSize().height * 0.15)));
         friendRequestMailText.setMinimumSize(friendRequestMailText.getPreferredSize());
@@ -347,7 +375,7 @@ public class ChatPanel extends JPanel {
         friendRequestMailText.setBackground(AppThemeColors.textFieldColor);
 
 
-        JButton addbutton = new JButton("ADD");
+        addbutton = new JButton("ADD");
         addbutton.setFont(new Font("Arial", Font.BOLD, 50));
         addbutton.setBorder(new LineBorder(Color.BLACK));
         addbutton.setBackground(AppThemeColors.buttonBG);
@@ -412,7 +440,7 @@ public class ChatPanel extends JPanel {
 
 
         /*--------------------(Left panel) Buttons Panel--------------------*/
-        JPanel buttonlayout = new JPanel();
+        buttonlayout = new JPanel();
         buttonlayout.setOpaque(true);
         buttonlayout.setBackground(AppThemeColors.panelColor);
         buttonlayout.setLayout(new BoxLayout(buttonlayout, BoxLayout.Y_AXIS));
@@ -423,7 +451,7 @@ public class ChatPanel extends JPanel {
 
 
         /*--------------------(Left panel) Buttons--------------------*/
-        JButton friendsButton = new JButton();
+        friendsButton = new JButton();
         friendsButton.setOpaque(true);
         friendsButton.setBackground(AppThemeColors.buttonBG);
         friendsButton.setForeground(AppThemeColors.foregroundColor);
@@ -446,7 +474,7 @@ public class ChatPanel extends JPanel {
             }
         });
 
-        JButton requestButton = new JButton();
+        requestButton = new JButton();
         requestButton.setOpaque(true);
         requestButton.setBackground(AppThemeColors.buttonBG);
         requestButton.setForeground(AppThemeColors.foregroundColor);
@@ -469,7 +497,7 @@ public class ChatPanel extends JPanel {
             }
         });
 
-        JButton groupButton = new JButton();
+        groupButton = new JButton();
         groupButton.setOpaque(true);
         groupButton.setBackground(AppThemeColors.buttonBG);
         groupButton.setForeground(AppThemeColors.foregroundColor);
@@ -492,7 +520,7 @@ public class ChatPanel extends JPanel {
             }
         });
 
-        JButton addButton = new JButton();
+        addButton = new JButton();
         addButton.setOpaque(true);
         addButton.setBackground(AppThemeColors.buttonBG);
         addButton.setForeground(AppThemeColors.foregroundColor);
@@ -999,8 +1027,50 @@ public class ChatPanel extends JPanel {
 
         SwingUtilities.invokeLater(() -> messagesScrollPane.getVerticalScrollBar().setValue(messagesScrollPane.getVerticalScrollBar().getMaximum()));
         selectedFriend.firstLoadIn = false;
-
     }
+
+    public void updateColors(){
+        buttonlayout.setBackground(AppThemeColors.panelColor);
+        friendsButton.setBackground(AppThemeColors.PRIMARY);
+        friendsButton.setForeground(AppThemeColors.foregroundColor);
+        requestButton.setBackground(AppThemeColors.PRIMARY);
+        requestButton.setForeground(AppThemeColors.foregroundColor);
+        groupButton.setBackground(AppThemeColors.PRIMARY);
+        groupButton.setForeground(AppThemeColors.foregroundColor);
+        addButton.setBackground(AppThemeColors.PRIMARY);
+        addButton.setForeground(AppThemeColors.foregroundColor);
+        belowPanel.setBackground(AppThemeColors.SECONDARY);
+        messengerTextBox.setForeground(AppThemeColors.foregroundColor);
+        messengerTextBox.setBackground(AppThemeColors.buttonBG);
+        belowRightPanel.setBackground(AppThemeColors.textFieldColor);
+        clickToSendButton.setForeground(AppThemeColors.foregroundColor);
+        clickToSendButton.setBackground(AppThemeColors.buttonBG);
+        addPanel.setBackground(AppThemeColors.panelColor);
+        friendRequestMailText.setForeground(AppThemeColors.foregroundColor);
+        friendRequestMailText.setBackground(AppThemeColors.textFieldColor);
+        addbutton.setBackground(AppThemeColors.buttonBG);
+        addbutton.setForeground(AppThemeColors.foregroundColor);
+        mainRightPanel.setBackground(AppThemeColors.textFieldColor);
+        messagesScrollPane.setBackground(AppThemeColors.textFieldColor);
+        friendsScrollPane.getViewport().setBackground(AppThemeColors.panelColor);
+        messageStorage.setBackground(AppThemeColors.textFieldColor);
+        allGroupButtons.setBackground(AppThemeColors.PRIMARY);
+        allGroupButtons.setForeground(AppThemeColors.foregroundColor);
+
+        updateComponentByName(groupsPanel);
+    }
+
+    public void updateComponentByName(Container container) {
+        for (Component comp : container.getComponents()) {
+            if (comp.getName() != null) {
+                if (comp instanceof JButton button) {
+                    button.setBackground(AppThemeColors.PRIMARY);
+                    button.setForeground(AppThemeColors.foregroundColor);
+                }
+            }
+        }
+    }
+
 
 
 
@@ -1008,10 +1078,17 @@ public class ChatPanel extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         // Draw the image to fill the entire panel
-        if (scaledSettingsPanelBackgroundIcon != null) {
-            g.drawImage(scaledSettingsPanelBackgroundIcon.getImage(), 0, 0, getWidth(), getHeight(), this);
-        } else {
+        if (scaledSettingsPanelBackgroundIcon != null || lightScaledSettingsPanelBackgroundIcon != null) {
+
+            if(SettingsPanel.currentTheme.equals("dark")){
+                g.drawImage(scaledSettingsPanelBackgroundIcon.getImage(), 0, 0, getWidth(), getHeight(), this);
+            }else{
+                g.drawImage(lightScaledSettingsPanelBackgroundIcon.getImage(), 0, 0, getWidth(), getHeight(), this);
+            }
+        }
+        else{
             System.out.println("Error");
         }
+        updateColors();
     }
 }

@@ -18,13 +18,40 @@ public class MenuPanel extends JPanel{
     public ImageIcon menuBackground;
     public ImageIcon lightMenuBackground;
     ImageIcon logoIcon;
+    private ImageIcon scaledLogoIcon;
+
     ImageIcon buttonIcon;
     ImageIcon buttonIconExercise;
     ImageIcon buttonIconSettings;
+    ImageIcon buttonIconChat;
+
     private ImageIcon scaledButtonHomeIcon;
     private static ImageIcon scaledButtonExerciseIcon;
     private ImageIcon scaledButtonSettingsIcon;
-    private ImageIcon scaledLogoIcon;
+    private ImageIcon scaledButtonChatIcon;
+
+    Image scaledbuttonHomeIcon;
+    Image scaledButtonExercise;
+    Image scaledButtonSettings;
+    Image scaledButtonChat;
+
+
+    ImageIcon darkButtonIcon;
+    ImageIcon darkButtonIconExercise;
+    ImageIcon darkButtonIconSettings;
+    ImageIcon darkButtonIconChat;
+
+    Image scaleddarkButtonHomeIcon;
+    Image scaleddarkButtonExerciseIcon;
+    Image scaleddarkButtonSettingsIcon;
+    Image scaleddarkButtonChatIcon;
+
+    private ImageIcon scaledDarkButtonHomeIcon;
+    private ImageIcon scaledDarkButtonExerciseIcon;
+    private ImageIcon scaledDarkButtonSettingsIcon;
+    private ImageIcon scaledDarkButtonChatIcon;
+
+
     public boolean lightMode = false;
     public static MenuPanel instance;
     public int currentPage = 0;
@@ -35,6 +62,7 @@ public class MenuPanel extends JPanel{
     public static final JButton exercisesButton = new JButton("Exercises",scaledButtonExerciseIcon);
     final JButton programButton = new JButton("Program");
     JButton settingsButton = new JButton("Settings",scaledButtonSettingsIcon);
+    JButton chatButton = new JButton("Chat",scaledButtonSettingsIcon);
 
     JLabel logoLabelText = new JLabel("BROGRESS");
 
@@ -45,9 +73,17 @@ public class MenuPanel extends JPanel{
         menuBackground = new ImageIcon(ResourcePath.getResourcePath() +"side_bar.png");
         lightMenuBackground = new ImageIcon(ResourcePath.getResourcePath()+"side_bar_light.png");
         logoIcon = new ImageIcon(ResourcePath.getResourcePath()+"agile_small_icon.png");
+
         buttonIcon = new ImageIcon(ResourcePath.getResourcePath()+"button.png");
         buttonIconExercise = new ImageIcon(ResourcePath.getResourcePath()+"button_exercise.png");
         buttonIconSettings = new ImageIcon(ResourcePath.getResourcePath()+"button_settings.png");
+        buttonIconChat = new ImageIcon(ResourcePath.getResourcePath()+"button_chat.png");
+
+        darkButtonIcon = new ImageIcon(ResourcePath.getResourcePath()+"button_dark.png");
+        darkButtonIconExercise = new ImageIcon(ResourcePath.getResourcePath()+"button_exercise_dark.png");
+        darkButtonIconSettings = new ImageIcon(ResourcePath.getResourcePath()+"button_settings_dark.png");
+        darkButtonIconChat = new ImageIcon(ResourcePath.getResourcePath()+"button_chat_dark.png");
+
         try{
             font=Font.createFont(Font.TRUETYPE_FONT, new File(ResourcePath.getResourcePath()+"BebasNeue-Regular.otf"));
             font = font.deriveFont((float) (height/17));
@@ -81,9 +117,6 @@ public class MenuPanel extends JPanel{
         logoContainer.add(logoLabel, BorderLayout.CENTER);
         logoContainer.add(logoLabelTextContainer, BorderLayout.SOUTH);
 
-
-
-
         JPanel buttonContainer = new JPanel();
         buttonContainer.setPreferredSize(new Dimension(200,20000));
         buttonContainer.setMinimumSize(new Dimension(200,20000));
@@ -93,8 +126,7 @@ public class MenuPanel extends JPanel{
         buttonContainer.setOpaque(false);
 
 
-        Image scaledbuttonHomeIcon = buttonIcon.getImage().getScaledInstance(151, 40, Image.SCALE_SMOOTH);
-        scaledButtonHomeIcon = new ImageIcon(scaledbuttonHomeIcon);
+
 
         final boolean[] homePageIsActive = {true};
         final boolean[] exercisesPageIsActive = {false};
@@ -103,7 +135,7 @@ public class MenuPanel extends JPanel{
         final boolean[] chatPageIsActive = {false};
 
 
-        JButton chatButton = new JButton("Chat",scaledButtonSettingsIcon);
+
 
         homeButton.setFont(new Font("Arial", Font.PLAIN,height/35));
         homeButton.setForeground(Color.WHITE);
@@ -126,12 +158,7 @@ public class MenuPanel extends JPanel{
             @Override
             public void mouseEntered(MouseEvent e) {
                 isHovered = true;
-                if(lightMode){
-                    homeButton.setBackground(new Color(230, 230, 230));
-                }else{
-                    homeButton.setBackground(new Color(40,40,40));
-                }
-
+                homeButton.setBackground(AppThemeColors.buttonBGHovered);
                 homeButton.repaint();
             }
 
@@ -139,12 +166,7 @@ public class MenuPanel extends JPanel{
             public void mouseExited(MouseEvent e) {
                 isHovered = false;
                 if(!homePageIsActive[0]){
-                    if(lightMode){
-                        homeButton.setBackground(Color.WHITE);
-                    }else{
-                        homeButton.setBackground(bg);
-                    }
-
+                    homeButton.setBackground(AppThemeColors.buttonBG);
                 }
                 homeButton.repaint();
             }
@@ -201,8 +223,7 @@ public class MenuPanel extends JPanel{
             }
         });
 
-        Image scaledButtonExercise = buttonIconExercise.getImage().getScaledInstance(151, 40, Image.SCALE_SMOOTH);
-        scaledButtonExerciseIcon = new ImageIcon(scaledButtonExercise);
+
 
         /**Exercises button*/
         exercisesButton.setFont(new Font("Arial", Font.PLAIN,height/35));
@@ -391,6 +412,7 @@ public class MenuPanel extends JPanel{
 
 
         /**Settings Button*/
+
         settingsButton.setFont(new Font("Arial", Font.PLAIN,height/35));
         settingsButton.setForeground(Color.WHITE);
         settingsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -410,11 +432,7 @@ public class MenuPanel extends JPanel{
             @Override
             public void mouseEntered(MouseEvent e) {
                 isHovered = true;
-                if(lightMode){
-                    settingsButton.setBackground(new Color(230, 230, 230));
-                }else{
-                    settingsButton.setBackground(new Color(40,40,40));
-                }
+                settingsButton.setBackground(AppThemeColors.buttonBGHovered);
                 settingsButton.repaint();
             }
 
@@ -422,11 +440,7 @@ public class MenuPanel extends JPanel{
             public void mouseExited(MouseEvent e) {
                 isHovered = false;
                 if(!settingsPageIsActive[0]){
-                    if(lightMode){
-                        settingsButton.setBackground(Color.WHITE);
-                    }else{
-                        settingsButton.setBackground(bg3);
-                    }
+                    settingsButton.setBackground(AppThemeColors.buttonBG);
                 }
                 settingsButton.repaint();
             }
@@ -494,18 +508,14 @@ public class MenuPanel extends JPanel{
         chatButton.setFocusable(false);
         chatButton.setBorderPainted(false);
         chatButton.setContentAreaFilled(true);
-        chatButton.setBackground(bg3);
+        chatButton.setBackground(AppThemeColors.buttonBG);
 
         chatButton.addMouseListener(new MouseAdapter() {
             private boolean isHovered = false;
             @Override
             public void mouseEntered(MouseEvent e) {
                 isHovered = true;
-                if(lightMode){
-                    chatButton.setBackground(new Color(230, 230, 230));
-                }else{
-                    chatButton.setBackground(new Color(40,40,40));
-                }
+                chatButton.setBackground(AppThemeColors.buttonBGHovered);
                 chatButton.repaint();
             }
 
@@ -513,36 +523,25 @@ public class MenuPanel extends JPanel{
             public void mouseExited(MouseEvent e) {
                 isHovered = false;
                 if(!chatPageIsActive[0]){
-                    if(lightMode){
-                        chatButton.setBackground(Color.WHITE);
-                    }else{
-                        chatButton.setBackground(bg4);
-                    }
+                    chatButton.setBackground(AppThemeColors.buttonBG);
                 }
                 chatButton.repaint();
             }
 
             @Override
             public void mousePressed(MouseEvent e) {
+                currentPage = 4;
                 exercisesPageIsActive[0] = false;
                 programPageIsActive[0] = false;
                 settingsPageIsActive[0] = false;
                 homePageIsActive[0] = false;
                 chatPageIsActive[0] = true;
 
-                if(lightMode){
-                    homeButton.setBackground(Color.WHITE);
-                    programButton.setBackground(Color.WHITE);
-                    exercisesButton.setBackground(Color.WHITE);
-                    settingsButton.setBackground(Color.WHITE);
-                    chatButton.setBackground(new Color(220, 220, 220));
-                }else{
-                    homeButton.setBackground(new Color(51,51,51));
-                    programButton.setBackground(new Color(51,51,51));
-                    exercisesButton.setBackground(new Color(51,51,51));
-                    settingsButton.setBackground(new Color(51,51,51));
-                    chatButton.setBackground(new Color(30,30,30));
-                }
+                homeButton.setBackground(AppThemeColors.PRIMARY);
+                programButton.setBackground(AppThemeColors.PRIMARY);
+                exercisesButton.setBackground(AppThemeColors.PRIMARY);
+                settingsButton.setBackground(AppThemeColors.PRIMARY);
+                chatButton.setBackground(AppThemeColors.PRIMARY);
                 ApplicationWindow.switchWindow("chat");
                 settingsButton.repaint();
             }
@@ -585,6 +584,31 @@ public class MenuPanel extends JPanel{
         this.add(logoContainer, BorderLayout.NORTH);
         this.add(buttonContainer, BorderLayout.CENTER);
 
+
+        switch (SettingsPanel.currentTheme){
+            case "dark"->{
+                scaledbuttonHomeIcon = buttonIcon.getImage().getScaledInstance(151, 40, Image.SCALE_SMOOTH);
+                scaledButtonHomeIcon = new ImageIcon(scaledbuttonHomeIcon);
+
+                scaledButtonExercise = buttonIconExercise.getImage().getScaledInstance(151, 40, Image.SCALE_SMOOTH);
+                scaledButtonExerciseIcon = new ImageIcon(scaledButtonExercise);
+
+                scaledButtonSettings = buttonIconSettings.getImage().getScaledInstance(151, 40, Image.SCALE_SMOOTH);
+                scaledButtonSettingsIcon = new ImageIcon(scaledButtonSettings);
+            }
+            case "light"->{
+                scaleddarkButtonHomeIcon = darkButtonIcon.getImage().getScaledInstance(151,30, Image.SCALE_SMOOTH);
+                scaledDarkButtonHomeIcon = new ImageIcon(scaleddarkButtonHomeIcon);
+
+                scaleddarkButtonExerciseIcon = darkButtonIconExercise.getImage().getScaledInstance(151,30, Image.SCALE_SMOOTH);
+                scaledDarkButtonExerciseIcon = new ImageIcon(scaleddarkButtonExerciseIcon);
+
+                scaleddarkButtonSettingsIcon = darkButtonIconSettings.getImage().getScaledInstance(151,30, Image.SCALE_SMOOTH);
+                scaledDarkButtonSettingsIcon = new ImageIcon(scaleddarkButtonSettingsIcon);
+
+            }
+        }
+
         //Handles the resizing of the components
         this.addComponentListener(new ComponentAdapter() {
             @Override
@@ -598,16 +622,13 @@ public class MenuPanel extends JPanel{
 
                     logoLabelText.setFont(font.deriveFont((float) (getHeight()/17)));
 
-                    Image scaledbuttonHomeIcon = buttonIcon.getImage().getScaledInstance(getWidth(), (int)(getHeight()/13.5), Image.SCALE_SMOOTH);
-                    scaledButtonHomeIcon = new ImageIcon(scaledbuttonHomeIcon);
-                    homeButton.setIcon(scaledButtonHomeIcon);
+
+
+
                     homeButton.setPreferredSize(new Dimension(getWidth(),(int)(getHeight()/13.5)));
                     homeButton.setMaximumSize(new Dimension(getWidth(),(int)(getHeight()/13.5)));
                     homeButton.setFont(new Font("Arial", Font.PLAIN,getHeight()/35));
 
-                    Image scaledButtonExercise = buttonIconExercise.getImage().getScaledInstance(getWidth(), (int)(getHeight()/13.5), Image.SCALE_SMOOTH);
-                    scaledButtonExerciseIcon = new ImageIcon(scaledButtonExercise);
-                    exercisesButton.setIcon(scaledButtonExerciseIcon);
                     exercisesButton.setPreferredSize(new Dimension(getWidth(),(int)(getHeight()/13.5)));
                     exercisesButton.setMaximumSize(new Dimension(getWidth(),(int)(getHeight()/13.5)));
                     exercisesButton.setFont(new Font("Arial", Font.PLAIN,getHeight()/35));
@@ -616,12 +637,11 @@ public class MenuPanel extends JPanel{
                     programButton.setMaximumSize(new Dimension(getWidth(),(int)(getHeight()/13.5)));
                     programButton.setFont(new Font("Arial", Font.PLAIN,getHeight()/35));
 
-                    Image scaledButtonSettings = buttonIconSettings.getImage().getScaledInstance(getWidth(), (int)(getHeight()/13.5), Image.SCALE_SMOOTH);
-                    scaledButtonSettingsIcon = new ImageIcon(scaledButtonSettings);
-                    settingsButton.setIcon(scaledButtonSettingsIcon);
                     settingsButton.setPreferredSize(new Dimension(getWidth(),(int)(getHeight()/13.5)));
                     settingsButton.setMaximumSize(new Dimension(getWidth(),(int)(getHeight()/13.5)));
                     settingsButton.setFont(new Font("Arial", Font.PLAIN,getHeight()/35));
+
+
 
                     chatButton.setIcon(scaledButtonSettingsIcon);
                     chatButton.setPreferredSize(new Dimension(getWidth(),(int)(getHeight()/13.5)));
@@ -629,10 +649,41 @@ public class MenuPanel extends JPanel{
                     chatButton.setFont(new Font("Arial", Font.PLAIN,getHeight()/35));
 
 
+                    switch (SettingsPanel.currentTheme){
+                        case "dark"->{
+                            scaledbuttonHomeIcon = buttonIcon.getImage().getScaledInstance(getWidth(), (int)(getHeight()/13.5), Image.SCALE_SMOOTH);
+                            scaledButtonHomeIcon = new ImageIcon(scaledbuttonHomeIcon);
+                            scaledButtonExercise = buttonIconExercise.getImage().getScaledInstance(getWidth(), (int)(getHeight()/13.5), Image.SCALE_SMOOTH);
+                            scaledButtonExerciseIcon = new ImageIcon(scaledButtonExercise);
+                            scaledButtonSettings = buttonIconSettings.getImage().getScaledInstance(getWidth(), (int)(getHeight()/13.5), Image.SCALE_SMOOTH);
+                            scaledButtonSettingsIcon = new ImageIcon(scaledButtonSettings);
+                            scaledButtonChat = buttonIconChat.getImage().getScaledInstance(getWidth(),(int)(getHeight()/13.5), Image.SCALE_SMOOTH);
+                            scaledButtonChatIcon = new ImageIcon(scaledButtonChat);
+
+                            homeButton.setIcon(scaledButtonHomeIcon);
+                            exercisesButton.setIcon(scaledButtonExerciseIcon);
+                            settingsButton.setIcon(scaledButtonSettingsIcon);
+                            chatButton.setIcon(scaledButtonChatIcon);
+                        }
+                        case "light"->{
+                            scaleddarkButtonHomeIcon = darkButtonIcon.getImage().getScaledInstance(getWidth(),(int)(getHeight()/13.5), Image.SCALE_SMOOTH);
+                            scaledDarkButtonHomeIcon = new ImageIcon(scaleddarkButtonHomeIcon);
+                            scaleddarkButtonExerciseIcon = darkButtonIconExercise.getImage().getScaledInstance(getWidth(), (int)(getHeight()/13.5), Image.SCALE_SMOOTH);
+                            scaledDarkButtonExerciseIcon = new ImageIcon(scaleddarkButtonExerciseIcon);
+                            scaleddarkButtonSettingsIcon = darkButtonIconSettings.getImage().getScaledInstance(getWidth(), (int)(getHeight()/13.5), Image.SCALE_SMOOTH);
+                            scaledDarkButtonSettingsIcon = new ImageIcon(scaleddarkButtonSettingsIcon);
+                            scaleddarkButtonChatIcon = darkButtonIconChat.getImage().getScaledInstance(getWidth(),(int)(getHeight()/13.5), Image.SCALE_SMOOTH);
+                            scaledDarkButtonChatIcon = new ImageIcon(scaleddarkButtonChatIcon);
+
+                            homeButton.setIcon(scaledDarkButtonHomeIcon);
+                            exercisesButton.setIcon(scaledDarkButtonExerciseIcon);
+                            settingsButton.setIcon(scaledDarkButtonSettingsIcon);
+                            chatButton.setIcon(scaledDarkButtonChatIcon);
+                        }
+                    }
 
                     revalidate();
                     repaint();
-
                 });
             }
         });
@@ -640,35 +691,44 @@ public class MenuPanel extends JPanel{
 
     public void updateButtonColor(){
 
-        if(!SettingsPanel.lightMode){
-            logoLabelText.setForeground(Color.WHITE);
-            lightMode = false;
+        switch(SettingsPanel.currentTheme){
+            case "dark"->{
+                logoLabelText.setForeground(Color.WHITE);
+                lightMode = false;
 
-            homeButton.setForeground(AppThemeColors.foregroundColor);
-            exercisesButton.setForeground(AppThemeColors.foregroundColor);
-            programButton.setForeground(AppThemeColors.foregroundColor);
-            settingsButton.setForeground(AppThemeColors.foregroundColor);
+                homeButton.setForeground(AppThemeColors.foregroundColor);
+                exercisesButton.setForeground(AppThemeColors.foregroundColor);
+                programButton.setForeground(AppThemeColors.foregroundColor);
+                settingsButton.setForeground(AppThemeColors.foregroundColor);
+                chatButton.setForeground(AppThemeColors.foregroundColor);
+            }
 
-        }else{
-            logoLabelText.setForeground(AppThemeColors.foregroundColor);
-            lightMode = true;
+            case "light"->{
+                logoLabelText.setForeground(AppThemeColors.foregroundColor);
+                lightMode = true;
 
-            homeButton.setForeground(AppThemeColors.foregroundColor);
-            exercisesButton.setForeground(AppThemeColors.foregroundColor);
-            programButton.setForeground(AppThemeColors.foregroundColor);
-            settingsButton.setForeground(AppThemeColors.foregroundColor);
+                homeButton.setForeground(AppThemeColors.foregroundColor);
+                exercisesButton.setForeground(AppThemeColors.foregroundColor);
+                programButton.setForeground(AppThemeColors.foregroundColor);
+                settingsButton.setForeground(AppThemeColors.foregroundColor);
+                chatButton.setForeground(AppThemeColors.foregroundColor);
+            }
         }
+
         homeButton.setBackground(AppThemeColors.buttonBG);
         exercisesButton.setBackground(AppThemeColors.buttonBG);
         programButton.setBackground(AppThemeColors.buttonBG);
         settingsButton.setBackground(AppThemeColors.buttonBG);
+        chatButton.setBackground(AppThemeColors.buttonBG);
 
         switch (currentPage){
             case 0-> homeButton.setBackground(AppThemeColors.buttonBGSelected);
             case 1-> exercisesButton.setBackground(AppThemeColors.buttonBGSelected);
             case 2-> programButton.setBackground(AppThemeColors.buttonBGSelected);
             case 3-> settingsButton.setBackground(AppThemeColors.buttonBGSelected);
+            case 4-> chatButton.setBackground(AppThemeColors.buttonBGSelected);
         }
+
     }
 
 
@@ -685,8 +745,39 @@ public class MenuPanel extends JPanel{
                 g.drawImage(lightMenuBackground.getImage(), 0, 0, getWidth(), getHeight(), this);
                 updateButtonColor();
             }
+        }
 
+        switch (SettingsPanel.currentTheme){
+            case "dark"->{
+                scaledbuttonHomeIcon = buttonIcon.getImage().getScaledInstance(getWidth(), (int)(getHeight()/13.5), Image.SCALE_SMOOTH);
+                scaledButtonHomeIcon = new ImageIcon(scaledbuttonHomeIcon);
+                scaledButtonExercise = buttonIconExercise.getImage().getScaledInstance(getWidth(), (int)(getHeight()/13.5), Image.SCALE_SMOOTH);
+                scaledButtonExerciseIcon = new ImageIcon(scaledButtonExercise);
+                scaledButtonSettings = buttonIconSettings.getImage().getScaledInstance(getWidth(), (int)(getHeight()/13.5), Image.SCALE_SMOOTH);
+                scaledButtonSettingsIcon = new ImageIcon(scaledButtonSettings);
+                scaledButtonChat = buttonIconChat.getImage().getScaledInstance(getWidth(),(int)(getHeight()/13.5), Image.SCALE_SMOOTH);
+                scaledButtonChatIcon = new ImageIcon(scaledButtonChat);
 
+                homeButton.setIcon(scaledButtonHomeIcon);
+                exercisesButton.setIcon(scaledButtonExerciseIcon);
+                settingsButton.setIcon(scaledButtonSettingsIcon);
+                chatButton.setIcon(scaledButtonChatIcon);
+            }
+            case "light"->{
+                scaleddarkButtonHomeIcon = darkButtonIcon.getImage().getScaledInstance(getWidth(),(int)(getHeight()/13.5), Image.SCALE_SMOOTH);
+                scaledDarkButtonHomeIcon = new ImageIcon(scaleddarkButtonHomeIcon);
+                scaleddarkButtonExerciseIcon = darkButtonIconExercise.getImage().getScaledInstance(getWidth(), (int)(getHeight()/13.5), Image.SCALE_SMOOTH);
+                scaledDarkButtonExerciseIcon = new ImageIcon(scaleddarkButtonExerciseIcon);
+                scaleddarkButtonSettingsIcon = darkButtonIconSettings.getImage().getScaledInstance(getWidth(), (int)(getHeight()/13.5), Image.SCALE_SMOOTH);
+                scaledDarkButtonSettingsIcon = new ImageIcon(scaleddarkButtonSettingsIcon);
+                scaleddarkButtonChatIcon = darkButtonIconChat.getImage().getScaledInstance(getWidth(),(int)(getHeight()/13.5), Image.SCALE_SMOOTH);
+                scaledDarkButtonChatIcon = new ImageIcon(scaleddarkButtonChatIcon);
+
+                homeButton.setIcon(scaledDarkButtonHomeIcon);
+                exercisesButton.setIcon(scaledDarkButtonExerciseIcon);
+                settingsButton.setIcon(scaledDarkButtonSettingsIcon);
+                chatButton.setIcon(scaledDarkButtonChatIcon);
+            }
         }
     }
 }

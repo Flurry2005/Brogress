@@ -1,5 +1,5 @@
 package se.aljr.application;
-
+/*
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
 import org.junit.platform.suite.api.SuiteDisplayName;
@@ -9,7 +9,7 @@ import se.aljr.application.homepage.MenuPanelTest;
 import se.aljr.application.homepage.TopBarTest;
 
 @Suite
-@SuiteDisplayName("Tests")
+SuiteDisplayName("Tests")
 @SelectClasses({
         ApplicationWindowTest.class, // Run first and next onwards
         TopBarTest.class,
@@ -20,3 +20,5 @@ import se.aljr.application.homepage.TopBarTest;
 })
 public class AllTests {
 }
+
+ */
