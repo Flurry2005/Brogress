@@ -94,6 +94,7 @@ public class ProgramPanel extends JPanel {
     DefaultListModel<String> workoutTitleDefaultListModel = new DefaultListModel<>();
     JList<String> savedWorkoutsList = new JList<>(workoutTitleDefaultListModel);
     WorkoutsList workoutsList;
+    JLabel savedWorkoutsLabel;
 
     public static Color settingsPanelColor;
     public static Color workoutPanelTextColor;
@@ -151,7 +152,7 @@ public class ProgramPanel extends JPanel {
 
         this.setSize(width, height);
         this.setOpaque(false);
-        this.setBackground(new Color(31, 31, 31));
+        this.setBackground(AppThemeColors.SECONDARY);
         this.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
         init();
     }
@@ -171,7 +172,7 @@ public class ProgramPanel extends JPanel {
         // Main panel holding everything
 
         mainPanel.setOpaque(true);
-        mainPanel.setBackground(new Color(51, 51, 51));
+        mainPanel.setBackground(AppThemeColors.PRIMARY);
         mainPanel.setBounds(0,0,programPanelWidth,programPanelHeight);
         //mainPanel.setBackground(Color.GREEN);
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
@@ -185,7 +186,7 @@ public class ProgramPanel extends JPanel {
         workoutScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         workoutScrollPane.getVerticalScrollBar().setPreferredSize(new Dimension(0, 0));
         workoutScrollPane.getVerticalScrollBar().setUnitIncrement(6);
-        workoutScrollPane.getViewport().setBackground(new Color(22, 22, 22));
+        workoutScrollPane.getViewport().setBackground(AppThemeColors.panelColor);
         workoutScrollPane.setBorder(new LineBorder(new Color(80, 73, 69), 1));
 
         //Statuspanel
@@ -233,7 +234,7 @@ public class ProgramPanel extends JPanel {
         workoutContainer.setLayout(new BoxLayout(workoutContainer, BoxLayout.Y_AXIS));
         workoutContainer.setOpaque(false);
         workoutContainer.setForeground(new Color(204, 204, 204));
-        workoutContainer.setBackground(new Color(22, 22, 22));
+        workoutContainer.setBackground(AppThemeColors.panelColor);
         workoutScrollPane.setViewportView(workoutContainer); //workoutScrollPane will show the content of workoutContainer
 
 
@@ -242,7 +243,7 @@ public class ProgramPanel extends JPanel {
         savedWorkoutsPanel.setMinimumSize(new Dimension(getWidth() / 5, getHeight()));
         savedWorkoutsPanel.setMaximumSize(new Dimension(getWidth() / 5, getHeight()));
         savedWorkoutsPanel.setOpaque(true);
-        savedWorkoutsPanel.setBackground(new Color(51, 51, 51));
+        savedWorkoutsPanel.setBackground(AppThemeColors.PRIMARY);
 
         JPanel savedWorkoutsPanelTop = new JPanel();
         savedWorkoutsPanelTop.setLayout(new BoxLayout(savedWorkoutsPanelTop, BoxLayout.X_AXIS));
@@ -250,13 +251,14 @@ public class ProgramPanel extends JPanel {
         savedWorkoutsPanelTop.setPreferredSize(new Dimension(getWidth() / 5, getHeight() / 20));
         savedWorkoutsPanelTop.setMinimumSize(new Dimension(getWidth() / 5, getHeight() / 20));
         savedWorkoutsPanelTop.setMaximumSize(new Dimension(getWidth() / 5, getHeight() / 20));
-        savedWorkoutsPanelTop.setBackground(new Color(51, 51, 51));
+        savedWorkoutsPanelTop.setBackground(AppThemeColors.PRIMARY);
         savedWorkoutsPanelTop.setBorder(new LineBorder(new Color(80, 73, 69)));
 
-        JLabel savedWorkoutsLabel = new JLabel("My workouts");
+
+        savedWorkoutsLabel = new JLabel("My workouts");
         savedWorkoutsLabel.setMaximumSize(new Dimension((int)(savedWorkoutsPanelTop.getPreferredSize().width/4),(int)(savedWorkoutsPanelTop.getPreferredSize().height)));
         savedWorkoutsLabel.setFont(CustomFont.getFont().deriveFont(24f));
-        savedWorkoutsLabel.setForeground(Color.white);
+        savedWorkoutsLabel.setForeground(AppThemeColors.foregroundColor);
         savedWorkoutsLabel.setOpaque(false);
 
         // Select saved workouts
@@ -287,7 +289,7 @@ public class ProgramPanel extends JPanel {
                 }
                 workoutContainer.setLayout(new BoxLayout(workoutContainer, BoxLayout.Y_AXIS));
                 workoutContainer.setOpaque(false);
-                workoutContainer.setForeground(new Color(204, 204, 204));
+                workoutContainer.setForeground(AppThemeColors.foregroundColor);
                 workoutContainer.setBackground(new Color(22, 22, 22));
                 workoutContainer.setPreferredSize(new Dimension(target.getWidth(), target.getHeight()));
                 workoutContainer.setMinimumSize(target.getPreferredSize());
@@ -1153,7 +1155,8 @@ public class ProgramPanel extends JPanel {
                 addExerciseAndSetPanel.setBackground(AppThemeColors.PRIMARY);
                 savedWorkoutsPanel.setBackground(AppThemeColors.PRIMARY);
                 savedWorkoutsList.setBackground(AppThemeColors.panelColor);
-                savedWorkoutsList.setForeground(workoutPanelTextColor);
+                savedWorkoutsList.setForeground(AppThemeColors.foregroundColor);
+                savedWorkoutsLabel.setForeground(AppThemeColors.foregroundColor);
 
                 for(Workout workout : workoutsList){
                     for (Component comp1 : workout.getComponents()) {
@@ -1267,6 +1270,7 @@ public class ProgramPanel extends JPanel {
                 savedWorkoutsPanel.setBackground(AppThemeColors.PRIMARY);
                 savedWorkoutsList.setBackground(AppThemeColors.panelColor);
                 savedWorkoutsList.setForeground(workoutPanelTextColor);
+
 
                 for(Workout workout : workoutsList){
                     for (Component comp1 : workout.getComponents()) {

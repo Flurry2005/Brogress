@@ -1,5 +1,6 @@
 package se.aljr.application.programplanner;
 
+import se.aljr.application.AppThemeColors;
 import se.aljr.application.CustomFont;
 import se.aljr.application.ResourcePath;
 import se.aljr.application.UserData;
@@ -44,6 +45,8 @@ public class SearchPanel extends JPanel {
     private ImageIcon addButton;
     private Image scaledAddButton;
     private ImageIcon scaledAddButtonIcon;
+    static JPanel exercisesPanelTop = new JPanel();
+    static JTextField searchField = new JTextField();
 
     public SearchPanel(int width, int height, JButton newExerciseButton) {
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -56,19 +59,19 @@ public class SearchPanel extends JPanel {
 
     public void init(JButton newExcerciseButton) {
 
-        JPanel exercisesPanelTop = new JPanel();
+
         exercisesPanelTop.setLayout(new BoxLayout(exercisesPanelTop, BoxLayout.X_AXIS));
         exercisesPanelTop.setOpaque(true);
-        exercisesPanelTop.setBackground(new Color(51, 51, 51));
+        exercisesPanelTop.setBackground(AppThemeColors.PRIMARY);
         exercisesPanelTop.setPreferredSize(new Dimension(ProgramPanel.programPanelWidth / 5, ProgramPanel.programPanelHeight / 20));
         exercisesPanelTop.setMinimumSize(exercisesPanelTop.getPreferredSize());
         exercisesPanelTop.setMaximumSize(exercisesPanelTop.getPreferredSize());
 
-        JTextField searchField = new JTextField();
+
         searchField.setFont(new Font("Arial", Font.ITALIC, (int) (ProgramPanel.programPanelHeight / 55.25)));
         searchField.setBorder(new LineBorder(new Color(80, 73, 69)));
-        searchField.setBackground(new Color(21, 21, 21));
-        searchField.setForeground(new Color(204, 204, 204));
+        searchField.setBackground(AppThemeColors.textFieldColor);
+        searchField.setForeground(AppThemeColors.foregroundColor);
         searchField.setPreferredSize(new Dimension((int) (getPreferredSize().width / 1.5), (int) (ProgramPanel.programPanelHeight / 22.1)));
         searchField.setMinimumSize(searchField.getPreferredSize());
         searchField.setMaximumSize(searchField.getPreferredSize());
@@ -95,8 +98,8 @@ public class SearchPanel extends JPanel {
         }
         // Display muscles when using filter option
 
-        muscleJList.setBackground(new Color(51, 51, 51));
-        muscleJList.setForeground(Color.white);
+        muscleJList.setBackground(AppThemeColors.PRIMARY);
+        muscleJList.setForeground(AppThemeColors.foregroundColor);
 
         JScrollPane muscleScroll = new JScrollPane(muscleJList);
         muscleScroll.setBorder(null);
@@ -115,17 +118,17 @@ public class SearchPanel extends JPanel {
 
         menuList = new JList<>(exerciseModel);
         menuList.setFont(font.deriveFont(17f));
-        menuList.setBackground(new Color(21, 21, 21));
-        menuList.setForeground(Color.WHITE);
+        menuList.setBackground(AppThemeColors.panelColor);
+        menuList.setForeground(AppThemeColors.foregroundColor);
         menuList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         menuList.setSelectionBackground(new Color(49, 84, 122));
-        menuList.setSelectionForeground(new Color(204, 204, 204));
+        menuList.setSelectionForeground(AppThemeColors.foregroundColor);
 
         // Create layout for the panel
         JPanel searchContainer = new JPanel();
         searchContainer.setBorder(null);
         searchContainer.setLayout(new BorderLayout());
-        searchContainer.setBackground(new Color(21, 21, 21));
+        searchContainer.setBackground(AppThemeColors.panelColor);
         searchContainer.setPreferredSize(new Dimension(this.getPreferredSize().width, (int) (getPreferredSize().height / 12.75)));
         searchContainer.setMaximumSize(searchContainer.getPreferredSize());
         searchContainer.setMinimumSize(searchContainer.getPreferredSize());
@@ -136,22 +139,22 @@ public class SearchPanel extends JPanel {
         exerciseScrollPanel.setPreferredSize(new Dimension(getPreferredSize().width, getPreferredSize().height * 8 / 10 - searchContainer.getPreferredSize().height));
         exerciseScrollPanel.setMaximumSize(exerciseScrollPanel.getPreferredSize());
 
-        sortMuscleButton.setBackground(new Color(51, 51, 51));
-        sortMuscleButton.setForeground(Color.white);
+        sortMuscleButton.setBackground(AppThemeColors.PRIMARY);
+        sortMuscleButton.setForeground(AppThemeColors.foregroundColor);
         sortMuscleButton.setPreferredSize(new Dimension((int) (searchContainer.getPreferredSize().getWidth() / 4), getPreferredSize().height / 10));
         sortMuscleButton.setMaximumSize(new Dimension((int) (searchContainer.getPreferredSize().getWidth() / 4), getPreferredSize().height / 10));
         sortMuscleButton.setMinimumSize(new Dimension((int) (searchContainer.getPreferredSize().getWidth() / 4), getPreferredSize().height / 10));
         sortMuscleButton.setBorder(new LineBorder(new Color(80, 73, 69), 1, true));
 
-        showFavorites.setForeground(Color.white);
-        showFavorites.setBackground(new Color(51, 51, 51));
+        showFavorites.setForeground(AppThemeColors.foregroundColor);
+        showFavorites.setBackground(AppThemeColors.PRIMARY);
         showFavorites.setPreferredSize(new Dimension((int) (searchContainer.getPreferredSize().width / 4), getPreferredSize().height / 12));
         showFavorites.setMaximumSize(new Dimension((int) (searchContainer.getPreferredSize().width / 4), getPreferredSize().height / 12));
         showFavorites.setMinimumSize(new Dimension((int) (searchContainer.getPreferredSize().width / 4), getPreferredSize().height / 12));
         showFavorites.setBorder(new LineBorder(new Color(80, 73, 69), 1, true));
 
-        myExercises.setForeground(Color.white);
-        myExercises.setBackground(new Color(51, 51, 51));
+        myExercises.setForeground(AppThemeColors.foregroundColor);
+        myExercises.setBackground(AppThemeColors.PRIMARY);
         myExercises.setPreferredSize(new Dimension((int) (searchContainer.getPreferredSize().width / 4), getPreferredSize().height / 10));
         myExercises.setMaximumSize(new Dimension((int) (searchContainer.getPreferredSize().width / 4), getPreferredSize().height / 10));
         myExercises.setMinimumSize(new Dimension((int) (searchContainer.getPreferredSize().width / 4), getPreferredSize().height / 10));
@@ -159,7 +162,7 @@ public class SearchPanel extends JPanel {
 
         JButton createExerciseButton = new JButton("New exercise");
         createExerciseButton.setBackground(new Color(46, 148, 76));
-        createExerciseButton.setForeground(Color.white);
+        createExerciseButton.setForeground(Color.WHITE);
         createExerciseButton.setBorder(new LineBorder(new Color(80, 73, 69), 1, true));
         createExerciseButton.setPreferredSize(new Dimension(this.getPreferredSize().width, getPreferredSize().height / 24));
         createExerciseButton.setMaximumSize(new Dimension(this.getPreferredSize().width, getPreferredSize().height / 24));
@@ -214,12 +217,12 @@ public class SearchPanel extends JPanel {
                     muscleJList.clearSelection();
                     menuList.setModel(new DefaultListModel<>());
                     sortMuscleButton.setBackground(new Color(49, 84, 122));
-                    showFavorites.setBackground(new Color(51, 51, 51));
-                    myExercises.setBackground(new Color(51, 51, 51));
+                    showFavorites.setBackground(AppThemeColors.PRIMARY);
+                    myExercises.setBackground(AppThemeColors.PRIMARY);
                     muscleScroll.setVisible(true);
                 } else {
                     muscleScroll.setVisible(false);
-                    sortMuscleButton.setBackground(new Color(51, 51, 51));
+                    sortMuscleButton.setBackground(AppThemeColors.PRIMARY);
                 }
                 repaint();
                 revalidate();
@@ -251,8 +254,8 @@ public class SearchPanel extends JPanel {
                     menuList.setModel(favExerciseModel);
                     muscleScroll.setVisible(false);
                     showFavorites.setBackground(new Color(49, 84, 122));
-                    sortMuscleButton.setBackground(new Color(51, 51, 51));
-                    myExercises.setBackground(new Color(51, 51, 51));
+                    sortMuscleButton.setBackground(AppThemeColors.PRIMARY);
+                    myExercises.setBackground(AppThemeColors.PRIMARY);
                     menuList.setSelectionBackground(new Color(49, 84, 122));
                     try {
                         UserData.updateFavoriteExercises();
@@ -267,7 +270,7 @@ public class SearchPanel extends JPanel {
                     }
                     updateMenuList("favExerciseModel");
                 } else {
-                    showFavorites.setBackground(new Color(51, 51, 51));
+                    showFavorites.setBackground(AppThemeColors.PRIMARY);
                     menuList.setModel(exerciseModel);
                 }
                 repaint();
@@ -292,13 +295,13 @@ public class SearchPanel extends JPanel {
                         throw new RuntimeException(ex);
                     }
                     myExercises.setBackground(new Color(49, 84, 122));
-                    sortMuscleButton.setBackground(new Color(51, 51, 51));
-                    showFavorites.setBackground(new Color(51, 51, 51));
+                    sortMuscleButton.setBackground(AppThemeColors.PRIMARY);
+                    showFavorites.setBackground(AppThemeColors.PRIMARY);
                     muscleScroll.setVisible(false);
                     updateMenuList("myExerciseModel");
                     menuList.setModel(myExerciseModel);
                 } else {
-                    myExercises.setBackground(new Color(51, 51, 51));
+                    myExercises.setBackground(AppThemeColors.PRIMARY);
                     menuList.setModel(exerciseModel);
                 }
                 repaint();
@@ -314,9 +317,9 @@ public class SearchPanel extends JPanel {
                 updateMenuList("exerciseModel");
                 muscleScroll.setVisible(false);
                 menuList.setModel(exerciseModel);
-                sortMuscleButton.setBackground(new Color(51, 51, 51));
-                showFavorites.setBackground(new Color(51, 51, 51));
-                myExercises.setBackground(new Color(51, 51, 51));
+                sortMuscleButton.setBackground(AppThemeColors.PRIMARY);
+                showFavorites.setBackground(AppThemeColors.PRIMARY);
+                myExercises.setBackground(AppThemeColors.PRIMARY);
                 revalidate();
                 repaint();
             }
@@ -403,6 +406,22 @@ public class SearchPanel extends JPanel {
         }
         menuList.revalidate();
         menuList.repaint();
+    }
+
+    public static void updateColors(){
+        exercisesPanelTop.setBackground(AppThemeColors.PRIMARY);
+        searchField.setBackground(AppThemeColors.textFieldColor);
+        searchField.setForeground(AppThemeColors.foregroundColor);
+        sortMuscleButton.setForeground(AppThemeColors.foregroundColor);
+        showFavorites.setForeground(AppThemeColors.foregroundColor);
+        myExercises.setForeground(AppThemeColors.foregroundColor);
+        sortMuscleButton.setBackground(AppThemeColors.PRIMARY);
+        showFavorites.setBackground(AppThemeColors.PRIMARY);
+        myExercises.setBackground(AppThemeColors.PRIMARY);
+        muscleJList.setBackground(AppThemeColors.PRIMARY);
+        muscleJList.setForeground(AppThemeColors.foregroundColor);
+        menuList.setBackground(AppThemeColors.panelColor);
+        menuList.setForeground(AppThemeColors.foregroundColor);
     }
 
     public static Exercise getSelectedExercise() {

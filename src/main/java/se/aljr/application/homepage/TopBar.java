@@ -1,5 +1,6 @@
 package se.aljr.application.homepage;
 
+import se.aljr.application.AppThemeColors;
 import se.aljr.application.ResourcePath;
 import se.aljr.application.settings.SettingsPanel;
 
@@ -88,12 +89,12 @@ public class TopBar extends JPanel {
         exitButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-                exitButton.setBackground(new Color(40,40,40));
+                exitButton.setBackground(AppThemeColors.buttonBGHovered);
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                exitButton.setBackground(bg);
+                exitButton.setBackground(AppThemeColors.SECONDARY);
             }
         });
         exitButton.addActionListener(_ -> System.exit(0));
@@ -112,12 +113,12 @@ public class TopBar extends JPanel {
         minimizeButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-                minimizeButton.setBackground(new Color(40,40,40));
+                minimizeButton.setBackground(AppThemeColors.buttonBGHovered);
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                minimizeButton.setBackground(bg);
+                minimizeButton.setBackground(AppThemeColors.SECONDARY);
             }
         });
 
@@ -134,12 +135,12 @@ public class TopBar extends JPanel {
         fullscreenButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-                fullscreenButton.setBackground(new Color(40,40,40));
+                fullscreenButton.setBackground(AppThemeColors.buttonBGHovered);
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                fullscreenButton.setBackground(bg);
+                fullscreenButton.setBackground(AppThemeColors.SECONDARY);
             }
         });
         fullscreenButton.addActionListener(_ -> toggleFullscreen());
@@ -172,19 +173,17 @@ public class TopBar extends JPanel {
         //draw image from top left corner
 
         if(!SettingsPanel.lightMode){
-            bg = (new Color(51,51,51));
 
-            minimizeButton.setBackground(bg);
-            fullscreenButton.setBackground(bg);
-            exitButton.setBackground(bg);
+            minimizeButton.setBackground(AppThemeColors.SECONDARY);
+            fullscreenButton.setBackground(AppThemeColors.SECONDARY);
+            exitButton.setBackground(AppThemeColors.SECONDARY);
 
             g.drawImage(topBarBackground.getImage(), 0, 0,getWidth(),getHeight(), this);
         }else{
-            bg = (new Color(204,204,204));
 
-            minimizeButton.setBackground(bg);
-            fullscreenButton.setBackground(bg);
-            exitButton.setBackground(bg);
+            minimizeButton.setBackground(AppThemeColors.SECONDARY);
+            fullscreenButton.setBackground(AppThemeColors.SECONDARY);
+            exitButton.setBackground(AppThemeColors.SECONDARY);
 
             g.drawImage(lightTopBarBackground.getImage(), 0, 0,getWidth(),getHeight(), this);
         }

@@ -4,12 +4,14 @@ import se.aljr.application.AppThemeColors;
 import se.aljr.application.ApplicationWindow;
 import se.aljr.application.ResourcePath;
 import se.aljr.application.UserData;
+import se.aljr.application.chatpanel.ChatPanel;
 import se.aljr.application.exercise.CreateExerciseModule;
 import se.aljr.application.homepage.HomePanel;
 import se.aljr.application.homepage.MenuPanel;
 import se.aljr.application.homepage.TopBar;
 import se.aljr.application.loginpage.FirebaseManager;
 import se.aljr.application.programplanner.ProgramPanel;
+import se.aljr.application.programplanner.SearchPanel;
 import se.aljr.application.settings.custom.SteelCheckBoxUI;
 
 
@@ -68,7 +70,7 @@ public class SettingsPanel extends JPanel{
     ArrayList<String> themeList = new ArrayList<>();
 
     public static boolean lightMode = false;
-    public static String currentTheme = "Dark";
+    public static String currentTheme = "dark";
 
     //Buttons
     JButton generalSettingsButton = new JButton("General", scaledGeneralSettingsIcon);
@@ -1077,6 +1079,8 @@ public class SettingsPanel extends JPanel{
         CreateExerciseModule.instance.revalidate();
 
         ApplicationWindow.updateBackground();
+
+        SearchPanel.updateColors();
 
         repaint();
         revalidate();

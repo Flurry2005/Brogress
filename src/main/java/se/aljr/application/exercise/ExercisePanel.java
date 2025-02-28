@@ -113,7 +113,7 @@ public class ExercisePanel extends JPanel {
         editButton.setFocusPainted(false);
         editButton.setContentAreaFilled(false);
         editButton.setBackground(AppThemeColors.PRIMARY);
-        editButton.setForeground(new Color(204, 204, 204));
+        editButton.setForeground(AppThemeColors.foregroundColor);
         editButton.setFont(emojiFont);
         editButton.setBorder(null);
         editButton.setPreferredSize(new Dimension(mainPanel.getPreferredSize().width / 22, mainPanel.getPreferredSize().height / 10));
@@ -123,13 +123,13 @@ public class ExercisePanel extends JPanel {
             editButton.setForeground(new Color(22,22,22));
         }
         else {
-            editButton.setForeground(new Color(204, 204, 204));
+            editButton.setForeground(AppThemeColors.foregroundColor);
         }
 
         JButton removeButton = new JButton("\uD83D\uDDD1");
         removeButton.setFocusPainted(false);
         removeButton.setContentAreaFilled(false);
-        removeButton.setBackground(new Color(51, 51, 51));
+        removeButton.setBackground(AppThemeColors.PRIMARY);
         removeButton.setForeground(new Color(230, 39, 83));
         removeButton.setFont(emojiFont);
         removeButton.setBorder(null);
@@ -139,28 +139,28 @@ public class ExercisePanel extends JPanel {
         JButton favoriteButton = new JButton("\uD83D\uDCAA");
         favoriteButton.setFocusPainted(false);
         favoriteButton.setContentAreaFilled(false);
-        favoriteButton.setBackground(new Color(51, 51, 51));
-        favoriteButton.setForeground(new Color(21, 21, 21));
+        favoriteButton.setBackground(AppThemeColors.PRIMARY);
+        favoriteButton.setForeground(AppThemeColors.panelColor);
         favoriteButton.setFont(emojiFont);
         favoriteButton.setBorder(null);
         favoriteButton.setPreferredSize(new Dimension(mainPanel.getPreferredSize().width / 22, mainPanel.getPreferredSize().height / 10));
 
         titleLabel = new JTextArea();
         titleLabel.setFont(font.deriveFont(65.f));
-        titleLabel.setForeground(new Color(204, 204, 204));
+        titleLabel.setForeground(AppThemeColors.foregroundColor);
         titleLabel.setOpaque(false);
         titleLabel.setEditable(false);
 
         musclesWorkedLabel = new JLabel();
         musclesWorkedLabel.setFont(font.deriveFont(24f));
-        musclesWorkedLabel.setForeground(new Color(204, 204, 204));
+        musclesWorkedLabel.setForeground(AppThemeColors.foregroundColor);
         musclesWorkedLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 
         searchField.setFont(new Font("Arial", Font.ITALIC, 12));
         searchField.setBorder(new LineBorder(new Color(80, 73, 69)));
-        searchField.setBackground(new Color(21, 21, 21));
-        searchField.setForeground(new Color(204, 204, 204));
+        searchField.setBackground(AppThemeColors.panelColor);
+        searchField.setForeground(AppThemeColors.foregroundColor);
         searchField.setPreferredSize(new Dimension(130, 30));
 
         favExerciseModel = new DefaultListModel<>();
@@ -173,8 +173,8 @@ public class ExercisePanel extends JPanel {
         }
         // Display muscles when using filter option
 
-        muscleJList.setBackground(new Color(51, 51, 51));
-        muscleJList.setForeground(new Color(204, 204, 204));
+        muscleJList.setBackground(AppThemeColors.PRIMARY);
+        muscleJList.setForeground(AppThemeColors.foregroundColor);
 
         JScrollPane muscleScroll = new JScrollPane(muscleJList);
         muscleScroll.setBorder(null);
@@ -196,11 +196,11 @@ public class ExercisePanel extends JPanel {
 
         menuList = new JList<>(exerciseModel);
         menuList.setFont(font.deriveFont(17f));
-        menuList.setBackground(new Color(21, 21, 21));
-        menuList.setForeground(new Color(204, 204, 204));
+        menuList.setBackground(AppThemeColors.panelColor);
+        menuList.setForeground(AppThemeColors.foregroundColor);
         menuList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         menuList.setSelectionBackground(new Color(49, 84, 122));
-        menuList.setSelectionForeground(new Color(204, 204, 204));
+        menuList.setSelectionForeground(AppThemeColors.foregroundColor);
 
         JScrollPane exerciseScrollPanel = new JScrollPane(menuList);
         exerciseScrollPanel.setBorder(new LineBorder(new Color(80, 73, 69)));
@@ -209,34 +209,34 @@ public class ExercisePanel extends JPanel {
         // Create layout for the panel
         JPanel westPanel = new JPanel();
         westPanel.setLayout(new BoxLayout(westPanel, BoxLayout.Y_AXIS));
-        westPanel.setBackground(new Color(51, 51, 51));
+        westPanel.setBackground(AppThemeColors.PRIMARY);
         westPanel.setPreferredSize(new Dimension(mainPanel.getPreferredSize().width / 4, mainPanel.getPreferredSize().height / 8));
         westPanel.setBorder(new LineBorder(new Color(80, 73, 69), 1 / 2, true));
 
         JPanel searchContainer = new JPanel();
         searchContainer.setBorder(null);
         searchContainer.setLayout(new BorderLayout());
-        searchContainer.setBackground(new Color(21, 21, 21));
+        searchContainer.setBackground(AppThemeColors.panelColor);
         searchContainer.setPreferredSize(new Dimension(westPanel.getPreferredSize().width, getPreferredSize().height / 8));
         searchContainer.setMaximumSize(new Dimension(westPanel.getPreferredSize().width, getPreferredSize().height / 8));
         searchContainer.setMinimumSize(new Dimension(westPanel.getPreferredSize().width, getPreferredSize().height / 8));
 
-        sortMuscleButton.setBackground(new Color(51, 51, 51));
-        sortMuscleButton.setForeground(new Color(204, 204, 204));
+        sortMuscleButton.setBackground(AppThemeColors.PRIMARY);
+        sortMuscleButton.setForeground(AppThemeColors.foregroundColor);
         sortMuscleButton.setPreferredSize(new Dimension((int) (searchContainer.getPreferredSize().getWidth() / 4), getPreferredSize().height / 20));
         sortMuscleButton.setMaximumSize(new Dimension((int) (searchContainer.getPreferredSize().getWidth() / 4), getPreferredSize().height / 20));
         sortMuscleButton.setMinimumSize(new Dimension((int) (searchContainer.getPreferredSize().getWidth() / 4), getPreferredSize().height / 20));
         sortMuscleButton.setBorder(new LineBorder(new Color(80, 73, 69), 1, true));
 
-        showFavorites.setForeground(new Color(204, 204, 204));
-        showFavorites.setBackground(new Color(51, 51, 51));
+        showFavorites.setForeground(AppThemeColors.foregroundColor);
+        showFavorites.setBackground(AppThemeColors.PRIMARY);
         showFavorites.setPreferredSize(new Dimension(searchContainer.getPreferredSize().width / 4, getPreferredSize().height / 20));
         showFavorites.setMaximumSize(new Dimension(searchContainer.getPreferredSize().width / 4, getPreferredSize().height / 20));
         showFavorites.setMinimumSize(new Dimension(searchContainer.getPreferredSize().width / 4, getPreferredSize().height / 20));
         showFavorites.setBorder(new LineBorder(new Color(80, 73, 69), 1, true));
 
-        myExercises.setForeground(new Color(204, 204, 204));
-        myExercises.setBackground(new Color(51, 51, 51));
+        myExercises.setForeground(AppThemeColors.foregroundColor);
+        myExercises.setBackground(AppThemeColors.PRIMARY);
         myExercises.setPreferredSize(new Dimension(searchContainer.getPreferredSize().width / 4, getPreferredSize().height / 20));
         myExercises.setMaximumSize(new Dimension(searchContainer.getPreferredSize().width / 4, getPreferredSize().height / 20));
         myExercises.setMinimumSize(new Dimension(searchContainer.getPreferredSize().width / 4, getPreferredSize().height / 20));
@@ -244,14 +244,14 @@ public class ExercisePanel extends JPanel {
 
         createExerciseButton.setBackground(new Color(46, 148, 76));
         createExerciseButton.setText("Create new exercise");
-        createExerciseButton.setForeground(Color.WHITE);
+        createExerciseButton.setForeground(Color.white);
         createExerciseButton.setBorder(new LineBorder(new Color(80, 73, 69), 1, true));
         createExerciseButton.setPreferredSize(new Dimension(westPanel.getPreferredSize().width, getPreferredSize().height / 24));
         createExerciseButton.setMaximumSize(new Dimension(westPanel.getPreferredSize().width, getPreferredSize().height / 24));
         createExerciseButton.setMinimumSize(new Dimension(westPanel.getPreferredSize().width, getPreferredSize().height / 24));
 
         centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
-        centerPanel.setBackground(new Color(51, 51, 51));
+        centerPanel.setBackground(AppThemeColors.PRIMARY);
         centerPanel.setPreferredSize(new Dimension((int) (mainPanel.getPreferredSize().width / 2.5365), (int) (mainPanel.getPreferredSize().height / 1.1714)));
         centerPanel.setBorder(new EmptyBorder(0, centerPanel.getPreferredSize().width / 20, 0, centerPanel.getPreferredSize().width / 20));
 
@@ -263,7 +263,7 @@ public class ExercisePanel extends JPanel {
         imageLabel.setMinimumSize(new Dimension(centerPanel.getPreferredSize().width, centerPanel.getPreferredSize().height));
 
         eastPanel.setLayout(new BoxLayout(eastPanel, BoxLayout.Y_AXIS));
-        eastPanel.setBackground(new Color(51, 51, 51));
+        eastPanel.setBackground(AppThemeColors.PRIMARY);
         eastPanel.setPreferredSize(new Dimension(mainPanel.getPreferredSize().width / 4, mainPanel.getPreferredSize().height));
         eastPanel.setMinimumSize(new Dimension(mainPanel.getPreferredSize().width / 4, mainPanel.getPreferredSize().height));
         eastPanel.setMaximumSize(new Dimension(mainPanel.getPreferredSize().width / 4, mainPanel.getPreferredSize().height));
@@ -272,8 +272,8 @@ public class ExercisePanel extends JPanel {
         exerciseScrollPanel.setMaximumSize(new Dimension(getPreferredSize().width, getPreferredSize().height));
 
         aboutContainer.setLayout(new BorderLayout());
-        aboutContainer.setForeground(new Color(204, 204, 204));
-        aboutContainer.setBackground(new Color(51, 51, 51));
+        aboutContainer.setForeground(AppThemeColors.foregroundColor);
+        aboutContainer.setBackground(AppThemeColors.PRIMARY);
         aboutContainer.setPreferredSize(new Dimension(eastPanel.getPreferredSize().width, eastPanel.getPreferredSize().height / 2));
         aboutContainer.setMinimumSize(new Dimension(eastPanel.getPreferredSize().width, eastPanel.getPreferredSize().height / 2));
         aboutContainer.setMaximumSize(new Dimension(eastPanel.getPreferredSize().width, eastPanel.getPreferredSize().height / 2));
@@ -282,8 +282,8 @@ public class ExercisePanel extends JPanel {
         // Displays "About"
 
         aboutLabel.setText("About");
-        aboutLabel.setForeground(new Color(204, 204, 204));
-        aboutLabel.setBackground(new Color(51, 51, 51));
+        aboutLabel.setForeground(AppThemeColors.foregroundColor);
+        aboutLabel.setBackground(AppThemeColors.PRIMARY);
         aboutLabel.setOpaque(true);
         aboutLabel.setHorizontalAlignment(JLabel.CENTER);
         aboutLabel.setFont(font.deriveFont(24f));
@@ -299,8 +299,8 @@ public class ExercisePanel extends JPanel {
         // Displays "How to"
 
         formLabel.setText("How to");
-        formLabel.setForeground(new Color(204, 204, 204));
-        formLabel.setBackground(new Color(51, 51, 51));
+        formLabel.setForeground(AppThemeColors.foregroundColor);
+        formLabel.setBackground(AppThemeColors.PRIMARY);
         formLabel.setOpaque(true);
         formLabel.setHorizontalAlignment(JLabel.CENTER);
         formLabel.setVerticalAlignment(JLabel.BOTTOM);
@@ -309,22 +309,22 @@ public class ExercisePanel extends JPanel {
         formLabel.setBorder(new LineBorder(new Color(80, 73, 69), 1, true));
 
 
-        aboutText.setBackground(new Color(21, 21, 21));
-        aboutText.setForeground(new Color(204, 204, 204));
+        aboutText.setBackground(AppThemeColors.panelColor);
+        aboutText.setForeground(AppThemeColors.foregroundColor);
         aboutText.setFont(new Font("Arial", Font.PLAIN, 15));
         aboutText.setEditable(false);
         aboutText.setBorder(new LineBorder(new Color(80, 73, 69), 1, true));
         aboutText.setLineWrap(true);
         aboutText.setWrapStyleWord(true);
 
-        formText.setBackground(new Color(21, 21, 21));
-        formText.setForeground(new Color(204, 204, 204));
+        formText.setBackground(AppThemeColors.panelColor);
+        formText.setForeground(AppThemeColors.foregroundColor);
         formText.setEditable(false);
         formText.setFont(new Font("Arial", Font.PLAIN, 15));
         formText.setFocusable(false);
         formText.setBorder(new LineBorder(new Color(80, 73, 69), 1, true));
 
-        northPanel.setBackground(new Color(51, 51, 51));
+        northPanel.setBackground(AppThemeColors.PRIMARY);
         northPanel.setLayout(new BorderLayout());
         northPanel.setPreferredSize(new Dimension(mainPanel.getPreferredSize().width, mainPanel.getPreferredSize().height / 8));
 
@@ -333,14 +333,14 @@ public class ExercisePanel extends JPanel {
         northEastPanel.setOpaque(false);
 
         northWestPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-        northWestPanel.setBackground(new Color(51, 51, 51));
+        northWestPanel.setBackground(AppThemeColors.PRIMARY);
 
         // Notice window
         statusPanel = new JPanel();
         statusPanel.setPreferredSize(new Dimension(this.getWidth(), 50));
         statusPanel.setVisible(false);
         statusText = new JLabel(status.toString());
-        statusText.setForeground(new Color(204, 204, 204));
+        statusText.setForeground(AppThemeColors.foregroundColor);
         statusPanel.setBorder(new LineBorder(new Color(46, 148, 76), 1, true));
 
         // Functionality for the notice window
@@ -437,7 +437,7 @@ public class ExercisePanel extends JPanel {
                     searchField.setFocusable(false);
                     searchField.setEditable(false);
                     searchField.setText("");
-                    searchField.setBackground(new Color(51, 51, 51));
+                    searchField.setBackground(AppThemeColors.PRIMARY);
                     sortMuscleButton.setEnabled(false);
                     showFavorites.setEnabled(false);
                     editState = true;
@@ -516,7 +516,7 @@ public class ExercisePanel extends JPanel {
                         editButton.setForeground(new Color(22,22,22));
                     }
                     else {
-                        editButton.setForeground(new Color(204, 204, 204));
+                        editButton.setForeground(AppThemeColors.foregroundColor);
                     }
                 }
                 try {
@@ -603,12 +603,12 @@ public class ExercisePanel extends JPanel {
                     muscleJList.clearSelection();
                     menuList.setModel(new DefaultListModel<>());
                     sortMuscleButton.setBackground(new Color(49, 84, 122));
-                    showFavorites.setBackground(new Color(51, 51, 51));
-                    myExercises.setBackground(new Color(51, 51, 51));
+                    showFavorites.setBackground(AppThemeColors.PRIMARY);
+                    myExercises.setBackground(AppThemeColors.PRIMARY);
                     muscleScroll.setVisible(true);
                 } else {
                     muscleScroll.setVisible(false);
-                    sortMuscleButton.setBackground(new Color(51, 51, 51));
+                    sortMuscleButton.setBackground(AppThemeColors.PRIMARY);
                 }
                 repaint();
                 revalidate();
@@ -647,8 +647,8 @@ public class ExercisePanel extends JPanel {
                     menuList.setModel(favExerciseModel);
                     muscleScroll.setVisible(false);
                     showFavorites.setBackground(new Color(49, 84, 122));
-                    sortMuscleButton.setBackground(new Color(51, 51, 51));
-                    myExercises.setBackground(new Color(51, 51, 51));
+                    sortMuscleButton.setBackground(AppThemeColors.PRIMARY);
+                    myExercises.setBackground(AppThemeColors.PRIMARY);
                     menuList.setSelectionBackground(new Color(49, 84, 122));
                     try {
                         UserData.updateFavoriteExercises();
@@ -664,7 +664,7 @@ public class ExercisePanel extends JPanel {
                     updateMenuList("favExerciseModel");
                 }
                 else {
-                    showFavorites.setBackground(new Color(51, 51, 51));
+                    showFavorites.setBackground(AppThemeColors.PRIMARY);
                     menuList.setModel(exerciseModel);
                 }
                 repaint();
@@ -690,14 +690,14 @@ public class ExercisePanel extends JPanel {
                         throw new RuntimeException(ex);
                     }
                     myExercises.setBackground(new Color(49, 84, 122));
-                    sortMuscleButton.setBackground(new Color(51, 51, 51));
-                    showFavorites.setBackground(new Color(51, 51, 51));
+                    sortMuscleButton.setBackground(AppThemeColors.PRIMARY);
+                    showFavorites.setBackground(AppThemeColors.PRIMARY);
                     muscleScroll.setVisible(false);
                     updateMenuList("myExerciseModel");
                     menuList.setModel(myExerciseModel);
                 }
                 else {
-                    myExercises.setBackground(new Color(51, 51, 51));
+                    myExercises.setBackground(AppThemeColors.PRIMARY);
                     menuList.setModel(exerciseModel);
                 }
                 repaint();
@@ -716,9 +716,9 @@ public class ExercisePanel extends JPanel {
                 updateMenuList("exerciseModel");
                 muscleScroll.setVisible(false);
                 menuList.setModel(exerciseModel);
-                sortMuscleButton.setBackground(new Color(51, 51, 51));
-                showFavorites.setBackground(new Color(51, 51, 51));
-                myExercises.setBackground(new Color(51, 51, 51));
+                sortMuscleButton.setBackground(AppThemeColors.PRIMARY);
+                showFavorites.setBackground(AppThemeColors.PRIMARY);
+                myExercises.setBackground(AppThemeColors.PRIMARY);
                 revalidate();
                 repaint();
             }
@@ -919,6 +919,9 @@ public class ExercisePanel extends JPanel {
         eastPanel.setBackground(AppThemeColors.PRIMARY);
         aboutContainer.setBackground(AppThemeColors.PRIMARY);
         aboutLabel.setBackground(AppThemeColors.PRIMARY);
+        sortMuscleButton.setForeground(AppThemeColors.foregroundColor);
+        showFavorites.setForeground(AppThemeColors.foregroundColor);
+        myExercises.setForeground(AppThemeColors.foregroundColor);
         if (!editState) {
             aboutText.setBackground(AppThemeColors.panelColor);
         }

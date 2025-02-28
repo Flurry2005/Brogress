@@ -32,7 +32,7 @@ public class AppThemeColors {
          */
 
         buttonBG = new Color(255, 255, 255);
-        buttonBGHovered = new Color(240,240,240);
+        buttonBGHovered = new Color(230,230,230);
         buttonBGSelected = new Color(210,210,210);
 
 
