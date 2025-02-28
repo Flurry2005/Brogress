@@ -1270,6 +1270,7 @@ public class ProgramPanel extends JPanel {
                 savedWorkoutsPanel.setBackground(AppThemeColors.PRIMARY);
                 savedWorkoutsList.setBackground(AppThemeColors.panelColor);
                 savedWorkoutsList.setForeground(workoutPanelTextColor);
+                savedWorkoutsLabel.setForeground(AppThemeColors.foregroundColor);
 
 
                 for(Workout workout : workoutsList){

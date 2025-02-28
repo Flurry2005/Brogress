@@ -43,21 +43,22 @@ public class ExercisePanel extends JPanel {
     private boolean editState = false;
     DefaultListModel<Muscle> muscleModel = new DefaultListModel<>();
     JList<Muscle> muscleJList = new JList<>(muscleModel);
-    JPanel northPanel = new JPanel();
-    JPanel northWestPanel = new JPanel();
-    JPanel eastPanel = new JPanel();
-    JPanel aboutContainer = new JPanel();
-    JLabel aboutLabel = new JLabel();
-    JLabel formLabel = new JLabel();
-    JTextArea aboutText = new JTextArea();
-    JTextPane formText = new JTextPane();
-    JButton sortMuscleButton = new JButton("Muscle");
-    JButton showFavorites = new JButton("Favorites");
-    JButton myExercises = new JButton("Created");
-    JTextField searchField = new JTextField("Search for exercise...");
-    JPanel centerPanel = new JPanel();
+    private final JPanel northPanel = new JPanel();
+    private final JPanel northWestPanel = new JPanel();
+    private final JPanel eastPanel = new JPanel();
+    private final JPanel aboutContainer = new JPanel();
+    private final JLabel aboutLabel = new JLabel();
+    private final JLabel formLabel = new JLabel();
+    private final JTextArea aboutText = new JTextArea();
+    private final JTextPane formText = new JTextPane();
+    private final JButton sortMuscleButton = new JButton("Muscle");
+    private final JButton showFavorites = new JButton("Favorites");
+    private final JButton myExercises = new JButton("Created");
+    private final JTextField searchField = new JTextField("Search for exercise...");
+    private final JPanel centerPanel = new JPanel();
     public static JButton createExerciseButton = new JButton();
-    JLabel imageLabel = new JLabel();
+    private final JLabel imageLabel = new JLabel();
+    private final JButton editButton = new JButton("\uD83D\uDCDD");;
 
     Font font;
 
@@ -109,22 +110,14 @@ public class ExercisePanel extends JPanel {
 
         Font emojiFont = new Font("Segoe UI Emoji", Font.PLAIN, 35);
 
-        JButton editButton = new JButton("\uD83D\uDCDD");
+
         editButton.setFocusPainted(false);
         editButton.setContentAreaFilled(false);
         editButton.setBackground(AppThemeColors.PRIMARY);
-        editButton.setForeground(AppThemeColors.foregroundColor);
         editButton.setFont(emojiFont);
         editButton.setBorder(null);
         editButton.setPreferredSize(new Dimension(mainPanel.getPreferredSize().width / 22, mainPanel.getPreferredSize().height / 10));
         editButton.setVisible(false);
-        // SETS BUTTON MATCH USER THEME
-        if (UserData.getTheme().equals("light")) {
-            editButton.setForeground(new Color(22,22,22));
-        }
-        else {
-            editButton.setForeground(AppThemeColors.foregroundColor);
-        }
 
         JButton removeButton = new JButton("\uD83D\uDDD1");
         removeButton.setFocusPainted(false);
@@ -910,7 +903,7 @@ public class ExercisePanel extends JPanel {
     }
 
     public void updateColors() {
-        statusText.setForeground(AppThemeColors.foregroundColor);
+
         mainPanel.setBackground(AppThemeColors.PRIMARY);
         menuList.setBackground(AppThemeColors.panelColor);
         muscleJList.setBackground(AppThemeColors.PRIMARY);
@@ -919,25 +912,27 @@ public class ExercisePanel extends JPanel {
         eastPanel.setBackground(AppThemeColors.PRIMARY);
         aboutContainer.setBackground(AppThemeColors.PRIMARY);
         aboutLabel.setBackground(AppThemeColors.PRIMARY);
-        sortMuscleButton.setForeground(AppThemeColors.foregroundColor);
-        showFavorites.setForeground(AppThemeColors.foregroundColor);
-        myExercises.setForeground(AppThemeColors.foregroundColor);
+        searchField.setBackground(AppThemeColors.textFieldColor);
+        centerPanel.setBackground(AppThemeColors.PRIMARY);
+        myExercises.setBackground(AppThemeColors.buttonBG);
+        formLabel.setBackground(AppThemeColors.PRIMARY);
+        showFavorites.setBackground(AppThemeColors.buttonBG);
+        sortMuscleButton.setBackground(AppThemeColors.buttonBG);
+
         if (!editState) {
             aboutText.setBackground(AppThemeColors.panelColor);
         }
         formText.setBackground(AppThemeColors.panelColor);
-        searchField.setBackground(AppThemeColors.textFieldColor);
-        centerPanel.setBackground(AppThemeColors.PRIMARY);
 
+        statusText.setForeground(AppThemeColors.foregroundColor);
         aboutText.setForeground(AppThemeColors.foregroundColor);
         formText.setForeground(AppThemeColors.foregroundColor);
-
+        showFavorites.setForeground(AppThemeColors.foregroundColor);
         muscleJList.setForeground(AppThemeColors.foregroundColor);
         sortMuscleButton.setForeground(AppThemeColors.foregroundColor);
-        showFavorites.setForeground(AppThemeColors.foregroundColor);
         myExercises.setForeground(AppThemeColors.foregroundColor);
         aboutLabel.setForeground(AppThemeColors.foregroundColor);
-        formLabel.setBackground(AppThemeColors.PRIMARY);
+        editButton.setForeground(AppThemeColors.foregroundColor);
         formLabel.setForeground(AppThemeColors.foregroundColor);
         menuList.setForeground(AppThemeColors.foregroundColor);
         titleLabel.setForeground(AppThemeColors.foregroundColor);
