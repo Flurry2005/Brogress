@@ -2,15 +2,12 @@ package se.aljr.application.homepage;
 
 import se.aljr.application.AppThemeColors;
 import se.aljr.application.ApplicationWindow;
-import se.aljr.application.programplanner.ProgramPanel;
+import se.aljr.application.ResourcePath;
 import se.aljr.application.settings.SettingsPanel;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.io.File;
 
 
@@ -25,7 +22,7 @@ public class MenuPanel extends JPanel{
     ImageIcon buttonIconExercise;
     ImageIcon buttonIconSettings;
     private ImageIcon scaledButtonHomeIcon;
-    private ImageIcon scaledButtonExerciseIcon;
+    private static ImageIcon scaledButtonExerciseIcon;
     private ImageIcon scaledButtonSettingsIcon;
     private ImageIcon scaledLogoIcon;
     public boolean lightMode = false;
@@ -33,12 +30,9 @@ public class MenuPanel extends JPanel{
     public int currentPage = 0;
 
     Font font;
-    private int width;
-    private int height;
-    private String resourcePath;
 
     final JButton homeButton = new JButton("Home",scaledButtonHomeIcon);
-    final JButton exercisesButton = new JButton("Exercises",scaledButtonExerciseIcon);
+    public static final JButton exercisesButton = new JButton("Exercises",scaledButtonExerciseIcon);
     final JButton programButton = new JButton("Program");
     JButton settingsButton = new JButton("Settings",scaledButtonSettingsIcon);
 
@@ -47,18 +41,15 @@ public class MenuPanel extends JPanel{
     public MenuPanel(int width, int height){
         this.setOpaque(false);
         instance = this;
-        this.width = width;
-        this.height = height;
         //this.setPreferredSize(new Dimension(width, height));
-        resourcePath = getClass().getClassLoader().getResource("resource.path").getPath().replace("resource.path","");
-        menuBackground = new ImageIcon(resourcePath+"side_bar.png");
-        lightMenuBackground = new ImageIcon(resourcePath+"side_bar_light.png");
-        logoIcon = new ImageIcon(resourcePath+"agile_small_icon.png");
-        buttonIcon = new ImageIcon(resourcePath+"button.png");
-        buttonIconExercise = new ImageIcon(resourcePath+"button_exercise.png");
-        buttonIconSettings = new ImageIcon(resourcePath+"button_settings.png");
+        menuBackground = new ImageIcon(ResourcePath.getResourcePath() +"side_bar.png");
+        lightMenuBackground = new ImageIcon(ResourcePath.getResourcePath()+"side_bar_light.png");
+        logoIcon = new ImageIcon(ResourcePath.getResourcePath()+"agile_small_icon.png");
+        buttonIcon = new ImageIcon(ResourcePath.getResourcePath()+"button.png");
+        buttonIconExercise = new ImageIcon(ResourcePath.getResourcePath()+"button_exercise.png");
+        buttonIconSettings = new ImageIcon(ResourcePath.getResourcePath()+"button_settings.png");
         try{
-            font=Font.createFont(Font.TRUETYPE_FONT, new File(resourcePath+"BebasNeue-Regular.otf"));
+            font=Font.createFont(Font.TRUETYPE_FONT, new File(ResourcePath.getResourcePath()+"BebasNeue-Regular.otf"));
             font = font.deriveFont((float) (height/17));
         }catch(Exception e){
             font = new Font("Arial", Font.BOLD, 40);
@@ -75,7 +66,7 @@ public class MenuPanel extends JPanel{
         logoContainer.setOpaque(false);
 
         System.out.println((int)(width/8.5));
-        Image scaledlogoIcon = logoIcon.getImage().getScaledInstance((int)(height/6), (int)(height/6), Image.SCALE_SMOOTH);
+        Image scaledlogoIcon = logoIcon.getImage().getScaledInstance(height/6, height/6, Image.SCALE_SMOOTH);
         scaledLogoIcon = new ImageIcon(scaledlogoIcon);
 
         JLabel logoLabel = new JLabel(scaledLogoIcon);
@@ -114,7 +105,7 @@ public class MenuPanel extends JPanel{
 
         JButton chatButton = new JButton("Chat",scaledButtonSettingsIcon);
 
-        homeButton.setFont(new Font("Arial", Font.TRUETYPE_FONT,height/35));
+        homeButton.setFont(new Font("Arial", Font.PLAIN,height/35));
         homeButton.setForeground(Color.WHITE);
         homeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         homeButton.setAlignmentY(Component.CENTER_ALIGNMENT);
@@ -214,7 +205,7 @@ public class MenuPanel extends JPanel{
         scaledButtonExerciseIcon = new ImageIcon(scaledButtonExercise);
 
         /**Exercises button*/
-        exercisesButton.setFont(new Font("Arial", Font.TRUETYPE_FONT,height/35));
+        exercisesButton.setFont(new Font("Arial", Font.PLAIN,height/35));
         exercisesButton.setForeground(Color.WHITE);
         exercisesButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         exercisesButton.setAlignmentY(Component.CENTER_ALIGNMENT);
@@ -227,6 +218,9 @@ public class MenuPanel extends JPanel{
         exercisesButton.setBorderPainted(false);
         exercisesButton.setContentAreaFilled(true);
         exercisesButton.setBackground(new Color(40,40,40));
+        exercisesButton.addActionListener(e -> {
+
+        });
 
         exercisesButton.addMouseListener(new MouseAdapter() {
             private boolean isHovered = false;
@@ -305,7 +299,7 @@ public class MenuPanel extends JPanel{
         });
 
         /**Program button*/
-        programButton.setFont(new Font("Arial", Font.TRUETYPE_FONT,height/35));
+        programButton.setFont(new Font("Arial", Font.PLAIN,height/35));
         programButton.setForeground(Color.WHITE);
         programButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         programButton.setAlignmentY(Component.CENTER_ALIGNMENT);
@@ -397,7 +391,7 @@ public class MenuPanel extends JPanel{
 
 
         /**Settings Button*/
-        settingsButton.setFont(new Font("Arial", Font.TRUETYPE_FONT,height/35));
+        settingsButton.setFont(new Font("Arial", Font.PLAIN,height/35));
         settingsButton.setForeground(Color.WHITE);
         settingsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         settingsButton.setAlignmentY(Component.CENTER_ALIGNMENT);
@@ -488,7 +482,7 @@ public class MenuPanel extends JPanel{
 
         /**Chat Button*/
 
-        chatButton.setFont(new Font("Arial", Font.TRUETYPE_FONT,height/35));
+        chatButton.setFont(new Font("Arial", Font.PLAIN,height/35));
         chatButton.setForeground(Color.WHITE);
         chatButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         chatButton.setAlignmentY(Component.CENTER_ALIGNMENT);
@@ -596,7 +590,7 @@ public class MenuPanel extends JPanel{
             @Override
             public void componentResized(ComponentEvent e) {
                 SwingUtilities.invokeLater(()->{
-                    Image scaledlogoIcon = logoIcon.getImage().getScaledInstance((int)(getHeight()/8), (int)(getHeight()/8), Image.SCALE_SMOOTH);
+                    Image scaledlogoIcon = logoIcon.getImage().getScaledInstance(getHeight()/8, getHeight()/8, Image.SCALE_SMOOTH);
                     scaledLogoIcon = new ImageIcon(scaledlogoIcon);
                     logoLabel.setIcon(scaledLogoIcon);
 
@@ -609,30 +603,30 @@ public class MenuPanel extends JPanel{
                     homeButton.setIcon(scaledButtonHomeIcon);
                     homeButton.setPreferredSize(new Dimension(getWidth(),(int)(getHeight()/13.5)));
                     homeButton.setMaximumSize(new Dimension(getWidth(),(int)(getHeight()/13.5)));
-                    homeButton.setFont(new Font("Arial", Font.TRUETYPE_FONT,getHeight()/35));
+                    homeButton.setFont(new Font("Arial", Font.PLAIN,getHeight()/35));
 
                     Image scaledButtonExercise = buttonIconExercise.getImage().getScaledInstance(getWidth(), (int)(getHeight()/13.5), Image.SCALE_SMOOTH);
                     scaledButtonExerciseIcon = new ImageIcon(scaledButtonExercise);
                     exercisesButton.setIcon(scaledButtonExerciseIcon);
                     exercisesButton.setPreferredSize(new Dimension(getWidth(),(int)(getHeight()/13.5)));
                     exercisesButton.setMaximumSize(new Dimension(getWidth(),(int)(getHeight()/13.5)));
-                    exercisesButton.setFont(new Font("Arial", Font.TRUETYPE_FONT,getHeight()/35));
+                    exercisesButton.setFont(new Font("Arial", Font.PLAIN,getHeight()/35));
 
                     programButton.setPreferredSize(new Dimension(getWidth(),(int)(getHeight()/13.5)));
                     programButton.setMaximumSize(new Dimension(getWidth(),(int)(getHeight()/13.5)));
-                    programButton.setFont(new Font("Arial", Font.TRUETYPE_FONT,getHeight()/35));
+                    programButton.setFont(new Font("Arial", Font.PLAIN,getHeight()/35));
 
                     Image scaledButtonSettings = buttonIconSettings.getImage().getScaledInstance(getWidth(), (int)(getHeight()/13.5), Image.SCALE_SMOOTH);
                     scaledButtonSettingsIcon = new ImageIcon(scaledButtonSettings);
                     settingsButton.setIcon(scaledButtonSettingsIcon);
                     settingsButton.setPreferredSize(new Dimension(getWidth(),(int)(getHeight()/13.5)));
                     settingsButton.setMaximumSize(new Dimension(getWidth(),(int)(getHeight()/13.5)));
-                    settingsButton.setFont(new Font("Arial", Font.TRUETYPE_FONT,getHeight()/35));
+                    settingsButton.setFont(new Font("Arial", Font.PLAIN,getHeight()/35));
 
                     chatButton.setIcon(scaledButtonSettingsIcon);
                     chatButton.setPreferredSize(new Dimension(getWidth(),(int)(getHeight()/13.5)));
                     chatButton.setMaximumSize(new Dimension(getWidth(),(int)(getHeight()/13.5)));
-                    chatButton.setFont(new Font("Arial", Font.TRUETYPE_FONT,getHeight()/35));
+                    chatButton.setFont(new Font("Arial", Font.PLAIN,getHeight()/35));
 
 
 
@@ -670,18 +664,10 @@ public class MenuPanel extends JPanel{
         settingsButton.setBackground(AppThemeColors.buttonBG);
 
         switch (currentPage){
-            case 0->{
-                homeButton.setBackground(AppThemeColors.buttonBGSelected);
-            }
-            case 1->{
-                exercisesButton.setBackground(AppThemeColors.buttonBGSelected);
-            }
-            case 2->{
-                programButton.setBackground(AppThemeColors.buttonBGSelected);
-            }
-            case 3->{
-                settingsButton.setBackground(AppThemeColors.buttonBGSelected);
-            }
+            case 0-> homeButton.setBackground(AppThemeColors.buttonBGSelected);
+            case 1-> exercisesButton.setBackground(AppThemeColors.buttonBGSelected);
+            case 2-> programButton.setBackground(AppThemeColors.buttonBGSelected);
+            case 3-> settingsButton.setBackground(AppThemeColors.buttonBGSelected);
         }
     }
 

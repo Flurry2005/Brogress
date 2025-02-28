@@ -18,8 +18,6 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -357,7 +355,7 @@ public class CreateExerciseModule extends JPanel {
             }
         });
 
-        muscleJlist.addListSelectionListener(e -> {
+        muscleJlist.addListSelectionListener(_ -> {
             if (muscleJlist.getSelectedIndex() != -1) {
                 int maxLength = 60;
                 if (musclePreviewLabel.getText().length() > maxLength) {
@@ -375,54 +373,51 @@ public class CreateExerciseModule extends JPanel {
         });
 
         // ADD TO PUBLIC ARRAYLIST
-        addExercise.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (!exerciseName.getText().isEmpty() && !exerciseName.getText().equals("Name required") && !exerciseName.getText().equals("Enter exercise name...") && !muscleJlist.getSelectedValuesList().isEmpty()) {
+        addExercise.addActionListener(_ -> {
+            if (!exerciseName.getText().isEmpty() && !exerciseName.getText().equals("Name required") && !exerciseName.getText().equals("Enter exercise name...") && !muscleJlist.getSelectedValuesList().isEmpty()) {
 
-                    Exercise exercise = new Exercise();
-                    exercise.createExercise(exerciseName.getText(), exerciseInfo.getText(), (ArrayList<Muscle>) muscleJlist.getSelectedValuesList());
-                    UserData.setCreatedExercises(exercise);
+                Exercise exercise = new Exercise();
+                exercise.createExercise(exerciseName.getText(), exerciseInfo.getText(), (ArrayList<Muscle>) muscleJlist.getSelectedValuesList());
+                UserData.setCreatedExercises(exercise);
 
-                    if (setFav.isSelected()) {
-                        UserData.setFavoriteExercises(exercise);
-                    }
-
-                    exerciseName.setText("");
-                    exerciseInfo.setText("");
-                    muscleJlist.clearSelection();
-                    musclePreviewLabel.setText("");
-                    setFav.setSelected(false);
-                    repaint();
-                    revalidate();
-                    ExercisePanel.updateMenuList("myExerciseModel");
-                    ExercisePanel.updateMenuList("favExerciseModel");
-                    //WRITE TO DB
-                    try {
-                        FirebaseManager.writeDBCreatedExercises(UserData.getCreatedExercises());
-                        FirebaseManager.writeDBFavoriteExercises(UserData.getFavoriteExercises());
-                    } catch (Exception f) {
-                        f.printStackTrace();
-                    }
-                    ExercisePanel.activateStatus(new Color(46, 148, 76), "New exercise " + exercise.getName() + " has been created!");
-
-                } else {
-
-                    if (exerciseName.getText().isEmpty() || exerciseName.getText().equals("Enter exercise name...")) {
-
-                        exerciseName.setForeground(Color.RED);
-                        exerciseName.setText("Name required");
-                        exerciseName.revalidate();
-                        exerciseName.repaint();
-                    }
-                    if (muscleJlist.getSelectedValuesList().isEmpty()) {
-
-                        musclePreviewLabel.setText(("Select at least one muscle..."));
-                        musclePreviewLabel.revalidate();
-                        musclePreviewLabel.repaint();
-                    }
-
+                if (setFav.isSelected()) {
+                    UserData.setFavoriteExercises(exercise);
                 }
+
+                exerciseName.setText("");
+                exerciseInfo.setText("");
+                muscleJlist.clearSelection();
+                musclePreviewLabel.setText("");
+                setFav.setSelected(false);
+                repaint();
+                revalidate();
+                ExercisePanel.updateMenuList("myExerciseModel");
+                ExercisePanel.updateMenuList("favExerciseModel");
+                //WRITE TO DB
+                try {
+                    FirebaseManager.writeDBCreatedExercises(UserData.getCreatedExercises());
+                    FirebaseManager.writeDBFavoriteExercises(UserData.getFavoriteExercises());
+                } catch (Exception f) {
+                    f.printStackTrace();
+                }
+                ExercisePanel.activateStatus(new Color(46, 148, 76), "New exercise " + exercise.getName() + " has been created!");
+
+            } else {
+
+                if (exerciseName.getText().isEmpty() || exerciseName.getText().equals("Enter exercise name...")) {
+
+                    exerciseName.setForeground(Color.RED);
+                    exerciseName.setText("Name required");
+                    exerciseName.revalidate();
+                    exerciseName.repaint();
+                }
+                if (muscleJlist.getSelectedValuesList().isEmpty()) {
+
+                    musclePreviewLabel.setText(("Select at least one muscle..."));
+                    musclePreviewLabel.revalidate();
+                    musclePreviewLabel.repaint();
+                }
+
             }
         });
     }

@@ -23,11 +23,12 @@ public class AppThemeColors {
         textFieldColor = new Color(220,220,220);
 
         /*
+        TEST COLORS
+
         PRIMARY = new Color(255,0,0);
         SECONDARY = new Color(200,0,0);
         panelColor = new Color(195,0,0);
         textFieldColor = new Color(220,0,0);
-
          */
 
         buttonBG = new Color(255, 255, 255);
@@ -56,12 +57,8 @@ public class AppThemeColors {
 
     public static void updateThemeColors(){
         switch (SettingsPanel.currentTheme){
-            case "light"->{
-                lightMode();
-            }
-            case "dark"->{
-                darkMode();
-            }
+            case "light"-> lightMode();
+            case "dark"-> darkMode();
         }
     }
 

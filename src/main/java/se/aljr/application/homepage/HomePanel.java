@@ -1,27 +1,16 @@
 package se.aljr.application.homepage;
 
-import com.google.cloud.storage.Acl;
-import kotlinx.coroutines.flow.Flow;
-import se.aljr.application.CustomFont;
+import se.aljr.application.*;
 import se.aljr.application.Friends.Friend;
 import se.aljr.application.Friends.FriendsList;
-import se.aljr.application.ImageAvatar;
-import se.aljr.application.NutritionCalculator;
-import se.aljr.application.UserData;
 import se.aljr.application.loginpage.FirebaseManager;
-import se.aljr.application.programplanner.ProgramPanel;
 import se.aljr.application.settings.SettingsPanel;
 
-import javax.imageio.ImageIO;
-import javax.imageio.stream.ImageInputStream;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.geom.Ellipse2D;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 public class HomePanel extends JPanel {
@@ -34,8 +23,6 @@ public class HomePanel extends JPanel {
     protected ImageIcon lightHomePanelBackground;
     protected ImageIcon scaledLightContentBackgroundPanel;
     Image scaledLightContentBackground;
-
-    private String resourcePath;
 
     private Image scaledProfilePicture;
     private static ImageIcon profilePictureIcon;
@@ -51,28 +38,48 @@ public class HomePanel extends JPanel {
     private static JLabel tdeeLabel;
     private static JLabel proteinNeedLabel;
     private static JPanel friendsPanel = new JPanel();
-    private static JScrollPane friendsListScrollPane = new JScrollPane(friendsPanel);
+    private static JPanel friendsPanel1 = new JPanel();
+    private static JScrollPane friendsListScrollPane;
+    private static JScrollPane friendsListScrollPane1;
     private static HomePanel instance;
 
     public HomePanel(int width, int height){
 
         this.setPreferredSize(new Dimension(width, height));
         instance = this;
-        resourcePath = getClass().getClassLoader().getResource("resource.path").getPath().replace("resource.path","");
-        homePanelBackground = new ImageIcon(resourcePath+ "bottom_right_bar.png");
-        moduleIcon = new ImageIcon(resourcePath+"module.png");
+        homePanelBackground = new ImageIcon(ResourcePath.getResourcePath() + "bottom_right_bar.png");
+        moduleIcon = new ImageIcon(ResourcePath.getResourcePath()+"module.png");
         scaledContentBackground = homePanelBackground.getImage().getScaledInstance(width,height,Image.SCALE_SMOOTH);
         scaledContentBackgroundPanel = new ImageIcon(scaledContentBackground);
 
-        lightHomePanelBackground = new ImageIcon(resourcePath+"bottom_right_bar_light.png");
+        lightHomePanelBackground = new ImageIcon(ResourcePath.getResourcePath()+"bottom_right_bar_light.png");
         scaledLightContentBackground = lightHomePanelBackground.getImage().getScaledInstance(width,height,Image.SCALE_SMOOTH);
         scaledLightContentBackgroundPanel = new ImageIcon(scaledLightContentBackground);
+
+        friendsListScrollPane = new JScrollPane(friendsPanel){
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                // Draw the image to fill the entire panel
+                if (moduleIcon != null) {
+                    Image scale = moduleIcon.getImage().getScaledInstance((int) (HomePanel.this.getPreferredSize().width/3.7695035461),
+                            (int)(HomePanel.this.getPreferredSize().height/3.22292993631),
+                            Image.SCALE_SMOOTH);
+                    ImageIcon scaleImage = new ImageIcon(scale);
+                    g.drawImage(scaleImage.getImage(), 0, 0, (int) (HomePanel.this.getPreferredSize().width/3.7695035461), (int)(HomePanel.this.getPreferredSize().height/3.22292993631), this);
+                }
+                else{
+                    System.out.println("Error");
+                }
+            }
+        };
+
 
 
         //profilePictureIcon = new ImageIcon(resourcePath + "Johan.png");
         profilePictureIcon = FirebaseManager.readDBprofilePicture(UserData.getEmail());
         if(profilePictureIcon==null){
-            profilePictureIcon = new ImageIcon(resourcePath + "agile_small_icon.png");
+            profilePictureIcon = new ImageIcon(ResourcePath.getResourcePath() + "agile_small_icon.png");
         }
         avatar = new ImageAvatar();
         avatar.setPreferredSize(new Dimension(getPreferredSize().width/25,getPreferredSize().width/25));
@@ -232,30 +239,16 @@ public class HomePanel extends JPanel {
         friendsPanel.setOpaque(false);
 
 
-        friendsListScrollPane.setBackground(new Color(104, 8, 218, 255));
-        friendsListScrollPane.setPreferredSize(new Dimension((int)(getPreferredSize().width/3.7695035461),bottomPanel.getPreferredSize().height/2));
+        //friendsListScrollPane.setBackground(new Color(104, 8, 218, 255));
+        friendsListScrollPane.setPreferredSize(new Dimension((int) (HomePanel.this.getPreferredSize().width/3.7695035461), (int)(HomePanel.this.getPreferredSize().height/3.22292993631)));
+        friendsListScrollPane.setOpaque(false);
         friendsListScrollPane.setMinimumSize(friendsListScrollPane.getPreferredSize());
         friendsListScrollPane.setMaximumSize(friendsListScrollPane.getPreferredSize());
         friendsListScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         friendsListScrollPane.getVerticalScrollBar().setPreferredSize(new Dimension(0, 0));
         friendsListScrollPane.getViewport().setOpaque(false);
-        friendsListScrollPane.setBorder(new LineBorder(new Color(136, 56, 255), 2,false));
+        friendsListScrollPane.setBorder(null);
         friendsListScrollPane.getVerticalScrollBar().setUnitIncrement(getPreferredSize().width/140);
-
-        /*
-        FriendsList.getFriendArrayList().add(new Friend(true){
-            {
-                setFriendName("Anton");
-                setFriendEmail("drievmc@gmail.com");
-            }
-        });
-        FriendsList.getFriendArrayList().add(new Friend(true){
-            {
-                setFriendName("Johan");
-                setFriendEmail("kronholmjohan@gmail.com");
-            }
-        });
-        */
 
         updateFriends();
         try {
@@ -264,7 +257,38 @@ public class HomePanel extends JPanel {
             e.printStackTrace();
         }
 
+        friendsPanel1 = new JPanel();
+        friendsPanel1.setLayout(new BoxLayout(friendsPanel1, BoxLayout.Y_AXIS));
+        friendsPanel1.setOpaque(false);
 
+
+        friendsListScrollPane1 = new JScrollPane(friendsPanel1){
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                // Draw the image to fill the entire panel
+                if (moduleIcon != null) {
+                    Image scale = moduleIcon.getImage().getScaledInstance((int) (HomePanel.this.getPreferredSize().width/3.7695035461),
+                            (int)(HomePanel.this.getPreferredSize().height/3.22292993631),
+                            Image.SCALE_SMOOTH);
+                    ImageIcon scaleImage = new ImageIcon(scale);
+                    g.drawImage(scaleImage.getImage(), 0, 0, (int) (HomePanel.this.getPreferredSize().width/3.7695035461), (int)(HomePanel.this.getPreferredSize().height/3.22292993631), this);
+                }
+                else{
+                    System.out.println("Error");
+                }
+            }
+        };
+        friendsListScrollPane1.setPreferredSize(new Dimension((int) (HomePanel.this.getPreferredSize().width/3.7695035461), (int)(HomePanel.this.getPreferredSize().height/3.22292993631)));
+        friendsListScrollPane1.setOpaque(false);
+        friendsListScrollPane1.setMinimumSize(friendsListScrollPane1.getPreferredSize());
+        friendsListScrollPane1.setMaximumSize(friendsListScrollPane1.getPreferredSize());
+        friendsListScrollPane1.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        friendsListScrollPane1.getVerticalScrollBar().setPreferredSize(new Dimension(0, 0));
+        friendsListScrollPane1.getViewport().setOpaque(false);
+        friendsListScrollPane1.setBorder(null);
+        friendsListScrollPane1.getVerticalScrollBar().setUnitIncrement(getPreferredSize().width/140);
+        friendsListScrollPane1.repaint();
 
 
         bottomPanel.add(Box.createHorizontalGlue());
@@ -277,12 +301,8 @@ public class HomePanel extends JPanel {
         bottomPanel.add(Box.createHorizontalGlue());
         bottomPanel.add(Box.createHorizontalGlue());
         bottomPanel.add(Box.createHorizontalGlue());
+        bottomPanel.add(friendsListScrollPane1);
         bottomPanel.add(Box.createHorizontalGlue());
-        bottomPanel.add(Box.createHorizontalGlue());
-        bottomPanel.add(Box.createHorizontalGlue());
-        bottomPanel.add(Box.createHorizontalGlue());
-        bottomPanel.add(Box.createHorizontalGlue());
-
 
 
 
@@ -363,7 +383,7 @@ public class HomePanel extends JPanel {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println(FriendsList.getFriendArrayList());
+
         for(Friend friend:FriendsList.getFriendArrayList()){
             ImageIcon userIcon = FirebaseManager.readDBprofilePicture(friend.getFriendEmail());
             Image scaledFriendProfilePicture = userIcon.getImage().getScaledInstance(instance.getPreferredSize().width/25,instance.getPreferredSize().width/25,Image.SCALE_SMOOTH);

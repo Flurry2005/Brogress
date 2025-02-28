@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class Workout extends JPanel {
 
-    private Map<Integer, JPanel> exercisePanels = new HashMap<>();
+    private final Map<Integer, JPanel> exercisePanels = new HashMap<>();
 
     private Map<Exercise, Integer> idToExercise = new HashMap<>();
 
@@ -27,25 +27,16 @@ public class Workout extends JPanel {
         return exercisePanels;
     }
 
-    public void setWorkoutData(WorkoutData workoutData){
-        currentWorkout = workoutData;
-    }
 
     public Map<Integer, Integer> getExerciseSetCount() {
         return exerciseSetCount;
     }
 
-    public void setExerciseSetCount(Map<Integer, Integer> exerciseSetCount) {
-        this.exerciseSetCount = exerciseSetCount;
-    }
 
     public Map<Integer, JPanel> getSetPanels() {
         return setPanels;
     }
 
-    public void setSetPanels(Map<Integer, JPanel> setPanels) {
-        this.setPanels = setPanels;
-    }
 
     public Exercise getIdToExercise(int i) {
         Exercise e = null;
@@ -59,10 +50,6 @@ public class Workout extends JPanel {
 
     public Map<Exercise, Integer> addIdToExercise(){
         return idToExercise;
-    }
-
-    public void setIdToExercise(Map<Exercise, Integer> idToExercise) {
-        this.idToExercise = idToExercise;
     }
 
 }

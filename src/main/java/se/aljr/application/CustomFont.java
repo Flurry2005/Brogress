@@ -2,7 +2,7 @@ package se.aljr.application;
 
 import java.awt.*;
 import java.io.File;
-
+@SuppressWarnings("CallToPrintStackTrace")
 public class CustomFont {
     static Font font;
     static String resourcePath;
