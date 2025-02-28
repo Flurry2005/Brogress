@@ -22,32 +22,38 @@ public class MenuPanel extends JPanel{
 
     ImageIcon buttonIcon;
     ImageIcon buttonIconExercise;
+    ImageIcon buttonIconProgram;
     ImageIcon buttonIconSettings;
     ImageIcon buttonIconChat;
 
-    private ImageIcon scaledButtonHomeIcon;
-    private static ImageIcon scaledButtonExerciseIcon;
-    private ImageIcon scaledButtonSettingsIcon;
-    private ImageIcon scaledButtonChatIcon;
-
     Image scaledbuttonHomeIcon;
     Image scaledButtonExercise;
+    Image scaledButtonProgram;
     Image scaledButtonSettings;
     Image scaledButtonChat;
+
+    private ImageIcon scaledButtonHomeIcon;
+    private static ImageIcon scaledButtonExerciseIcon;
+    private ImageIcon scaledButtonProgramIcon;
+    private ImageIcon scaledButtonSettingsIcon;
+    private ImageIcon scaledButtonChatIcon;
 
 
     ImageIcon darkButtonIcon;
     ImageIcon darkButtonIconExercise;
+    ImageIcon darkButtonIconProgram;
     ImageIcon darkButtonIconSettings;
     ImageIcon darkButtonIconChat;
 
     Image scaleddarkButtonHomeIcon;
     Image scaleddarkButtonExerciseIcon;
+    Image scaleddarkButtonProgramIcon;
     Image scaleddarkButtonSettingsIcon;
     Image scaleddarkButtonChatIcon;
 
     private ImageIcon scaledDarkButtonHomeIcon;
     private ImageIcon scaledDarkButtonExerciseIcon;
+    private ImageIcon scaledDarkButtonProgramIcon;
     private ImageIcon scaledDarkButtonSettingsIcon;
     private ImageIcon scaledDarkButtonChatIcon;
 
@@ -60,9 +66,9 @@ public class MenuPanel extends JPanel{
 
     final JButton homeButton = new JButton("Home",scaledButtonHomeIcon);
     public static final JButton exercisesButton = new JButton("Exercises",scaledButtonExerciseIcon);
-    final JButton programButton = new JButton("Program");
+    final JButton programButton = new JButton("Workouts");
     JButton settingsButton = new JButton("Settings",scaledButtonSettingsIcon);
-    JButton chatButton = new JButton("Chat",scaledButtonSettingsIcon);
+    JButton chatButton = new JButton("Social",scaledButtonSettingsIcon);
 
     JLabel logoLabelText = new JLabel("BROGRESS");
 
@@ -76,11 +82,13 @@ public class MenuPanel extends JPanel{
 
         buttonIcon = new ImageIcon(ResourcePath.getResourcePath()+"button.png");
         buttonIconExercise = new ImageIcon(ResourcePath.getResourcePath()+"button_exercise.png");
+        buttonIconProgram = new ImageIcon(ResourcePath.getResourcePath()+"button_program.png");
         buttonIconSettings = new ImageIcon(ResourcePath.getResourcePath()+"button_settings.png");
         buttonIconChat = new ImageIcon(ResourcePath.getResourcePath()+"button_chat.png");
 
         darkButtonIcon = new ImageIcon(ResourcePath.getResourcePath()+"button_dark.png");
         darkButtonIconExercise = new ImageIcon(ResourcePath.getResourcePath()+"button_exercise_dark.png");
+        darkButtonIconProgram = new ImageIcon(ResourcePath.getResourcePath()+"button_program_dark.png");
         darkButtonIconSettings = new ImageIcon(ResourcePath.getResourcePath()+"button_settings_dark.png");
         darkButtonIconChat = new ImageIcon(ResourcePath.getResourcePath()+"button_chat_dark.png");
 
@@ -655,6 +663,8 @@ public class MenuPanel extends JPanel{
                             scaledButtonHomeIcon = new ImageIcon(scaledbuttonHomeIcon);
                             scaledButtonExercise = buttonIconExercise.getImage().getScaledInstance(getWidth(), (int)(getHeight()/13.5), Image.SCALE_SMOOTH);
                             scaledButtonExerciseIcon = new ImageIcon(scaledButtonExercise);
+                            scaledButtonProgram = buttonIconProgram.getImage().getScaledInstance(getWidth(),(int)(getHeight()/13.5), Image.SCALE_SMOOTH);
+                            scaledButtonProgramIcon = new ImageIcon(scaledButtonProgram);
                             scaledButtonSettings = buttonIconSettings.getImage().getScaledInstance(getWidth(), (int)(getHeight()/13.5), Image.SCALE_SMOOTH);
                             scaledButtonSettingsIcon = new ImageIcon(scaledButtonSettings);
                             scaledButtonChat = buttonIconChat.getImage().getScaledInstance(getWidth(),(int)(getHeight()/13.5), Image.SCALE_SMOOTH);
@@ -662,6 +672,7 @@ public class MenuPanel extends JPanel{
 
                             homeButton.setIcon(scaledButtonHomeIcon);
                             exercisesButton.setIcon(scaledButtonExerciseIcon);
+                            programButton.setIcon(scaledButtonProgramIcon);
                             settingsButton.setIcon(scaledButtonSettingsIcon);
                             chatButton.setIcon(scaledButtonChatIcon);
                         }
@@ -670,6 +681,8 @@ public class MenuPanel extends JPanel{
                             scaledDarkButtonHomeIcon = new ImageIcon(scaleddarkButtonHomeIcon);
                             scaleddarkButtonExerciseIcon = darkButtonIconExercise.getImage().getScaledInstance(getWidth(), (int)(getHeight()/13.5), Image.SCALE_SMOOTH);
                             scaledDarkButtonExerciseIcon = new ImageIcon(scaleddarkButtonExerciseIcon);
+                            scaleddarkButtonProgramIcon = darkButtonIconProgram.getImage().getScaledInstance(getWidth(),(int)(getHeight()/13.5), Image.SCALE_SMOOTH);
+                            scaledDarkButtonProgramIcon = new ImageIcon(scaleddarkButtonProgramIcon);
                             scaleddarkButtonSettingsIcon = darkButtonIconSettings.getImage().getScaledInstance(getWidth(), (int)(getHeight()/13.5), Image.SCALE_SMOOTH);
                             scaledDarkButtonSettingsIcon = new ImageIcon(scaleddarkButtonSettingsIcon);
                             scaleddarkButtonChatIcon = darkButtonIconChat.getImage().getScaledInstance(getWidth(),(int)(getHeight()/13.5), Image.SCALE_SMOOTH);
@@ -677,6 +690,7 @@ public class MenuPanel extends JPanel{
 
                             homeButton.setIcon(scaledDarkButtonHomeIcon);
                             exercisesButton.setIcon(scaledDarkButtonExerciseIcon);
+                            programButton.setIcon(scaledDarkButtonProgramIcon);
                             settingsButton.setIcon(scaledDarkButtonSettingsIcon);
                             chatButton.setIcon(scaledDarkButtonChatIcon);
                         }
@@ -753,6 +767,8 @@ public class MenuPanel extends JPanel{
                 scaledButtonHomeIcon = new ImageIcon(scaledbuttonHomeIcon);
                 scaledButtonExercise = buttonIconExercise.getImage().getScaledInstance(getWidth(), (int)(getHeight()/13.5), Image.SCALE_SMOOTH);
                 scaledButtonExerciseIcon = new ImageIcon(scaledButtonExercise);
+                scaledButtonProgram = buttonIconProgram.getImage().getScaledInstance(getWidth(),(int)(getHeight()/13.5), Image.SCALE_SMOOTH);
+                scaledButtonProgramIcon = new ImageIcon(scaledButtonProgram);
                 scaledButtonSettings = buttonIconSettings.getImage().getScaledInstance(getWidth(), (int)(getHeight()/13.5), Image.SCALE_SMOOTH);
                 scaledButtonSettingsIcon = new ImageIcon(scaledButtonSettings);
                 scaledButtonChat = buttonIconChat.getImage().getScaledInstance(getWidth(),(int)(getHeight()/13.5), Image.SCALE_SMOOTH);
@@ -760,6 +776,7 @@ public class MenuPanel extends JPanel{
 
                 homeButton.setIcon(scaledButtonHomeIcon);
                 exercisesButton.setIcon(scaledButtonExerciseIcon);
+                programButton.setIcon(scaledButtonProgramIcon);
                 settingsButton.setIcon(scaledButtonSettingsIcon);
                 chatButton.setIcon(scaledButtonChatIcon);
             }
@@ -768,6 +785,8 @@ public class MenuPanel extends JPanel{
                 scaledDarkButtonHomeIcon = new ImageIcon(scaleddarkButtonHomeIcon);
                 scaleddarkButtonExerciseIcon = darkButtonIconExercise.getImage().getScaledInstance(getWidth(), (int)(getHeight()/13.5), Image.SCALE_SMOOTH);
                 scaledDarkButtonExerciseIcon = new ImageIcon(scaleddarkButtonExerciseIcon);
+                scaleddarkButtonProgramIcon = darkButtonIconProgram.getImage().getScaledInstance(getWidth(),(int)(getHeight()/13.5), Image.SCALE_SMOOTH);
+                scaledDarkButtonProgramIcon = new ImageIcon(scaleddarkButtonProgramIcon);
                 scaleddarkButtonSettingsIcon = darkButtonIconSettings.getImage().getScaledInstance(getWidth(), (int)(getHeight()/13.5), Image.SCALE_SMOOTH);
                 scaledDarkButtonSettingsIcon = new ImageIcon(scaleddarkButtonSettingsIcon);
                 scaleddarkButtonChatIcon = darkButtonIconChat.getImage().getScaledInstance(getWidth(),(int)(getHeight()/13.5), Image.SCALE_SMOOTH);
@@ -775,6 +794,7 @@ public class MenuPanel extends JPanel{
 
                 homeButton.setIcon(scaledDarkButtonHomeIcon);
                 exercisesButton.setIcon(scaledDarkButtonExerciseIcon);
+                programButton.setIcon(scaledDarkButtonProgramIcon);
                 settingsButton.setIcon(scaledDarkButtonSettingsIcon);
                 chatButton.setIcon(scaledDarkButtonChatIcon);
             }

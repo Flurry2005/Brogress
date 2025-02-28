@@ -461,7 +461,7 @@ public class ChatPanel extends JPanel {
         friendsButton.setText("Friends");
         friendsButton.setBorderPainted(false);
         friendsButton.setFocusable(false);
-        friendsButton.setFont(new Font("Arial", Font.BOLD, 50));
+        friendsButton.setFont(new Font("Arial", Font.BOLD, getPreferredSize().height/30));
         friendsButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -484,7 +484,7 @@ public class ChatPanel extends JPanel {
         requestButton.setText("Requests");
         requestButton.setBorderPainted(false);
         requestButton.setFocusable(false);
-        requestButton.setFont(new Font("Arial", Font.BOLD, 50));
+        requestButton.setFont(new Font("Arial", Font.BOLD, getPreferredSize().height/30));
         requestButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -507,7 +507,7 @@ public class ChatPanel extends JPanel {
         groupButton.setText("Groups");
         groupButton.setBorderPainted(false);
         groupButton.setFocusable(false);
-        groupButton.setFont(new Font("Arial", Font.BOLD, 50));
+        groupButton.setFont(new Font("Arial", Font.BOLD, getPreferredSize().height/30));
         groupButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -530,7 +530,7 @@ public class ChatPanel extends JPanel {
         addButton.setText("Add");
         addButton.setBorderPainted(false);
         addButton.setFocusable(false);
-        addButton.setFont(new Font("Arial", Font.BOLD, 50));
+        addButton.setFont(new Font("Arial", Font.BOLD, getPreferredSize().height/30));
         addButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -574,8 +574,8 @@ public class ChatPanel extends JPanel {
         buttonlayout.add(Box.createVerticalGlue());
         buttonlayout.add(requestButton);
         buttonlayout.add(Box.createVerticalGlue());
-        buttonlayout.add(groupButton);
-        buttonlayout.add(Box.createVerticalGlue());
+        //buttonlayout.add(groupButton);
+        //buttonlayout.add(Box.createVerticalGlue());
         buttonlayout.add(addButton);
         buttonlayout.add(Box.createVerticalGlue());
 
