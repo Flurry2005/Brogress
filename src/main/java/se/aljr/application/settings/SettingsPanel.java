@@ -895,6 +895,7 @@ public class SettingsPanel extends JPanel{
 
         JComboBox heightDropDown = new JComboBox(agesList.toArray(new Integer[0]));
         heightDropDown.setSelectedIndex((int)(UserData.getUserHeight()));
+        heightDropDown.setEditable(true);
         heightDropDown.setPreferredSize(new Dimension(width/15, height/15));
         heightDropDown.addItemListener(_ -> {
             UserData.setUserHeight(heightDropDown.getSelectedIndex()); //Updates the local user age in the userdata
