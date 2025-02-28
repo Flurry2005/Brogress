@@ -1,38 +1,42 @@
 package se.aljr.application.programplanner;
 
-import org.checkerframework.checker.units.qual.A;
+import se.aljr.application.AppThemeColors;
+import se.aljr.application.CustomFont;
+import se.aljr.application.ResourcePath;
 import se.aljr.application.UserData;
 import se.aljr.application.exercise.Excercise.Exercise;
 import se.aljr.application.exercise.Program.Exercises;
 import se.aljr.application.loginpage.FirebaseManager;
+import se.aljr.application.settings.SettingsPanel;
 
 import javax.swing.*;
-import javax.swing.Timer;
 import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
 import java.util.*;
 import java.util.List;
+import javax.swing.Timer;
 
 public class ProgramPanel extends JPanel {
-    public static int totalHeight;
     public static int programPanelHeight;
     public static int programPanelWidth;
     private Workout workoutContainer;
     public static int setPanelHeight;
     private JLabel headerTitle;
-    private int statusDelayCounter;
-    private StringBuilder status = new StringBuilder();
-    private String resourcePath;
+    private JTextField workoutTitle;
+
     private static boolean emptyLog;
     private ImageIcon emptyBackground;
     private Image scaledEmptyBackground;
     private ImageIcon scaledEmptyBackgroundIcon;
+
+    private ImageIcon lightEmptyBackground;
+    private Image scaledLightEmptyBackground;
+    private ImageIcon scaledLightEmptyBackgroundIcon;
+
     private ImageIcon addButton;
     private Image scaledAddButton;
     private ImageIcon scaledAddButtonIcon;
@@ -41,29 +45,122 @@ public class ProgramPanel extends JPanel {
     private Image scaledsaveButton;
     private ImageIcon scaledsaveButtonIcon;
 
+    private ImageIcon removeWorkoutButtonImage;
+    private Image scaledRemoveWorkoutButtonImage;
+    private ImageIcon scaledRemoveWorkoutIcon;
+
+    private ImageIcon newWorkoutButtonImage;
+    private Image scaledNewWorkoutButtonImage;
+    private ImageIcon scaledNewWorkoutIcon;
+
+    private JButton newWorkoutButton;
+
+    private ImageIcon removeExerciseButtonImage;
+    private Image scaledRemoveExerciseButtonImage;
+    public static ImageIcon scaledRemoveExerciseIcon;
+
+    private ImageIcon newSetButtonImage;
+    private Image scaledNewSetButtonImage;
+    public static ImageIcon scaledNewSetIcon;
+
+    private ImageIcon removeSetButtonImage;
+    private Image scaledRemoveSetButtonImage;
+    public static ImageIcon scaledRemoveSetIcon;
+
+    private ImageIcon moveSetUpButtonImage;
+    private Image scaledMoveSetUpButtonImage;
+    public static ImageIcon scaledMoveSetUpIcon;
+
+    private ImageIcon moveSetDownButtonImage;
+    private Image scaledMoveSetDownButtonImage;
+    public static ImageIcon scaledMoveSetDownIcon;
+
+    private int statusDelayCounter;
+    private final StringBuilder status = new StringBuilder();
+
+    JPanel mainPanel = new JPanel();
+    JLabel statusText = new JLabel(status.toString());
+    static JPanel workoutPanel = new JPanel();
+    static JPanel exercisesPanel = new JPanel();
+    JTextField searchExercise = new JTextField();
+    JScrollPane workoutScrollPane = new JScrollPane();
+    JScrollPane savedWorkoutsScrollPane = new JScrollPane();
+    DefaultListModel<Exercise> exerciseModel = new DefaultListModel<>();
+    JList<Exercise> searchExerciseResult = new JList<>(exerciseModel);
+    JScrollPane exercisesScrollPane = new JScrollPane(searchExerciseResult);
+    JPanel addExerciseAndSetPanel = new JPanel();
+    JPanel workoutPanelTop = new JPanel();
+    JPanel savedWorkoutsPanel = new JPanel();
+    DefaultListModel<String> workoutTitleDefaultListModel = new DefaultListModel<>();
+    JList<String> savedWorkoutsList = new JList<>(workoutTitleDefaultListModel);
+    WorkoutsList workoutsList;
+    JLabel savedWorkoutsLabel;
+
+    public static Color settingsPanelColor;
+    public static Color workoutPanelTextColor;
+
+
+    public static ProgramPanel instance;
+
 
     public ProgramPanel(int width, int height) {
-        resourcePath = getClass().getClassLoader().getResource("resource.path").getPath().replace("resource.path", "");
-        emptyBackground = new ImageIcon(resourcePath + "emptyBackground.png");
+        emptyBackground = new ImageIcon(ResourcePath.getResourcePath() + "emptyBackground.png");
         scaledEmptyBackground = emptyBackground.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
         scaledEmptyBackgroundIcon = new ImageIcon(scaledEmptyBackground);
 
-        addButton = new ImageIcon(resourcePath + "add_button.png");
-        scaledAddButton = addButton.getImage().getScaledInstance(75, 29, Image.SCALE_SMOOTH);
+        lightEmptyBackground = new ImageIcon(ResourcePath.getResourcePath() + "lightEmptyBackground.png");
+        scaledLightEmptyBackground = lightEmptyBackground.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
+        scaledLightEmptyBackgroundIcon = new ImageIcon(scaledLightEmptyBackground);
+                     
+        addButton = new ImageIcon(ResourcePath.getResourcePath() + "add_button.png");
+        scaledAddButton = addButton.getImage().getScaledInstance((int) (addButton.getIconWidth() / 1.5), (int) (addButton.getIconHeight()), Image.SCALE_SMOOTH);
         scaledAddButtonIcon = new ImageIcon(scaledAddButton);
 
-        saveButton = new ImageIcon(resourcePath + "save_workout_button.png");
-        scaledsaveButton = saveButton.getImage().getScaledInstance(140, 29, Image.SCALE_SMOOTH);
+        saveButton = new ImageIcon(ResourcePath.getResourcePath() + "save_workout_button.png");
+        scaledsaveButton = saveButton.getImage().getScaledInstance((int)(width/7.59285714), (int)(height/22.862069), Image.SCALE_SMOOTH);
         scaledsaveButtonIcon = new ImageIcon(scaledsaveButton);
 
+        removeWorkoutButtonImage = new ImageIcon(ResourcePath.getResourcePath() + "remove_workout_button.png");
+        scaledRemoveWorkoutButtonImage = removeWorkoutButtonImage.getImage().getScaledInstance((int)(width/28.7297297), (int)(height/22.862069), Image.SCALE_SMOOTH);
+        scaledRemoveWorkoutIcon = new ImageIcon(scaledRemoveWorkoutButtonImage);
+
+        newWorkoutButtonImage = new ImageIcon(ResourcePath.getResourcePath() + "new_workout_button.png");
+        scaledNewWorkoutButtonImage = newWorkoutButtonImage.getImage().getScaledInstance((int)(width/14.1733333), (int)(height/22.862069), Image.SCALE_SMOOTH);
+        scaledNewWorkoutIcon = new ImageIcon(scaledNewWorkoutButtonImage);
+
+        removeExerciseButtonImage = new ImageIcon(ResourcePath.getResourcePath() + "remove_exercise_button.png");
+        scaledRemoveExerciseButtonImage = removeExerciseButtonImage.getImage().getScaledInstance((int)(width/14.971831), (int)(height/19.5), Image.SCALE_SMOOTH);
+        scaledRemoveExerciseIcon = new ImageIcon(scaledRemoveExerciseButtonImage);
+
+        newSetButtonImage = new ImageIcon(ResourcePath.getResourcePath() + "new_set_button.png");
+        scaledNewSetButtonImage = newSetButtonImage.getImage().getScaledInstance((int)(width/35.4333333), (int)(height/19.5), Image.SCALE_SMOOTH);
+        scaledNewSetIcon = new ImageIcon(scaledNewSetButtonImage);
+
+        removeSetButtonImage = new ImageIcon(ResourcePath.getResourcePath() + "remove_set_button.png");
+        scaledRemoveSetButtonImage = removeSetButtonImage.getImage().getScaledInstance((int)(width/46.2173913043), (int)(height/26.52), Image.SCALE_SMOOTH);
+        scaledRemoveSetIcon = new ImageIcon(scaledRemoveSetButtonImage);
+
+        moveSetUpButtonImage = new ImageIcon(ResourcePath.getResourcePath() + "move_set_up.png");
+        scaledMoveSetUpButtonImage = moveSetUpButtonImage.getImage().getScaledInstance((int)(width/88.5833333), (int)(height/30.1363636), Image.SCALE_SMOOTH);
+        scaledMoveSetUpIcon = new ImageIcon(scaledMoveSetUpButtonImage);
+
+        moveSetDownButtonImage = new ImageIcon(ResourcePath.getResourcePath() + "move_set_down.png");
+        scaledMoveSetDownButtonImage = moveSetDownButtonImage.getImage().getScaledInstance((int)(width/88.5833333), (int)(height/30.1363636), Image.SCALE_SMOOTH);
+        scaledMoveSetDownIcon = new ImageIcon(scaledMoveSetDownButtonImage);
+
+        instance = this;
+
         this.setSize(width, height);
-        this.setBackground(new Color(31, 31, 31));
+        this.setOpaque(false);
+        this.setBackground(AppThemeColors.SECONDARY);
         this.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
-        init(width,height);
+        init();
     }
 
-    private void init(int width, int height) {
+    private void init() {
+
         setPanelHeight = getHeight() / 19;
+
         programPanelHeight = getHeight();
         programPanelWidth = getWidth();
 
@@ -71,27 +168,26 @@ public class ProgramPanel extends JPanel {
         JLayeredPane wrapper = new JLayeredPane();
         wrapper.setPreferredSize(new Dimension(programPanelWidth, programPanelHeight));
 
+
         // Main panel holding everything
-        JPanel mainPanel = new JPanel();
+
         mainPanel.setOpaque(true);
+        mainPanel.setBackground(AppThemeColors.PRIMARY);
         mainPanel.setBounds(0,0,programPanelWidth,programPanelHeight);
-        mainPanel.setBackground(new Color(51, 51, 51));
         //mainPanel.setBackground(Color.GREEN);
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
 
-
         //Scrollable window
-        JScrollPane workoutScrollPane = new JScrollPane();
-        workoutScrollPane.setPreferredSize(new Dimension((int) (getWidth() / 2), getHeight() * 8 / 10));
-        workoutScrollPane.setMinimumSize(new Dimension((int) (getWidth() / 2), getHeight() * 8 / 10));
-        workoutScrollPane.setMaximumSize(new Dimension((int) (getWidth() / 2), getHeight() * 8 / 10));
+
+        workoutScrollPane.setPreferredSize(new Dimension(getWidth() / 2, getHeight() * 8 / 10));
+        workoutScrollPane.setMinimumSize(new Dimension(getWidth() / 2, getHeight() * 8 / 10));
+        workoutScrollPane.setMaximumSize(new Dimension(getWidth() / 2, getHeight() * 8 / 10));
         workoutScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         workoutScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         workoutScrollPane.getVerticalScrollBar().setPreferredSize(new Dimension(0, 0));
         workoutScrollPane.getVerticalScrollBar().setUnitIncrement(6);
-        workoutScrollPane.getViewport().setBackground(new Color(22, 22, 22));
+        workoutScrollPane.getViewport().setBackground(AppThemeColors.panelColor);
         workoutScrollPane.setBorder(new LineBorder(new Color(80, 73, 69), 1));
-
 
         //Statuspanel
         JPanel statusPanel = new JPanel();
@@ -99,40 +195,33 @@ public class ProgramPanel extends JPanel {
         statusPanel.setPreferredSize(new Dimension(this.getWidth(), 50));
         statusPanel.setVisible(false);
 
-        JLabel statusText = new JLabel(status.toString());
         statusText.setForeground(new Color(204, 204, 204));
-
         statusPanel.add(statusText);
-
-        Timer shrinkStatusTimer = new Timer(30, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (statusPanel.getHeight() == 0) {
-                    statusPanel.setVisible(false);
-                    ((Timer) e.getSource()).stop();
-                    return;
-                }
-                if (statusDelayCounter > 0) {
-                    statusDelayCounter -= 1;
-                } else {
-                    statusPanel.setBounds(0,statusPanel.getBounds().y + 1,mainPanel.getWidth(),statusPanel.getHeight());
-                    statusPanel.repaint();
-                    statusPanel.revalidate();
-                }
+        Timer shrinkStatusTimer = new Timer(30, e -> {
+            if (statusPanel.getHeight() == 0) {
+                statusPanel.setVisible(false);
+                ((Timer) e.getSource()).stop();
+                return;
             }
-
+            if (statusDelayCounter > 0) {
+                statusDelayCounter -= 1;
+            } else {
+                statusPanel.setBounds(0,statusPanel.getBounds().y + 1,mainPanel.getWidth(),statusPanel.getHeight());
+                statusPanel.repaint();
+                statusPanel.revalidate();
+            }
         });
 
         //Label to display text when log is empty
         JLabel isEmpty = new JLabel();
 
         //Panel containing log and workout data
-        WorkoutsList workoutsList = FirebaseManager.readDBworkout(this);
-        if (workoutsList.size() == 0) {
+        workoutsList = FirebaseManager.readDBworkout(this);
+        if (workoutsList.isEmpty()) {
             workoutsList.add(new Workout());
 
         }
-        workoutContainer = workoutsList.get(0);
+        workoutContainer = workoutsList.getFirst();
         //workoutContainer = FirebaseManager.readDBworkout(this);
         if (workoutContainer.getComponentCount() == 0) {
             emptyLog = true;
@@ -145,77 +234,79 @@ public class ProgramPanel extends JPanel {
         workoutContainer.setLayout(new BoxLayout(workoutContainer, BoxLayout.Y_AXIS));
         workoutContainer.setOpaque(false);
         workoutContainer.setForeground(new Color(204, 204, 204));
-        workoutContainer.setBackground(new Color(22, 22, 22));
+        workoutContainer.setBackground(AppThemeColors.panelColor);
         workoutScrollPane.setViewportView(workoutContainer); //workoutScrollPane will show the content of workoutContainer
 
-        JPanel savedWorkoutsPanel = new JPanel();
+
         savedWorkoutsPanel.setLayout(new BoxLayout(savedWorkoutsPanel, BoxLayout.Y_AXIS));
         savedWorkoutsPanel.setPreferredSize(new Dimension(getWidth() / 5, getHeight()));
         savedWorkoutsPanel.setMinimumSize(new Dimension(getWidth() / 5, getHeight()));
         savedWorkoutsPanel.setMaximumSize(new Dimension(getWidth() / 5, getHeight()));
-        //savedWorkoutsPanel.setBackground(Color.BLUE);
         savedWorkoutsPanel.setOpaque(true);
-        savedWorkoutsPanel.setBackground(new Color(51, 51, 51));
+        savedWorkoutsPanel.setBackground(AppThemeColors.PRIMARY);
 
         JPanel savedWorkoutsPanelTop = new JPanel();
-        savedWorkoutsPanelTop.setLayout(new BorderLayout(0, 0));
-        savedWorkoutsPanelTop.setOpaque(false);
+        savedWorkoutsPanelTop.setLayout(new BoxLayout(savedWorkoutsPanelTop, BoxLayout.X_AXIS));
+        savedWorkoutsPanelTop.setOpaque(true);
         savedWorkoutsPanelTop.setPreferredSize(new Dimension(getWidth() / 5, getHeight() / 20));
         savedWorkoutsPanelTop.setMinimumSize(new Dimension(getWidth() / 5, getHeight() / 20));
         savedWorkoutsPanelTop.setMaximumSize(new Dimension(getWidth() / 5, getHeight() / 20));
+        savedWorkoutsPanelTop.setBackground(AppThemeColors.PRIMARY);
+        savedWorkoutsPanelTop.setBorder(new LineBorder(new Color(80, 73, 69)));
 
-        JLabel savedWorkoutsLabel = new JLabel("Workouts");
-        savedWorkoutsLabel.setFont(new Font("Arial", Font.PLAIN, 15));
-        savedWorkoutsLabel.setForeground(Color.CYAN);
-        savedWorkoutsLabel.setPreferredSize(new Dimension(getWidth() / 5, getHeight() / 20));
-        savedWorkoutsLabel.setMaximumSize(new Dimension(getWidth() / 5, getHeight() / 20));
+
+        savedWorkoutsLabel = new JLabel("My workouts");
+        savedWorkoutsLabel.setMaximumSize(new Dimension((int)(savedWorkoutsPanelTop.getPreferredSize().width/4),(int)(savedWorkoutsPanelTop.getPreferredSize().height)));
+        savedWorkoutsLabel.setFont(CustomFont.getFont().deriveFont(24f));
+        savedWorkoutsLabel.setForeground(AppThemeColors.foregroundColor);
         savedWorkoutsLabel.setOpaque(false);
 
         // Select saved workouts
-        DefaultListModel<String> workoutTitleDefaultListModel = new DefaultListModel<>();
-
         DefaultListModel<Workout> workoutDefaultListModel = new DefaultListModel<>();
         for (Workout workout : workoutsList) {
             workoutDefaultListModel.addElement(workout);
             workoutTitleDefaultListModel.addElement(workout.getWorkoutData().getTitle());
         }
 
-        JList<String> savedWorkoutsList = new JList<>(workoutTitleDefaultListModel);
         savedWorkoutsList.setForeground(Color.WHITE);
+        savedWorkoutsList.setFixedCellHeight((int)(getHeight()/22.5));
         savedWorkoutsList.setBackground(new Color(22, 22, 22));
         savedWorkoutsList.setSelectedIndex(0);
-        savedWorkoutsList.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
+        savedWorkoutsList.setFont(new Font("Arial", Font.BOLD, (int)(getHeight()/55.25)));
+        savedWorkoutsList.addListSelectionListener(_ -> {
 
-                if (savedWorkoutsList.getSelectedIndex() != -1) {
-                    Workout target = workoutDefaultListModel.getElementAt(savedWorkoutsList.getSelectedIndex());
-                    workoutContainer = target;
+            if (savedWorkoutsList.getSelectedIndex() != -1) {
+                Workout target = workoutDefaultListModel.getElementAt(savedWorkoutsList.getSelectedIndex());
+                workoutContainer = target;
 
-                    headerTitle.setText(target.getWorkoutData().getTitle());
+                workoutTitle.setText(target.getWorkoutData().getTitle());
 
-                    if (workoutContainer.getComponentCount() == 0) {
-                        emptyLog = true;
-                        isEmpty.setFont(new Font("Arial", Font.ITALIC, 20));
-                        isEmpty.setText("No exercises added yet.");
-                        workoutContainer.add(isEmpty);
-                    }
-                    workoutContainer.setLayout(new BoxLayout(workoutContainer, BoxLayout.Y_AXIS));
-                    workoutContainer.setOpaque(false);
-                    workoutContainer.setForeground(new Color(204, 204, 204));
-                    workoutContainer.setBackground(new Color(22, 22, 22));
-                    workoutContainer.setPreferredSize(new Dimension(target.getWidth(), target.getHeight()));
-                    workoutContainer.setMinimumSize(target.getPreferredSize());
-                    workoutContainer.setMaximumSize(target.getPreferredSize());
-
-                    workoutScrollPane.setViewportView(workoutContainer);
+                if (workoutContainer.getComponentCount() == 0) {
+                    emptyLog = true;
+                    isEmpty.setFont(new Font("Arial", Font.ITALIC, (int)(getHeight()/33.15)));
+                    isEmpty.setText("No exercises added yet.");
+                    workoutContainer.add(isEmpty);
                 }
+                workoutContainer.setLayout(new BoxLayout(workoutContainer, BoxLayout.Y_AXIS));
+                workoutContainer.setOpaque(false);
+                workoutContainer.setForeground(AppThemeColors.foregroundColor);
+                workoutContainer.setBackground(new Color(22, 22, 22));
+                workoutContainer.setPreferredSize(new Dimension(target.getWidth(), target.getHeight()));
+                workoutContainer.setMinimumSize(target.getPreferredSize());
+                workoutContainer.setMaximumSize(target.getPreferredSize());
 
+                workoutScrollPane.setViewportView(workoutContainer);
             }
 
         });
 
-        JButton newWorkoutButton = new JButton("New workout");
+        newWorkoutButton = new JButton(scaledNewWorkoutIcon);
+        newWorkoutButton.setContentAreaFilled(false);
+        newWorkoutButton.setPreferredSize(new Dimension(scaledNewWorkoutIcon.getIconWidth(),scaledNewWorkoutIcon.getIconHeight()));
+        newWorkoutButton.setMaximumSize(newWorkoutButton.getPreferredSize());
+        newWorkoutButton.setBorder(null);
+        newWorkoutButton.setFocusable(false);
+        newWorkoutButton.setBorderPainted(false);
         newWorkoutButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -224,45 +315,52 @@ public class ProgramPanel extends JPanel {
                 workoutDefaultListModel.addElement(newWorkout);
                 workoutTitleDefaultListModel.addElement(newWorkout.getWorkoutData().getTitle());
 
-
             }
         });
 
-        JButton deleteWorkout = new JButton("X");
+        JButton deleteWorkout = new JButton();
         deleteWorkout.setBorder(null);
-        deleteWorkout.setText("X");
+        deleteWorkout.setContentAreaFilled(false);
+        deleteWorkout.setIcon(scaledRemoveWorkoutIcon);
         deleteWorkout.setFont(new Font("Arial", Font.BOLD, 10));
-        deleteWorkout.setPreferredSize(new Dimension(getWidth()/60, getWidth()/60));
+        deleteWorkout.setPreferredSize(new Dimension(scaledRemoveWorkoutIcon.getIconWidth(), scaledRemoveWorkoutIcon.getIconHeight()));
         deleteWorkout.setMaximumSize(deleteWorkout.getPreferredSize());
-        deleteWorkout.setBackground(Color.red);
         deleteWorkout.setBorderPainted(true);
         deleteWorkout.setFocusable(false);
         deleteWorkout.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                int selectedIndex = savedWorkoutsList.getSelectedIndex();
-                workoutDefaultListModel.remove(selectedIndex);
-                workoutTitleDefaultListModel.remove(selectedIndex);
-                workoutsList.remove(selectedIndex);
-                if(selectedIndex==0){
-                    savedWorkoutsList.setSelectedIndex(0);
-                }
-                else{
+                if(!workoutsList.isEmpty()){
+                    int selectedIndex = savedWorkoutsList.getSelectedIndex();
+                    workoutDefaultListModel.remove(selectedIndex);
+                    workoutTitleDefaultListModel.remove(selectedIndex);
+                    workoutsList.remove(selectedIndex);
+                    if(selectedIndex==workoutsList.size()){
+                        selectedIndex--;
+                    }
                     savedWorkoutsList.setSelectedIndex(selectedIndex);
-                }
 
+                    status.setLength(0);
+                    status.append("Workout removed!");
+                    activateStatus(statusPanel,shrinkStatusTimer,statusText, mainPanel);
+                }
             }
         });
 
-        JScrollPane savedWorkoutsScrollPane = new JScrollPane();
+
         savedWorkoutsScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        savedWorkoutsScrollPane.setPreferredSize(new Dimension(getWidth() / 5, getHeight() * 8 / 10));
-        savedWorkoutsScrollPane.setMinimumSize(new Dimension(getWidth() / 5, getHeight() * 8 / 10));
-        savedWorkoutsScrollPane.setMaximumSize(new Dimension(getWidth() / 5, getHeight() * 8 / 10));
+        savedWorkoutsScrollPane.setPreferredSize(new Dimension(getWidth() / 5, getHeight() * 8 / 10 - newWorkoutButton.getPreferredSize().height));
+        savedWorkoutsScrollPane.setMinimumSize(savedWorkoutsScrollPane.getPreferredSize());
+        savedWorkoutsScrollPane.setMaximumSize(savedWorkoutsScrollPane.getPreferredSize());
         savedWorkoutsScrollPane.getVerticalScrollBar().setPreferredSize(new Dimension(0, 0));
         savedWorkoutsScrollPane.setBorder(new LineBorder(new Color(80, 73, 69), 1));
         savedWorkoutsScrollPane.getViewport().setBackground(new Color(22, 22, 22));
         savedWorkoutsScrollPane.setViewportView(savedWorkoutsList);
+
+        JPanel savedWorkoutsPanelBottom = new JPanel();
+        savedWorkoutsPanelBottom.setLayout(new BoxLayout(savedWorkoutsPanelBottom, BoxLayout.X_AXIS));
+        savedWorkoutsPanelBottom.setOpaque(false);
+
 
         //Label holding workout title
         headerTitle = new JLabel();
@@ -271,28 +369,27 @@ public class ProgramPanel extends JPanel {
         headerTitle.setFont(new Font("Arial", Font.BOLD, 22));
         headerTitle.setHorizontalAlignment(SwingConstants.CENTER);
 
-        JPanel workoutPanel = new JPanel();
+
         workoutPanel.setLayout(new BoxLayout(workoutPanel, BoxLayout.Y_AXIS));
-        workoutPanel.setPreferredSize(new Dimension((int) (getWidth() / 2), getHeight()));
-        workoutPanel.setMinimumSize(new Dimension((int) (getWidth() / 2), getHeight()));
-        workoutPanel.setMaximumSize(new Dimension((int) (getWidth() / 2), getHeight()));
+        workoutPanel.setPreferredSize(new Dimension(getWidth() / 2, getHeight()));
+        workoutPanel.setMinimumSize(new Dimension(getWidth() / 2, getHeight()));
+        workoutPanel.setMaximumSize(new Dimension(getWidth() / 2, getHeight()));
         workoutPanel.setOpaque(true);
         workoutPanel.setBackground(new Color(51, 51, 51));
 
-        JPanel workoutPanelTop = new JPanel();
         workoutPanelTop.setLayout(new BoxLayout(workoutPanelTop, BoxLayout.X_AXIS));
         workoutPanelTop.setOpaque(false);
-        workoutPanelTop.setPreferredSize(new Dimension((int) (getWidth() / 2), getHeight() / 20));
-        workoutPanelTop.setMinimumSize(new Dimension((int) (getWidth() / 2), getHeight() / 20));
-        workoutPanelTop.setMaximumSize(new Dimension((int) (getWidth() / 2), getHeight() / 20));
+        workoutPanelTop.setPreferredSize(new Dimension(getWidth() / 2, getHeight() / 20));
+        workoutPanelTop.setMinimumSize(new Dimension(getWidth() / 2, getHeight() / 20));
+        workoutPanelTop.setMaximumSize(new Dimension(getWidth() / 2, getHeight() / 20));
 
-        JTextField workoutTitle = new JTextField();
+        workoutTitle = new JTextField();
         workoutTitle.setText("Workout title");
         workoutTitle.setForeground(new Color(204, 204, 204));
         workoutTitle.setBackground(new Color(22, 22, 22));
-        workoutTitle.setFont(new Font("Arial", Font.PLAIN, 12));
-        workoutTitle.setPreferredSize(new Dimension(getWidth() / 3, 30));
-        workoutTitle.setMaximumSize(new Dimension(getWidth() / 3, 30));
+        workoutTitle.setFont(new Font("Arial", Font.PLAIN, (int)(getHeight()/55.25)));
+        workoutTitle.setPreferredSize(new Dimension(getWidth() / 3, (int)(getHeight()/22.1)));
+        workoutTitle.setMaximumSize(workoutTitle.getPreferredSize());
         workoutTitle.setBorder(new LineBorder(new Color(80, 73, 69)));
 
         JButton saveWorkoutButton = new JButton(scaledsaveButtonIcon);
@@ -301,49 +398,44 @@ public class ProgramPanel extends JPanel {
         saveWorkoutButton.setBorderPainted(false);
         saveWorkoutButton.setPreferredSize(new Dimension(scaledsaveButtonIcon.getIconWidth(), scaledsaveButtonIcon.getIconHeight()));
         saveWorkoutButton.setMaximumSize(new Dimension(scaledsaveButtonIcon.getIconWidth(), scaledsaveButtonIcon.getIconHeight()));
-        saveWorkoutButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
+        saveWorkoutButton.addActionListener(_ -> {
+            try {
 
-                    System.out.println("name before : " + workoutDefaultListModel.get(savedWorkoutsList.getSelectedIndex()).getWorkoutData().getTitle());
+                System.out.println("name before : " + workoutDefaultListModel.get(savedWorkoutsList.getSelectedIndex()).getWorkoutData().getTitle());
 
-                    int index = savedWorkoutsList.getSelectedIndex();
-                    //Uppdaterar namnen på övningarna i listan
+                int index = savedWorkoutsList.getSelectedIndex();
+                //Uppdaterar namnen på övningarna i listan
 
-                    workoutDefaultListModel.get(savedWorkoutsList.getSelectedIndex()).getWorkoutData().setTitle(workoutTitle.getText().trim());
+                workoutDefaultListModel.get(savedWorkoutsList.getSelectedIndex()).getWorkoutData().setTitle(workoutTitle.getText().trim());
 
-                    System.out.println("name before : " + workoutDefaultListModel.get(savedWorkoutsList.getSelectedIndex()).getWorkoutData().getTitle());
+                System.out.println("name before : " + workoutDefaultListModel.get(savedWorkoutsList.getSelectedIndex()).getWorkoutData().getTitle());
 
-                    workoutTitleDefaultListModel.clear();
+                workoutTitleDefaultListModel.clear();
 
-                    for (Workout workout : workoutsList) {
-                        workoutTitleDefaultListModel.addElement(workout.getWorkoutData().getTitle());
-                    }
-                    savedWorkoutsList.setModel(workoutTitleDefaultListModel);
-                    System.out.println(savedWorkoutsList.getSelectedIndex() + " index after");
-                    savedWorkoutsList.setSelectedIndex(index);
-                    FirebaseManager.writeDBworkout(workoutsList);
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
+                for (Workout workout : workoutsList) {
+                    workoutTitleDefaultListModel.addElement(workout.getWorkoutData().getTitle());
                 }
-                status.append("Workout saved!");
-                statusPanel.setBackground(new Color(46, 148, 76));
-                activateStatus(statusPanel,shrinkStatusTimer,statusText, mainPanel);
-                status.setLength(0);
+                savedWorkoutsList.setModel(workoutTitleDefaultListModel);
+                System.out.println(savedWorkoutsList.getSelectedIndex() + " index after");
+                savedWorkoutsList.setSelectedIndex(index);
+                FirebaseManager.writeDBworkout(workoutsList);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
             }
-
-
+            status.append("Workout saved!");
+            activateStatus(statusPanel,shrinkStatusTimer,statusText, mainPanel);
+            status.setLength(0);
         });
 
         //Panel to hold search and exercieses list vertically
-        JPanel exercisesPanel = new JPanel();
+
         exercisesPanel.setLayout(new BoxLayout(exercisesPanel, BoxLayout.Y_AXIS));
         exercisesPanel.setPreferredSize(new Dimension(getWidth() / 5, getHeight()));
         exercisesPanel.setMinimumSize(new Dimension(getWidth() / 5, getHeight()));
         exercisesPanel.setMaximumSize(new Dimension(getWidth() / 5, getHeight()));
         exercisesPanel.setOpaque(true);
         exercisesPanel.setBackground(new Color(51, 51, 51));
+
 
         JPanel exercisesPanelTop = new JPanel();
         exercisesPanelTop.setLayout(new BorderLayout(0, 0));
@@ -353,26 +445,24 @@ public class ProgramPanel extends JPanel {
         exercisesPanelTop.setMaximumSize(new Dimension(getWidth() / 5, getHeight() / 20));
 
         //Search and add exercise
-        DefaultListModel<Exercise> exerciseModel = new DefaultListModel<Exercise>();
+
         Exercises list = new Exercises();
+        list.removeGif();
         for (Exercise exercise : list.getList()) {
             exerciseModel.addElement(exercise);
         }
 
-
-        JList<Exercise> searchExerciseResult = new JList(exerciseModel);
-        searchExerciseResult.setFixedCellHeight(26);
+        searchExerciseResult.setFixedCellHeight((int)(getHeight()/25.5));
+        searchExerciseResult.setFont(new Font("Arial", Font.BOLD, (int)(getHeight()/55.25)));
         searchExerciseResult.setBackground(new Color(22, 22, 22));
         searchExerciseResult.setForeground(new Color(204, 204, 204));
         searchExerciseResult.setPreferredSize(new Dimension(200, searchExerciseResult.getFixedCellHeight() * searchExerciseResult.getModel().getSize()));
 
-
-        JTextField searchExercise = new JTextField();
         searchExercise.setText("Search for exercise...");
-        searchExercise.setFont(new Font("Arial", Font.PLAIN, 12));
+        searchExercise.setFont(new Font("Arial", Font.PLAIN, (int)(getHeight()/55.25)));
         searchExercise.setForeground(new Color(204, 204, 204));
-        searchExercise.setPreferredSize(new Dimension(130, 30));
-        searchExercise.setMaximumSize(new Dimension(getWidth() / 3, 30));
+        searchExercise.setPreferredSize(new Dimension((int)(getWidth()/8.17692308), (int)(getHeight()/22.1)));
+        searchExercise.setMaximumSize(new Dimension(searchExercise.getPreferredSize()));
         searchExercise.setBackground(new Color(22, 22, 22));
         searchExercise.setBorder(new LineBorder(new Color(80, 73, 69)));
         //searchExercise.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -426,7 +516,7 @@ public class ProgramPanel extends JPanel {
         });
 
         //Scroll-Panel to hold all exercises
-        JScrollPane exercisesScrollPane = new JScrollPane(searchExerciseResult);
+
         exercisesScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         exercisesScrollPane.setPreferredSize(new Dimension(getWidth() / 5, getHeight() * 8 / 10));
         exercisesScrollPane.setMinimumSize(new Dimension(getWidth() / 5, getHeight() * 8 / 10));
@@ -435,7 +525,7 @@ public class ProgramPanel extends JPanel {
         exercisesScrollPane.setBorder(new LineBorder(new Color(80, 73, 69), 1));
 
         //Panel to hold add new exercise button and set
-        JPanel addExerciseAndSetPanel = new JPanel();
+
         addExerciseAndSetPanel.setPreferredSize(new Dimension(getWidth() / 7, getHeight()));
         addExerciseAndSetPanel.setBackground(new Color(51, 51, 51));
 
@@ -448,19 +538,19 @@ public class ProgramPanel extends JPanel {
 
 
         //"Add exercise"-button
-        JButton newExcerciseButton = new JButton(scaledAddButtonIcon);
-        newExcerciseButton.setContentAreaFilled(false);
-        newExcerciseButton.setFocusPainted(false);
-        newExcerciseButton.setBorderPainted(false);
-        newExcerciseButton.setPreferredSize(new Dimension(scaledAddButtonIcon.getIconWidth(), scaledAddButtonIcon.getIconHeight()));
-        newExcerciseButton.setMaximumSize(new Dimension(scaledAddButtonIcon.getIconWidth(), scaledAddButtonIcon.getIconHeight()));
+        JButton newExerciseButton = new JButton(scaledAddButtonIcon);
+        newExerciseButton.setContentAreaFilled(false);
+        newExerciseButton.setFocusPainted(false);
+        newExerciseButton.setBorderPainted(false);
+        newExerciseButton.setPreferredSize(new Dimension(scaledAddButtonIcon.getIconWidth(), scaledAddButtonIcon.getIconHeight()));
+        newExerciseButton.setMaximumSize(new Dimension(scaledAddButtonIcon.getIconWidth(), scaledAddButtonIcon.getIconHeight()));
 
         //This part generates a new exercise
-        newExcerciseButton.addActionListener(new ActionListener() {
+        newExerciseButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Restrict from adding a non-selected exercise
-                if (searchExerciseResult.getSelectedValue() == null) {
+                if (SearchPanel.getSelectedExercise() == null) {
                     return;
                 }
                 // Display if empty log
@@ -469,7 +559,7 @@ public class ProgramPanel extends JPanel {
                     emptyLog = false;
                 }
 
-                addExercise(searchExerciseResult.getSelectedValue(), workoutContainer);
+                addExercise(SearchPanel.getSelectedExercise(), workoutContainer);
                 workoutContainer.revalidate();
                 workoutContainer.repaint();
                 ProgramPanel.this.revalidate();
@@ -479,8 +569,6 @@ public class ProgramPanel extends JPanel {
         });
 
         exercisesPanelTop.add(searchExercise, BorderLayout.WEST);
-        ;
-        exercisesPanelTop.add(newExcerciseButton, BorderLayout.EAST);
 
         exercisesPanel.add(Box.createVerticalGlue());
         exercisesPanel.add(exercisesPanelTop);
@@ -495,8 +583,6 @@ public class ProgramPanel extends JPanel {
 
         workoutPanelTop.add(workoutTitle);
         workoutPanelTop.add(Box.createHorizontalGlue());
-        workoutPanelTop.add(deleteWorkout);
-        workoutPanelTop.add(Box.createHorizontalGlue());
         workoutPanelTop.add(saveWorkoutButton);
 
 
@@ -506,39 +592,65 @@ public class ProgramPanel extends JPanel {
         workoutPanel.add(workoutScrollPane);
         workoutPanel.add(Box.createVerticalGlue());
 
-        savedWorkoutsPanelTop.add(savedWorkoutsLabel, BorderLayout.WEST);
-        savedWorkoutsPanelTop.add(newWorkoutButton, BorderLayout.EAST);
+        savedWorkoutsPanelTop.add(Box.createHorizontalGlue());
+        savedWorkoutsPanelTop.add(savedWorkoutsLabel);
+        savedWorkoutsPanelTop.add(Box.createHorizontalGlue());
+
+        savedWorkoutsPanelBottom.add(Box.createHorizontalGlue());
+        savedWorkoutsPanelBottom.add(newWorkoutButton);
+        savedWorkoutsPanelBottom.add(Box.createHorizontalGlue());
+        savedWorkoutsPanelBottom.add(deleteWorkout);
+        savedWorkoutsPanelBottom.add(Box.createHorizontalGlue());
 
 
         savedWorkoutsPanel.add(Box.createVerticalGlue());
         savedWorkoutsPanel.add(savedWorkoutsPanelTop);
         savedWorkoutsPanel.add(Box.createVerticalGlue());
         savedWorkoutsPanel.add(savedWorkoutsScrollPane);
+        savedWorkoutsPanel.add(savedWorkoutsPanelBottom);
         savedWorkoutsPanel.add(Box.createVerticalGlue());
 
         mainPanel.add(Box.createHorizontalGlue());
-        mainPanel.add(exercisesPanel);
+        mainPanel.add(new SearchPanel(this.getWidth(), this.getHeight(), newExerciseButton));
         mainPanel.add(Box.createHorizontalGlue());
         mainPanel.add(workoutPanel);
         mainPanel.add(Box.createHorizontalGlue());
         mainPanel.add(savedWorkoutsPanel);
         mainPanel.add(Box.createHorizontalGlue());
+
         mainPanel.add(statusPanel);
         mainPanel.add(Box.createHorizontalGlue());
-
         wrapper.add(mainPanel, JLayeredPane.DEFAULT_LAYER);
         wrapper.add(statusPanel, JLayeredPane.POPUP_LAYER);
-
         this.add(wrapper);
-
 
     }
 
-    private JPanel addExercise(Exercise currentExercise, Workout workoutContainer) {
+    //Trigger the status panel
+    public void activateStatus(JPanel statusPanel, Timer shrinkStatusTimer, JLabel statusText, JPanel mainPanel) {
+        statusText.setText(status.toString());
+        if(statusText.getText().equals("Workout removed!")){
+            statusPanel.setBackground(Color.RED);
+        }else{
+            statusPanel.setBackground(new Color(46, 148, 76));
+        }
+
+        statusPanel.setBounds(0,programPanelHeight-50,mainPanel.getWidth(),50);
+        statusPanel.revalidate();
+        statusPanel.repaint();
+        statusDelayCounter = 20;
+        statusPanel.setVisible(true);
+        statusText.setText(status.toString());
+        shrinkStatusTimer.start();
+        shrinkStatusTimer.restart();
+    }
+
+
+    private void addExercise(Exercise currentExercise, Workout workoutContainer) {
         JPanel mainExercisePanel = new JPanel();
         mainExercisePanel.setName("mainExercisePanel");
         mainExercisePanel.setLayout(new BoxLayout(mainExercisePanel, BoxLayout.Y_AXIS));
-        mainExercisePanel.setBackground(new Color(22, 22, 22));
+        mainExercisePanel.setBackground(AppThemeColors.panelColor);
 
         // Track in log
         int exerciseId = workoutContainer.getExercisePanels().size() + 1;
@@ -561,7 +673,8 @@ public class ProgramPanel extends JPanel {
         exerciseName.setMaximumSize(exerciseName.getPreferredSize());
         exerciseName.setText(currentExercise.getName());
         exerciseName.setFont(new Font("Arial", Font.BOLD, 20));
-        exerciseName.setForeground(new Color(204, 204, 204));
+        exerciseName.setForeground(workoutPanelTextColor);
+        exerciseName.setAlignmentX(Component.LEFT_ALIGNMENT);
         exerciseNameTitlePanel.add(exerciseName);
         mainExercisePanel.add(exerciseNameTitlePanel);
 
@@ -573,12 +686,13 @@ public class ProgramPanel extends JPanel {
         favoriteLabel.setText("\uD83D\uDCAA");
         favoriteLabel.setForeground(new Color(196, 196, 49));
         if (UserData.getFavoriteExercises().contains(currentExercise)) {
-            exerciseNameTitlePanel.add(favoriteLabel);
+            exerciseName.setText(exerciseName.getText()+" *");
         }
 
         // Panel to hold the titles of Set, Rep, Weight, RIR
         JPanel setRepWeightRirTitleNPanel = new JPanel();
-        setRepWeightRirTitleNPanel.setBackground(new Color(38, 38, 38));
+        setRepWeightRirTitleNPanel.setName("setRepWeightRirTitleNPanel");
+        setRepWeightRirTitleNPanel.setBackground(settingsPanelColor);
         setRepWeightRirTitleNPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
         setRepWeightRirTitleNPanel.setPreferredSize(new Dimension(getWidth(), setPanelHeight));
         setRepWeightRirTitleNPanel.setMinimumSize(setRepWeightRirTitleNPanel.getPreferredSize());
@@ -589,6 +703,7 @@ public class ProgramPanel extends JPanel {
 
         // Title Panel to align Set title to left
         JPanel leftPanel = new JPanel();
+        leftPanel.setName("leftPanel");
         leftPanel.setOpaque(false);
         leftPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
         leftPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -599,27 +714,27 @@ public class ProgramPanel extends JPanel {
 
         // Label to hold "Set"
         JLabel setLabel = new JLabel();
+        setLabel.setName("setLabel");
         setLabel.setText("Set");
-        setLabel.setForeground(new Color(225, 219, 217));
+        setLabel.setForeground(workoutPanelTextColor);
         setLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         leftPanel.add(setLabel);
 
         //Remove exercise-button
-        JButton removeExercise = new JButton();
+        JButton removeExercise = new JButton(scaledRemoveExerciseIcon);
         removeExercise.setName("removeExercise");
         removeExercise.setPreferredSize(new Dimension(getWidth() / 15, setPanelHeight));
         removeExercise.setMinimumSize(removeExercise.getPreferredSize());
         removeExercise.setMaximumSize(removeExercise.getPreferredSize());
         removeExercise.setMargin(new Insets(0, 0, 0, 0));
         removeExercise.setForeground(Color.white);
-        removeExercise.setText("remove");
+        removeExercise.setContentAreaFilled(false);
         removeExercise.setFont(new Font("Arial", Font.BOLD, 12));
-        removeExercise.setBackground(Color.red);
+        //removeExercise.setBackground(Color.red);
         removeExercise.setBorderPainted(false);
         removeExercise.setFocusPainted(false);
-        removeExercise.addActionListener(e -> {
+        removeExercise.addActionListener(_ -> {
             workoutContainer.getWorkoutData().setTotalWorkoutHeight(workoutContainer.getWorkoutData().getTotalWorkoutHeight() - (4 * setPanelHeight));
-            int i = 1;// For settings the numbers of the sets correctly
             for (Component comp : mainExercisePanel.getComponents()) {
                 if ("setPanel".equals(comp.getName())) {
                     workoutContainer.getWorkoutData().setTotalWorkoutHeight(workoutContainer.getWorkoutData().getTotalWorkoutHeight() - (setPanelHeight));
@@ -644,41 +759,42 @@ public class ProgramPanel extends JPanel {
 
         // Label to hold "Reps"
         JLabel repsLabel = new JLabel();
+        repsLabel.setName("repsLabel");
         repsLabel.setText("Reps");
-        repsLabel.setForeground(new Color(225, 219, 217));
+        repsLabel.setForeground(workoutPanelTextColor);
         repsLabel.setAlignmentX(Component.RIGHT_ALIGNMENT);
         rightPanel.add(repsLabel);
 
         // Label to hold "Weight"
         JLabel weightLabel = new JLabel();
+        weightLabel.setName("weightLabel");
         weightLabel.setText("Weight");
-        weightLabel.setForeground(new Color(225, 219, 217));
+        weightLabel.setForeground(workoutPanelTextColor);
         weightLabel.setAlignmentX(Component.RIGHT_ALIGNMENT);
         rightPanel.add(weightLabel);
         //Label to hold "RIR"
         JLabel rirLabel = new JLabel();
+        rirLabel.setName("rirLabel");
         rirLabel.setText("RIR");
-        rirLabel.setForeground(new Color(225, 219, 217));
+        rirLabel.setForeground(workoutPanelTextColor);
         rirLabel.setAlignmentX(Component.RIGHT_ALIGNMENT);
         rightPanel.add(rirLabel);
 
         // "Add set"- button
-        JButton addSet = new JButton();
+        JButton addSet = new JButton(scaledNewSetIcon);
         addSet.setName("addSet");
         addSet.setPreferredSize(new Dimension(getWidth() / 35, setPanelHeight));
         addSet.setMinimumSize(addSet.getPreferredSize());
-        addSet.setMaximumSize(new Dimension(addSet.getPreferredSize()));
+        addSet.setMaximumSize(addSet.getPreferredSize());
         addSet.setMargin(new Insets(0, 0, 0, 0));
-        addSet.setForeground(Color.white);
-        addSet.setText("+");
-        addSet.setFont(new Font("Arial", Font.BOLD, 12));
-        addSet.setBackground(new Color(40, 129, 201));
+        addSet.setContentAreaFilled(false);
         addSet.setBorderPainted(false);
         addSet.setFocusPainted(false);
+        addSet.setBorder(null);
 
         workoutContainer.getWorkoutData().setTotalWorkoutHeight(workoutContainer.getWorkoutData().getTotalWorkoutHeight() + (4 * setPanelHeight)); //Lägger till höjden för de 4 paneler som skapas när en övning läggs till
 
-        addSet.addActionListener(e -> {
+        addSet.addActionListener(_ -> {
             addSet(exerciseId, currentExercise, mainExercisePanel, setPanelHeight, workoutContainer);
             workoutContainer.setPreferredSize(new Dimension(workoutContainer.getWidth(), workoutContainer.getWorkoutData().getTotalWorkoutHeight()));
             workoutContainer.revalidate();
@@ -697,7 +813,6 @@ public class ProgramPanel extends JPanel {
         workoutContainer.revalidate();
         workoutContainer.repaint();
 
-        return workoutContainer;
     }
 
     public static void addSet(int exerciseId, Exercise currentExercise, JPanel mainExercisePanel, int heightToRemove, Workout workoutContainer) {
@@ -707,8 +822,8 @@ public class ProgramPanel extends JPanel {
         WorkoutSet workoutSet = new WorkoutSet();
         workoutSet.setExercise(currentExercise);
         workoutContainer.getWorkoutData().addSet(exerciseId, workoutSet);
-
         JPanel setPanel = new JPanel();
+
         workoutContainer.getSetPanels().put(exerciseId, setPanel);
         setPanel.setName("setPanel");
 
@@ -716,9 +831,10 @@ public class ProgramPanel extends JPanel {
 
 
         JPanel parentPanel = workoutContainer.getExercisePanels().get(exerciseId);
+
         setPanel.setOpaque(true);
         setPanel.setLayout(new BorderLayout());
-        setPanel.setBackground(new Color(22, 22, 22));
+        setPanel.setBackground(settingsPanelColor);
         setPanel.setPreferredSize(new Dimension(ProgramPanel.programPanelWidth, setPanelHeight));
         setPanel.setMinimumSize(setPanel.getPreferredSize());
         setPanel.setMaximumSize(new Dimension(ProgramPanel.programPanelWidth, setPanelHeight));
@@ -734,60 +850,50 @@ public class ProgramPanel extends JPanel {
         JLabel setLabel = new JLabel();
         setLabel.setName("setLabel");
         setLabel.setText(workoutContainer.getWorkoutData().getSetSize(exerciseId) + ".");
-        setLabel.setForeground(new Color(204, 204, 204));
+        setLabel.setForeground(workoutPanelTextColor);
         leftPanel.add(setLabel);
 
 
-        JButton deleteSet = new JButton();
+        JButton deleteSet = new JButton(scaledRemoveSetIcon);
         deleteSet.setName("deleteSet");
-        deleteSet.setBackground(Color.RED);
-        deleteSet.setForeground(Color.WHITE);
-        deleteSet.setText("-");
+        deleteSet.setContentAreaFilled(false);
+        deleteSet.setBorder(null);
         deleteSet.setPreferredSize(new Dimension(ProgramPanel.programPanelWidth / 45, setPanelHeight));
         deleteSet.setMinimumSize(deleteSet.getPreferredSize());
         deleteSet.setMaximumSize(deleteSet.getPreferredSize());
-        deleteSet.setFont(new Font("Arial", Font.BOLD, 12));
         deleteSet.setBorderPainted(false);
         deleteSet.setFocusPainted(false);
         deleteSet.setMargin(new Insets(0, 0, 0, 0));
 
         // delete set & update log
-        deleteSet.addActionListener(e -> {
-            deleteSet(parentPanel, exerciseId, workoutSet, workoutContainer, heightToRemove, setPanel, workoutContainer);
+        deleteSet.addActionListener(_ -> deleteSet(parentPanel, exerciseId, workoutSet, workoutContainer, heightToRemove, setPanel, workoutContainer));
 
-        });
-
-        JButton moveSetUp = new JButton();
+        JButton moveSetUp = new JButton(scaledMoveSetUpIcon);
         moveSetUp.setName("moveSetUp");
-        moveSetUp.setText("↑");
-        moveSetUp.setBackground(new Color(40, 129, 201));
-        moveSetUp.setForeground(Color.white);
+        moveSetUp.setContentAreaFilled(false);
+        //moveSetUp.setBorder(null);
+        moveSetUp.setBorderPainted(false);
+        moveSetUp.setFocusable(false);
         moveSetUp.setMargin(new Insets(0, 0, 0, 0));
 
-        JButton moveSetDown = new JButton();
+        JButton moveSetDown = new JButton(scaledMoveSetDownIcon);
         moveSetDown.setName("moveSetDown");
-        moveSetDown.setText("↓");
-        moveSetDown.setBackground(new Color(40, 129, 201));
-        moveSetDown.setForeground(Color.white);
+        moveSetDown.setContentAreaFilled(false);
+        //moveSetDown.setBorder(null);
+        moveSetDown.setBorderPainted(false);
+        moveSetDown.setFocusable(false);
         moveSetDown.setMargin(new Insets(0, 0, 0, 0));
 
-        moveSetDown.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                moveDown(parentPanel, exerciseId, workoutSet, workoutContainer);
-            }
-        });
+        moveSetDown.addActionListener(_ -> moveDown(parentPanel, exerciseId, workoutSet, workoutContainer));
 
 
         // move the set up
-        moveSetUp.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                moveUp(parentPanel, exerciseId, workoutSet, workoutContainer);
-            }
-        });
+        moveSetUp.addActionListener(_ -> moveUp(parentPanel, exerciseId, workoutSet, workoutContainer));
 
         JPanel rightPanel = new JPanel();
+        JTextField weightAmount = new JTextField();
+        JTextField rirAmount = new JTextField();
+
         rightPanel.setName("rightPanel");
         rightPanel.setOpaque(false);
         rightPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
@@ -802,7 +908,7 @@ public class ProgramPanel extends JPanel {
         repsAmount.setText("0");
         repsAmount.setBorder(new LineBorder(new Color(129, 115, 103), 1));
 
-        JTextField weightAmount = new JTextField();
+
         weightAmount.setBackground(new Color(22, 22, 22));
         weightAmount.setForeground(new Color(204, 204, 204));
         weightAmount.setPreferredSize(new Dimension(35, 20));
@@ -811,7 +917,7 @@ public class ProgramPanel extends JPanel {
         weightAmount.setText("0");
         weightAmount.setBorder(new LineBorder(new Color(129, 115, 103), 1));
 
-        JTextField rirAmount = new JTextField();
+
         rirAmount.setPreferredSize(new Dimension(35, 20));
         rirAmount.setForeground(new Color(204, 204, 204));
         rirAmount.setBackground(new Color(22, 22, 22));
@@ -828,25 +934,23 @@ public class ProgramPanel extends JPanel {
         parentPanel.revalidate();
         parentPanel.repaint();
 
-
-
         // Action Listeners to update the correct set
         final WorkoutSet finalWorkoutSet = workoutSet;
-        repsAmount.addActionListener(e -> {
+        repsAmount.addActionListener(_ -> {
             if (repsAmount.getText().isEmpty()) repsAmount.setText("0");
             repsAmount.setBackground(new Color(217, 217, 217));
             finalWorkoutSet.setReps(Integer.parseInt(repsAmount.getText()));
             workoutContainer.getWorkoutData().addSet(exerciseId, finalWorkoutSet);
         });
 
-        weightAmount.addActionListener(e -> {
+        weightAmount.addActionListener(_ -> {
             if (weightAmount.getText().isEmpty()) weightAmount.setText("0");
             weightAmount.setBackground(new Color(217, 217, 217));
             finalWorkoutSet.setWeight(Integer.parseInt(weightAmount.getText()));
             workoutContainer.getWorkoutData().addSet(exerciseId, finalWorkoutSet);
         });
 
-        rirAmount.addActionListener(e -> {
+        rirAmount.addActionListener(_ -> {
             if (rirAmount.getText().isEmpty()) rirAmount.setText("0");
             rirAmount.setBackground(new Color(217, 217, 217));
             finalWorkoutSet.setRir(Integer.parseInt(rirAmount.getText()));
@@ -925,15 +1029,11 @@ public class ProgramPanel extends JPanel {
 
     }
 
-
     public static void moveDown(JPanel parentPanel, int exerciseId, WorkoutSet workoutSet, Workout workoutContainer) {
 
         workoutContainer.getWorkoutData().moveSetDown(exerciseId, workoutSet, workoutContainer.getWorkoutData());
 
-        //currentWorkout.moveSetUp(exerciseId, workoutSet);
         ArrayList<JPanel> temp = new ArrayList<>();
-        HashMap<Integer, List<WorkoutSet>> updatedSet = workoutContainer.getWorkoutData().getExerciseSets();
-        int i = 0;
         // Swap set number
         for (Component comp : parentPanel.getComponents()) {
             if ("setPanel".equals(comp.getName())) {
@@ -962,7 +1062,6 @@ public class ProgramPanel extends JPanel {
 
                                     }
                                     //setLabel.setText(updatedSet.get(exerciseId).get(i).getNumber() + ".");
-                                    i++;
                                 }
                             }
                         }
@@ -1035,26 +1134,238 @@ public class ProgramPanel extends JPanel {
         super.paintComponent(g);
         // Draw the image to fill the entire panel
         if (emptyBackground != null) {
-            g.drawImage(scaledEmptyBackgroundIcon.getImage(), 0, 0, getWidth(), getHeight(), this);
+            if(!SettingsPanel.lightMode){
+                workoutPanelTextColor = Color.WHITE;
+
+                mainPanel.setBackground(AppThemeColors.PRIMARY);
+                workoutContainer.setBackground(AppThemeColors.panelColor);
+                workoutContainer.setForeground(Color.WHITE);
+                workoutScrollPane.getViewport().setBackground(AppThemeColors.panelColor);
+                workoutScrollPane.setForeground(Color.WHITE);
+                workoutPanel.setBackground(AppThemeColors.PRIMARY);
+                exercisesPanel.setBackground(AppThemeColors.PRIMARY);
+                workoutTitle.setBackground(AppThemeColors.textFieldColor);
+                workoutTitle.setForeground(Color.WHITE);
+                searchExercise.setBackground(AppThemeColors.textFieldColor);
+                searchExercise.setForeground(Color.WHITE);
+                savedWorkoutsScrollPane.getViewport().setBackground(AppThemeColors.textFieldColor);
+                searchExerciseResult.setBackground(AppThemeColors.panelColor);
+                searchExerciseResult.setForeground(Color.WHITE);
+                exercisesScrollPane.setBackground(AppThemeColors.textFieldColor);
+                addExerciseAndSetPanel.setBackground(AppThemeColors.PRIMARY);
+                savedWorkoutsPanel.setBackground(AppThemeColors.PRIMARY);
+                savedWorkoutsList.setBackground(AppThemeColors.panelColor);
+                savedWorkoutsList.setForeground(AppThemeColors.foregroundColor);
+                savedWorkoutsLabel.setForeground(AppThemeColors.foregroundColor);
+
+                for(Workout workout : workoutsList){
+                    for (Component comp1 : workout.getComponents()) {
+                        if(comp1.getName()!=null){
+                            if (comp1.getName().equals("mainExercisePanel")) {
+                                JPanel mainExercisePanel = (JPanel) comp1;
+                                mainExercisePanel.setBackground(AppThemeColors.panelColor);
+                                for (Component comp2 : mainExercisePanel.getComponents()) {
+                                    if ("setPanel".equals(comp2.getName())) {
+                                        JPanel setPanel = (JPanel) comp2;
+                                        setPanel.setBackground(AppThemeColors.panelColor);
+
+
+                                        for (Component compLeftPanel : setPanel.getComponents()) {
+                                            if ("leftPanel".equals(compLeftPanel.getName())) {
+                                                JPanel leftPanel = (JPanel) compLeftPanel;
+                                                leftPanel.setBackground(AppThemeColors.panelColor);
+                                                for(Component setLabelComp : leftPanel.getComponents()){
+                                                    if(setLabelComp.getName().equals("setLabel")){
+                                                        JLabel setLabel = (JLabel) setLabelComp;
+                                                        setLabel.setForeground(workoutPanelTextColor);
+                                                    }
+
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    if (comp2.getName() != null) {
+
+                                        if (comp2.getName().equals("exerciseNameTitlePanel")) {
+
+                                            JPanel exerciseNameTitlePanel = (JPanel) comp2;
+                                            exerciseNameTitlePanel.setBackground(AppThemeColors.panelColor);
+                                            for(Component titleComp:exerciseNameTitlePanel.getComponents()){
+                                                if(titleComp.getName().equals("exerciseName")){
+                                                    JLabel exerciseName = (JLabel) titleComp;
+                                                    exerciseName.setForeground(workoutPanelTextColor);
+                                                }
+                                            }
+
+                                        }
+                                        if(comp2.getName().equals("setRepWeightRirTitleNPanel")){
+                                            JPanel setRepWeightRirTitleNPanel = (JPanel) comp2;
+                                            setRepWeightRirTitleNPanel.setBackground(AppThemeColors.PRIMARY);
+                                            for (Component compRight : setRepWeightRirTitleNPanel.getComponents()){
+                                                if(compRight.getName()!=null){
+                                                    if("rightPanel".equals(compRight.getName())){
+                                                        JPanel rightPanel = (JPanel) compRight;
+                                                        for(Component comp : rightPanel.getComponents()){
+                                                            if(comp.getName()!=null){
+                                                                if(comp.getName().equals("repsLabel")){
+                                                                    JLabel repsLabel = (JLabel) comp;
+                                                                    repsLabel.setForeground(workoutPanelTextColor);
+                                                                }
+                                                                if(comp.getName().equals("weightLabel")){
+                                                                    JLabel repsLabel = (JLabel) comp;
+                                                                    repsLabel.setForeground(workoutPanelTextColor);
+                                                                }
+                                                                if(comp.getName().equals("rirLabel")){
+                                                                    JLabel repsLabel = (JLabel) comp;
+                                                                    repsLabel.setForeground(workoutPanelTextColor);
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                    for (Component compLeftPanel : setRepWeightRirTitleNPanel.getComponents()) {
+                                                        if ("leftPanel".equals(compLeftPanel.getName())) {
+                                                            JPanel leftPanel = (JPanel) compLeftPanel;
+                                                            leftPanel.setBackground(AppThemeColors.panelColor);
+                                                            for(Component setLabelComp : leftPanel.getComponents()){
+                                                                if(setLabelComp.getName().equals("setLabel")){
+                                                                    JLabel setLabel = (JLabel) setLabelComp;
+                                                                    setLabel.setForeground(workoutPanelTextColor);
+                                                                }
+
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                g.drawImage(scaledEmptyBackgroundIcon.getImage(), 0, 0, getWidth(), getHeight(), this);
+            }else{
+                workoutPanelTextColor = Color.BLACK;
+
+                mainPanel.setBackground(AppThemeColors.PRIMARY);
+                workoutContainer.setBackground(AppThemeColors.panelColor);
+                workoutContainer.setForeground(Color.BLACK);
+                workoutScrollPane.getViewport().setBackground(AppThemeColors.panelColor);
+                workoutScrollPane.setForeground(Color.BLACK);
+                workoutPanel.setBackground(AppThemeColors.PRIMARY);
+                exercisesPanel.setBackground(AppThemeColors.PRIMARY);
+                workoutTitle.setBackground(AppThemeColors.textFieldColor);
+                workoutTitle.setForeground(Color.BLACK);
+                searchExercise.setBackground(AppThemeColors.textFieldColor);
+                searchExercise.setForeground(Color.BLACK);
+                savedWorkoutsScrollPane.getViewport().setBackground(AppThemeColors.textFieldColor);
+                searchExerciseResult.setBackground(AppThemeColors.panelColor);
+                searchExerciseResult.setForeground(Color.BLACK);
+                exercisesScrollPane.setBackground(AppThemeColors.textFieldColor);
+                addExerciseAndSetPanel.setBackground(AppThemeColors.panelColor);
+                workoutPanelTop.setBackground(AppThemeColors.panelColor);
+                savedWorkoutsPanel.setBackground(AppThemeColors.PRIMARY);
+                savedWorkoutsList.setBackground(AppThemeColors.panelColor);
+                savedWorkoutsList.setForeground(workoutPanelTextColor);
+                savedWorkoutsLabel.setForeground(AppThemeColors.foregroundColor);
+
+
+                for(Workout workout : workoutsList){
+                    for (Component comp1 : workout.getComponents()) {
+                        if(comp1.getName()!=null){
+                            if (comp1.getName().equals("mainExercisePanel")) {
+                                JPanel mainExercisePanel = (JPanel) comp1;
+                                mainExercisePanel.setBackground(AppThemeColors.panelColor);
+                                for (Component comp2 : mainExercisePanel.getComponents()) {
+                                    if ("setPanel".equals(comp2.getName())) {
+                                        JPanel setPanel = (JPanel) comp2;
+                                        setPanel.setBackground(AppThemeColors.panelColor);
+
+
+                                        for (Component compLeftPanel : setPanel.getComponents()) {
+                                            if ("leftPanel".equals(compLeftPanel.getName())) {
+                                                JPanel leftPanel = (JPanel) compLeftPanel;
+                                                leftPanel.setBackground(AppThemeColors.panelColor);
+                                                for(Component setLabelComp : leftPanel.getComponents()){
+                                                    if(setLabelComp.getName().equals("setLabel")){
+                                                        JLabel setLabel = (JLabel) setLabelComp;
+                                                        setLabel.setForeground(workoutPanelTextColor);
+                                                    }
+
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    if (comp2.getName() != null) {
+
+                                        if (comp2.getName().equals("exerciseNameTitlePanel")) {
+
+                                            JPanel exerciseNameTitlePanel = (JPanel) comp2;
+                                            exerciseNameTitlePanel.setBackground(AppThemeColors.panelColor);
+                                            for(Component titleComp:exerciseNameTitlePanel.getComponents()){
+                                                if(titleComp.getName().equals("exerciseName")){
+                                                    JLabel exerciseName = (JLabel) titleComp;
+                                                    exerciseName.setForeground(workoutPanelTextColor);
+                                                }
+                                            }
+
+                                        }
+                                        if(comp2.getName().equals("setRepWeightRirTitleNPanel")){
+                                            JPanel setRepWeightRirTitleNPanel = (JPanel) comp2;
+                                            setRepWeightRirTitleNPanel.setBackground(AppThemeColors.PRIMARY);
+                                            for (Component compRight : setRepWeightRirTitleNPanel.getComponents()){
+                                                if(compRight.getName()!=null){
+                                                    if("rightPanel".equals(compRight.getName())){
+                                                        JPanel rightPanel = (JPanel) compRight;
+                                                        for(Component comp : rightPanel.getComponents()){
+                                                            if(comp.getName()!=null){
+                                                                if(comp.getName().equals("repsLabel")){
+                                                                    JLabel repsLabel = (JLabel) comp;
+                                                                    repsLabel.setForeground(workoutPanelTextColor);
+                                                                }
+                                                                if(comp.getName().equals("weightLabel")){
+                                                                    JLabel repsLabel = (JLabel) comp;
+                                                                    repsLabel.setForeground(workoutPanelTextColor);
+                                                                }
+                                                                if(comp.getName().equals("rirLabel")){
+                                                                    JLabel repsLabel = (JLabel) comp;
+                                                                    repsLabel.setForeground(workoutPanelTextColor);
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                    for (Component compLeftPanel : setRepWeightRirTitleNPanel.getComponents()) {
+                                                        if ("leftPanel".equals(compLeftPanel.getName())) {
+                                                            JPanel leftPanel = (JPanel) compLeftPanel;
+                                                            leftPanel.setBackground(AppThemeColors.panelColor);
+                                                            for(Component setLabelComp : leftPanel.getComponents()){
+                                                                if(setLabelComp.getName().equals("setLabel")){
+                                                                    JLabel setLabel = (JLabel) setLabelComp;
+                                                                    setLabel.setForeground(workoutPanelTextColor);
+                                                                }
+
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                g.drawImage(scaledLightEmptyBackgroundIcon.getImage(), 0, 0, getWidth(), getHeight(), this);
+            }
         }
     }
-
-    //Trigger the status panel
-    public void activateStatus(JPanel statusPanel, Timer shrinkStatusTimer, JLabel statusText, JPanel mainPanel) {
-        statusPanel.setBounds(0,programPanelHeight-50,mainPanel.getWidth(),50);
-        statusPanel.revalidate();
-        statusPanel.repaint();
-        statusDelayCounter = 20;
-        statusPanel.setVisible(true);
-        statusText.setText(status.toString());
-        shrinkStatusTimer.start();
-        shrinkStatusTimer.restart();
-
-    }
-
-
 }
-
 
 
 

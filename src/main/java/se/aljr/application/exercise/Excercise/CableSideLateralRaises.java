@@ -1,32 +1,24 @@
 package se.aljr.application.exercise.Excercise;
 
+import se.aljr.application.ResourcePath;
 import se.aljr.application.exercise.Muscle.AnteriorDeltoid;
 import se.aljr.application.exercise.Muscle.LateralDeltoid;
 import se.aljr.application.exercise.Muscle.Traps;
 
+import javax.swing.*;
+
 public class CableSideLateralRaises extends Exercise {
     public CableSideLateralRaises() {
-        name = "Lateral Raises (Cable)";
+        name = "Cable Side Lateral Raises";
 
-        info = "Cable side lateral raises are an isolation exercise that targets the lateral deltoids, while also engaging the traps and anterior deltoids. \n" +
-                "This exercise helps build shoulder width and overall upper body aesthetics.";
+        info = "The cable side lateral raise is an isolation exercise that targets the lateral deltoids, helping to build shoulder width and definition. It provides constant tension throughout the movement, making it an effective alternative to dumbbell lateral raises.";
 
-        form = "Good Form and Tips\n" +
-                "Maintain a Slight Bend in the Elbows: Protects the joints and maximizes muscle tension.\n" +
-                "Controlled Movements: Lift slowly and avoid using momentum.\n" +
-                "Keep Shoulders Relaxed: Focus on using the lateral deltoids, not the traps, to lift the weight.";
-
-        mistakes = "Common Mistakes to Avoid\n" +
-                "Shrugging the Shoulders: Over-engages the traps, reducing lateral deltoid activation.\n" +
-                "Swinging the Weights: Using momentum decreases muscle engagement.\n" +
-                "Lifting Too High: Lifting above shoulder level can strain the shoulder joint.";
-
-        link = "https://musclewiki.com/cables/male/shoulders/cable-low-single-arm-lateral-raise";
-
-        picture = "https://weighttraining.guide/exercises/cable-one-arm-lateral-raise/";
+        form = "To perform a cable side lateral raise, stand next to a cable machine and grip the handle with the hand furthest from the machine. With a slight bend in your elbow, lift your arm to the side until it reaches shoulder height, then slowly lower it back down. Keep your core engaged and maintain controlled movement throughout.";
 
         musclesUsed.add(new LateralDeltoid());
         musclesUsed.add(new Traps());
         musclesUsed.add(new AnteriorDeltoid());
+
+        imageIcon = new ImageIcon(ResourcePath.getResourcePath() +"ExerciseImages\\CableSideLateralRaises.gif");
     }
 }

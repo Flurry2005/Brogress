@@ -15,7 +15,8 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter'
     implementation(platform("com.google.firebase:firebase-bom:33.8.0"))
     implementation 'com.google.firebase:firebase-admin:9.1.1'
-
+    // Om du också vill använda Firebase Storage (filuppladdning och hämtning)
+    implementation 'com.google.firebase:firebase-storage'
 
 
 

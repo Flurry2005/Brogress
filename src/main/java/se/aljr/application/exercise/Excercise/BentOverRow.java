@@ -1,33 +1,25 @@
 package se.aljr.application.exercise.Excercise;
 
+import se.aljr.application.ResourcePath;
 import se.aljr.application.exercise.Muscle.*;
+
+import javax.swing.*;
 
 
 public class BentOverRow extends Exercise {
     public BentOverRow() {
-        name = "Bent Over Row";
+        name = "Dumbbell Bent Over Row";
 
-        info = "The bent-over row is a pulling exercise primarily targeting the lats (latissimus dorsi), traps (trapezius), and posterior deltoids (rear shoulders). \n" +
-                "It also engages the biceps as secondary muscles and stabilizes the lower back.";
+        info = "The dumbbell bent-over row is a strength exercise that targets the upper and middle back, as well as the biceps and core. It helps improve posture, build muscle mass, and enhance pulling strength, making it a valuable addition to any workout routine.";
 
-        form = "Good Form and Tips\n" +
-                "Maintain a Straight Back: Keep your spine neutral and chest slightly up.\n" +
-                "Engage the Core: Helps stabilize the lower back and prevents injury.\n" +
-                "Squeeze the Shoulder Blades: Focus on pulling with the back, not just the arms.";
-
-        mistakes = "Common Mistakes to Avoid\n" +
-                "Rounding the Back: Can strain or injure the lower back.\n" +
-                "Excessive Weight Use: Leads to poor form and reduced muscle engagement.\n" +
-                "Pulling with the Arms Only: Limits activation of the back muscles.";
-
-        link = "https://musclewiki.com/barbell/male/biceps/barbell-bent-over-row";
-
-        picture = "https://weighttraining.guide/exercises/bent-over-barbell-row/";
+        form = "To perform a dumbbell bent-over row, hold a dumbbell in each hand, hinge at the hips, and keep your back straight. Pull the dumbbells toward your torso, squeezing your shoulder blades together, then lower them back down in a controlled manner. Keep your core engaged and maintain proper posture throughout the movement.";
 
         musclesUsed.add(new Lats());
         musclesUsed.add(new Traps());
         musclesUsed.add(new PosteriorDeltoid());
         musclesUsed.add(new Biceps());
         musclesUsed.add(new LowerBack());
+
+        imageIcon = new ImageIcon(ResourcePath.getResourcePath() +"ExerciseImages\\DumbbellRow.png");
     }
 }

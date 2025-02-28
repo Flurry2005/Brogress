@@ -1,5 +1,9 @@
 package se.aljr.application.homepage;
 
+import se.aljr.application.AppThemeColors;
+import se.aljr.application.ResourcePath;
+import se.aljr.application.settings.SettingsPanel;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -9,21 +13,33 @@ import java.awt.event.MouseMotionAdapter;
 public class TopBar extends JPanel {
 
     ImageIcon topBarBackground;
+    ImageIcon lightTopBarBackground;
     ImageIcon exitButtonIcon;
     private Point initialClick;
-    private JFrame parent;
-    private String resourcePath;
+    private final JFrame parent;
+    Image scaledexitButtonIcon;
+    ImageIcon scaledExitButtonIcon;
+
+    JButton exitButton = new JButton("");
+    JButton minimizeButton = new JButton("—");
+    JButton fullscreenButton = new JButton("⬜");
 
     private boolean isFullscreen = false;
     private Dimension previousSize;
     private Point previousLocation;
     private Color bg = (new Color(51,51,51));
+    public static TopBar instance;
 
     public TopBar(final JFrame parent){
-        resourcePath = getClass().getClassLoader().getResource("resource.path").getPath().replace("resource.path","");
-        topBarBackground = new ImageIcon(resourcePath+"top_bar.png");
-        exitButtonIcon = new ImageIcon(resourcePath+"exit_button_icon.png");
+        instance = this;
 
+        topBarBackground = new ImageIcon(ResourcePath.getResourcePath() +"top_bar.png");
+        lightTopBarBackground = new ImageIcon(ResourcePath.getResourcePath()+"top_bar_light.png");
+
+        exitButtonIcon = new ImageIcon(ResourcePath.getResourcePath()+"exit_button_icon.png");
+        scaledexitButtonIcon = exitButtonIcon.getImage().getScaledInstance(16, 16, Image.SCALE_SMOOTH);
+        scaledExitButtonIcon = new ImageIcon(scaledexitButtonIcon);
+        exitButton.setIcon(scaledExitButtonIcon);
 
         this.parent = parent;
         addMouseListener(new MouseAdapter() {
@@ -58,12 +74,10 @@ public class TopBar extends JPanel {
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 0));
         buttonPanel.setOpaque(false);
 
-        Image scaledexitButtonIcon = exitButtonIcon.getImage().getScaledInstance(16, 16, Image.SCALE_SMOOTH);
-        ImageIcon scaledExitButtonIcon = new ImageIcon(scaledexitButtonIcon);
+
 
 
         // Exit button
-        JButton exitButton = new JButton("",scaledExitButtonIcon);
         exitButton.setFont(new Font("Arial", Font.BOLD, 14));
         exitButton.setForeground(Color.BLACK);
         exitButton.setBackground(bg);
@@ -71,23 +85,23 @@ public class TopBar extends JPanel {
         exitButton.setBorderPainted(false);
         exitButton.setOpaque(true);
         exitButton.setPreferredSize(new Dimension(50, 30));
-        exitButton.addActionListener(e -> parent.setExtendedState(JFrame.ICONIFIED));
+        exitButton.addActionListener(_ -> parent.setExtendedState(JFrame.ICONIFIED));
         exitButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-                exitButton.setBackground(new Color(40,40,40));
+                exitButton.setBackground(AppThemeColors.buttonBGHovered);
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                exitButton.setBackground(bg);
+                exitButton.setBackground(AppThemeColors.SECONDARY);
             }
         });
-        exitButton.addActionListener(e -> System.exit(0));
+        exitButton.addActionListener(_ -> System.exit(0));
 
 
         // Mini button
-        JButton minimizeButton = new JButton("—");
+
         minimizeButton.setFont(new Font("Arial", Font.BOLD, 14));
         minimizeButton.setForeground(Color.BLACK);
         minimizeButton.setBackground(new Color(51,51,51));
@@ -95,22 +109,22 @@ public class TopBar extends JPanel {
         minimizeButton.setBorderPainted(false);
         minimizeButton.setOpaque(true);
         minimizeButton.setPreferredSize(new Dimension(50, 30));
-        minimizeButton.addActionListener(e -> parent.setExtendedState(JFrame.ICONIFIED));
+        minimizeButton.addActionListener(_ -> parent.setExtendedState(JFrame.ICONIFIED));
         minimizeButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-                minimizeButton.setBackground(new Color(40,40,40));
+                minimizeButton.setBackground(AppThemeColors.buttonBGHovered);
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                minimizeButton.setBackground(bg);
+                minimizeButton.setBackground(AppThemeColors.SECONDARY);
             }
         });
 
 
         // Fullscreen button
-        JButton fullscreenButton = new JButton("⬜");
+
         fullscreenButton.setFont(new Font("Arial", Font.BOLD, 14));
         fullscreenButton.setForeground(Color.BLACK);
         fullscreenButton.setBackground(new Color(51,51,51));
@@ -121,15 +135,15 @@ public class TopBar extends JPanel {
         fullscreenButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-                fullscreenButton.setBackground(new Color(40,40,40));
+                fullscreenButton.setBackground(AppThemeColors.buttonBGHovered);
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                fullscreenButton.setBackground(bg);
+                fullscreenButton.setBackground(AppThemeColors.SECONDARY);
             }
         });
-        fullscreenButton.addActionListener(e -> toggleFullscreen());
+        fullscreenButton.addActionListener(_ -> toggleFullscreen());
 
 
         buttonPanel.add(minimizeButton);
@@ -157,6 +171,22 @@ public class TopBar extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         //draw image from top left corner
-        g.drawImage(topBarBackground.getImage(), 0, 0,getWidth(),getHeight(), this);
+
+        if(!SettingsPanel.lightMode){
+
+            minimizeButton.setBackground(AppThemeColors.SECONDARY);
+            fullscreenButton.setBackground(AppThemeColors.SECONDARY);
+            exitButton.setBackground(AppThemeColors.SECONDARY);
+
+            g.drawImage(topBarBackground.getImage(), 0, 0,getWidth(),getHeight(), this);
+        }else{
+
+            minimizeButton.setBackground(AppThemeColors.SECONDARY);
+            fullscreenButton.setBackground(AppThemeColors.SECONDARY);
+            exitButton.setBackground(AppThemeColors.SECONDARY);
+
+            g.drawImage(lightTopBarBackground.getImage(), 0, 0,getWidth(),getHeight(), this);
+        }
+
     }
 }

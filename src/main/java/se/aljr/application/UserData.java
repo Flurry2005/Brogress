@@ -1,8 +1,12 @@
 package se.aljr.application;
 
 import se.aljr.application.exercise.Excercise.Exercise;
+import se.aljr.application.loginpage.FirebaseManager;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.concurrent.ExecutionException;
 
 public class UserData {
     private static String userName;
@@ -10,7 +14,10 @@ public class UserData {
     private static int userAge;
     private static float userWeight;
     private static String userEmail;
-    private static HashSet<Exercise> favoriteExercises = new HashSet<>();
+    private static String userTheme;
+    private static final HashSet<Exercise> favoriteExercises = new HashSet<>();
+    private static final ArrayList<Exercise> createdExercises = new ArrayList<>();
+    private static boolean isOnline;
 
     public static void setUserName(String userName) {
         UserData.userName = userName;
@@ -52,28 +59,44 @@ public class UserData {
         return UserData.userEmail;
     }
 
+    public static void setTheme(String theme){UserData.userTheme = theme;}
+
+    public static String getTheme(){return UserData.userTheme;}
 
     public static HashSet<Exercise> getFavoriteExercises() {
-        return (favoriteExercises != null) ? favoriteExercises : new HashSet<>();
+        return favoriteExercises;
     }
 
-    public static boolean removeFavoriteExercises(Exercise exercise) {
-        if (favoriteExercises.contains(exercise)) {
-            favoriteExercises.remove(exercise);
-            return true;
-        }
-        else {
-            return false;
-        }
+    public static void removeFavoriteExercises(Exercise exercise) {
+        favoriteExercises.remove(exercise);
+    }
+    public static void setFavoriteExercises(Exercise exercise) {
+        favoriteExercises.add(exercise);
     }
 
-    public static boolean setFavoriteExercises(Exercise exercise) {
-        if (!favoriteExercises.contains(exercise)) {
-            favoriteExercises.add(exercise);
-            return true;
-        }
-        else {
-            return false;
-        }
+    public static void updateFavoriteExercises() throws IOException, ExecutionException, InterruptedException, ClassNotFoundException {
+        HashSet<Exercise> temp = FirebaseManager.readDBfavoriteExercises();
+        favoriteExercises.clear();
+        favoriteExercises.addAll(temp);
     }
+    public static void updateCreatedExercise() throws IOException, ExecutionException, ClassNotFoundException, InterruptedException {
+        ArrayList <Exercise> temp = FirebaseManager.readDBcreatedExercises();
+        createdExercises.clear();
+        createdExercises.addAll(temp);
     }
+    public static ArrayList<Exercise> getCreatedExercises() {
+        return (createdExercises != null) ? createdExercises : new ArrayList<>();
+    }
+
+    public static void setCreatedExercises(Exercise exercise) {
+        createdExercises.add(exercise);
+    }
+
+    public static boolean isIsOnline() {
+        return isOnline;
+    }
+
+    public static void setIsOnline(boolean isOnline) {
+        UserData.isOnline = isOnline;
+    }
+}

@@ -10,7 +10,6 @@ public class Monitorsize {
 
 
     public static int getWidth(){
-
         return screenWidth;
     }
     public static int getHeight(){

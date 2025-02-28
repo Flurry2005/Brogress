@@ -1,32 +1,25 @@
 package se.aljr.application.exercise.Excercise;
 
+import se.aljr.application.ResourcePath;
 import se.aljr.application.exercise.Muscle.*;
+
+import javax.swing.*;
 
 public class CableRow extends Exercise {
     public CableRow() {
         name = "Cable Row";
 
-        info = "The cable row is a seated pulling exercise that targets the lats (latissimus dorsi), biceps, and traps (trapezius). \n" +
-                "It also engages the posterior deltoids and lower back to help stabilize the movement.";
+        info = "The cable row is a resistance exercise that primarily targets the upper and middle back, along with the biceps and core. It helps build strength, improve posture, and enhance muscle definition, making it a staple in many strength-training routines.";
 
-        form = "Good Form and Tips\n" +
-                "Maintain an Upright Posture: Keep your back straight and avoid excessive leaning.\n" +
-                "Engage the Core: Helps stabilize the lower back throughout the movement.\n" +
-                "Squeeze the Shoulder Blades: Focus on pulling with the lats and avoid relying on your arms.";
-
-        mistakes = "Common Mistakes to Avoid\n" +
-                "Leaning Too Far Back: Reduces muscle activation and strains the lower back.\n" +
-                "Using Too Much Arm Movement: Limits engagement of the back muscles.\n" +
-                "Shrugging the Shoulders: Can overwork the traps and reduce lat involvement.";
-
-        link = "https://musclewiki.com/machine/male/biceps/machine-seated-cable-row";
-
-        picture = "https://weighttraining.guide/exercises/straight-back-seated-cable-row-with-straight-bar/";
+        form = "To perform a cable row, sit at a cable machine with feet firmly planted, grip the handle, and keep your back straight. Pull the handle toward your torso while squeezing your shoulder blades together, then slowly extend your arms back to the starting position. Maintain controlled movements and engage your core throughout.";
 
         musclesUsed.add(new Lats());
         musclesUsed.add(new Biceps());
         musclesUsed.add(new Traps());
         musclesUsed.add(new PosteriorDeltoid());
         musclesUsed.add(new LowerBack());
+
+        imageIcon = new ImageIcon(ResourcePath.getResourcePath() + "ExerciseImages\\CableRow.png");
     }
+
 }

@@ -7,22 +7,9 @@ public class SeatedCalfRaise extends Exercise {
     public SeatedCalfRaise() {
         name = "Seated Calf Raise";
 
-        info = "The seated calf raise is an isolation exercise focusing on the calves (gastrocnemius and soleus), with some secondary involvement of the hamstrings. \n" +
-                "It is effective for building calf strength, size, and endurance.";
+        info = "The seated calf raise is an isolation exercise that primarily targets the soleus muscle of the calves. It helps build lower leg strength, muscle definition, and endurance, benefiting athletic performance and overall leg development.";
 
-        form = "Good Form and Tips\n" +
-                "Full Range of Motion: Lower until you feel a full stretch and rise until calves are fully contracted.\n" +
-                "Control the Movement: Perform slow, steady reps to ensure maximum calf activation.\n" +
-                "Keep the Balls of Your Feet on the Platform: Helps maintain balance and isolate the calves.";
-
-        mistakes = "Common Mistakes to Avoid\n" +
-                "Bouncing the Weight: Reduces muscle engagement and can lead to injury.\n" +
-                "Limited Range of Motion: Not fully stretching and contracting the calves reduces effectiveness.\n" +
-                "Relying on Momentum: Swinging or jerky motions reduce controlled muscle activation.";
-
-        link = "https://musclewiki.com/machine/male/calves/machine-seated-calf-raises";
-
-        picture = "https://weighttraining.guide/exercises/seated-calf-raise/";
+        form = "To perform a seated calf raise, sit on a calf raise machine with the balls of your feet on the platform and your knees positioned under the pad. Push through your toes to lift your heels as high as possible, squeezing your calves at the top. Lower your heels back down in a controlled manner and repeat.";
 
         musclesUsed.add(new Calves());
         musclesUsed.add(new Hamstrings());
