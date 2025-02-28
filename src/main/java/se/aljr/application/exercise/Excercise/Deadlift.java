@@ -9,22 +9,10 @@ public class Deadlift extends Exercise {
 
 	public Deadlift() {
 		name = "Deadlift";
-		info = "The deadlift is a full-body compound exercise primarily targeting the posterior chain, including the glutes, hamstrings, lower back, traps, and forearms.\n" +
-				" It is a fundamental lift for building strength and muscle across the entire body.";
 
-		form = "Good Form and Tips\n" +
-				"Maintain a Neutral Spine: Keep your back straight throughout the lift.\n" +
-				"Engage the Core: Tighten your abs to stabilize the lower back and prevent injuries.\n" +
-				"Drive Through the Heels: Push with your legs to lift the weight while maintaining balance.";
+		info = "The deadlift is a compound exercise that targets multiple muscle groups, including the posterior chain (lower back, glutes, hamstrings), core, and grip strength. It is one of the most effective movements for building overall strength, power, and athletic performance.";
 
-		mistakes = "Common Mistakes to Avoid\n" +
-				"Rounding the Back: Can lead to serious lower back injuries.\n" +
-				"Using the Back Instead of the Legs: Over-reliance on the back increases strain and reduces efficiency.\n" +
-				"Hyperextending at the Top: Overarching at lockout can harm the lower back.";
-
-		link = "https://musclewiki.com/barbell/male/traps-middle/barbell-deadlift";
-
-		picture = "https://weighttraining.guide/exercises/barbell-deadlift/";
+		form = "To perform a deadlift, stand with feet hip-width apart, grip the barbell just outside your knees, and keep your back straight. Drive through your heels, lifting the bar while keeping it close to your body, and stand up fully before lowering it back down with control. Engage your core and maintain proper posture throughout the movement.";
 
 		musclesUsed.add(new Glutes());
 		musclesUsed.add(new Hamstrings());
@@ -32,7 +20,7 @@ public class Deadlift extends Exercise {
 		musclesUsed.add(new Traps());
 		musclesUsed.add(new Forearms());
 
-		imageIcon = new ImageIcon(ResourcePath.getResourcePath() +"ExerciseImages\\Deadlift.gif");
+		imageIcon = new ImageIcon(ResourcePath.getResourcePath() +"ExerciseImages\\Deadlift.png");
 	}
 
 }

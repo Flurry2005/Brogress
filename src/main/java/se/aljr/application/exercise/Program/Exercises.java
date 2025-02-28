@@ -17,7 +17,6 @@ public class Exercises {
 		exercises.add(new Deadlift());
 		exercises.add(new DumbbellCurl());
 		exercises.add(new DumbbellPress());
-		exercises.add(new DumbbellRow());
 		exercises.add(new DumbbellSideLateralRaises());
 		exercises.add(new InclineBenchPress());
 		exercises.add(new InclineDumbbellPress());

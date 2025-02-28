@@ -4,24 +4,11 @@ import se.aljr.application.exercise.Muscle.*;
 
 public class StepUp extends Exercise {
     public StepUp() {
-        name = "StepUp";
+        name = "Step-Up";
 
-        info = "The step-up is a unilateral lower-body exercise that primarily targets the quadriceps, glutes, and hamstrings. \n" +
-                "It also involves the calves and core for balance and stabilization, making it effective for developing functional lower-body strength.";
+        info = "The step-up is a compound lower-body exercise that primarily targets the quadriceps, hamstrings, and glutes while also improving balance and coordination. It is a functional movement that enhances lower-body strength and stability.";
 
-        form = "Good Form and Tips\n" +
-                "Drive Through the Heel of the Lead Leg: Engages the glutes and quads effectively.\n" +
-                "Maintain an Upright Posture: Keep your chest up and avoid leaning forward.\n" +
-                "Engage the Core: Helps maintain balance and supports the spine during the movement.";
-
-        mistakes = "Common Mistakes to Avoid\n" +
-                "Pushing Off with the Back Leg: Reduces workload on the leading leg, limiting effectiveness.\n" +
-                "Leaning Forward: Can cause lower back strain and imbalance.\n" +
-                "Inconsistent Step Height: Stepping too low or too high can decrease the effectiveness.";
-
-        link = "https://musclewiki.com/dumbbells/male/glutes/dumbbell-step-up";
-
-        picture = "https://weighttraining.guide/exercises/dumbbell-step-up/";
+        form = "To perform a step-up, stand in front of a sturdy bench or box. Step onto it with one foot, driving through your heel to lift your body up until your other foot meets the platform. Step back down in a controlled manner and repeat, alternating legs or focusing on one side before switching.";
 
         musclesUsed.add(new Quadriceps());
         musclesUsed.add(new Glutes());

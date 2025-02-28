@@ -13,28 +13,15 @@ public class BenchPress extends Exercise {
 	public BenchPress() {
 		name = "Bench-press";
 
-		info = "The bench press is a compound upper-body exercise that primarily targets the chest (pectoralis major) while also engaging the triceps and \n" +
-				"anterior deltoids (front shoulders). It is a fundamental pushing exercise used to develop upper-body strength and muscle mass.";
+		info = "The bench press is a compound exercise that primarily targets the chest, shoulders, and triceps. It is a key movement for building upper body strength and muscle mass, commonly used in powerlifting, bodybuilding, and general fitness training.";
 
-		form = "Good Form and Tips\n" +
-				"Keep a Moderate Arch in the Lower Back: Maintain natural spine alignment without overextending.\n" +
-				"Tuck Elbows at 45 Degrees: Protects the shoulders while maximizing chest activation.\n" +
-				"Controlled Bar Movement: Lower the bar slowly and press it back up explosively while keeping control.";
-
-		mistakes = "Common Mistakes to Avoid\n" +
-				"Lifting with Flared Elbows: Can strain the shoulders and increase injury risk.\n" +
-				"Arching the Lower Back Excessively: Leads to poor form and potential lower back injury.\n" +
-				"Bouncing the Bar Off the Chest: Reduces control and risks chest injuries.";
-
-		link = "https://musclewiki.com/barbell/male/chest/barbell-bench-press";
-
-		picture = "https://weighttraining.guide/exercises/wide-reverse-grip-barbell-bench-press/";
+		form = "To perform a bench press, lie on a bench with feet planted firmly on the ground. Grip the bar slightly wider than shoulder-width, lower it to your chest while keeping your elbows at a slight angle, then press it back up until your arms are fully extended. Keep your core tight and maintain control throughout the movement.";
 
 		musclesUsed.add(new Chest());
 		musclesUsed.add(new AnteriorDeltoid());
 		musclesUsed.add(new Triceps());
 
-		imageIcon = new ImageIcon(ResourcePath.getResourcePath() +"ExerciseImages\\BenchPress.gif");
+		imageIcon = new ImageIcon(ResourcePath.getResourcePath() +"ExerciseImages\\BenchPress.png");
 
 	}
 }
