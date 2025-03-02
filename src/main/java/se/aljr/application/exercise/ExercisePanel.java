@@ -70,7 +70,6 @@ public class ExercisePanel extends JPanel {
     protected ImageIcon scaledLightContentBackgroundPanel;
     Image scaledLightContentBackground;
 
-
     public static ExercisePanel instance;
 
     public ExercisePanel(int width, int height) {

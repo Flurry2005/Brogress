@@ -9,12 +9,15 @@ import se.aljr.application.exercise.Program.Exercises;
 import se.aljr.application.loginpage.FirebaseManager;
 import se.aljr.application.settings.SettingsPanel;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.List;
@@ -117,7 +120,7 @@ public class ProgramPanel extends JPanel {
         scaledAddButtonIcon = new ImageIcon(scaledAddButton);
 
         saveButton = new ImageIcon(ResourcePath.getResourcePath() + "save_workout_button.png");
-        scaledsaveButton = saveButton.getImage().getScaledInstance((int)(width/7.59285714), (int)(height/22.862069), Image.SCALE_SMOOTH);
+        scaledsaveButton = saveButton.getImage().getScaledInstance((int)(width/8), (int)(height/22.862069), Image.SCALE_SMOOTH);
         scaledsaveButtonIcon = new ImageIcon(scaledsaveButton);
 
         removeWorkoutButtonImage = new ImageIcon(ResourcePath.getResourcePath() + "remove_workout_button.png");
@@ -239,9 +242,9 @@ public class ProgramPanel extends JPanel {
 
 
         savedWorkoutsPanel.setLayout(new BoxLayout(savedWorkoutsPanel, BoxLayout.Y_AXIS));
-        savedWorkoutsPanel.setPreferredSize(new Dimension(getWidth() / 5, getHeight()));
-        savedWorkoutsPanel.setMinimumSize(new Dimension(getWidth() / 5, getHeight()));
-        savedWorkoutsPanel.setMaximumSize(new Dimension(getWidth() / 5, getHeight()));
+        savedWorkoutsPanel.setPreferredSize(new Dimension(getWidth() / 5, (int)(getHeight()/1.075)));
+        savedWorkoutsPanel.setMinimumSize(savedWorkoutsPanel.getPreferredSize());
+        savedWorkoutsPanel.setMaximumSize(savedWorkoutsPanel.getPreferredSize());
         savedWorkoutsPanel.setOpaque(true);
         savedWorkoutsPanel.setBackground(AppThemeColors.PRIMARY);
 
@@ -391,6 +394,41 @@ public class ProgramPanel extends JPanel {
         workoutTitle.setPreferredSize(new Dimension(getWidth() / 3, (int)(getHeight()/22.1)));
         workoutTitle.setMaximumSize(workoutTitle.getPreferredSize());
         workoutTitle.setBorder(new LineBorder(new Color(80, 73, 69)));
+
+        ImageIcon exportIcon = new ImageIcon(ResourcePath.getResourcePath()+"exportIcon.png");
+        Image scaledExportIcon = exportIcon.getImage().getScaledInstance(getWidth()/30, getHeight()/20, Image.SCALE_SMOOTH);
+        exportIcon = new ImageIcon(scaledExportIcon);
+
+        JButton exportWorkoutButton = new JButton (exportIcon);
+        exportWorkoutButton.setPreferredSize(new Dimension(exportIcon.getIconWidth(), exportIcon.getIconHeight()));
+        exportWorkoutButton.setContentAreaFilled(false);
+        exportWorkoutButton.setBackground(new Color(22, 22, 22));
+        exportWorkoutButton.setForeground(Color.WHITE);
+        exportWorkoutButton.setBorder(null);
+        exportWorkoutButton.setFocusable(false);
+
+        exportWorkoutButton.addActionListener(_ -> {
+            BufferedImage workoutImage = new BufferedImage(workoutContainer.getWidth(), workoutContainer.getHeight(), BufferedImage.TYPE_INT_RGB);
+            Graphics2D g2 = workoutImage.createGraphics();
+            workoutContainer.paint(g2);
+            g2.dispose();
+
+            File imagePath = new File("myworkout.png");
+
+            try {
+                ImageIO.write(workoutImage, "png", imagePath);
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
+            new EmailSender().sendEmail(UserData.getEmail(),workoutTitle.getText(), workoutImage,imagePath);
+            imagePath.delete();
+
+            status.append("Workout exported and sent to " + UserData.getEmail() + "!");
+            activateStatus(statusPanel,shrinkStatusTimer,statusText, mainPanel);
+            status.setLength(0);
+
+        });
 
         JButton saveWorkoutButton = new JButton(scaledsaveButtonIcon);
         saveWorkoutButton.setContentAreaFilled(false);
@@ -578,12 +616,12 @@ public class ProgramPanel extends JPanel {
 
         //addExerciseAndSetPanel.add(newExcerciseButton);
         addExerciseAndSetPanel.add(saveWorkoutButton);
-        addExerciseAndSetPanel.add(changeTitle);
-
 
         workoutPanelTop.add(workoutTitle);
         workoutPanelTop.add(Box.createHorizontalGlue());
         workoutPanelTop.add(saveWorkoutButton);
+        workoutPanelTop.add(Box.createHorizontalGlue());
+        workoutPanelTop.add(exportWorkoutButton);
 
 
         workoutPanel.add(Box.createVerticalGlue());
@@ -602,11 +640,11 @@ public class ProgramPanel extends JPanel {
         savedWorkoutsPanelBottom.add(deleteWorkout);
         savedWorkoutsPanelBottom.add(Box.createHorizontalGlue());
 
-
         savedWorkoutsPanel.add(Box.createVerticalGlue());
         savedWorkoutsPanel.add(savedWorkoutsPanelTop);
         savedWorkoutsPanel.add(Box.createVerticalGlue());
         savedWorkoutsPanel.add(savedWorkoutsScrollPane);
+        savedWorkoutsPanel.add(Box.createVerticalGlue());
         savedWorkoutsPanel.add(savedWorkoutsPanelBottom);
         savedWorkoutsPanel.add(Box.createVerticalGlue());
 
