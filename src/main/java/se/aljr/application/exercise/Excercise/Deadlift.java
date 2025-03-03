@@ -20,7 +20,7 @@ public class Deadlift extends Exercise {
 		musclesUsed.add(new Traps());
 		musclesUsed.add(new Forearms());
 
-		imageIcon = new ImageIcon(ResourcePath.getResourcePath() +"ExerciseImages\\Deadlift.png");
+		imageIcon = new ImageIcon(ResourcePath.getResourcePath() +"ExerciseImages\\Deadlift.gif");
 	}
 
 }

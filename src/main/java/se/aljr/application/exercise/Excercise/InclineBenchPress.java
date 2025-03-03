@@ -16,7 +16,7 @@ public class InclineBenchPress extends Exercise {
 
         form = "To perform an incline bench press, lie on an incline bench (set at 30-45 degrees) with your feet planted on the ground. Grip the bar slightly wider than shoulder-width, lower it to your upper chest, then press it back up until your arms are fully extended. Keep your core engaged and control the movement throughout.";
 
-        imageIcon = new ImageIcon(ResourcePath.getResourcePath()+"ExerciseImages\\InclineBenchPress.png");
+        imageIcon = new ImageIcon(ResourcePath.getResourcePath()+"ExerciseImages\\InclineBenchPress.gif");
 
         musclesUsed.add(new Chest());
         musclesUsed.add(new AnteriorDeltoid());

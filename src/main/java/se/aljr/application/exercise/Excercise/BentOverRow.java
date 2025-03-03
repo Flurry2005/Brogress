@@ -20,6 +20,6 @@ public class BentOverRow extends Exercise {
         musclesUsed.add(new Biceps());
         musclesUsed.add(new LowerBack());
 
-        imageIcon = new ImageIcon(ResourcePath.getResourcePath() +"ExerciseImages\\DumbbellRow.png");
+        imageIcon = new ImageIcon(ResourcePath.getResourcePath() +"ExerciseImages\\DumbbellRow.gif");
     }
 }

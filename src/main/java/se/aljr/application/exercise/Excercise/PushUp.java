@@ -17,7 +17,7 @@ public class PushUp extends Exercise {
 
 		form = "To perform a push-up, place your hands shoulder-width apart on the ground and extend your legs straight behind you. Lower your body until your chest nearly touches the floor, keeping your elbows at a slight angle. Push back up to the starting position while maintaining a straight body line and engaging your core.";
 
-		imageIcon = new ImageIcon(ResourcePath.getResourcePath()+"ExerciseImages\\PushUp.png");
+		imageIcon = new ImageIcon(ResourcePath.getResourcePath()+"ExerciseImages\\PushUp.gif");
 		musclesUsed.add(new Chest());
 		musclesUsed.add(new AnteriorDeltoid());
 		musclesUsed.add(new Triceps());

@@ -19,6 +19,6 @@ public class OverheadPress extends Exercise {
         musclesUsed.add(new Traps());
         musclesUsed.add(new Abs());
 
-        imageIcon = new ImageIcon(ResourcePath.getResourcePath() +"ExerciseImages\\OverheadPress.png");
+        imageIcon = new ImageIcon(ResourcePath.getResourcePath() +"ExerciseImages\\OverheadPress.gif");
     }
 }
