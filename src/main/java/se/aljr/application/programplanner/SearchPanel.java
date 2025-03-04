@@ -16,7 +16,6 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -26,7 +25,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
-import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
@@ -223,6 +221,7 @@ public class SearchPanel extends JPanel {
                 } else {
                     muscleScroll.setVisible(false);
                     sortMuscleButton.setBackground(AppThemeColors.PRIMARY);
+                    menuList.setModel(exerciseModel);
                 }
                 repaint();
                 revalidate();

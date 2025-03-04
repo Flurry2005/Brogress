@@ -601,6 +601,7 @@ public class ExercisePanel extends JPanel {
                 } else {
                     muscleScroll.setVisible(false);
                     sortMuscleButton.setBackground(AppThemeColors.PRIMARY);
+                    menuList.setModel(exerciseModel);
                 }
                 repaint();
                 revalidate();
@@ -913,10 +914,7 @@ public class ExercisePanel extends JPanel {
         aboutLabel.setBackground(AppThemeColors.PRIMARY);
         searchField.setBackground(AppThemeColors.textFieldColor);
         centerPanel.setBackground(AppThemeColors.PRIMARY);
-        myExercises.setBackground(AppThemeColors.buttonBG);
         formLabel.setBackground(AppThemeColors.PRIMARY);
-        showFavorites.setBackground(AppThemeColors.buttonBG);
-        sortMuscleButton.setBackground(AppThemeColors.buttonBG);
 
         if (!editState) {
             aboutText.setBackground(AppThemeColors.panelColor);
