@@ -107,6 +107,7 @@ public class SearchPanel extends JPanel {
         // Populate the JList with exercises
         exerciseModel = new DefaultListModel<>();
         Exercises exercises = new Exercises();
+        exercises.removeGif();
         for (Exercise exercise : exercises.getList()) {
             exerciseModel.addElement(exercise);
         }
