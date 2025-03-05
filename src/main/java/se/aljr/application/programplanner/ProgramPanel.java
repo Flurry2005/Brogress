@@ -22,6 +22,7 @@ import java.util.List;
 import javax.swing.Timer;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.concurrent.ExecutionException;
 
 public class ProgramPanel extends JPanel {
     public static int programPanelHeight;
@@ -250,8 +251,6 @@ public class ProgramPanel extends JPanel {
 
 
         //Panel containing log and workout data
-        //WorkoutsList defaultWorkoutsList = FirebaseManager.readDBDefaultWorkout(this);
-
         workoutsList = FirebaseManager.readDBworkout(this);
         if (workoutsList.isEmpty()) {
             newExerciseButton.setEnabled(false);
@@ -264,6 +263,12 @@ public class ProgramPanel extends JPanel {
         }
         else {
             workoutContainer = workoutsList.getFirst();
+            if (workoutsList.getFirst().isWorkoutDefault()) {
+                deleteWorkout.setEnabled(false);
+                saveWorkoutButton.setEnabled(false);
+                newExerciseButton.setEnabled(false);
+            }
+
         }
 
         workoutContainer.setLayout(new BoxLayout(workoutContainer, BoxLayout.Y_AXIS));
@@ -312,6 +317,17 @@ public class ProgramPanel extends JPanel {
                 Workout target = workoutDefaultListModel.getElementAt(savedWorkoutsList.getSelectedIndex());
                 workoutContainer = target;
 
+                if (target.isWorkoutDefault()) {
+                    deleteWorkout.setEnabled(false);
+                    saveWorkoutButton.setEnabled(false);
+                    newExerciseButton.setEnabled(false);
+                }
+                else {
+                    deleteWorkout.setEnabled(true);
+                    saveWorkoutButton.setEnabled(true);
+                    newExerciseButton.setEnabled(true);
+                }
+
                 workoutTitle.setText(target.getWorkoutData().getTitle());
 
                 workoutContainer.setLayout(new BoxLayout(workoutContainer, BoxLayout.Y_AXIS));
@@ -337,7 +353,9 @@ public class ProgramPanel extends JPanel {
         newWorkoutButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                workoutContainer.removeAll();
+                if (workoutsList.isEmpty()) {
+                    workoutContainer.removeAll();
+                }
                 Workout newWorkout = new Workout();
                 workoutsList.add(newWorkout);
                 workoutDefaultListModel.addElement(newWorkout);
@@ -349,6 +367,14 @@ public class ProgramPanel extends JPanel {
                 exportWorkoutButton.setEnabled(true);
                 newExerciseButton.setEnabled(true);
                 deleteWorkout.setEnabled(true);
+                try {
+                    FirebaseManager.writeDBworkout(workoutsList);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+                status.append("New workout created!");
+                activateStatus(statusPanel,shrinkStatusTimer,statusText,mainPanel);
+                status.setLength(0);
             }
         });
 
@@ -365,33 +391,34 @@ public class ProgramPanel extends JPanel {
             public void mouseClicked(MouseEvent e) {
                 if(!workoutsList.isEmpty()){
                     int selectedIndex = savedWorkoutsList.getSelectedIndex();
-                    workoutDefaultListModel.remove(selectedIndex);
-                    workoutTitleDefaultListModel.remove(selectedIndex);
-                    workoutsList.remove(selectedIndex);
-                    if (!workoutsList.isEmpty()) {
-                        savedWorkoutsList.setSelectedIndex(workoutsList.size() - 1);
-                        workoutTitle.setText(workoutDefaultListModel.getElementAt(workoutsList.size()-1).getWorkoutData().getTitle());
-                    }
-                    else {
-                        workoutTitle.setEnabled(false);
-                        saveWorkoutButton.setEnabled(false);
-                        exportWorkoutButton.setEnabled(false);
-                        exportWorkoutButton.setEnabled(false);
-                        newExerciseButton.setEnabled(false);
-                        deleteWorkout.setEnabled(false);
+                    if (!workoutDefaultListModel.get(selectedIndex).isWorkoutDefault()) {
+                        workoutDefaultListModel.remove(selectedIndex);
+                        workoutTitleDefaultListModel.remove(selectedIndex);
+                        workoutsList.remove(selectedIndex);
+                        if (!workoutsList.isEmpty()) {
+                            savedWorkoutsList.setSelectedIndex(workoutsList.size() - 1);
+                            workoutTitle.setText(workoutDefaultListModel.getElementAt(workoutsList.size() - 1).getWorkoutData().getTitle());
+                        } else {
+                            workoutTitle.setEnabled(false);
+                            saveWorkoutButton.setEnabled(false);
+                            exportWorkoutButton.setEnabled(false);
+                            exportWorkoutButton.setEnabled(false);
+                            newExerciseButton.setEnabled(false);
+                            deleteWorkout.setEnabled(false);
 
-                        workoutTitle.setText("");
-                        workoutContainer.removeAll();
-                        workoutContainer.add(new JLabel("Select or create new workout")).setFont(CustomFont.getFont());
+                            workoutTitle.setText("");
+                            workoutContainer.removeAll();
+                            workoutContainer.add(new JLabel("Select or create new workout")).setFont(CustomFont.getFont());
+                        }
+                        try {
+                            FirebaseManager.writeDBworkout(workoutsList);
+                        } catch (IOException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                        status.setLength(0);
+                        status.append("Workout removed!");
+                        activateStatus(statusPanel, shrinkStatusTimer, statusText, mainPanel);
                     }
-                    try {
-                        FirebaseManager.writeDBworkout(workoutsList);
-                    } catch (IOException ex) {
-                        throw new RuntimeException(ex);
-                    }
-                    status.setLength(0);
-                    status.append("Workout removed!");
-                    activateStatus(statusPanel,shrinkStatusTimer,statusText, mainPanel);
                 }
             }
         });
@@ -486,15 +513,14 @@ public class ProgramPanel extends JPanel {
                 System.out.println("name before : " + workoutDefaultListModel.get(savedWorkoutsList.getSelectedIndex()).getWorkoutData().getTitle());
 
                 int index = savedWorkoutsList.getSelectedIndex();
+
                 if (saveAsDefault.isSelected()) {
+                    workoutDefaultListModel.get(index).setDefault();
                 }
-                else {
+
                     //Uppdaterar namnen på övningarna i listan
 
                     workoutDefaultListModel.get(savedWorkoutsList.getSelectedIndex()).getWorkoutData().setTitle(workoutTitle.getText().trim());
-
-                    System.out.println("name before : " + workoutDefaultListModel.get(savedWorkoutsList.getSelectedIndex()).getWorkoutData().getTitle());
-
                     workoutTitleDefaultListModel.clear();
 
                     for (Workout workout : workoutsList) {
@@ -503,10 +529,15 @@ public class ProgramPanel extends JPanel {
                     savedWorkoutsList.setModel(workoutTitleDefaultListModel);
                     System.out.println(savedWorkoutsList.getSelectedIndex() + " index after");
                     savedWorkoutsList.setSelectedIndex(index);
-                    FirebaseManager.writeDBworkout(workoutsList);
-                }
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
+                    boolean defaultWorkout = true;
+                    if (saveAsDefault.isSelected()) {
+                        FirebaseManager.writeDBdefaultWorkout(workoutsList);
+                    }
+                    else {
+                        FirebaseManager.writeDBworkout(workoutsList);
+                    }
+            } catch (IOException | RuntimeException | InterruptedException | ExecutionException e) {
+                e.printStackTrace();
             }
             status.append("Workout saved!");
             activateStatus(statusPanel,shrinkStatusTimer,statusText, mainPanel);
@@ -518,7 +549,6 @@ public class ProgramPanel extends JPanel {
         saveAsDefault.setBackground(new Color(51,51,51));
         saveAsDefault.setForeground(Color.white);
 
-
         //Panel to hold search and exercieses list vertically
 
         exercisesPanel.setLayout(new BoxLayout(exercisesPanel, BoxLayout.Y_AXIS));
@@ -527,7 +557,6 @@ public class ProgramPanel extends JPanel {
         exercisesPanel.setMaximumSize(new Dimension(getWidth() / 5, getHeight()));
         exercisesPanel.setOpaque(true);
         exercisesPanel.setBackground(new Color(51, 51, 51));
-
 
         JPanel exercisesPanelTop = new JPanel();
         exercisesPanelTop.setLayout(new BorderLayout(0, 0));
@@ -557,7 +586,6 @@ public class ProgramPanel extends JPanel {
         searchExercise.setMaximumSize(new Dimension(searchExercise.getPreferredSize()));
         searchExercise.setBackground(new Color(22, 22, 22));
         searchExercise.setBorder(new LineBorder(new Color(80, 73, 69)));
-        //searchExercise.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         searchExercise.addFocusListener(new FocusListener() {
             @Override

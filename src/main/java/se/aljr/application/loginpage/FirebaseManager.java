@@ -309,61 +309,15 @@ public class FirebaseManager {
 
     public static void readDBlistenToFriendsOnlineStatus() {
 
-                for(Thread thread : activeThreads){
-                    thread.interrupt();
-                }
-                activeThreads.clear();
+        for(Thread thread : activeThreads){
+            thread.interrupt();
+        }
+        activeThreads.clear();
 
-                for(Friend friend : FriendsList.getFriendArrayList()){
-                    Thread listnerThread = new Thread(()->{
-                    // Referens till användarens dokument
-                    DocumentReference docRef = db.collection("users").document(friend.getFriendEmail());
-
-                    // Lyssna på ändringar i fältet "isOnline"
-                    docRef.addSnapshotListener((snapshot, e) -> {
-                        if (e != null) {
-                            System.err.println("Listen failed: " + e);
-                            return;
-                        }
-
-                        if (snapshot != null && snapshot.exists()) {
-                            // Hämta fältet "isOnline" som en String
-                            String newIsOnline = snapshot.getString("isOnline");
-
-                            if (newIsOnline != null) {
-                                friend.setOnline(newIsOnline.equals("true")); // Uppdatera variabeln
-                                friend.updateOnlineStatus();
-                                System.out.println("Updated isOnline "+friend.getFriendEmail()+" :" + newIsOnline);
-                            }
-                        } else {
-                            System.out.println("Document does not exist.");
-                        }
-                    });
-
-                    // Håll programmet igång
-                    System.out.println("Listening for 'isOnline' of user :"+friend.getFriendEmail());
-                    try {
-                        System.out.println("Thread count listening to online status: "+activeThreads.size());
-                        System.out.println("Amount of friends: "+FriendsList.getFriendArrayList().size());
-                        Thread.sleep(Long.MAX_VALUE);
-
-                        //Thread.currentThread().interrupt();
-                    } catch (InterruptedException e) {
-                        System.out.println("Thread stopped listening to friends online status");
-                    }
-
-                    });
-                    activeThreads.add(listnerThread);
-                    listnerThread.start();
-                }
-
-    }
-
-    public static void readDBlistenToClientUserFriendsList() throws InterruptedException {
-
-            new Thread(()->{
+        for(Friend friend : FriendsList.getFriendArrayList()){
+            Thread listnerThread = new Thread(()->{
                 // Referens till användarens dokument
-                DocumentReference docRef = db.collection("users").document(UserData.getEmail());
+                DocumentReference docRef = db.collection("users").document(friend.getFriendEmail());
 
                 // Lyssna på ändringar i fältet "isOnline"
                 docRef.addSnapshotListener((snapshot, e) -> {
@@ -374,12 +328,12 @@ public class FirebaseManager {
 
                     if (snapshot != null && snapshot.exists()) {
                         // Hämta fältet "isOnline" som en String
-                        String friends = snapshot.getString("friends");
+                        String newIsOnline = snapshot.getString("isOnline");
 
-                        if (friends != null) {
-                            HomePanel.updateFriends();
-                            ChatPanel.updateRequestsPanel();
-                            ChatPanel.updateFriends();
+                        if (newIsOnline != null) {
+                            friend.setOnline(newIsOnline.equals("true")); // Uppdatera variabeln
+                            friend.updateOnlineStatus();
+                            System.out.println("Updated isOnline "+friend.getFriendEmail()+" :" + newIsOnline);
                         }
                     } else {
                         System.out.println("Document does not exist.");
@@ -387,17 +341,63 @@ public class FirebaseManager {
                 });
 
                 // Håll programmet igång
-                System.out.println("Listening for Firestore changes on 'friends' of user "+UserData.getEmail());
+                System.out.println("Listening for 'isOnline' of user :"+friend.getFriendEmail());
                 try {
-
+                    System.out.println("Thread count listening to online status: "+activeThreads.size());
+                    System.out.println("Amount of friends: "+FriendsList.getFriendArrayList().size());
                     Thread.sleep(Long.MAX_VALUE);
 
                     //Thread.currentThread().interrupt();
                 } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+                    System.out.println("Thread stopped listening to friends online status");
                 }
 
-            }).start();
+            });
+            activeThreads.add(listnerThread);
+            listnerThread.start();
+        }
+
+    }
+
+    public static void readDBlistenToClientUserFriendsList() throws InterruptedException {
+
+        new Thread(()->{
+            // Referens till användarens dokument
+            DocumentReference docRef = db.collection("users").document(UserData.getEmail());
+
+            // Lyssna på ändringar i fältet "isOnline"
+            docRef.addSnapshotListener((snapshot, e) -> {
+                if (e != null) {
+                    System.err.println("Listen failed: " + e);
+                    return;
+                }
+
+                if (snapshot != null && snapshot.exists()) {
+                    // Hämta fältet "isOnline" som en String
+                    String friends = snapshot.getString("friends");
+
+                    if (friends != null) {
+                        HomePanel.updateFriends();
+                        ChatPanel.updateRequestsPanel();
+                        ChatPanel.updateFriends();
+                    }
+                } else {
+                    System.out.println("Document does not exist.");
+                }
+            });
+
+            // Håll programmet igång
+            System.out.println("Listening for Firestore changes on 'friends' of user "+UserData.getEmail());
+            try {
+
+                Thread.sleep(Long.MAX_VALUE);
+
+                //Thread.currentThread().interrupt();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
+        }).start();
 
 
     }
@@ -462,17 +462,17 @@ public class FirebaseManager {
                 System.out.println("Dokumentet existerar inte.");
             }
 
-           if(!readOnly){
-               for(Map.Entry<String, String> entry : friendsMap.entrySet()){
+            if(!readOnly){
+                for(Map.Entry<String, String> entry : friendsMap.entrySet()){
 
-                   FriendsList.getFriendArrayList().add(new Friend(){
-                       {
-                           setFriendEmail(entry.getKey());
-                           setFriendName(entry.getValue());
-                       }
-                   });
-               }
-           }
+                    FriendsList.getFriendArrayList().add(new Friend(){
+                        {
+                            setFriendEmail(entry.getKey());
+                            setFriendName(entry.getValue());
+                        }
+                    });
+                }
+            }
             return friendsMap;
 
 
@@ -753,6 +753,7 @@ public class FirebaseManager {
 
     }
 
+
     public static void writeDBworkout(WorkoutsList workoutsList) throws IOException {
         removeWorkoutIcons(workoutsList);
 
@@ -804,47 +805,124 @@ public class FirebaseManager {
 
     }
 
+    public static void writeDBdefaultWorkout(WorkoutsList workoutsList) throws IOException, ExecutionException, InterruptedException {
+        removeWorkoutIcons(workoutsList);
+
+        /*---------Creates a storage object connected to the database---------*/
+        Storage storage = storageOptions.getService();
+
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+        objectOutputStream.writeObject(workoutsList);
+        objectOutputStream.close();
+
+        /*---------Writes the byte stream into a string representation---------*/
+        String workoutBase64 = Base64.getEncoder().encodeToString(byteArrayOutputStream.toByteArray());
+
+
+        /*---------Specifies the cloud storage url and the name of the file to save---------*/
+        String bucketName = "brogress-7499c.firebasestorage.app"; // Bucket name
+        String fileName = "defaultworkouts.txt"; // workout file name
+
+        // Konvertera String till byte-array
+        byte[] bytes = workoutBase64.getBytes(StandardCharsets.UTF_8);
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
+
+        /*---------Creates a blob file in the cloud storage---------*/
+        BlobId blobId = BlobId.of(bucketName, fileName);
+        BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("text/plain").build();
+
+        /*---------uploads the file to the database---------*/
+        storage.createFrom(blobInfo, inputStream);
+
+        /*---------Specifies the url to the file created---------*/
+        String publicUrl = "https://storage.googleapis.com/" + bucketName + "/" + fileName;
+
+        /*---------Key value pair to save the workouts url---------*/
+        Map<String, Object> ref = new HashMap<>();
+        ref.put("workouts", publicUrl);
+
+        /*---------Document reference where the url is to be saved---------*/
+        DocumentReference docRef = db.collection("defaultworkouts").document("workout");
+
+        /*---------Writes the url to the firestore database---------*/
+        ApiFuture<WriteResult> future = docRef.update(ref);
+        future.get();
+
+        System.out.println("Text har laddats upp som fil: " + fileName);
+        System.out.println("Publik URL: " + "https://storage.googleapis.com/" + bucketName + "/" + fileName);
+
+        addWorkoutIcons(workoutsList);
+    }
     public static WorkoutsList readDBworkout(ProgramPanel programPanel){
         try {
             Gson gson = new Gson();
             HashMap<String, Object> userData;
+            HashMap<String, Object> defaultWorkouts;
 
-            /*---------Gets a snapshot of the document of the user in the firestore database---------*/
             ApiFuture<DocumentSnapshot> snapshot = db.collection("users").document(UserData.getEmail()).get();
+            ApiFuture<DocumentSnapshot> defaultSnapshot = db.collection("defaultworkouts").document("workout").get();
 
-            /*---------Converts the documentSnapshot to a json element--------*/
             DocumentSnapshot document = snapshot.get();
-            JsonElement jsonElement = gson.toJsonTree(document.getData());
+            DocumentSnapshot defaultDocument = defaultSnapshot.get();
 
-            /*---------Converts the json to a HashMap---------*/
+            JsonElement jsonElement = gson.toJsonTree(document.getData());
+            JsonElement defaultJson = gson.toJsonTree(defaultDocument.getData());
+
             userData = gson.fromJson(jsonElement, HashMap.class);
+            defaultWorkouts = gson.fromJson(defaultJson, HashMap.class);
 
             int height = programPanel.getHeight();
 
-            System.out.print(programPanel.getHeight());
-            /*---------Checks if the user has stored a workout or not---------*/
+            WorkoutsList workoutsList = new WorkoutsList();
+
             if (!userData.get("workouts").toString().isEmpty()) {
-                /*---------Creates a storage object connected to the database---------*/
+
                 Storage storage = storageOptions.getService();
 
-                /*---------Gets the workout url stored in the firestore of the user---------*/
                 String fileName = userData.get("workouts").toString();
+                String defaultFileName = defaultWorkouts.get("workouts").toString();
 
-                /*---------Sets up the variables needed for collecting the workout data from the cloud storage---------*/
                 URI uri = new URI(fileName);
                 URL url = uri.toURL();
                 String path = url.getPath();
+
+                URI defaultURI = new URI(defaultFileName);
+                URL defaultURL = defaultURI.toURL();
+                String defaultPath = defaultURL.getPath();
+
                 String bucketName = "brogress-7499c.firebasestorage.app";
                 String userWorkoutFileName = path.substring(1).split("/")[1];
+                String defaultWorkoutFileName = defaultPath.substring(1).split("/")[1];
 
-                byte[] data1 = storage.get(BlobId.of(bucketName,userWorkoutFileName)).getContent();
+                // Retrieve the content of the user's workout file and the default workout file from Cloud Storage
+                byte[] data1 = storage.get(BlobId.of(bucketName, userWorkoutFileName)).getContent();
                 String fileContent = new String(data1, StandardCharsets.UTF_8);
 
-                /*---------Decodes the base64 string to an object (WorkoutsList)---------*/
+                byte[] data2 = storage.get(BlobId.of(bucketName, defaultWorkoutFileName)).getContent();
+                String defaultFileContent = new String(data2, StandardCharsets.UTF_8);
+
+                // Decode the Base64 string to the WorkoutsList object
                 byte[] data = Base64.getDecoder().decode(fileContent);
                 ObjectInputStream objectInputStream = new ObjectInputStream(new ByteArrayInputStream(data));
-                WorkoutsList workoutsList = (WorkoutsList) objectInputStream.readObject();
-                objectInputStream.close();
+                workoutsList = (WorkoutsList) objectInputStream.readObject();
+
+                byte[] data_2 = Base64.getDecoder().decode(defaultFileContent);
+                objectInputStream = new ObjectInputStream(new ByteArrayInputStream(data_2));
+                WorkoutsList defaultWorkoutsList = (WorkoutsList) objectInputStream.readObject();
+
+                /*---------Combine both the user and default workouts into a single list-------*/
+                for (Workout workout : defaultWorkoutsList) {
+                    boolean exists = false;
+                    for (Workout workout1 : workoutsList) {
+                        if (workout1.getWorkoutData().getTitle().equals(workout.getWorkoutData().getTitle())) {
+                            exists = true;
+                        }
+                    }
+                    if (!exists) {
+                        workoutsList.add(workout);
+                    }
+                }
 
                 /*---------Reattaches all buttons listeners and data needed to load the WorkoutsList back to the program---------*/
                 for(Workout workout : workoutsList){
@@ -874,7 +952,7 @@ public class FirebaseManager {
 
                                     if ("setPanel".equals(comp2.getName())) {
                                         JPanel setPanel = (JPanel) comp2;
-                                        System.out.println("Added hieght for set panel: " + (float) height / 19);
+                                        System.out.println("Added height for set panel: " + (float) height / 19);
 
                                         for (Component compRight : setPanel.getComponents()){
 
@@ -954,7 +1032,6 @@ public class FirebaseManager {
                                                             }
 
                                                         }
-
                                                         workout.setPreferredSize(new Dimension(workout.getWidth(), workout.getWorkoutData().getTotalWorkoutHeight()));
 
                                                         workout.getWorkoutData().deleteExercise(finalExerciseId);
