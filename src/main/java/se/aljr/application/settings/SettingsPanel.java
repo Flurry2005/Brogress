@@ -145,6 +145,8 @@ public class SettingsPanel extends JPanel{
     JTextField changeUsernameField = new JTextField();
     JPanel accountPFPPanel = new JPanel();
 
+    JTextField changeUsernameFieldD = new JTextField();
+
     JComboBox ageDropDown = new JComboBox(agesList.toArray(new Integer[0]));
     JComboBox weightDropDown = new JComboBox(agesList.toArray(new Integer[0]));
     JComboBox heightDropDown = new JComboBox(agesList.toArray(new Integer[0]));
@@ -471,7 +473,6 @@ public class SettingsPanel extends JPanel{
                     notificationsPanel.setVisible(false);
                     themePanel.setVisible(false);
                     generalPanel.setVisible(true);
-                    unfocusSearchField();
                 }else{
                     generalSettingsButton.setBackground(AppThemeColors.buttonBG);
                 }
@@ -530,7 +531,6 @@ public class SettingsPanel extends JPanel{
                     notificationsPanel.setVisible(false);
                     generalPanel.setVisible(false);
                     themePanel.setVisible(true);
-                    unfocusSearchField();
                 }else{
                     themeSettingsButton.setBackground(AppThemeColors.buttonBG);
                 }
@@ -589,7 +589,6 @@ public class SettingsPanel extends JPanel{
                     generalPanel.setVisible(false);
                     themePanel.setVisible(false);
                     notificationsPanel.setVisible(true);
-                    unfocusSearchField();
                 }else{
                     notificationsSettingsButton.setBackground(AppThemeColors.buttonBG);
                 }
@@ -647,7 +646,6 @@ public class SettingsPanel extends JPanel{
                     themePanel.setVisible(false);
                     notificationsPanel.setVisible(false);
                     accountPanel.setVisible(true);
-                    unfocusSearchField();
                 }else{
                     accountSettingsButton.setBackground(AppThemeColors.buttonBG);
                 }
@@ -706,7 +704,6 @@ public class SettingsPanel extends JPanel{
                     notificationsPanel.setVisible(false);
                     accountPanel.setVisible(false);
                     privacyPanel.setVisible(true);
-                    unfocusSearchField();
                 }else{
                     privacySettingsButton.setBackground(AppThemeColors.buttonBG);
                 }
@@ -1124,6 +1121,10 @@ public class SettingsPanel extends JPanel{
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
+            if(!changeUsernameFieldD.getText().equals(changeUsernameField.getText())){
+                changeUsernameFieldD.setText(changeUsernameField.getText());
+            }
+
             HomePanel.updateUserInfo();
         });
 
@@ -1363,7 +1364,7 @@ public class SettingsPanel extends JPanel{
         accountHeightPanelD.add(heightDropDownD);
 
 
-        JTextField changeUsernameFieldD = new JTextField();
+
         changeUsernameFieldD.setMinimumSize(new Dimension(width/11, height/20));
         changeUsernameFieldD.setPreferredSize(new Dimension(width/11, height/20));
         changeUsernameFieldD.setMaximumSize(new Dimension(width/11, height/20));
@@ -1375,6 +1376,9 @@ public class SettingsPanel extends JPanel{
                 FirebaseManager.writeDBUser(UserData.getEmail()); //Updates the user data on the database
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
+            }
+            if(!changeUsernameField.getText().equals(changeUsernameFieldD.getText())){
+                changeUsernameField.setText(changeUsernameFieldD.getText());
             }
             HomePanel.updateUserInfo();
         });
