@@ -4,7 +4,6 @@ import se.aljr.application.AppThemeColors;
 import se.aljr.application.ApplicationWindow;
 import se.aljr.application.ResourcePath;
 import se.aljr.application.UserData;
-import se.aljr.application.chatpanel.ChatPanel;
 import se.aljr.application.exercise.CreateExerciseModule;
 import se.aljr.application.homepage.HomePanel;
 import se.aljr.application.homepage.MenuPanel;
@@ -22,6 +21,9 @@ import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -68,8 +70,8 @@ public class SettingsPanel extends JPanel{
 
 
     //Array lists for the various dropdown menus
-    ArrayList<Integer> agesList = new ArrayList<>();
-    ArrayList<String> themeList = new ArrayList<>();
+    ArrayList<Integer> agesList = (ArrayList<Integer>) IntStream.rangeClosed(0, 200).boxed().collect(Collectors.toList());
+    ArrayList<String> themeList = new ArrayList<>(Arrays.asList("Light","Dark"));
 
     public static boolean lightMode = false;
     public static String currentTheme = "dark";
@@ -115,6 +117,7 @@ public class SettingsPanel extends JPanel{
     JPanel themePanel = new JPanel();
     JPanel themeScrollPanel = new JPanel();
     JScrollPane themeScroll = new JScrollPane(themeScrollPanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    JComboBox themeDropDown = new JComboBox(themeList.toArray());
 
     JPanel themeSelectionPanel = new JPanel();
     JLabel themeSelectionLabel = new JLabel("Select theme");
@@ -129,7 +132,7 @@ public class SettingsPanel extends JPanel{
     //Account Panel
     JPanel accountPanel = new JPanel();
     JPanel accountScrollPanel = new JPanel();
-    JScrollPane accountScroll = new JScrollPane(accountScrollPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    JScrollPane accountScroll = new JScrollPane(accountScrollPanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
     JPanel accountAgePanel = new JPanel();
     JPanel accountWeightPanel = new JPanel();
@@ -142,8 +145,35 @@ public class SettingsPanel extends JPanel{
     JTextField changeUsernameField = new JTextField();
     JPanel accountPFPPanel = new JPanel();
 
+    JComboBox ageDropDown = new JComboBox(agesList.toArray(new Integer[0]));
+    JComboBox weightDropDown = new JComboBox(agesList.toArray(new Integer[0]));
+    JComboBox heightDropDown = new JComboBox(agesList.toArray(new Integer[0]));
+
+    JComboBox ageDropDownD = new JComboBox(agesList.toArray(new Integer[0]));
+    JComboBox weightDropDownD = new JComboBox(agesList.toArray(new Integer[0]));
+    JComboBox heightDropDownD = new JComboBox(agesList.toArray(new Integer[0]));
+
     //Privacy Panel
     JPanel privacyPanel = new JPanel();
+
+    //Duplicate Panels-----------------------------------------------------------------
+    //Theme panels
+    JPanel themeSelectionPanelD = new JPanel();
+    JLabel themeSelectionLabelD = new JLabel("Select theme");
+    JComboBox themeDropDownD = new JComboBox(themeList.toArray());
+
+    //Account panels
+    JPanel accountAgePanelD = new JPanel();
+    JPanel accountWeightPanelD = new JPanel();
+    JPanel accountHeightPanelD = new JPanel();
+    JPanel accountNamePanelD = new JPanel();
+    JPanel accountPFPPanelD = new JPanel();
+
+    JLabel ageLabelD = new JLabel("Age: ");
+    JLabel weightLabelD = new JLabel("Weight: ");
+    JLabel heightLabelD = new JLabel("Height: ");
+    JLabel changeUsernameLabelD = new JLabel("Change Username");
+
 
     public static int currentPage = 0;
 
@@ -228,7 +258,7 @@ public class SettingsPanel extends JPanel{
         buildAccountPanel();
         buildPrivacyPanel();
 
-        buildSearchPanels();
+        buildDuplicatePanels();
 
         this.addComponentListener(new ComponentAdapter() {
             @Override
@@ -441,6 +471,7 @@ public class SettingsPanel extends JPanel{
                     notificationsPanel.setVisible(false);
                     themePanel.setVisible(false);
                     generalPanel.setVisible(true);
+                    unfocusSearchField();
                 }else{
                     generalSettingsButton.setBackground(AppThemeColors.buttonBG);
                 }
@@ -499,6 +530,7 @@ public class SettingsPanel extends JPanel{
                     notificationsPanel.setVisible(false);
                     generalPanel.setVisible(false);
                     themePanel.setVisible(true);
+                    unfocusSearchField();
                 }else{
                     themeSettingsButton.setBackground(AppThemeColors.buttonBG);
                 }
@@ -557,6 +589,7 @@ public class SettingsPanel extends JPanel{
                     generalPanel.setVisible(false);
                     themePanel.setVisible(false);
                     notificationsPanel.setVisible(true);
+                    unfocusSearchField();
                 }else{
                     notificationsSettingsButton.setBackground(AppThemeColors.buttonBG);
                 }
@@ -614,6 +647,7 @@ public class SettingsPanel extends JPanel{
                     themePanel.setVisible(false);
                     notificationsPanel.setVisible(false);
                     accountPanel.setVisible(true);
+                    unfocusSearchField();
                 }else{
                     accountSettingsButton.setBackground(AppThemeColors.buttonBG);
                 }
@@ -672,6 +706,7 @@ public class SettingsPanel extends JPanel{
                     notificationsPanel.setVisible(false);
                     accountPanel.setVisible(false);
                     privacyPanel.setVisible(true);
+                    unfocusSearchField();
                 }else{
                     privacySettingsButton.setBackground(AppThemeColors.buttonBG);
                 }
@@ -724,6 +759,9 @@ public class SettingsPanel extends JPanel{
         searchField.setText("Search...");
         searchField.setFont(new Font("Arial", Font.PLAIN, height/40));
         searchField.setForeground(Color.BLACK);
+
+        searchFieldPanel.add(searchField);
+
         searchField.addFocusListener(new FocusListener() {
             @Override
             public void focusGained(FocusEvent e) {
@@ -743,7 +781,14 @@ public class SettingsPanel extends JPanel{
                 }
             }
         });
-        searchFieldPanel.add(searchField);
+        searchField.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                    unfocusSearchField();
+                }
+            }
+        });
 
         searchField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
@@ -774,6 +819,7 @@ public class SettingsPanel extends JPanel{
             }
         });
     }
+
     public void buildGeneralPanel(){
         /**General Panel*/
         generalPanel.setBackground(AppThemeColors.panelColor);
@@ -833,10 +879,6 @@ public class SettingsPanel extends JPanel{
         themeSelectionPanel.setName("themeslectionpanel");
         themeSelectionLabel.setForeground(Color.WHITE);
 
-        themeList.add("Light");
-        themeList.add("Dark");
-
-        JComboBox themeDropDown = new JComboBox(themeList.toArray());
         themeDropDown.setPreferredSize(new Dimension(width/15, height/10));
         themeDropDown.addItemListener(_-> {
                 switch (themeDropDown.getSelectedIndex()){
@@ -852,6 +894,10 @@ public class SettingsPanel extends JPanel{
                         } catch (IOException ex) {
                             throw new RuntimeException(ex);
                         }
+                        if(themeDropDownD.getSelectedIndex()!=0){
+                            themeDropDownD.setSelectedIndex(0);
+                        }
+
                     }
                     //Dark Mode
                     case 1->{
@@ -864,6 +910,9 @@ public class SettingsPanel extends JPanel{
                             FirebaseManager.writeDBUser(UserData.getEmail());
                         } catch (IOException ex) {
                             throw new RuntimeException(ex);
+                        }
+                        if(themeDropDownD.getSelectedIndex()!=1){
+                            themeDropDownD.setSelectedIndex(1);
                         }
                     }
                 }
@@ -958,11 +1007,6 @@ public class SettingsPanel extends JPanel{
 
         heightLabel.setPreferredSize(new Dimension(50, test2.getPreferredSize().height));
 
-        for (Integer i=0; i<200;i++){
-            agesList.add(i);
-        }
-
-        JComboBox ageDropDown = new JComboBox(agesList.toArray(new Integer[0]));
         ageDropDown.setSelectedIndex(UserData.getUserAge());
         ageDropDown.setEditable(true);
         ageDropDown.setPreferredSize(new Dimension(width/15, height/15));
@@ -973,10 +1017,13 @@ public class SettingsPanel extends JPanel{
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
+            if(ageDropDownD.getSelectedIndex()!=ageDropDown.getSelectedIndex()){
+                ageDropDownD.setSelectedIndex(ageDropDown.getSelectedIndex());
+            }
             HomePanel.updateUserInfo(); //Updates the userdata on the home panel
         });
 
-        JComboBox weightDropDown = new JComboBox(agesList.toArray(new Integer[0]));
+
         weightDropDown.setEditable(true);
         weightDropDown.setSelectedIndex((int)(UserData.getUserWeight()));
         weightDropDown.setPreferredSize(new Dimension(width/15, height/15));
@@ -988,10 +1035,13 @@ public class SettingsPanel extends JPanel{
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
+            if(weightDropDownD.getSelectedIndex()!=weightDropDown.getSelectedIndex()){
+                weightDropDownD.setSelectedIndex(weightDropDown.getSelectedIndex());
+            }
             HomePanel.updateUserInfo(); //Updates the userdata on the home panel
         });
 
-        JComboBox heightDropDown = new JComboBox(agesList.toArray(new Integer[0]));
+
         heightDropDown.setSelectedIndex((int)(UserData.getUserHeight()));
         heightDropDown.setEditable(true);
         heightDropDown.setPreferredSize(new Dimension(width/15, height/15));
@@ -1001,6 +1051,9 @@ public class SettingsPanel extends JPanel{
                 FirebaseManager.writeDBUser(UserData.getEmail()); //Updates the user data on the database
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
+            }
+            if(heightDropDownD.getSelectedIndex()!=heightDropDown.getSelectedIndex()){
+                heightDropDownD.setSelectedIndex(heightDropDown.getSelectedIndex());
             }
             HomePanel.updateUserInfo(); //Updates the userdata on the home panel
         });
@@ -1100,19 +1153,18 @@ public class SettingsPanel extends JPanel{
         privacyPanel.setVisible(false);
     }
 
-    public void buildSearchPanels(){
+    public void buildDuplicatePanels(){
         //Theme selection panel-----------------------------------------------------------------------------------------------------
-        JPanel themeSelectionPanelD = new JPanel();
-        JLabel themeSelectionLabelD = new JLabel("Select theme");
+
 
         //Panels within the scrollable window that will hold various settings
         themeSelectionPanelD.setBackground(AppThemeColors.SECONDARY);
         themeSelectionPanelD.setLayout(new BoxLayout(themeSelectionPanelD, BoxLayout.X_AXIS));
         themeSelectionPanelD.setPreferredSize(new Dimension(width-width/10*7, height/15));
         themeSelectionPanelD.setName("themeselectionpanel");
-        themeSelectionLabelD.setForeground(Color.WHITE);
+        themeSelectionLabelD.setForeground(AppThemeColors.foregroundColor);
 
-        JComboBox themeDropDownD = new JComboBox(themeList.toArray());
+
         themeDropDownD.setPreferredSize(new Dimension(width/15, height/10));
         themeDropDownD.addItemListener(_-> {
             switch (themeDropDownD.getSelectedIndex()){
@@ -1128,6 +1180,9 @@ public class SettingsPanel extends JPanel{
                     } catch (IOException ex) {
                         throw new RuntimeException(ex);
                     }
+                    if(themeDropDown.getSelectedIndex()!=0){
+                        themeDropDown.setSelectedIndex(0);
+                    }
                 }
                 //Dark Mode
                 case 1->{
@@ -1140,6 +1195,9 @@ public class SettingsPanel extends JPanel{
                         FirebaseManager.writeDBUser(UserData.getEmail());
                     } catch (IOException ex) {
                         throw new RuntimeException(ex);
+                    }
+                    if(themeDropDown.getSelectedIndex()!=1){
+                        themeDropDown.setSelectedIndex(1);
                     }
                 }
             }
@@ -1186,22 +1244,20 @@ public class SettingsPanel extends JPanel{
         //Account Settings Panels---------------------------------------------------------------------------------------------------------------
 
         //Panels within the scrollable window that will hold various settings--------
-        JPanel accountAgePanelD = new JPanel();
+
         accountAgePanelD.setBackground(AppThemeColors.SECONDARY);
         accountAgePanelD.setLayout(new BoxLayout(accountAgePanelD, BoxLayout.X_AXIS));
         accountAgePanelD.setPreferredSize(new Dimension(width-width/10*7, height/15));
         accountAgePanelD.setName("changeagepanelchange age");
 
-        JLabel ageLabelD = new JLabel("Age: ");
-        JLabel weightLabelD = new JLabel("Weight: ");
-        JLabel heightLabelD = new JLabel("Height: ");
+
 
         //GeneralSettingsPanel1, age, weight and height settings
         ageLabelD.setPreferredSize(new Dimension(50, test2.getPreferredSize().height));
         weightLabelD.setPreferredSize(new Dimension(50, test2.getPreferredSize().height));
         heightLabelD.setPreferredSize(new Dimension(50, test2.getPreferredSize().height));
 
-        JComboBox ageDropDownD = new JComboBox(agesList.toArray(new Integer[0]));
+
         ageDropDownD.setSelectedIndex(UserData.getUserAge());
         ageDropDownD.setEditable(true);
         ageDropDownD.setPreferredSize(new Dimension(width/15, height/15));
@@ -1212,10 +1268,13 @@ public class SettingsPanel extends JPanel{
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
+            if(ageDropDown.getSelectedIndex()!=ageDropDownD.getSelectedIndex()){
+                ageDropDown.setSelectedIndex(ageDropDownD.getSelectedIndex());
+            }
             HomePanel.updateUserInfo(); //Updates the userdata on the home panel
         });
 
-        JComboBox weightDropDownD = new JComboBox(agesList.toArray(new Integer[0]));
+
         weightDropDownD.setEditable(true);
         weightDropDownD.setSelectedIndex((int)(UserData.getUserWeight()));
         weightDropDownD.setPreferredSize(new Dimension(width/15, height/15));
@@ -1227,10 +1286,13 @@ public class SettingsPanel extends JPanel{
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
+            if(weightDropDown.getSelectedIndex()!=weightDropDownD.getSelectedIndex()){
+                weightDropDown.setSelectedIndex(weightDropDownD.getSelectedIndex());
+            }
             HomePanel.updateUserInfo(); //Updates the userdata on the home panel
         });
 
-        JComboBox heightDropDownD = new JComboBox(agesList.toArray(new Integer[0]));
+
         heightDropDownD.setSelectedIndex((int)(UserData.getUserHeight()));
         heightDropDownD.setEditable(true);
         heightDropDownD.setPreferredSize(new Dimension(width/15, height/15));
@@ -1240,6 +1302,9 @@ public class SettingsPanel extends JPanel{
                 FirebaseManager.writeDBUser(UserData.getEmail()); //Updates the user data on the database
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
+            }
+            if(heightDropDown.getSelectedIndex()!=heightDropDownD.getSelectedIndex()){
+                heightDropDown.setSelectedIndex(heightDropDownD.getSelectedIndex());
             }
             HomePanel.updateUserInfo(); //Updates the userdata on the home panel
         });
@@ -1253,7 +1318,6 @@ public class SettingsPanel extends JPanel{
         accountAgePanelD.add(Box.createHorizontalGlue());
         accountAgePanelD.add(ageDropDownD);
 
-        JPanel accountWeightPanelD = new JPanel();
         accountWeightPanelD.setBackground(AppThemeColors.SECONDARY);
         accountWeightPanelD.setLayout(new BoxLayout(accountWeightPanelD, BoxLayout.X_AXIS));
         accountWeightPanelD.setPreferredSize(new Dimension(width-width/10*7, height/15));
@@ -1284,8 +1348,6 @@ public class SettingsPanel extends JPanel{
         });
 
 
-
-        JPanel accountHeightPanelD = new JPanel();
         accountHeightPanelD.setBackground(AppThemeColors.SECONDARY);
         accountHeightPanelD.setLayout(new BoxLayout(accountHeightPanelD, BoxLayout.X_AXIS));
         accountHeightPanelD.setPreferredSize(new Dimension(width-width/10*7, height/15));
@@ -1317,21 +1379,21 @@ public class SettingsPanel extends JPanel{
             HomePanel.updateUserInfo();
         });
 
-        JPanel accountNamePanelD = new JPanel();
+
         accountNamePanelD.setBackground(AppThemeColors.SECONDARY);
         accountNamePanelD.setLayout(new BoxLayout(accountNamePanelD, BoxLayout.X_AXIS));
         accountNamePanelD.setPreferredSize(new Dimension(width-width/10*7, height/15));
 
-        JLabel changeUsernameLabelD = new JLabel("Change Username");
+
 
         accountNamePanelD.add(changeUsernameLabelD);
         accountNamePanelD.add(Box.createHorizontalGlue());
         accountNamePanelD.add(changeUsernameFieldD);
-        accountNamePanelD.setName("changenameusernamechange username");
+        accountNamePanelD.setName("changeusernamepanelchange username");
 
-        JPanel accountPFPPanelD = new JPanel();
+
         accountPFPPanelD.setBackground(AppThemeColors.SECONDARY);
-        accountPFPPanelD.setPreferredSize(new Dimension(width-width/10*9, height/10));
+        accountPFPPanelD.setPreferredSize(new Dimension(new Dimension(width-width/10*7, height/10)));
         accountPFPPanelD.setName("pfppanelprofilepictureprofile picture");
 
         accountPFPPanelD.add(chooseProfilePictureButtonD);
@@ -1343,6 +1405,14 @@ public class SettingsPanel extends JPanel{
         allPanels.add(accountNamePanelD);
         allPanels.add(accountPFPPanelD);
 
+    }
+
+    public void unfocusSearchField(){
+        searchField.setText("Search...");
+        searchField.setFont(new Font("Arial", Font.PLAIN, height/40));
+        searchField.setForeground(Color.BLACK);
+        searchedPanels.removeAll();
+        rightPanel.requestFocusInWindow();
     }
 
     //TODO Need to fix so the buttons update colors properly
@@ -1378,6 +1448,9 @@ public class SettingsPanel extends JPanel{
         test44.setBackground(AppThemeColors.SECONDARY);
         test55.setBackground(AppThemeColors.SECONDARY);
 
+        themeSelectionPanelD.setBackground(AppThemeColors.SECONDARY);
+        themeSelectionLabelD.setForeground(AppThemeColors.foregroundColor);
+
         //Notifications Settings
         notificationsSettingsButton.setIcon(scaledDarkNotificationsSettingsIcon);
         notificationsSettingsButton.setForeground(AppThemeColors.foregroundColor);
@@ -1390,6 +1463,11 @@ public class SettingsPanel extends JPanel{
         heightLabel.setForeground(AppThemeColors.foregroundColor);
         changeUsernameLabel.setForeground(AppThemeColors.foregroundColor);
 
+        ageLabelD.setForeground(AppThemeColors.foregroundColor);
+        weightLabelD.setForeground(AppThemeColors.foregroundColor);
+        heightLabelD.setForeground(AppThemeColors.foregroundColor);
+        changeUsernameLabelD.setForeground(AppThemeColors.foregroundColor);
+
         //Account Settings Panel
         accountScrollPanel.setBackground(AppThemeColors.panelColor);
         accountAgePanel.setBackground(AppThemeColors.SECONDARY);
@@ -1397,6 +1475,12 @@ public class SettingsPanel extends JPanel{
         accountHeightPanel.setBackground(AppThemeColors.SECONDARY);
         accountNamePanel.setBackground(AppThemeColors.SECONDARY);
         accountPFPPanel.setBackground(AppThemeColors.SECONDARY);
+
+        accountAgePanelD.setBackground(AppThemeColors.SECONDARY);
+        accountWeightPanelD.setBackground(AppThemeColors.SECONDARY);
+        accountHeightPanelD.setBackground(AppThemeColors.SECONDARY);
+        accountNamePanelD.setBackground(AppThemeColors.SECONDARY);
+        accountPFPPanelD.setBackground(AppThemeColors.SECONDARY);
 
         //Privacy Settings
         privacySettingsButton.setIcon(scaledDarkPrivacySettingsIcon);
