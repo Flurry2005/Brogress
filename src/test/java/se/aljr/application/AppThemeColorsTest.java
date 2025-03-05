@@ -11,7 +11,6 @@ class AppThemeColorsTest {
     @Test
     void lightMode() {
         AppThemeColors.lightMode();
-
         assertEquals(new Color(255, 255, 255), AppThemeColors.PRIMARY, "PRIMARY color should be white in light mode");
         assertEquals(new Color(200, 200, 200), AppThemeColors.SECONDARY, "SECONDARY color should be light gray in light mode");
         assertEquals(new Color(195, 195, 195), AppThemeColors.panelColor, "panelColor should match light mode value");

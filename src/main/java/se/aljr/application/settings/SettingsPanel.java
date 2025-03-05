@@ -22,6 +22,8 @@ import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 
@@ -84,11 +86,21 @@ public class SettingsPanel extends JPanel{
     //Left/Right panel within container panel
     JPanel leftPanel = new JPanel();
     JPanel rightPanel = new JPanel();
+    JPanel rightRightPanel = new JPanel();
 
     //Button Menu
     JPanel settingsLabelPanel = new JPanel();
     JLabel settingsLabel = new JLabel("Settings");
     JPanel buttonPanel = new JPanel();
+
+    //Search panel
+    JPanel searchPanel = new JPanel();
+    JPanel searchScrollPanel = new JPanel();
+    JScrollPane searchScroll = new JScrollPane(searchScrollPanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    JPanel searchFieldPanel = new JPanel();
+    JTextField searchField = new JTextField();
+    JPanel searchedPanels = new JPanel();
+    private ArrayList<JPanel> allPanels = new ArrayList<>();
 
     //General Panel
     JPanel generalPanel = new JPanel();
@@ -123,6 +135,9 @@ public class SettingsPanel extends JPanel{
     JPanel accountWeightPanel = new JPanel();
     JPanel accountHeightPanel = new JPanel();
     JPanel accountNamePanel = new JPanel();
+    JLabel ageLabel = new JLabel("Age: ");
+    JLabel weightLabel = new JLabel("Weight: ");
+    JLabel heightLabel = new JLabel("Height: ");
     JLabel changeUsernameLabel= new JLabel("Change Username");
     JTextField changeUsernameField = new JTextField();
     JPanel accountPFPPanel = new JPanel();
@@ -206,11 +221,14 @@ public class SettingsPanel extends JPanel{
         buildButtonPanel();
         buildButtons();
 
+        buildSearchPanel();
         buildGeneralPanel();
         buildThemePanel();
         buildNotificationsPanel();
         buildAccountPanel();
         buildPrivacyPanel();
+
+        buildSearchPanels();
 
         this.addComponentListener(new ComponentAdapter() {
             @Override
@@ -229,6 +247,7 @@ public class SettingsPanel extends JPanel{
                     settingsLabel.setPreferredSize(new Dimension(getWidth(), getHeight()/9));
 
                     rightPanel.setBorder(BorderFactory.createMatteBorder(getHeight()/20, 0, getHeight()/20, 0, AppThemeColors.PRIMARY));
+                    rightRightPanel.setBorder(BorderFactory.createMatteBorder(getHeight()/20, 0, getHeight()/20, 0, AppThemeColors.PRIMARY));
 
 
                     if(!lightMode){
@@ -326,21 +345,18 @@ public class SettingsPanel extends JPanel{
         rightPanel.setBorder(BorderFactory.createMatteBorder(height/20, 0, height/20, 0, AppThemeColors.PRIMARY));
         rightPanel.setBackground(new Color(30,30,51));
 
+        rightRightPanel.setOpaque(true);
+        rightRightPanel.setLayout(new BoxLayout(rightRightPanel, BoxLayout.X_AXIS));
+        rightRightPanel.setPreferredSize(new Dimension(width-width/10*7, height));
+        rightRightPanel.setBorder(BorderFactory.createMatteBorder(height/20,0,height/20,0,AppThemeColors.PRIMARY));
+        rightRightPanel.setBackground(new Color(30,30,30));
+
         this.add(containerPanel);
         containerPanel.add(leftPanel);
         containerPanel.add(rightPanel);
         containerPanel.add(Box.createHorizontalGlue());
         containerPanel.add(Box.createHorizontalGlue());
-        containerPanel.add(Box.createHorizontalGlue());
-        containerPanel.add(Box.createHorizontalGlue());
-        containerPanel.add(Box.createHorizontalGlue());
-        containerPanel.add(Box.createHorizontalGlue());
-        containerPanel.add(Box.createHorizontalGlue());
-        containerPanel.add(Box.createHorizontalGlue());
-        containerPanel.add(Box.createHorizontalGlue());
-        containerPanel.add(Box.createHorizontalGlue());
-        containerPanel.add(Box.createHorizontalGlue());
-        containerPanel.add(Box.createHorizontalGlue());
+        containerPanel.add(rightRightPanel);
         containerPanel.add(Box.createHorizontalGlue());
         containerPanel.add(Box.createHorizontalGlue());
     }
@@ -677,6 +693,87 @@ public class SettingsPanel extends JPanel{
         });
     }
 
+    public void buildSearchPanel(){
+        //Search Panel
+        searchPanel.setBackground(AppThemeColors.panelColor);
+        searchPanel.setPreferredSize(new Dimension(width/2, height));
+        searchPanel.setVisible(true);
+        searchPanel.setLayout(new BoxLayout(searchPanel, BoxLayout.X_AXIS));
+        rightRightPanel.add(searchPanel);
+
+        //Panel within the scrollPane
+        searchScrollPanel.setPreferredSize(new Dimension(width-width/10*7, height));
+        searchScrollPanel.setBackground(AppThemeColors.panelColor);
+        searchScrollPanel.setLayout(new FlowLayout());
+        searchPanel.add(searchScroll, BorderLayout.CENTER);
+
+        //Panel to hold the searchfield
+        searchFieldPanel.setOpaque(true);
+        searchFieldPanel.setBackground(Color.GREEN);
+        searchFieldPanel.setPreferredSize(new Dimension(width-width/10*7, height/15));
+        searchScrollPanel.add(searchFieldPanel);
+
+        searchedPanels.setPreferredSize(new Dimension(width-width/10*7, height));
+        searchedPanels.setBackground(AppThemeColors.panelColor);
+        searchedPanels.setLayout(new FlowLayout());
+        searchScrollPanel.add(searchedPanels);
+
+        //Search field
+        searchField.setPreferredSize(new Dimension(width-width/10*7, height/15));
+        searchField.setHorizontalAlignment(JTextField.CENTER);
+        searchField.setText("Search...");
+        searchField.setFont(new Font("Arial", Font.PLAIN, height/40));
+        searchField.setForeground(Color.BLACK);
+        searchField.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (searchField.getText().equals("Search...")) {
+                    searchField.setText("");
+                    searchField.setFont(new Font("Arial", Font.PLAIN, height/40));
+                    searchField.setForeground(Color.BLACK);
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (searchField.getText().isEmpty()) {
+                    searchField.setText("Search...");
+                    searchField.setFont(new Font("Arial", Font.PLAIN, height/40));
+                    searchField.setForeground(Color.BLACK);
+                }
+            }
+        });
+        searchFieldPanel.add(searchField);
+
+        searchField.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                filterPanels();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                filterPanels();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                filterPanels();
+            }
+
+            private void filterPanels(){
+                String query = searchField.getText().toLowerCase();
+                searchedPanels.removeAll();
+                for (JPanel panel : allPanels) {
+                    if (panel.getName() != null && !searchField.getText().isEmpty() && panel.getName().toLowerCase().contains(query)) {
+                        searchedPanels.add(panel);
+                    }
+                }
+                searchedPanels.revalidate();
+                searchedPanels.repaint();
+            }
+        });
+    }
     public void buildGeneralPanel(){
         /**General Panel*/
         generalPanel.setBackground(AppThemeColors.panelColor);
@@ -714,7 +811,6 @@ public class SettingsPanel extends JPanel{
         generalScrollPanel.add(test3);
         generalScrollPanel.add(test4);
         generalScrollPanel.add(test5);
-
     }
 
     public void buildThemePanel(){
@@ -734,6 +830,7 @@ public class SettingsPanel extends JPanel{
         themeSelectionPanel.setBackground(AppThemeColors.SECONDARY);
         themeSelectionPanel.setLayout(new BoxLayout(themeSelectionPanel, BoxLayout.X_AXIS));
         themeSelectionPanel.setPreferredSize(new Dimension(width-width/10*7, height/15));
+        themeSelectionPanel.setName("themeslectionpanel");
         themeSelectionLabel.setForeground(Color.WHITE);
 
         themeList.add("Light");
@@ -772,6 +869,7 @@ public class SettingsPanel extends JPanel{
                 }
 
                 rightPanel.setBorder(BorderFactory.createMatteBorder(getHeight()/20, 0, getHeight()/20, 0, AppThemeColors.PRIMARY));
+                rightRightPanel.setBorder(BorderFactory.createMatteBorder(getHeight()/20, 0, getHeight()/20, 0, AppThemeColors.PRIMARY));
                 generalSettingsButton.setBackground(AppThemeColors.buttonBG);
                 themeSettingsButton.setBackground(AppThemeColors.buttonBG);
                 notificationsSettingsButton.setBackground(AppThemeColors.buttonBG);
@@ -851,13 +949,13 @@ public class SettingsPanel extends JPanel{
         accountAgePanel.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/15));
 
         //GeneralSettingsPanel1, age, weight and height settings
-        JLabel ageLabel = new JLabel("Age: ");
+
         ageLabel.setPreferredSize(new Dimension(50, test2.getPreferredSize().height));
 
-        JLabel weightLabel = new JLabel("Weight: ");
+
         weightLabel.setPreferredSize(new Dimension(50, test2.getPreferredSize().height));
 
-        JLabel heightLabel = new JLabel("Height: ");
+
         heightLabel.setPreferredSize(new Dimension(50, test2.getPreferredSize().height));
 
         for (Integer i=0; i<200;i++){
@@ -1002,10 +1100,260 @@ public class SettingsPanel extends JPanel{
         privacyPanel.setVisible(false);
     }
 
+    public void buildSearchPanels(){
+        //Theme selection panel-----------------------------------------------------------------------------------------------------
+        JPanel themeSelectionPanelD = new JPanel();
+        JLabel themeSelectionLabelD = new JLabel("Select theme");
+
+        //Panels within the scrollable window that will hold various settings
+        themeSelectionPanelD.setBackground(AppThemeColors.SECONDARY);
+        themeSelectionPanelD.setLayout(new BoxLayout(themeSelectionPanelD, BoxLayout.X_AXIS));
+        themeSelectionPanelD.setPreferredSize(new Dimension(width-width/10*7, height/15));
+        themeSelectionPanelD.setName("themeselectionpanel");
+        themeSelectionLabelD.setForeground(Color.WHITE);
+
+        JComboBox themeDropDownD = new JComboBox(themeList.toArray());
+        themeDropDownD.setPreferredSize(new Dimension(width/15, height/10));
+        themeDropDownD.addItemListener(_-> {
+            switch (themeDropDownD.getSelectedIndex()){
+                //Light Mode
+                case 0->{
+                    lightMode = true;
+                    currentTheme = "light";
+                    AppThemeColors.updateThemeColors();
+                    updateColors();
+                    UserData.setTheme("light");
+                    try {
+                        FirebaseManager.writeDBUser(UserData.getEmail());
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }
+                //Dark Mode
+                case 1->{
+                    lightMode = false;
+                    currentTheme = "dark";
+                    AppThemeColors.updateThemeColors();
+                    updateColors();
+                    UserData.setTheme("dark");
+                    try {
+                        FirebaseManager.writeDBUser(UserData.getEmail());
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }
+            }
+
+            rightPanel.setBorder(BorderFactory.createMatteBorder(getHeight()/20, 0, getHeight()/20, 0, AppThemeColors.PRIMARY));
+            rightRightPanel.setBorder(BorderFactory.createMatteBorder(getHeight()/20, 0, getHeight()/20, 0, AppThemeColors.PRIMARY));
+            generalSettingsButton.setBackground(AppThemeColors.buttonBG);
+            themeSettingsButton.setBackground(AppThemeColors.buttonBG);
+            notificationsSettingsButton.setBackground(AppThemeColors.buttonBG);
+            accountSettingsButton.setBackground(AppThemeColors.buttonBG);
+            privacySettingsButton.setBackground(AppThemeColors.buttonBG);
+
+            switch (currentPage){
+                case 0-> generalSettingsButton.setBackground(AppThemeColors.buttonBGSelected);
+
+                case 1-> themeSettingsButton.setBackground(AppThemeColors.buttonBGSelected);
+
+                case 2-> notificationsSettingsButton.setBackground(AppThemeColors.buttonBGSelected);
+
+                case 3-> accountSettingsButton.setBackground(AppThemeColors.buttonBGSelected);
+
+                case 4-> privacySettingsButton.setBackground(AppThemeColors.buttonBGSelected);
+            }
+        });
+
+        themeSelectionPanelD.add(Box.createHorizontalGlue());
+        themeSelectionPanelD.add(themeSelectionLabelD);
+        themeSelectionPanelD.add(Box.createHorizontalGlue());
+        themeSelectionPanelD.add(Box.createHorizontalGlue());
+        themeSelectionPanelD.add(Box.createHorizontalGlue());
+        themeSelectionPanelD.add(Box.createHorizontalGlue());
+        themeSelectionPanelD.add(Box.createHorizontalGlue());
+        themeSelectionPanelD.add(themeDropDownD);
+
+        themeDropDownD.setSelectedIndex(-1);
+        if(lightMode){
+            themeDropDownD.setSelectedIndex(0);
+        }else{
+            themeDropDownD.setSelectedIndex(1);
+        }
+        allPanels.add(themeSelectionPanelD);
+        //--------------------------------------------------------------------------------------------------------------------------------------
+
+        //Account Settings Panels---------------------------------------------------------------------------------------------------------------
+
+        //Panels within the scrollable window that will hold various settings--------
+        JPanel accountAgePanelD = new JPanel();
+        accountAgePanelD.setBackground(AppThemeColors.SECONDARY);
+        accountAgePanelD.setLayout(new BoxLayout(accountAgePanelD, BoxLayout.X_AXIS));
+        accountAgePanelD.setPreferredSize(new Dimension(width-width/10*7, height/15));
+        accountAgePanelD.setName("changeagepanelchange age");
+
+        JLabel ageLabelD = new JLabel("Age: ");
+        JLabel weightLabelD = new JLabel("Weight: ");
+        JLabel heightLabelD = new JLabel("Height: ");
+
+        //GeneralSettingsPanel1, age, weight and height settings
+        ageLabelD.setPreferredSize(new Dimension(50, test2.getPreferredSize().height));
+        weightLabelD.setPreferredSize(new Dimension(50, test2.getPreferredSize().height));
+        heightLabelD.setPreferredSize(new Dimension(50, test2.getPreferredSize().height));
+
+        JComboBox ageDropDownD = new JComboBox(agesList.toArray(new Integer[0]));
+        ageDropDownD.setSelectedIndex(UserData.getUserAge());
+        ageDropDownD.setEditable(true);
+        ageDropDownD.setPreferredSize(new Dimension(width/15, height/15));
+        ageDropDownD.addItemListener(_ -> {
+            UserData.setUserAge(ageDropDownD.getSelectedIndex()); //Updates the local user age in the userdata
+            try {
+                FirebaseManager.writeDBUser(UserData.getEmail()); //Updates the user data on the database
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+            HomePanel.updateUserInfo(); //Updates the userdata on the home panel
+        });
+
+        JComboBox weightDropDownD = new JComboBox(agesList.toArray(new Integer[0]));
+        weightDropDownD.setEditable(true);
+        weightDropDownD.setSelectedIndex((int)(UserData.getUserWeight()));
+        weightDropDownD.setPreferredSize(new Dimension(width/15, height/15));
+        weightDropDownD.addItemListener(_ -> {
+            UserData.setUserWeight(weightDropDownD.getSelectedIndex()); //Updates the local user age in the userdata
+            try {
+                FirebaseManager.writeDBUser(UserData.getEmail()); //Updates the user data on the database
+                System.out.println(weightDropDownD.getEditor().getItem().toString());
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+            HomePanel.updateUserInfo(); //Updates the userdata on the home panel
+        });
+
+        JComboBox heightDropDownD = new JComboBox(agesList.toArray(new Integer[0]));
+        heightDropDownD.setSelectedIndex((int)(UserData.getUserHeight()));
+        heightDropDownD.setEditable(true);
+        heightDropDownD.setPreferredSize(new Dimension(width/15, height/15));
+        heightDropDownD.addItemListener(_ -> {
+            UserData.setUserHeight(heightDropDownD.getSelectedIndex()); //Updates the local user age in the userdata
+            try {
+                FirebaseManager.writeDBUser(UserData.getEmail()); //Updates the user data on the database
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+            HomePanel.updateUserInfo(); //Updates the userdata on the home panel
+        });
+
+        accountAgePanelD.add(Box.createHorizontalGlue());
+        accountAgePanelD.add(ageLabelD);
+        accountAgePanelD.add(Box.createHorizontalGlue());
+        accountAgePanelD.add(Box.createHorizontalGlue());
+        accountAgePanelD.add(Box.createHorizontalGlue());
+        accountAgePanelD.add(Box.createHorizontalGlue());
+        accountAgePanelD.add(Box.createHorizontalGlue());
+        accountAgePanelD.add(ageDropDownD);
+
+        JPanel accountWeightPanelD = new JPanel();
+        accountWeightPanelD.setBackground(AppThemeColors.SECONDARY);
+        accountWeightPanelD.setLayout(new BoxLayout(accountWeightPanelD, BoxLayout.X_AXIS));
+        accountWeightPanelD.setPreferredSize(new Dimension(width-width/10*7, height/15));
+        accountWeightPanelD.setName("changeweightpanelchange weight");
+
+        accountWeightPanelD.add(Box.createHorizontalGlue());
+        accountWeightPanelD.add(weightLabelD);
+        accountWeightPanelD.add(Box.createHorizontalGlue());
+        accountWeightPanelD.add(Box.createHorizontalGlue());
+        accountWeightPanelD.add(Box.createHorizontalGlue());
+        accountWeightPanelD.add(Box.createHorizontalGlue());
+        accountWeightPanelD.add(Box.createHorizontalGlue());
+        accountWeightPanelD.add(weightDropDownD);
+
+        JButton chooseProfilePictureButtonD = new JButton("Open Image File Chooser");
+        chooseProfilePictureButtonD.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                // Skapa huvudfönstret för att visa filväljaren
+                JFrame frame = new JFrame("Choose Image");
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.setSize(400, 400);
+
+                profilePicture = selectImage(frame);
+
+                HomePanel.updateProfilePicture(profilePicture);
+            }
+        });
+
+
+
+        JPanel accountHeightPanelD = new JPanel();
+        accountHeightPanelD.setBackground(AppThemeColors.SECONDARY);
+        accountHeightPanelD.setLayout(new BoxLayout(accountHeightPanelD, BoxLayout.X_AXIS));
+        accountHeightPanelD.setPreferredSize(new Dimension(width-width/10*7, height/15));
+        accountHeightPanelD.setName("changeheightpanelchange height");
+
+        accountHeightPanelD.add(Box.createHorizontalGlue());
+        accountHeightPanelD.add(heightLabelD);
+        accountHeightPanelD.add(Box.createHorizontalGlue());
+        accountHeightPanelD.add(Box.createHorizontalGlue());
+        accountHeightPanelD.add(Box.createHorizontalGlue());
+        accountHeightPanelD.add(Box.createHorizontalGlue());
+        accountHeightPanelD.add(Box.createHorizontalGlue());
+        accountHeightPanelD.add(heightDropDownD);
+
+
+        JTextField changeUsernameFieldD = new JTextField();
+        changeUsernameFieldD.setMinimumSize(new Dimension(width/11, height/20));
+        changeUsernameFieldD.setPreferredSize(new Dimension(width/11, height/20));
+        changeUsernameFieldD.setMaximumSize(new Dimension(width/11, height/20));
+        changeUsernameFieldD.setText(UserData.getUserName());
+
+        changeUsernameFieldD.addActionListener(_ -> {
+            UserData.setUserName(changeUsernameFieldD.getText());
+            try {
+                FirebaseManager.writeDBUser(UserData.getEmail()); //Updates the user data on the database
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+            HomePanel.updateUserInfo();
+        });
+
+        JPanel accountNamePanelD = new JPanel();
+        accountNamePanelD.setBackground(AppThemeColors.SECONDARY);
+        accountNamePanelD.setLayout(new BoxLayout(accountNamePanelD, BoxLayout.X_AXIS));
+        accountNamePanelD.setPreferredSize(new Dimension(width-width/10*7, height/15));
+
+        JLabel changeUsernameLabelD = new JLabel("Change Username");
+
+        accountNamePanelD.add(changeUsernameLabelD);
+        accountNamePanelD.add(Box.createHorizontalGlue());
+        accountNamePanelD.add(changeUsernameFieldD);
+        accountNamePanelD.setName("changenameusernamechange username");
+
+        JPanel accountPFPPanelD = new JPanel();
+        accountPFPPanelD.setBackground(AppThemeColors.SECONDARY);
+        accountPFPPanelD.setPreferredSize(new Dimension(width-width/10*9, height/10));
+        accountPFPPanelD.setName("pfppanelprofilepictureprofile picture");
+
+        accountPFPPanelD.add(chooseProfilePictureButtonD);
+
+
+        allPanels.add(accountAgePanelD);
+        allPanels.add(accountWeightPanelD);
+        allPanels.add(accountHeightPanelD);
+        allPanels.add(accountNamePanelD);
+        allPanels.add(accountPFPPanelD);
+
+    }
+
     //TODO Need to fix so the buttons update colors properly
     public void updateColors(){
 
         settingsLabel.setForeground(AppThemeColors.foregroundColor);
+
+        //Search Panel
+        searchPanel.setBackground(AppThemeColors.panelColor);
+        searchScrollPanel.setBackground(AppThemeColors.panelColor);
+        searchFieldPanel.setBackground(AppThemeColors.SECONDARY);
 
         //General Settings
         generalSettingsButton.setIcon(scaledDarkGeneralSettingsIcon);
@@ -1037,6 +1385,10 @@ public class SettingsPanel extends JPanel{
         //Account Settings
         accountSettingsButton.setIcon(scaledDarkAccountSettingsIcon);
         accountSettingsButton.setForeground(AppThemeColors.foregroundColor);
+        ageLabel.setForeground(AppThemeColors.foregroundColor);
+        weightLabel.setForeground(AppThemeColors.foregroundColor);
+        heightLabel.setForeground(AppThemeColors.foregroundColor);
+        changeUsernameLabel.setForeground(AppThemeColors.foregroundColor);
 
         //Account Settings Panel
         accountScrollPanel.setBackground(AppThemeColors.panelColor);
