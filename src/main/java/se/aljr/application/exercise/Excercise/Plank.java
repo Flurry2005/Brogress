@@ -16,8 +16,6 @@ public class Plank extends Exercise {
 
         form = "To perform a plank, place your forearms on the ground with elbows aligned under your shoulders and extend your legs straight behind you. Keep your body in a straight line from head to heels, engage your core, and hold the position for the desired duration while maintaining steady breathing.";
 
-        imageIcon = new ImageIcon(ResourcePath.getResourcePath() +"ExerciseImages\\Plank.png");
-
         musclesUsed.add(new Abs());
         musclesUsed.add(new Obliques());
         musclesUsed.add(new LowerBack());

@@ -16,7 +16,6 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -26,7 +25,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
-import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
@@ -224,6 +222,7 @@ public class SearchPanel extends JPanel {
                 } else {
                     muscleScroll.setVisible(false);
                     sortMuscleButton.setBackground(AppThemeColors.PRIMARY);
+                    menuList.setModel(exerciseModel);
                 }
                 repaint();
                 revalidate();
@@ -260,13 +259,7 @@ public class SearchPanel extends JPanel {
                     menuList.setSelectionBackground(new Color(49, 84, 122));
                     try {
                         UserData.updateFavoriteExercises();
-                    } catch (IOException ex) {
-                        throw new RuntimeException(ex);
-                    } catch (ExecutionException ex) {
-                        throw new RuntimeException(ex);
-                    } catch (InterruptedException ex) {
-                        throw new RuntimeException(ex);
-                    } catch (ClassNotFoundException ex) {
+                    } catch (IOException | ClassNotFoundException | InterruptedException | ExecutionException ex) {
                         throw new RuntimeException(ex);
                     }
                     updateMenuList("favExerciseModel");
@@ -286,13 +279,7 @@ public class SearchPanel extends JPanel {
                     // READ FROM DB AND UPDATE MY EXERCISES
                     try {
                         UserData.updateCreatedExercise();
-                    } catch (IOException ex) {
-                        throw new RuntimeException(ex);
-                    } catch (ExecutionException ex) {
-                        throw new RuntimeException(ex);
-                    } catch (ClassNotFoundException ex) {
-                        throw new RuntimeException(ex);
-                    } catch (InterruptedException ex) {
+                    } catch (IOException | ExecutionException | ClassNotFoundException | InterruptedException ex) {
                         throw new RuntimeException(ex);
                     }
                     myExercises.setBackground(new Color(49, 84, 122));
@@ -343,7 +330,7 @@ public class SearchPanel extends JPanel {
                         clip.open(audioInputStream);
                         clip.start();
                     } catch (Exception ex) {
-                        ex.printStackTrace();
+                        System.out.println("big tiddies");
                     }
                 }
             }

@@ -19,6 +19,6 @@ public class ChestFly extends Exercise {
         musclesUsed.add(new AnteriorDeltoid());
         musclesUsed.add(new Biceps());
 
-        imageIcon = new ImageIcon(ResourcePath.getResourcePath() +"ExerciseImages\\ChestFly.gif");
+        imageIcon = new ImageIcon(ResourcePath.getResourcePath() +"ExerciseImages\\CableChestFly.gif");
     }
 }
