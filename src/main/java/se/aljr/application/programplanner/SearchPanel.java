@@ -258,13 +258,7 @@ public class SearchPanel extends JPanel {
                     menuList.setSelectionBackground(new Color(49, 84, 122));
                     try {
                         UserData.updateFavoriteExercises();
-                    } catch (IOException ex) {
-                        throw new RuntimeException(ex);
-                    } catch (ExecutionException ex) {
-                        throw new RuntimeException(ex);
-                    } catch (InterruptedException ex) {
-                        throw new RuntimeException(ex);
-                    } catch (ClassNotFoundException ex) {
+                    } catch (IOException | ClassNotFoundException | InterruptedException | ExecutionException ex) {
                         throw new RuntimeException(ex);
                     }
                     updateMenuList("favExerciseModel");
@@ -284,13 +278,7 @@ public class SearchPanel extends JPanel {
                     // READ FROM DB AND UPDATE MY EXERCISES
                     try {
                         UserData.updateCreatedExercise();
-                    } catch (IOException ex) {
-                        throw new RuntimeException(ex);
-                    } catch (ExecutionException ex) {
-                        throw new RuntimeException(ex);
-                    } catch (ClassNotFoundException ex) {
-                        throw new RuntimeException(ex);
-                    } catch (InterruptedException ex) {
+                    } catch (IOException | ExecutionException | ClassNotFoundException | InterruptedException ex) {
                         throw new RuntimeException(ex);
                     }
                     myExercises.setBackground(new Color(49, 84, 122));
@@ -341,7 +329,7 @@ public class SearchPanel extends JPanel {
                         clip.open(audioInputStream);
                         clip.start();
                     } catch (Exception ex) {
-                        ex.printStackTrace();
+                        System.out.println("big tiddies");
                     }
                 }
             }

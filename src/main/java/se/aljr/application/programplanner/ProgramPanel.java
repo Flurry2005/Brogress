@@ -55,6 +55,9 @@ public class ProgramPanel extends JPanel {
     private ImageIcon scaledNewWorkoutIcon;
 
     private JButton newWorkoutButton;
+    private JButton deleteWorkout = new JButton();
+
+    private JCheckBox saveAsDefault = new JCheckBox();
 
     private ImageIcon removeExerciseButtonImage;
     private Image scaledRemoveExerciseButtonImage;
@@ -97,6 +100,8 @@ public class ProgramPanel extends JPanel {
     DefaultListModel<String> workoutTitleDefaultListModel = new DefaultListModel<>();
     JList<String> savedWorkoutsList = new JList<>(workoutTitleDefaultListModel);
     WorkoutsList workoutsList;
+
+    WorkoutsList deafultWorkoutsList;
     JLabel savedWorkoutsLabel;
 
     JButton saveWorkoutButton = new JButton();
@@ -245,12 +250,15 @@ public class ProgramPanel extends JPanel {
 
 
         //Panel containing log and workout data
+        //WorkoutsList defaultWorkoutsList = FirebaseManager.readDBDefaultWorkout(this);
+
         workoutsList = FirebaseManager.readDBworkout(this);
         if (workoutsList.isEmpty()) {
             newExerciseButton.setEnabled(false);
             saveWorkoutButton.setEnabled(false);
             exportWorkoutButton.setEnabled(false);
             workoutTitle.setEnabled(false);
+            deleteWorkout.setEnabled(false);
             workoutContainer = new Workout();
             workoutContainer.add(new JLabel("Select or create new workout")).setFont(CustomFont.getFont());
         }
@@ -340,10 +348,10 @@ public class ProgramPanel extends JPanel {
                 saveWorkoutButton.setEnabled(true);
                 exportWorkoutButton.setEnabled(true);
                 newExerciseButton.setEnabled(true);
+                deleteWorkout.setEnabled(true);
             }
         });
 
-        JButton deleteWorkout = new JButton();
         deleteWorkout.setBorder(null);
         deleteWorkout.setContentAreaFilled(false);
         deleteWorkout.setIcon(scaledRemoveWorkoutIcon);
@@ -370,6 +378,8 @@ public class ProgramPanel extends JPanel {
                         exportWorkoutButton.setEnabled(false);
                         exportWorkoutButton.setEnabled(false);
                         newExerciseButton.setEnabled(false);
+                        deleteWorkout.setEnabled(false);
+
                         workoutTitle.setText("");
                         workoutContainer.removeAll();
                         workoutContainer.add(new JLabel("Select or create new workout")).setFont(CustomFont.getFont());
@@ -476,21 +486,25 @@ public class ProgramPanel extends JPanel {
                 System.out.println("name before : " + workoutDefaultListModel.get(savedWorkoutsList.getSelectedIndex()).getWorkoutData().getTitle());
 
                 int index = savedWorkoutsList.getSelectedIndex();
-                //Uppdaterar namnen på övningarna i listan
-
-                workoutDefaultListModel.get(savedWorkoutsList.getSelectedIndex()).getWorkoutData().setTitle(workoutTitle.getText().trim());
-
-                System.out.println("name before : " + workoutDefaultListModel.get(savedWorkoutsList.getSelectedIndex()).getWorkoutData().getTitle());
-
-                workoutTitleDefaultListModel.clear();
-
-                for (Workout workout : workoutsList) {
-                    workoutTitleDefaultListModel.addElement(workout.getWorkoutData().getTitle());
+                if (saveAsDefault.isSelected()) {
                 }
-                savedWorkoutsList.setModel(workoutTitleDefaultListModel);
-                System.out.println(savedWorkoutsList.getSelectedIndex() + " index after");
-                savedWorkoutsList.setSelectedIndex(index);
-                FirebaseManager.writeDBworkout(workoutsList);
+                else {
+                    //Uppdaterar namnen på övningarna i listan
+
+                    workoutDefaultListModel.get(savedWorkoutsList.getSelectedIndex()).getWorkoutData().setTitle(workoutTitle.getText().trim());
+
+                    System.out.println("name before : " + workoutDefaultListModel.get(savedWorkoutsList.getSelectedIndex()).getWorkoutData().getTitle());
+
+                    workoutTitleDefaultListModel.clear();
+
+                    for (Workout workout : workoutsList) {
+                        workoutTitleDefaultListModel.addElement(workout.getWorkoutData().getTitle());
+                    }
+                    savedWorkoutsList.setModel(workoutTitleDefaultListModel);
+                    System.out.println(savedWorkoutsList.getSelectedIndex() + " index after");
+                    savedWorkoutsList.setSelectedIndex(index);
+                    FirebaseManager.writeDBworkout(workoutsList);
+                }
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
@@ -498,6 +512,12 @@ public class ProgramPanel extends JPanel {
             activateStatus(statusPanel,shrinkStatusTimer,statusText, mainPanel);
             status.setLength(0);
         });
+
+        saveAsDefault.setText("Default");
+        saveAsDefault.setContentAreaFilled(false);
+        saveAsDefault.setBackground(new Color(51,51,51));
+        saveAsDefault.setForeground(Color.white);
+
 
         //Panel to hold search and exercieses list vertically
 
@@ -616,16 +636,18 @@ public class ProgramPanel extends JPanel {
         exercisesPanel.add(exercisesScrollPane);
         exercisesPanel.add(Box.createVerticalGlue());
 
-        //addExerciseAndSetPanel.add(newExcerciseButton);
-        addExerciseAndSetPanel.add(saveWorkoutButton);
-        addExerciseAndSetPanel.add(changeTitle);
 
+        addExerciseAndSetPanel.add(saveWorkoutButton);
 
         workoutPanelTop.add(workoutTitle);
         workoutPanelTop.add(Box.createHorizontalGlue());
         workoutPanelTop.add(saveWorkoutButton);
+        if (UserData.getEmail().equals("kronholmjohan@gmail.com")) {
+            workoutPanelTop.add(saveAsDefault);
+        }
         workoutPanelTop.add(Box.createHorizontalGlue());
         workoutPanelTop.add(exportWorkoutButton);
+
 
         workoutPanel.add(Box.createVerticalGlue());
         workoutPanel.add(workoutPanelTop);
