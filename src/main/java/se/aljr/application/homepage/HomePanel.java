@@ -359,6 +359,59 @@ public class HomePanel extends JPanel {
                 avatar.setImage(scaledProfilePictureIcon);
                 avatar.repaint();
                 //profilePicture.setIcon(scaledProfilePictureIcon);
+
+
+                   SwingUtilities.invokeLater(()->{
+                       friendsListScrollPane1.repaint();
+                       friendsListScrollPane1.setPreferredSize(new Dimension((int) (HomePanel.this.getPreferredSize().width/3.7695035461), (int)(HomePanel.this.getPreferredSize().height/3.22292993631)));
+                       friendsListScrollPane1.setMinimumSize(friendsListScrollPane1.getPreferredSize());
+                       friendsListScrollPane1.setMaximumSize(friendsListScrollPane1.getPreferredSize());
+                       friendsListScrollPane1.getVerticalScrollBar().setUnitIncrement(getPreferredSize().width/140);
+
+                       friendsListScrollPane.repaint();
+                       friendsListScrollPane.setPreferredSize(new Dimension((int) (HomePanel.this.getPreferredSize().width/3.7695035461), (int)(HomePanel.this.getPreferredSize().height/3.22292993631)));
+                       friendsListScrollPane.setMinimumSize(friendsListScrollPane1.getPreferredSize());
+                       friendsListScrollPane.setMaximumSize(friendsListScrollPane1.getPreferredSize());
+                       friendsListScrollPane.getVerticalScrollBar().setUnitIncrement(getPreferredSize().width/140);
+
+                       int friendCounter=0;
+                       for(Component comp: friendsPanel.getComponents()){
+                           if(comp.getName()!=null){
+                               if(comp.getName().equals("friendPanel")){
+                                   JPanel friendPanel = (JPanel) comp;
+                                   friendPanel.setPreferredSize(new Dimension(friendsListScrollPane.getPreferredSize().width, (int) (FriendsList.getFriendArrayList().get(friendCounter).getImageAvatar().getPreferredSize().height*1.1)));
+                                   for(Component comp1 : friendPanel.getComponents()){
+                                       if(comp1.getName()!=null){
+                                           if(comp1.getName().equals("friendAvatarPanel")){
+                                               JPanel friendAvatarPanel = (JPanel) comp1;
+                                               friendAvatarPanel.setPreferredSize(new Dimension((int) (FriendsList.getFriendArrayList().get(friendCounter).getImageAvatar().getPreferredSize().width*1.3),
+                                                       FriendsList.getFriendArrayList().get(friendCounter).getImageAvatar().getPreferredSize().height));
+                                               friendAvatarPanel.setMaximumSize(friendAvatarPanel.getPreferredSize());
+
+                                           }
+                                           if(comp1.getName().equals("friendNameLabel")){
+                                               JLabel friendNameLabel = (JLabel) comp1;
+                                               friendNameLabel.setFont(CustomFont.getFont().deriveFont(instance.getPreferredSize().width/50f));
+                                               friendNameLabel.setMaximumSize(new Dimension(friendsListScrollPane.getPreferredSize().width-FriendsList.getFriendArrayList().get(friendCounter).getImageAvatar().getPreferredSize().width,friendPanel.getPreferredSize().height));
+                                           }
+                                       }
+                                   }
+                               }
+                               Friend friend = FriendsList.getFriendArrayList().get(friendCounter);
+                               Image scaledFriendProfilePicture = friend.getProfilePicture().getImage().getScaledInstance(instance.getWidth()/25,instance.getWidth()/25,Image.SCALE_SMOOTH);
+                               ImageIcon scaledFriendProfilePictureIcon = new ImageIcon(scaledFriendProfilePicture);
+
+                               friend.getImageAvatar().setPreferredSize(new Dimension(instance.getWidth()/25,instance.getWidth()/25));
+                               friend.getImageAvatar().setMinimumSize(friend.getImageAvatar().getPreferredSize());
+                               friend.getImageAvatar().setMaximumSize(friend.getImageAvatar().getPreferredSize());
+                               friend.getImageAvatar().setImage(scaledFriendProfilePictureIcon);
+                               friend.getImageAvatar().setBorderSize(instance.getHeight()/221);
+                               friend.getImageAvatar().setBorderSpace((int) (instance.getHeight()/331.5));
+                           }
+                           friendCounter++;
+                       }
+                   });
+
             }
         });
     }
@@ -389,6 +442,7 @@ public class HomePanel extends JPanel {
 
         for(Friend friend:FriendsList.getFriendArrayList()){
             ImageIcon userIcon = FirebaseManager.readDBprofilePicture(friend.getFriendEmail());
+            friend.setProfilePicture(userIcon);
             Image scaledFriendProfilePicture = userIcon.getImage().getScaledInstance(instance.getPreferredSize().width/25,instance.getPreferredSize().width/25,Image.SCALE_SMOOTH);
             ImageIcon scaledFriendProfilePictureIcon = new ImageIcon(scaledFriendProfilePicture);
 
@@ -404,16 +458,19 @@ public class HomePanel extends JPanel {
 
             JPanel friendPanel = new JPanel();
             friendPanel.setOpaque(false);
+            friendPanel.setName("friendPanel");
             friendPanel.setPreferredSize(new Dimension(friendsListScrollPane.getPreferredSize().width, (int) (friend.getImageAvatar().getPreferredSize().height*1.1)));
             friendPanel.setLayout(new BoxLayout(friendPanel,BoxLayout.X_AXIS));
 
             JLabel friendNameLabel = new JLabel(FriendsList.getFriendArrayList().get(FriendsList.getFriendArrayList().indexOf(friend)).getFriendName());
+            friendNameLabel.setName("friendNameLabel");
             friendNameLabel.setFont(CustomFont.getFont().deriveFont(instance.getPreferredSize().width/50f));
             friendNameLabel.setMaximumSize(new Dimension(friendsListScrollPane.getPreferredSize().width-friend.getImageAvatar().getPreferredSize().width,friendPanel.getPreferredSize().height));
             friendNameLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
             friendNameLabel.setForeground(Color.WHITE);
 
             JPanel friendAvatarPanel = new JPanel();
+            friendAvatarPanel.setName("friendAvatarPanel");
             friendAvatarPanel.setOpaque(false);
             friendAvatarPanel.setLayout(new BoxLayout(friendAvatarPanel,BoxLayout.X_AXIS));
             friendAvatarPanel.setPreferredSize(new Dimension((int) (friend.getImageAvatar().getPreferredSize().width*1.3),friend.getImageAvatar().getPreferredSize().height));

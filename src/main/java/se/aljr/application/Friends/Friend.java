@@ -10,6 +10,7 @@ import java.util.HashMap;
 public class Friend {
     private final ImageAvatar imageAvatar;
     private final ImageAvatar imageAvatarSocial;
+    private ImageIcon profilePicture;
     private String friendName;
     private String friendEmail;
     private boolean isOnline;
@@ -92,5 +93,11 @@ public class Friend {
 
     public void setMessageStorage(JPanel messageStorage) {
         this.messageStorage = messageStorage;
+    }
+
+    public ImageIcon getProfilePicture() {
+        return profilePicture;
+    }public void setProfilePicture(ImageIcon profilePicture) {
+        this.profilePicture = profilePicture;
     }
 }

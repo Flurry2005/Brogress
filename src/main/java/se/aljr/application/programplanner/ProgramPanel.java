@@ -108,12 +108,16 @@ public class ProgramPanel extends JPanel {
 
     JButton exportWorkoutButton = new JButton();
 
+    private SearchPanel searchPanel;
+
     public static Color settingsPanelColor;
     public static Color workoutPanelTextColor;
 
 
     public static ProgramPanel instance;
 
+    private ImageIcon exportIcon;
+    private Image scaledExportIcon;
 
     public ProgramPanel(int width, int height) {
         emptyBackground = new ImageIcon(ResourcePath.getResourcePath() + "emptyBackground.png");
@@ -159,6 +163,10 @@ public class ProgramPanel extends JPanel {
         moveSetDownButtonImage = new ImageIcon(ResourcePath.getResourcePath() + "move_set_down.png");
         scaledMoveSetDownButtonImage = moveSetDownButtonImage.getImage().getScaledInstance((int)(width/88.5833333), (int)(height/30.1363636), Image.SCALE_SMOOTH);
         scaledMoveSetDownIcon = new ImageIcon(scaledMoveSetDownButtonImage);
+
+        exportIcon = new ImageIcon(ResourcePath.getResourcePath()+"exportIcon.png");
+        scaledExportIcon = exportIcon.getImage().getScaledInstance(width/30, height/20, Image.SCALE_SMOOTH);
+        exportIcon = new ImageIcon(scaledExportIcon);
 
         instance = this;
 
@@ -355,7 +363,7 @@ public class ProgramPanel extends JPanel {
         deleteWorkout.setBorder(null);
         deleteWorkout.setContentAreaFilled(false);
         deleteWorkout.setIcon(scaledRemoveWorkoutIcon);
-        deleteWorkout.setFont(new Font("Arial", Font.BOLD, 10));
+        deleteWorkout.setFont(new Font("Arial", Font.BOLD, (int) (getHeight()/66.3)));
         deleteWorkout.setPreferredSize(new Dimension(scaledRemoveWorkoutIcon.getIconWidth(), scaledRemoveWorkoutIcon.getIconHeight()));
         deleteWorkout.setMaximumSize(deleteWorkout.getPreferredSize());
         deleteWorkout.setBorderPainted(true);
@@ -439,9 +447,7 @@ public class ProgramPanel extends JPanel {
         workoutTitle.setMaximumSize(workoutTitle.getPreferredSize());
         workoutTitle.setBorder(new LineBorder(new Color(80, 73, 69)));
 
-        ImageIcon exportIcon = new ImageIcon(ResourcePath.getResourcePath()+"exportIcon.png");
-        Image scaledExportIcon = exportIcon.getImage().getScaledInstance(getWidth()/30, getHeight()/20, Image.SCALE_SMOOTH);
-        exportIcon = new ImageIcon(scaledExportIcon);
+
 
         exportWorkoutButton.setIcon(exportIcon);
         exportWorkoutButton.setPreferredSize(new Dimension(exportIcon.getIconWidth(), exportIcon.getIconHeight()));
@@ -608,14 +614,14 @@ public class ProgramPanel extends JPanel {
         });
 
         //Scroll-Panel to hold all exercises
-
+        /*
         exercisesScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         exercisesScrollPane.setPreferredSize(new Dimension(getWidth() / 5, getHeight() * 8 / 10));
         exercisesScrollPane.setMinimumSize(new Dimension(getWidth() / 5, getHeight() * 8 / 10));
         exercisesScrollPane.setMaximumSize(new Dimension(getWidth() / 5, getHeight() * 8 / 10));
         exercisesScrollPane.getVerticalScrollBar().setPreferredSize(new Dimension(0, 0));
         exercisesScrollPane.setBorder(new LineBorder(new Color(80, 73, 69), 1));
-
+        */
         //Panel to hold add new exercise button and set
 
         addExerciseAndSetPanel.setPreferredSize(new Dimension(getWidth() / 7, getHeight()));
@@ -628,14 +634,15 @@ public class ProgramPanel extends JPanel {
         changeTitle.setForeground(Color.WHITE);
         changeTitle.setVisible(true);
 
-        exercisesPanelTop.add(searchExercise, BorderLayout.WEST);
+        //exercisesPanelTop.add(searchExercise, BorderLayout.WEST);
 
+        /*
         exercisesPanel.add(Box.createVerticalGlue());
         exercisesPanel.add(exercisesPanelTop);
         exercisesPanel.add(Box.createVerticalGlue());
         exercisesPanel.add(exercisesScrollPane);
         exercisesPanel.add(Box.createVerticalGlue());
-
+        */
 
         addExerciseAndSetPanel.add(saveWorkoutButton);
 
@@ -673,8 +680,10 @@ public class ProgramPanel extends JPanel {
         savedWorkoutsPanel.add(savedWorkoutsPanelBottom);
         savedWorkoutsPanel.add(Box.createVerticalGlue());
 
+        searchPanel= new SearchPanel(this.getWidth(), this.getHeight(), newExerciseButton);
+
         mainPanel.add(Box.createHorizontalGlue());
-        mainPanel.add(new SearchPanel(this.getWidth(), this.getHeight(), newExerciseButton));
+        mainPanel.add(searchPanel);
         mainPanel.add(Box.createHorizontalGlue());
         mainPanel.add(workoutPanel);
         mainPanel.add(Box.createHorizontalGlue());
@@ -686,7 +695,89 @@ public class ProgramPanel extends JPanel {
         wrapper.add(mainPanel, JLayeredPane.DEFAULT_LAYER);
         wrapper.add(statusPanel, JLayeredPane.POPUP_LAYER);
         this.add(wrapper);
+        this.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                super.componentResized(e);
+               SwingUtilities.invokeLater(()->{
+                   wrapper.setPreferredSize(new Dimension(getWidth(), getHeight()));
+                   mainPanel.setBounds(0,0,getWidth(),getHeight());
+                   statusPanel.setBounds(0,getHeight()-(int) (getWidth()/13.26),getWidth(), (int) (getWidth()/13.26));
+                   statusPanel.setPreferredSize(new Dimension(getWidth(), (int) (getWidth()/13.26)));
 
+                   workoutPanel.setPreferredSize(new Dimension(getWidth() / 2, getHeight()));
+                   workoutPanel.setMinimumSize(new Dimension(getWidth() / 2, getHeight()));
+                   workoutPanel.setMaximumSize(new Dimension(getWidth() / 2, getHeight()));
+
+                   savedWorkoutsPanel.setPreferredSize(new Dimension(getWidth() / 5, (int)(getHeight())));
+                   savedWorkoutsPanel.setMinimumSize(savedWorkoutsPanel.getPreferredSize());
+                   savedWorkoutsPanel.setMaximumSize(savedWorkoutsPanel.getPreferredSize());
+
+                   searchPanel.setPreferredSize(new Dimension(getWidth()/5, getHeight()));
+                   searchPanel.setMaximumSize(searchPanel.getPreferredSize());
+                   searchPanel.setMinimumSize(searchPanel.getPreferredSize());
+
+                   savedWorkoutsPanelTop.setPreferredSize(new Dimension(getWidth() / 5, getHeight() / 20));
+                   savedWorkoutsPanelTop.setMinimumSize(new Dimension(getWidth() / 5, getHeight() / 20));
+                   savedWorkoutsPanelTop.setMaximumSize(new Dimension(getWidth() / 5, getHeight() / 20));
+                   savedWorkoutsLabel.setMaximumSize(new Dimension((int)(savedWorkoutsPanelTop.getPreferredSize().width/4),(int)(savedWorkoutsPanelTop.getPreferredSize().height)));
+                   savedWorkoutsLabel.setFont(CustomFont.getFont().deriveFont(getHeight()/27.62500f));
+
+                   savedWorkoutsScrollPane.setPreferredSize(new Dimension(getWidth() / 5, (int) (getHeight() * 8 / 11.28)));
+                   savedWorkoutsScrollPane.setMinimumSize(savedWorkoutsScrollPane.getPreferredSize());
+                   savedWorkoutsScrollPane.setMaximumSize(savedWorkoutsScrollPane.getPreferredSize());
+                   savedWorkoutsScrollPane.getVerticalScrollBar().setPreferredSize(new Dimension(0, 0));
+                   savedWorkoutsScrollPane.setBorder(new LineBorder(new Color(80, 73, 69), getHeight()/663));
+                   savedWorkoutsList.setFixedCellHeight((int)(getHeight()/22.5));
+                   savedWorkoutsList.setFont(new Font("Arial", Font.BOLD, (int)(getHeight()/55.25)));
+
+                   newWorkoutButtonImage = new ImageIcon(ResourcePath.getResourcePath() + "new_workout_button.png");
+                   scaledNewWorkoutButtonImage = newWorkoutButtonImage.getImage().getScaledInstance((int)(getWidth()/14.1733333), (int)(getHeight()/22.862069), Image.SCALE_SMOOTH);
+                   scaledNewWorkoutIcon = new ImageIcon(scaledNewWorkoutButtonImage);
+                   newWorkoutButton.setIcon(scaledNewWorkoutIcon);
+                   newWorkoutButton.setPreferredSize(new Dimension(scaledNewWorkoutIcon.getIconWidth(),scaledNewWorkoutIcon.getIconHeight()));
+                   newWorkoutButton.setMaximumSize(newWorkoutButton.getPreferredSize());
+
+
+                   removeWorkoutButtonImage = new ImageIcon(ResourcePath.getResourcePath() + "remove_workout_button.png");
+                   scaledRemoveWorkoutButtonImage = removeWorkoutButtonImage.getImage().getScaledInstance((int)(getWidth()/28.7297297), (int)(getHeight()/22.862069), Image.SCALE_SMOOTH);
+                   scaledRemoveWorkoutIcon = new ImageIcon(scaledRemoveWorkoutButtonImage);
+                   deleteWorkout.setIcon(scaledRemoveWorkoutIcon);
+                   deleteWorkout.setFont(new Font("Arial", Font.BOLD, (int) (getHeight()/66.3)));
+                   deleteWorkout.setPreferredSize(new Dimension(scaledRemoveWorkoutIcon.getIconWidth(), scaledRemoveWorkoutIcon.getIconHeight()));
+                   deleteWorkout.setMaximumSize(deleteWorkout.getPreferredSize());
+
+                   workoutPanelTop.setPreferredSize(new Dimension(getWidth() / 2, getHeight() / 20));
+                   workoutPanelTop.setMinimumSize(new Dimension(getWidth() / 2, getHeight() / 20));
+                   workoutPanelTop.setMaximumSize(new Dimension(getWidth() / 2, getHeight() / 20));
+
+                   workoutScrollPane.setPreferredSize(new Dimension(getWidth() / 2, getHeight() * 8 / 10));
+                   workoutScrollPane.setMinimumSize(new Dimension(getWidth() / 2, getHeight() * 8 / 10));
+                   workoutScrollPane.setMaximumSize(new Dimension(getWidth() / 2, getHeight() * 8 / 10));
+                   workoutScrollPane.getVerticalScrollBar().setUnitIncrement((int) (getHeight()/110.5));
+                   workoutScrollPane.setBorder(new LineBorder(new Color(80, 73, 69), getHeight()/663));
+
+                   workoutTitle.setFont(new Font("Arial", Font.PLAIN, (int)(getHeight()/55.25)));
+                   workoutTitle.setPreferredSize(new Dimension(getWidth() / 3, (int)(getHeight()/22.1)));
+                   workoutTitle.setMaximumSize(workoutTitle.getPreferredSize());
+
+
+                   saveButton = new ImageIcon(ResourcePath.getResourcePath() + "save_workout_button.png");
+                   scaledsaveButton = saveButton.getImage().getScaledInstance((int)(getWidth()/7.59285714), (int)(getHeight()/22.862069), Image.SCALE_SMOOTH);
+                   scaledsaveButtonIcon = new ImageIcon(scaledsaveButton);
+                   saveWorkoutButton.setIcon(scaledsaveButtonIcon);
+                   saveWorkoutButton.setPreferredSize(new Dimension(scaledsaveButtonIcon.getIconWidth(), scaledsaveButtonIcon.getIconHeight()));
+                   saveWorkoutButton.setMaximumSize(new Dimension(scaledsaveButtonIcon.getIconWidth(), scaledsaveButtonIcon.getIconHeight()));
+
+
+                   exportIcon = new ImageIcon(ResourcePath.getResourcePath()+"exportIcon.png");
+                   scaledExportIcon = exportIcon.getImage().getScaledInstance(getWidth()/30, getHeight()/20, Image.SCALE_SMOOTH);
+                   exportIcon = new ImageIcon(scaledExportIcon);
+                   exportWorkoutButton.setIcon(exportIcon);
+                   exportWorkoutButton.setPreferredSize(new Dimension(exportIcon.getIconWidth(), exportIcon.getIconHeight()));
+               });
+            }
+        });
     }
 
     //Trigger the status panel
@@ -698,7 +789,7 @@ public class ProgramPanel extends JPanel {
             statusPanel.setBackground(new Color(46, 148, 76));
         }
 
-        statusPanel.setBounds(0,programPanelHeight-50,mainPanel.getWidth(),50);
+        statusPanel.setBounds(0,getHeight()-50,mainPanel.getWidth(), (int) (getHeight()/13.26));
         statusPanel.revalidate();
         statusPanel.repaint();
         statusDelayCounter = 20;
