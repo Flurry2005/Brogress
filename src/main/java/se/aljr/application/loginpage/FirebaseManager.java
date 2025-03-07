@@ -13,6 +13,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
+import se.aljr.application.CustomFont;
 import se.aljr.application.Friends.Friend;
 import se.aljr.application.Friends.FriendsList;
 import se.aljr.application.ResourcePath;
@@ -26,6 +27,7 @@ import se.aljr.application.programplanner.WorkoutSet;
 import se.aljr.application.programplanner.WorkoutsList;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.io.*;
 import java.lang.reflect.Type;
@@ -915,7 +917,7 @@ public class FirebaseManager {
                 for (Workout workout : defaultWorkoutsList) {
                     boolean exists = false;
                     for (Workout workout1 : workoutsList) {
-                        if (workout1.getWorkoutData().getTitle().equals(workout.getWorkoutData().getTitle())) {
+                        if (workout1.getWorkoutData().getTitle().equals(workout.getWorkoutData().getTitle()) && workout1.isWorkoutDefault()) {
                             exists = true;
                         }
                     }
@@ -926,6 +928,8 @@ public class FirebaseManager {
 
                 /*---------Reattaches all buttons listeners and data needed to load the WorkoutsList back to the program---------*/
                 for(Workout workout : workoutsList){
+                    boolean infoSet = false;
+
                     workout.getWorkoutData().setTotalWorkoutHeight(0);
                     int exerciseId = 1;
                     for (Component comp1 : workout.getComponents()) {
@@ -935,11 +939,26 @@ public class FirebaseManager {
                             if (comp1.getName().equals("mainExercisePanel")) {
                                 workout.getWorkoutData().setTotalWorkoutHeight(workout.getWorkoutData().getTotalWorkoutHeight()+(4 * ProgramPanel.setPanelHeight));
                                 JPanel mainExercisePanel = (JPanel) comp1;
+                                if (workout.isWorkoutDefault()) {
+                                    if (!infoSet) {
+                                        JLabel infoText = new JLabel("<html>" + workout.getWorkoutInfo()+ "</html>");
+                                        infoText.setForeground(Color.white);
+                                        infoText.setFont(new Font("Arial", Font.PLAIN,mainExercisePanel.getWidth()/25));
+                                        infoText.setBackground(new Color(50,50,50));
+                                        infoText.setOpaque(true);
+                                        infoText.setBorder(new LineBorder(new Color(80, 73, 69)));
+                                        mainExercisePanel.add(infoText,0);
+                                        infoSet = true;
+                                    }
+                                }
                                 int setCounterMoveUp = 0;
                                 for (Component comp2 : mainExercisePanel.getComponents()) {
                                     int finalExerciseId = exerciseId;
                                     if ("addSet".equals(comp2.getName())) {
                                         JButton addSet = (JButton) comp2;
+                                        if (workout.isWorkoutDefault()) {
+                                            mainExercisePanel.remove(addSet);
+                                        }
                                         int finalExerciseId1 = exerciseId;
                                         addSet.addActionListener(_ -> {
                                             ProgramPanel.addSet(finalExerciseId1, workout.getIdToExercise(finalExerciseId1), mainExercisePanel, ProgramPanel.setPanelHeight, workout);
@@ -997,6 +1016,9 @@ public class FirebaseManager {
                                                         if ("deleteSet".equals(compDeleteSet.getName())) {
                                                             System.out.println("Found deleteSet button");
                                                             JButton deleteSet = (JButton) compDeleteSet;
+                                                            if (workout.isWorkoutDefault()) {
+                                                                leftPanel.remove(deleteSet);
+                                                            }
                                                             int finalExerciseId2 = exerciseId;
                                                             int finalSetCounter = setCounter;
                                                             deleteSet.addActionListener(_ ->
@@ -1019,8 +1041,10 @@ public class FirebaseManager {
                                             for (Component comp3 : exerciseNameTitlePanel.getComponents()) {
 
                                                 if (comp3.getName().equals("removeExercise")) {
-
                                                     JButton removeExercise = (JButton) comp3;
+                                                    if (workout.isWorkoutDefault()) {
+                                                        exerciseNameTitlePanel.remove(removeExercise);
+                                                    }
 
                                                     removeExercise.addActionListener(_ -> {
 
@@ -1041,17 +1065,16 @@ public class FirebaseManager {
                                                         workout.repaint();
 
                                                         workout.revalidate();
-                                                    });
+                                                    }); }
 
-                                                }
                                             }
                                         }
                                     }
 
                                 }
-
                             }
                             exerciseId++;
+
                         }
                     }
                     workout.setPreferredSize(new Dimension(workout.getWidth(), workout.getWorkoutData().getTotalWorkoutHeight()));
@@ -1060,6 +1083,7 @@ public class FirebaseManager {
 
                     workout.repaint();
                     workout.revalidate();
+
                 }
                 addWorkoutIcons(workoutsList);
                 return workoutsList;
@@ -1094,7 +1118,6 @@ public class FirebaseManager {
         }else{
             return new HashSet<>();
         }
-
     }
 
     public static ArrayList<Exercise> readDBcreatedExercises() throws IOException, ClassNotFoundException, ExecutionException, InterruptedException {

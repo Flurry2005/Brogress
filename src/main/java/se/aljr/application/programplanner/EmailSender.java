@@ -49,7 +49,7 @@ public class EmailSender {
             Multipart multipart = new MimeMultipart();
 
             MimeBodyPart textPart = new MimeBodyPart();
-            textPart.setText("Here is your exported workout.\n Have a great day! \uD83D\uDCAA");
+            textPart.setText("Here is your exported workout.\nHave a great day! \uD83D\uDCAA");
             multipart.addBodyPart(textPart);
 
             MimeBodyPart imageAttachment = new MimeBodyPart();

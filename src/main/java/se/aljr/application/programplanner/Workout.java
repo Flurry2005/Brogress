@@ -11,6 +11,8 @@ public class Workout extends JPanel {
 
     private boolean isDefault = false;
 
+    private String workoutInfo;
+
     private final Map<Integer, JPanel> exercisePanels = new HashMap<>();
 
     private Map<Exercise, Integer> idToExercise = new HashMap<>();
@@ -60,6 +62,14 @@ public class Workout extends JPanel {
 
     public boolean isWorkoutDefault() {
         return isDefault;
+    }
+
+    public void setWorkoutInfo (String text) {
+        workoutInfo = text;
+    }
+
+    public String getWorkoutInfo () {
+        return workoutInfo;
     }
 
 }
