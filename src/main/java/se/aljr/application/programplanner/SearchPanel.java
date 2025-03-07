@@ -1,5 +1,6 @@
 package se.aljr.application.programplanner;
 
+import org.checkerframework.checker.units.qual.C;
 import se.aljr.application.AppThemeColors;
 import se.aljr.application.CustomFont;
 import se.aljr.application.ResourcePath;
@@ -77,7 +78,7 @@ public class SearchPanel extends JPanel {
         searchField.setText("Search for exercise...");
 
         addButton = new ImageIcon(ResourcePath.getResourcePath() + "add_button.png");
-        scaledAddButton = addButton.getImage().getScaledInstance((int) (addButton.getIconWidth() / 1.5), (int) (addButton.getIconHeight()), Image.SCALE_SMOOTH);
+        scaledAddButton = addButton.getImage().getScaledInstance((int) (getPreferredSize().width*5/14.1733333), (int) (getPreferredSize().height/22.862069), Image.SCALE_SMOOTH);
         scaledAddButtonIcon = new ImageIcon(scaledAddButton);
 
         newExcerciseButton.setContentAreaFilled(false);
@@ -98,6 +99,7 @@ public class SearchPanel extends JPanel {
 
         muscleJList.setBackground(AppThemeColors.PRIMARY);
         muscleJList.setForeground(AppThemeColors.foregroundColor);
+        muscleJList.setFont(font.deriveFont(getHeight()/39f));
 
         JScrollPane muscleScroll = new JScrollPane(muscleJList);
         muscleScroll.setBorder(null);
@@ -144,6 +146,7 @@ public class SearchPanel extends JPanel {
         sortMuscleButton.setMaximumSize(new Dimension((int) (searchContainer.getPreferredSize().getWidth() / 4), getPreferredSize().height / 10));
         sortMuscleButton.setMinimumSize(new Dimension((int) (searchContainer.getPreferredSize().getWidth() / 4), getPreferredSize().height / 10));
         sortMuscleButton.setBorder(new LineBorder(new Color(80, 73, 69), 1, true));
+        sortMuscleButton.setFont(new Font("Arial", Font.BOLD, (int) (getHeight()/55.25)));
 
         showFavorites.setForeground(AppThemeColors.foregroundColor);
         showFavorites.setBackground(AppThemeColors.PRIMARY);
@@ -151,6 +154,7 @@ public class SearchPanel extends JPanel {
         showFavorites.setMaximumSize(new Dimension((int) (searchContainer.getPreferredSize().width / 4), getPreferredSize().height / 12));
         showFavorites.setMinimumSize(new Dimension((int) (searchContainer.getPreferredSize().width / 4), getPreferredSize().height / 12));
         showFavorites.setBorder(new LineBorder(new Color(80, 73, 69), 1, true));
+        showFavorites.setFont(new Font("Arial", Font.BOLD, (int) (getHeight()/55.25)));
 
         myExercises.setForeground(AppThemeColors.foregroundColor);
         myExercises.setBackground(AppThemeColors.PRIMARY);
@@ -158,6 +162,7 @@ public class SearchPanel extends JPanel {
         myExercises.setMaximumSize(new Dimension((int) (searchContainer.getPreferredSize().width / 4), getPreferredSize().height / 10));
         myExercises.setMinimumSize(new Dimension((int) (searchContainer.getPreferredSize().width / 4), getPreferredSize().height / 10));
         myExercises.setBorder(new LineBorder(new Color(80, 73, 69), 1, true));
+        myExercises.setFont(new Font("Arial", Font.BOLD, (int) (getHeight()/55.25)));
 
         JButton createExerciseButton = new JButton("New exercise");
         createExerciseButton.setBackground(new Color(46, 148, 76));
@@ -166,6 +171,7 @@ public class SearchPanel extends JPanel {
         createExerciseButton.setPreferredSize(new Dimension(this.getPreferredSize().width, getPreferredSize().height / 24));
         createExerciseButton.setMaximumSize(new Dimension(this.getPreferredSize().width, getPreferredSize().height / 24));
         createExerciseButton.setMinimumSize(new Dimension(this.getPreferredSize().width, getPreferredSize().height / 24));
+        createExerciseButton.setFont(new Font("Arial", Font.BOLD, (int) (getHeight()/55.25)));
 
         MouseEvent pressEvent = new MouseEvent(MenuPanel.exercisesButton, MouseEvent.MOUSE_PRESSED, System.currentTimeMillis(), 0, 10, 10, 1, false);
 
@@ -314,6 +320,7 @@ public class SearchPanel extends JPanel {
 
         });
 
+        System.out.println(this.getPreferredSize());
         // FILTERS SEARCH LIST
         searchField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
@@ -370,6 +377,71 @@ public class SearchPanel extends JPanel {
                 if (searchField.getText().equals("Search for exercise...")) {
                     searchField.setText("");
                 }
+            }
+        });
+        this.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                super.componentResized(e);
+              SwingUtilities.invokeLater(()->{
+                  exercisesPanelTop.setPreferredSize(new Dimension(getWidth(), getHeight() / 20));
+                  exercisesPanelTop.setMinimumSize(exercisesPanelTop.getPreferredSize());
+                  exercisesPanelTop.setMaximumSize(exercisesPanelTop.getPreferredSize());
+
+                  searchContainer.setPreferredSize(new Dimension(getWidth(), (int) (getHeight()/ 12.75)));
+                  searchContainer.setMaximumSize(searchContainer.getPreferredSize());
+                  searchContainer.setMinimumSize(searchContainer.getPreferredSize());
+
+                  exerciseScrollPanel.setPreferredSize(new Dimension(getPreferredSize().width, getPreferredSize().height * 8 / 10 - searchContainer.getPreferredSize().height));
+                  exerciseScrollPanel.setMaximumSize(exerciseScrollPanel.getPreferredSize());
+
+                  scrollSortWrapper.setPreferredSize(exerciseScrollPanel.getPreferredSize());
+                  scrollSortWrapper.setMaximumSize(exerciseScrollPanel.getPreferredSize());
+                  scrollSortWrapper.setMinimumSize(exerciseScrollPanel.getPreferredSize());
+
+                  sortMuscleButton.setPreferredSize(new Dimension((int) (searchContainer.getPreferredSize().getWidth() / 4), getPreferredSize().height / 10));
+                  sortMuscleButton.setMaximumSize(new Dimension((int) (searchContainer.getPreferredSize().getWidth() / 4), getPreferredSize().height / 10));
+                  sortMuscleButton.setMinimumSize(new Dimension((int) (searchContainer.getPreferredSize().getWidth() / 4), getPreferredSize().height / 10));
+                  sortMuscleButton.setBorder(new LineBorder(new Color(80, 73, 69), getHeight()/663, true));
+
+                  showFavorites.setPreferredSize(new Dimension((int) (searchContainer.getPreferredSize().width / 4), getPreferredSize().height / 12));
+                  showFavorites.setMaximumSize(new Dimension((int) (searchContainer.getPreferredSize().width / 4), getPreferredSize().height / 12));
+                  showFavorites.setMinimumSize(new Dimension((int) (searchContainer.getPreferredSize().width / 4), getPreferredSize().height / 12));
+                  showFavorites.setBorder(new LineBorder(new Color(80, 73, 69), getHeight()/663, true));
+
+                  myExercises.setPreferredSize(new Dimension((int) (searchContainer.getPreferredSize().width / 4), getPreferredSize().height / 10));
+                  myExercises.setMaximumSize(new Dimension((int) (searchContainer.getPreferredSize().width / 4), getPreferredSize().height / 10));
+                  myExercises.setMinimumSize(new Dimension((int) (searchContainer.getPreferredSize().width / 4), getPreferredSize().height / 10));
+                  myExercises.setBorder(new LineBorder(new Color(80, 73, 69), getHeight()/663, true));
+
+                  createExerciseButton.setBorder(new LineBorder(new Color(80, 73, 69), getHeight()/663, true));
+                  createExerciseButton.setPreferredSize(new Dimension(getWidth(), getPreferredSize().height / 24));
+                  createExerciseButton.setMaximumSize(new Dimension(getWidth(), getPreferredSize().height / 24));
+                  createExerciseButton.setMinimumSize(new Dimension(getWidth(), getPreferredSize().height / 24));
+
+                  searchField.setFont(new Font("Arial", Font.ITALIC, (int) (getHeight() / 55.25)));
+                  searchField.setPreferredSize(new Dimension((int) (getWidth() / 1.5), (int) (getHeight() / 22.1)));
+                  searchField.setMinimumSize(searchField.getPreferredSize());
+                  searchField.setMaximumSize(searchField.getPreferredSize());
+
+                  scaledAddButton = addButton.getImage().getScaledInstance(getWidth()/4,  (int) (getHeight() / 22.1), Image.SCALE_SMOOTH);
+                  scaledAddButtonIcon = new ImageIcon(scaledAddButton);
+
+                  newExcerciseButton.setIcon(scaledAddButtonIcon);
+                  newExcerciseButton.setPreferredSize(new Dimension(scaledAddButtonIcon.getIconWidth(), scaledAddButtonIcon.getIconHeight()));
+                  newExcerciseButton.setMinimumSize(newExcerciseButton.getPreferredSize());
+                  newExcerciseButton.setMaximumSize(newExcerciseButton.getPreferredSize());
+
+
+                  menuList.setFont(font.deriveFont(getHeight()/39f));
+                  muscleJList.setFont(font.deriveFont(getHeight()/39f));
+                  sortMuscleButton.setFont(new Font("Arial", Font.BOLD, (int) (getHeight()/55.25)));
+                  showFavorites.setFont(new Font("Arial", Font.BOLD, (int) (getHeight()/55.25)));
+                  myExercises.setFont(new Font("Arial", Font.BOLD, (int) (getHeight()/55.25)));
+                  createExerciseButton.setFont(new Font("Arial", Font.BOLD, (int) (getHeight()/55.25)));
+
+
+              });
             }
         });
     }
