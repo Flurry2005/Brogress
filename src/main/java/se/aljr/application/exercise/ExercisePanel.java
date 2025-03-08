@@ -31,7 +31,6 @@ public class ExercisePanel extends JPanel {
     private JLabel musclesWorkedLabel;
     private Exercise selectedExercise;
     private static int statusDelayCounter;
-    private static final StringBuilder status = new StringBuilder();
     private static DefaultListModel<Exercise> exerciseModel;
     private static JList<Exercise> menuList;
     private static JPanel statusPanel;
@@ -59,9 +58,7 @@ public class ExercisePanel extends JPanel {
     public static JButton createExerciseButton = new JButton();
     private final JLabel imageLabel = new JLabel();
     private final JButton editButton = new JButton("\uD83D\uDCDD");;
-
     Font font;
-
     protected ImageIcon homePanelBackground;
     protected ImageIcon scaledContentBackgroundPanel;
     Image scaledContentBackground;
@@ -109,7 +106,6 @@ public class ExercisePanel extends JPanel {
 
         Font emojiFont = new Font("Segoe UI Emoji", Font.PLAIN, 35);
 
-
         editButton.setFocusPainted(false);
         editButton.setContentAreaFilled(false);
         editButton.setBackground(AppThemeColors.PRIMARY);
@@ -147,7 +143,6 @@ public class ExercisePanel extends JPanel {
         musclesWorkedLabel.setFont(font.deriveFont(24f));
         musclesWorkedLabel.setForeground(AppThemeColors.foregroundColor);
         musclesWorkedLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-
 
         searchField.setFont(new Font("Arial", Font.ITALIC, 12));
         searchField.setBorder(new LineBorder(new Color(80, 73, 69)));
@@ -300,7 +295,6 @@ public class ExercisePanel extends JPanel {
         formLabel.setFont(font.deriveFont(24f));
         formLabel.setBorder(new LineBorder(new Color(80, 73, 69), 1, true));
 
-
         aboutText.setBackground(AppThemeColors.panelColor);
         aboutText.setForeground(AppThemeColors.foregroundColor);
         aboutText.setFont(new Font("Arial", Font.PLAIN, 15));
@@ -331,9 +325,10 @@ public class ExercisePanel extends JPanel {
         statusPanel = new JPanel();
         statusPanel.setPreferredSize(new Dimension(this.getWidth(), 50));
         statusPanel.setVisible(false);
-        statusText = new JLabel(status.toString());
-        statusText.setForeground(AppThemeColors.foregroundColor);
         statusPanel.setBorder(new LineBorder(new Color(46, 148, 76), 1, true));
+
+        statusText = new JLabel();
+        statusText.setForeground(AppThemeColors.foregroundColor);
 
         // Functionality for the notice window
         shrinkStatusPanel = new Timer(30, _ -> {
@@ -547,16 +542,12 @@ public class ExercisePanel extends JPanel {
                 if (UserData.getFavoriteExercises().add(selectedExercise)) {
                     String addedStatus = (selectedExercise.getName() + " has been added to favorites!");
                     activateStatus(new Color(46, 148, 76), addedStatus);
-                    statusPanel.setBackground(new Color(46, 148, 76));
-                    status.setLength(0);
                     favoriteButton.setForeground(new Color(196, 196, 49));
 
                 } else {
                     UserData.removeFavoriteExercises(selectedExercise);
                     String removedStatus = (selectedExercise.getName() + " has been removed from favorites!");
                     activateStatus(new Color(204, 20, 20), removedStatus);
-                    statusPanel.setBackground(new Color(204, 20, 20));
-                    status.setLength(0);
                     favoriteButton.setForeground(new Color(22, 22, 22));
                 }
                 updateMenuList("favExerciseModel");
@@ -609,8 +600,6 @@ public class ExercisePanel extends JPanel {
 }
         });
 
-
-
         // TRIGGERS THE EXERCISE CREATION MODULE
         createExerciseButton.addActionListener(_ -> {
             imageLabel.setVisible(false);
@@ -618,6 +607,7 @@ public class ExercisePanel extends JPanel {
             centerPanel.revalidate();
             centerPanel.repaint();
         });
+
         // FILTERS SEARCH RESULTS BASED ON MUSCLE SELECTION
         muscleJList.addListSelectionListener(_ -> {
             DefaultListModel<Exercise> model = new DefaultListModel<>();
@@ -869,11 +859,11 @@ public class ExercisePanel extends JPanel {
     }
 
     // NOTICE WINDOW TRIGGER
-    public static void activateStatus(Color color, String status) {
+    public static void activateStatus(Color color, String text) {
         statusDelayCounter = 20;
         statusPanel.setVisible(true);
         statusPanel.setBackground(color);
-        statusText.setText(status);
+        statusText.setText(text);
         shrinkStatusPanel.start();
         shrinkStatusPanel.restart();
         statusPanel.setPreferredSize(new Dimension(statusPanel.getWidth(), 50));

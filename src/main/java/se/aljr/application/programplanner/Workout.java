@@ -9,6 +9,10 @@ import java.util.Map;
 
 public class Workout extends JPanel {
 
+    private boolean isDefault = false;
+
+    private String workoutInfo;
+
     private final Map<Integer, JPanel> exercisePanels = new HashMap<>();
 
     private Map<Exercise, Integer> idToExercise = new HashMap<>();
@@ -50,6 +54,22 @@ public class Workout extends JPanel {
 
     public Map<Exercise, Integer> addIdToExercise(){
         return idToExercise;
+    }
+
+    public void setDefault() {
+        isDefault = true;
+    }
+
+    public boolean isWorkoutDefault() {
+        return isDefault;
+    }
+
+    public void setWorkoutInfo (String text) {
+        workoutInfo = text;
+    }
+
+    public String getWorkoutInfo () {
+        return workoutInfo;
     }
 
 }
