@@ -911,9 +911,10 @@ public class FirebaseManager {
 
                 byte[] data_2 = Base64.getDecoder().decode(defaultFileContent);
                 objectInputStream = new ObjectInputStream(new ByteArrayInputStream(data_2));
-                WorkoutsList defaultWorkoutsList = (WorkoutsList) objectInputStream.readObject();
+                //WorkoutsList defaultWorkoutsList = (WorkoutsList) objectInputStream.readObject();
 
                 /*---------Combine both the user and default workouts into a single list-------*/
+                /*
                 for (Workout workout : defaultWorkoutsList) {
                     boolean exists = false;
                     for (Workout workout1 : workoutsList) {
@@ -925,7 +926,7 @@ public class FirebaseManager {
                         workoutsList.add(workout);
                     }
                 }
-
+                */
                 /*---------Reattaches all buttons listeners and data needed to load the WorkoutsList back to the program---------*/
                 for(Workout workout : workoutsList){
                     boolean infoSet = false;

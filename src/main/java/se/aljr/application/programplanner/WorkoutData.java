@@ -1,9 +1,14 @@
 package se.aljr.application.programplanner;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.*;
 
 public class WorkoutData implements Serializable {
+
+    @Serial
+    private  static final long serialVersionUID = 1L;
+
     private String title = "Untitled Workout";
     private final HashMap<Integer, List<WorkoutSet>> exerciseSets = new HashMap<>();
 

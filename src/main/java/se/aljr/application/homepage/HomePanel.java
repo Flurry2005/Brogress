@@ -328,40 +328,39 @@ public class HomePanel extends JPanel {
         this.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
-                userInfoPanel.repaint();
-                userInfoPanel.setPreferredSize(new Dimension((int) (HomePanel.this.getWidth()/3.7695035461),(int)(HomePanel.this.getHeight()/4.22292993631)));
-                userInfoPanel.setMaximumSize(userInfoPanel.getPreferredSize());
-                userInfoPanel.setBorder(new EmptyBorder(0,userInfoPanel.getPreferredSize().width/16,0,0));
-
-                topPanel.setPreferredSize(new Dimension(getWidth(),(int)(getHeight()/3.171974)+getHeight()/20));
-
-                usernameLabel.setFont(CustomFont.getFont().deriveFont(getWidth()/50f));
-                userAge.setFont(CustomFont.getFont().deriveFont(getWidth()/60f));
-                userHeight.setFont(CustomFont.getFont().deriveFont(getWidth()/60f));
-                userWeight.setFont(CustomFont.getFont().deriveFont(getWidth()/60f));
-
-                userMacrosPanel.repaint();
-                userMacrosPanel.setPreferredSize(new Dimension((int) (HomePanel.this.getWidth()/3.7695035461),(int)(HomePanel.this.getHeight()/4.22292993631)));
-                userMacrosPanel.setMaximumSize(userMacrosPanel.getPreferredSize());
-                userMacrosPanel.setBorder(new EmptyBorder(0,userMacrosPanel.getPreferredSize().width/16,0,0));
-
-                bmiLabel.setFont(CustomFont.getFont().deriveFont(getWidth()/50f));
-                bmrLabel.setFont(CustomFont.getFont().deriveFont(getWidth()/50f));
-                tdeeLabel.setFont(CustomFont.getFont().deriveFont(getWidth()/50f));
-                proteinNeedLabel.setFont(CustomFont.getFont().deriveFont(getWidth()/50f));
-                macroLabel.setFont(CustomFont.getFont().deriveFont(getWidth()/40f));
-
-
-
-                avatar.setPreferredSize(new Dimension(getWidth()/25,getWidth()/25));
-                scaledProfilePicture = profilePictureIcon.getImage().getScaledInstance(getWidth()/25,getWidth()/25,Image.SCALE_SMOOTH);
-                scaledProfilePictureIcon = new ImageIcon(scaledProfilePicture);
-                avatar.setImage(scaledProfilePictureIcon);
-                avatar.repaint();
-                //profilePicture.setIcon(scaledProfilePictureIcon);
-
-
                    SwingUtilities.invokeLater(()->{
+                       userInfoPanel.repaint();
+                       userInfoPanel.setPreferredSize(new Dimension((int) (HomePanel.this.getWidth()/3.7695035461),(int)(HomePanel.this.getHeight()/4.22292993631)));
+                       userInfoPanel.setMaximumSize(userInfoPanel.getPreferredSize());
+                       userInfoPanel.setBorder(new EmptyBorder(0,userInfoPanel.getPreferredSize().width/16,0,0));
+
+                       topPanel.setPreferredSize(new Dimension(getWidth(),(int)(getHeight()/3.171974)+getHeight()/20));
+
+                       usernameLabel.setFont(CustomFont.getFont().deriveFont(getWidth()/50f));
+                       userAge.setFont(CustomFont.getFont().deriveFont(getWidth()/60f));
+                       userHeight.setFont(CustomFont.getFont().deriveFont(getWidth()/60f));
+                       userWeight.setFont(CustomFont.getFont().deriveFont(getWidth()/60f));
+
+                       userMacrosPanel.repaint();
+                       userMacrosPanel.setPreferredSize(new Dimension((int) (HomePanel.this.getWidth()/3.7695035461),(int)(HomePanel.this.getHeight()/4.22292993631)));
+                       userMacrosPanel.setMaximumSize(userMacrosPanel.getPreferredSize());
+                       userMacrosPanel.setBorder(new EmptyBorder(0,userMacrosPanel.getPreferredSize().width/16,0,0));
+
+                       bmiLabel.setFont(CustomFont.getFont().deriveFont(getWidth()/50f));
+                       bmrLabel.setFont(CustomFont.getFont().deriveFont(getWidth()/50f));
+                       tdeeLabel.setFont(CustomFont.getFont().deriveFont(getWidth()/50f));
+                       proteinNeedLabel.setFont(CustomFont.getFont().deriveFont(getWidth()/50f));
+                       macroLabel.setFont(CustomFont.getFont().deriveFont(getWidth()/40f));
+
+
+
+                       avatar.setPreferredSize(new Dimension(getWidth()/25,getWidth()/25));
+                       scaledProfilePicture = profilePictureIcon.getImage().getScaledInstance(getWidth()/25,getWidth()/25,Image.SCALE_SMOOTH);
+                       scaledProfilePictureIcon = new ImageIcon(scaledProfilePicture);
+                       avatar.setImage(scaledProfilePictureIcon);
+                       avatar.repaint();
+                       //profilePicture.setIcon(scaledProfilePictureIcon);
+
                        friendsListScrollPane1.repaint();
                        friendsListScrollPane1.setPreferredSize(new Dimension((int) (HomePanel.this.getPreferredSize().width/3.7695035461), (int)(HomePanel.this.getPreferredSize().height/3.22292993631)));
                        friendsListScrollPane1.setMinimumSize(friendsListScrollPane1.getPreferredSize());

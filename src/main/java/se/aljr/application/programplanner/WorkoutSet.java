@@ -2,10 +2,15 @@ package se.aljr.application.programplanner;
 
 import se.aljr.application.exercise.Excercise.Exercise;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 
 public class WorkoutSet implements Serializable {
+
+    @Serial
+    private  static final long serialVersionUID = 1L;
+
     int number;
     int weight;
     int rep;

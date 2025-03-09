@@ -3,11 +3,15 @@ package se.aljr.application.programplanner;
 import se.aljr.application.exercise.Excercise.Exercise;
 
 import javax.swing.*;
+import java.io.Serial;
 import java.util.HashMap;
 import java.util.Map;
 
 
 public class Workout extends JPanel {
+
+    @Serial
+    private  static final long serialVersionUID = 1L;
 
     private boolean isDefault = false;
 
