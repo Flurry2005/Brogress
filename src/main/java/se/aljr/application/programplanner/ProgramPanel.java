@@ -864,7 +864,7 @@ public class ProgramPanel extends JPanel {
         leftPanel.setName("leftPanel");
         leftPanel.setOpaque(false);
         leftPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        leftPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
         leftPanel.setPreferredSize(new Dimension(getWidth()/2, ProgramPanel.setPanelHeight));
         leftPanel.setMinimumSize(leftPanel.getPreferredSize());
         leftPanel.setMaximumSize(leftPanel.getPreferredSize());
@@ -873,10 +873,12 @@ public class ProgramPanel extends JPanel {
         // Label to hold "Set"
         JLabel setLabel = new JLabel();
         setLabel.setName("setLabel");
-        setLabel.setText("Set");
+        setLabel.setText(" Set");
         setLabel.setForeground(workoutPanelTextColor);
         setLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        leftPanel.add(Box.createVerticalGlue());
         leftPanel.add(setLabel);
+        leftPanel.add(Box.createVerticalGlue());
 
         //Remove exercise-button
         JButton removeExercise = new JButton(scaledRemoveExerciseIcon);
@@ -910,8 +912,11 @@ public class ProgramPanel extends JPanel {
         JPanel rightPanel = new JPanel();
         rightPanel.setName("rightPanel");
         rightPanel.setOpaque(false);
-        rightPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        rightPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+        //rightPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.X_AXIS));
+        rightPanel.setPreferredSize(new Dimension((int)(getWidth()*0.155172414), (int) (getHeight()/55.25)));
+        rightPanel.setMinimumSize(rightPanel.getPreferredSize());
+        rightPanel.setMaximumSize(rightPanel.getPreferredSize());
         setRepWeightRirTitleNPanel.add(rightPanel, BorderLayout.EAST);
 
         // Label to hold "Reps"
@@ -919,23 +924,44 @@ public class ProgramPanel extends JPanel {
         repsLabel.setName("repsLabel");
         repsLabel.setText("Reps");
         repsLabel.setForeground(workoutPanelTextColor);
-        repsLabel.setAlignmentX(Component.RIGHT_ALIGNMENT);
+        repsLabel.setAlignmentY(Component.CENTER_ALIGNMENT);
+        repsLabel.setPreferredSize(new Dimension(repsLabel.getFontMetrics(repsLabel.getFont()).stringWidth(repsLabel.getText()),
+                repsLabel.getFontMetrics(repsLabel.getFont()).getHeight()));
+        repsLabel.setMinimumSize(repsLabel.getPreferredSize());
+        repsLabel.setMaximumSize(repsLabel.getPreferredSize());
         rightPanel.add(repsLabel);
+        rightPanel.add(Box.createHorizontalGlue());
 
         // Label to hold "Weight"
         JLabel weightLabel = new JLabel();
         weightLabel.setName("weightLabel");
         weightLabel.setText("Weight");
         weightLabel.setForeground(workoutPanelTextColor);
-        weightLabel.setAlignmentX(Component.RIGHT_ALIGNMENT);
+        weightLabel.setPreferredSize(new Dimension(weightLabel.getFontMetrics(weightLabel.getFont()).stringWidth(weightLabel.getText()),
+                weightLabel.getFontMetrics(weightLabel.getFont()).getHeight()));
+        weightLabel.setMinimumSize(weightLabel.getPreferredSize());
+        weightLabel.setMaximumSize(weightLabel.getPreferredSize());
+        weightLabel.setAlignmentY(Component.CENTER_ALIGNMENT);
         rightPanel.add(weightLabel);
+        rightPanel.add(Box.createHorizontalGlue());
         //Label to hold "RIR"
         JLabel rirLabel = new JLabel();
         rirLabel.setName("rirLabel");
         rirLabel.setText("RIR");
         rirLabel.setForeground(workoutPanelTextColor);
-        rirLabel.setAlignmentX(Component.RIGHT_ALIGNMENT);
+        rirLabel.setPreferredSize(new Dimension(rirLabel.getFontMetrics(rirLabel.getFont()).stringWidth(rirLabel.getText()),
+                rirLabel.getFontMetrics(rirLabel.getFont()).getHeight()));
+        rirLabel.setMinimumSize(rirLabel.getPreferredSize());
+        rirLabel.setMaximumSize(rirLabel.getPreferredSize());
+        rirLabel.setAlignmentY(Component.CENTER_ALIGNMENT);
         rightPanel.add(rirLabel);
+        rightPanel.add(Box.createHorizontalGlue());
+        rightPanel.add(Box.createHorizontalGlue());
+        rightPanel.add(Box.createHorizontalGlue());
+        rightPanel.add(Box.createHorizontalGlue());
+        rightPanel.add(Box.createHorizontalGlue());
+        rightPanel.add(Box.createHorizontalGlue());
+        rightPanel.add(Box.createHorizontalGlue());
 
         // "Add set"- button
         JButton addSet = new JButton(scaledNewSetIcon);
@@ -1035,6 +1061,7 @@ public class ProgramPanel extends JPanel {
         moveSetUp.setMargin(new Insets(0, 0, 0, 0));
 
         JButton moveSetDown = new JButton(scaledMoveSetDownIcon);
+
         moveSetDown.setName("moveSetDown");
         moveSetDown.setContentAreaFilled(false);
         //moveSetDown.setBorder(null);
@@ -1049,15 +1076,18 @@ public class ProgramPanel extends JPanel {
         moveSetUp.addActionListener(_ -> moveUp(parentPanel, exerciseId, workoutSet, workoutContainer));
 
         JPanel rightPanel = new JPanel();
+        rightPanel.setOpaque(false);
+        rightPanel.setName("rightPanel");
+        rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.X_AXIS));
+        rightPanel.setPreferredSize(new Dimension((int)(instance.getWidth()*0.155172414), (int) (instance.getHeight()/55.25)));
+        rightPanel.setMinimumSize(rightPanel.getPreferredSize());
+        rightPanel.setMaximumSize(rightPanel.getPreferredSize());
+
+
         JTextField weightAmount = new JTextField();
         weightAmount.setName("weightAmount");
         JTextField rirAmount = new JTextField();
         rirAmount.setName("rirAmount");
-
-
-        rightPanel.setName("rightPanel");
-        rightPanel.setOpaque(false);
-        rightPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
 
         JTextField repsAmount = new JTextField();
         repsAmount.setName("repsAmount");
@@ -1065,7 +1095,8 @@ public class ProgramPanel extends JPanel {
         repsAmount.setForeground(new Color(204, 204, 204));
         repsAmount.setBackground(new Color(22, 22, 22));
         repsAmount.setPreferredSize(new Dimension((int) (instance.getWidth()/30.3714286), (int) (instance.getHeight()/33.15)));
-        rightPanel.add(repsAmount);
+        repsAmount.setMaximumSize(repsAmount.getPreferredSize());
+
         repsAmount.setBorder(null);
         repsAmount.setText("0");
         repsAmount.setBorder(new LineBorder(new Color(129, 115, 103), 1));
@@ -1074,16 +1105,16 @@ public class ProgramPanel extends JPanel {
         weightAmount.setBackground(new Color(22, 22, 22));
         weightAmount.setForeground(new Color(204, 204, 204));
         weightAmount.setPreferredSize(new Dimension((int) (instance.getWidth()/30.3714286), (int) (instance.getHeight()/33.15)));
-        rightPanel.add(weightAmount);
+        weightAmount.setMaximumSize(weightAmount.getPreferredSize());
         weightAmount.setBorder(null);
         weightAmount.setText("0");
         weightAmount.setBorder(new LineBorder(new Color(129, 115, 103), 1));
 
 
         rirAmount.setPreferredSize(new Dimension((int) (instance.getWidth()/30.3714286), (int) (instance.getHeight()/33.15)));
+        rirAmount.setMaximumSize(rirAmount.getPreferredSize());
         rirAmount.setForeground(new Color(204, 204, 204));
         rirAmount.setBackground(new Color(22, 22, 22));
-        rightPanel.add(rirAmount);
         rirAmount.setBorder(null);
         rirAmount.setText("0");
         rirAmount.setBorder(new LineBorder(new Color(129, 115, 103), 1));
@@ -1093,9 +1124,19 @@ public class ProgramPanel extends JPanel {
         rirAmount.setFont(new Font("Arial", Font.BOLD, (int) (instance.getHeight()/55.25)));
 
         setPanel.add(rightPanel, BorderLayout.EAST);
-        leftPanel.add(deleteSet);
+
+        rightPanel.add(repsAmount);
+        rightPanel.add(Box.createHorizontalGlue());
+        rightPanel.add(weightAmount);
+        rightPanel.add(Box.createHorizontalGlue());
+        rightPanel.add(rirAmount);
+        rightPanel.add(Box.createHorizontalGlue());
         rightPanel.add(moveSetUp);
+        rightPanel.add(Box.createHorizontalGlue());
         rightPanel.add(moveSetDown);
+        rightPanel.add(Box.createHorizontalGlue());
+
+        leftPanel.add(deleteSet);
         parentPanel.add(setPanel);
         parentPanel.revalidate();
         parentPanel.repaint();
@@ -1315,17 +1356,28 @@ public class ProgramPanel extends JPanel {
                                     if(component.getName().equals("leftPanel")){
                                         JPanel leftPanel = (JPanel) component;
                                         for(Component leftPanelComp : leftPanel.getComponents()){
-                                            if(leftPanelComp.getName().equals("setLabel")){
-                                                JLabel setLabel = (JLabel) leftPanelComp;
-                                                setLabel.setFont(new Font("Arial", Font.PLAIN, (int) (getHeight()/55.25)));
+                                            if(leftPanelComp.getName()!=null){
+                                                if(leftPanelComp.getName().equals("setLabel")){
+                                                    JLabel setLabel = (JLabel) leftPanelComp;
+                                                    setLabel.setFont(new Font("Arial", Font.PLAIN, (int) (getHeight()/55.25)));
+                                                }
                                             }
                                         }
                                     }
                                     if(component.getName().equals("rightPanel")){
                                         JPanel rightPanel = (JPanel) component;
+                                        rightPanel.setPreferredSize(new Dimension((int)(getWidth()*0.155172414), (int) (getHeight()/55.25)));
+                                        rightPanel.setMinimumSize(rightPanel.getPreferredSize());
+                                        rightPanel.setMaximumSize(rightPanel.getPreferredSize());
                                         for(Component labelsComp : rightPanel.getComponents()){
-                                            JLabel labels = (JLabel) labelsComp;
-                                            labels.setFont(new Font("Arial", Font.BOLD, (int) (getHeight()/55.25)));
+                                            if(labelsComp.getName()!=null){
+                                                JLabel labels = (JLabel) labelsComp;
+                                                labels.setFont(new Font("Arial", Font.BOLD, (int) (getHeight()/55.25)));
+                                                labels.setPreferredSize(new Dimension(labels.getFontMetrics(labels.getFont()).stringWidth(labels.getText()),
+                                                        labels.getFontMetrics(labels.getFont()).getHeight()));
+                                                labels.setMinimumSize(labels.getPreferredSize());
+                                                labels.setMaximumSize(labels.getPreferredSize());
+                                            }
                                         }
                                     }
                                 }
@@ -1352,24 +1404,28 @@ public class ProgramPanel extends JPanel {
                                     if (compRight.getName() != null) {
                                         if ("rightPanel".equals(compRight.getName())) {
                                             JPanel rightPanel = (JPanel) compRight;
+                                            rightPanel.setPreferredSize(new Dimension((int)(instance.getWidth()*0.155172414), (int) (instance.getHeight()/55.25)));
+                                            rightPanel.setMinimumSize(rightPanel.getPreferredSize());
+                                            rightPanel.setMaximumSize(rightPanel.getPreferredSize());
                                             for (Component compMoveSetUp : rightPanel.getComponents()) {
                                                 if (compMoveSetUp.getName() != null) {
                                                     if(compMoveSetUp.getName().equals("repsAmount")){
                                                         JTextField repsAmount = (JTextField) compMoveSetUp;
                                                         repsAmount.setFont(new Font("Arial", Font.BOLD, (int) (getHeight()/55.25)));
                                                         repsAmount.setPreferredSize(new Dimension((int) (instance.getWidth()/30.3714286), (int) (instance.getHeight()/33.15)));
-
+                                                        repsAmount.setMaximumSize(repsAmount.getPreferredSize());
                                                     }
                                                     if(compMoveSetUp.getName().equals("weightAmount")){
                                                         JTextField weightAmount = (JTextField) compMoveSetUp;
                                                         weightAmount.setFont(new Font("Arial", Font.BOLD, (int) (getHeight()/55.25)));
                                                         weightAmount.setPreferredSize(new Dimension((int) (instance.getWidth()/30.3714286), (int) (instance.getHeight()/33.15)));
-
+                                                        weightAmount.setMaximumSize(weightAmount.getPreferredSize());
                                                     }
                                                     if(compMoveSetUp.getName().equals("rirAmount")){
                                                         JTextField rirAmount = (JTextField) compMoveSetUp;
                                                         rirAmount.setFont(new Font("Arial", Font.BOLD, (int) (getHeight()/55.25)));
                                                         rirAmount.setPreferredSize(new Dimension((int) (instance.getWidth()/30.3714286), (int) (instance.getHeight()/33.15)));
+                                                        rirAmount.setMaximumSize(rirAmount.getPreferredSize());
                                                     }
                                                     if ("moveSetUp".equals(compMoveSetUp.getName())) {
                                                         JButton moveSetUp = (JButton) compMoveSetUp;
@@ -1567,9 +1623,11 @@ public class ProgramPanel extends JPanel {
                                                             JPanel leftPanel = (JPanel) compLeftPanel;
                                                             leftPanel.setBackground(AppThemeColors.panelColor);
                                                             for(Component setLabelComp : leftPanel.getComponents()){
-                                                                if(setLabelComp.getName().equals("setLabel")){
-                                                                    JLabel setLabel = (JLabel) setLabelComp;
-                                                                    setLabel.setForeground(workoutPanelTextColor);
+                                                                if(setLabelComp.getName()!=null){
+                                                                    if(setLabelComp.getName().equals("setLabel")){
+                                                                        JLabel setLabel = (JLabel) setLabelComp;
+                                                                        setLabel.setForeground(workoutPanelTextColor);
+                                                                    }
                                                                 }
 
                                                             }
