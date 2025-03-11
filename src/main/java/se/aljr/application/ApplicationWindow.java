@@ -41,6 +41,8 @@ public class ApplicationWindow extends JFrame  {
     private void init() throws InterruptedException {
         this.setLayout(new BorderLayout(0,0)); //Sätter Fönstrets layout till BorderLayout
 
+
+
         LeftPanel left_panel = new LeftPanel(); //Skapar den vänstra sektionen för fönstret
         left_panel.setPreferredSize(new Dimension((int)((getWidth()/6.4)),getHeight()-getHeight()/18));
         left_panel.setMinimumSize(new Dimension((int)((getWidth()/6.4)), getHeight()/18));

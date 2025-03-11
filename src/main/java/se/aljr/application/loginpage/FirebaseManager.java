@@ -263,6 +263,40 @@ public class FirebaseManager {
         }
     }
 
+    public static void writeDBdenyFriendRequest(String email){
+        HashMap<String,String> myFriendRequests= readDBgetFriendRequests(UserData.getEmail());
+        if(myFriendRequests!=null){
+                for(Map.Entry<String,String> entry : myFriendRequests.entrySet()){
+                    if(entry.getKey().equals(email)){
+                        myFriendRequests.remove(entry.getKey());
+                        break;
+                    }
+                }
+
+                Gson gson = new GsonBuilder().setPrettyPrinting().create();
+                String json = gson.toJson(myFriendRequests);
+
+                Map<String, Object> newUserFriendRequests = new HashMap<>();
+                newUserFriendRequests.put("friendrequests", json);
+
+
+
+                // Referens till dokumentet i "users" collection
+                DocumentReference docRef = db.collection("users").document(UserData.getEmail());
+
+                // Skriv data och vänta på resultat
+                ApiFuture<WriteResult> result = docRef.update(newUserFriendRequests);
+
+                ChatPanel.updateRequestsPanel();
+
+                try {
+                    System.out.println("Uppdaterat vid: " + result.get().getUpdateTime());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+        }
+    }
+
 
     public static HashMap<String,String> readDBgetFriendRequests(String email){
         try {
