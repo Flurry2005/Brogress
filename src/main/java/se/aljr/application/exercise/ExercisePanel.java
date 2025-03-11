@@ -1,5 +1,6 @@
 package se.aljr.application.exercise;
 
+import org.checkerframework.checker.units.qual.C;
 import se.aljr.application.AppThemeColors;
 import se.aljr.application.ResourcePath;
 import se.aljr.application.UserData;
@@ -849,6 +850,16 @@ public class ExercisePanel extends JPanel {
                 repaint();
                 revalidate();
 
+            }
+        });
+        this.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                super.componentResized(e);
+                SwingUtilities.invokeLater(()->{
+                    mainPanel.setPreferredSize(new Dimension(getWidth(),getHeight()));
+                    mainPanel.setBorder(new EmptyBorder(getHeight() / 45, getWidth() / 45, getHeight() / 45, getWidth() / 45));
+                });
             }
         });
     }

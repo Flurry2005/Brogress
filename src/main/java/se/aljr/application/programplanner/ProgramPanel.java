@@ -884,14 +884,18 @@ public class ProgramPanel extends JPanel {
         }
         savedWorkoutsPanelBottom.add(Box.createHorizontalGlue());
 
+
+        savedWorkoutsPanel.add(Box.createVerticalGlue());
         savedWorkoutsPanel.add(Box.createVerticalGlue());
         savedWorkoutsPanel.add(savedWorkoutsPanelTop);
+        savedWorkoutsPanel.add(Box.createVerticalGlue());
         savedWorkoutsPanel.add(Box.createVerticalGlue());
         savedWorkoutsPanel.add(savedWorkoutsScrollPane);
         savedWorkoutsPanel.add(Box.createVerticalGlue());
         savedWorkoutsPanel.add(defaultWorkoutsScrollPane);
         savedWorkoutsPanel.add(Box.createVerticalGlue());
         savedWorkoutsPanel.add(savedWorkoutsPanelBottom);
+        savedWorkoutsPanel.add(Box.createVerticalGlue());
         savedWorkoutsPanel.add(Box.createVerticalGlue());
 
         searchPanel = new SearchPanel(this.getWidth(), this.getHeight(), newExerciseButton);
@@ -2244,9 +2248,11 @@ public class ProgramPanel extends JPanel {
                                                             JPanel leftPanel = (JPanel) compLeftPanel;
                                                             leftPanel.setBackground(AppThemeColors.panelColor);
                                                             for (Component setLabelComp : leftPanel.getComponents()) {
-                                                                if (setLabelComp.getName().equals("setLabel")) {
-                                                                    JLabel setLabel = (JLabel) setLabelComp;
-                                                                    setLabel.setForeground(workoutPanelTextColor);
+                                                                if(setLabelComp.getName()!=null){
+                                                                    if (setLabelComp.getName().equals("setLabel")) {
+                                                                        JLabel setLabel = (JLabel) setLabelComp;
+                                                                        setLabel.setForeground(workoutPanelTextColor);
+                                                                    }
                                                                 }
 
                                                             }
