@@ -269,12 +269,10 @@ public class ExercisePanel extends JPanel {
         // Displays "About"
 
         aboutLabel.setText("About");
-        aboutLabel.setForeground(AppThemeColors.foregroundColor);
-        aboutLabel.setBackground(AppThemeColors.PRIMARY);
-        aboutLabel.setOpaque(true);
+        aboutLabel.setOpaque(false);
         aboutLabel.setHorizontalAlignment(JLabel.CENTER);
         aboutLabel.setFont(font.deriveFont(24f));
-        aboutLabel.setBorder(new LineBorder(new Color(80, 73, 69), 1, true));
+        aboutLabel.setBorder(null);
 
         JPanel formInfoContainer = new JPanel();
         formInfoContainer.setLayout(new BorderLayout());
@@ -283,23 +281,20 @@ public class ExercisePanel extends JPanel {
         formInfoContainer.setPreferredSize(new Dimension(eastPanel.getPreferredSize().width, eastPanel.getPreferredSize().height / 2));
         formInfoContainer.setMinimumSize(new Dimension(eastPanel.getPreferredSize().width, eastPanel.getPreferredSize().height / 2));
 
+
         // Displays "How to"
 
         formLabel.setText("How to");
-        formLabel.setForeground(AppThemeColors.foregroundColor);
-        formLabel.setBackground(AppThemeColors.PRIMARY);
+        formLabel.setBackground(AppThemeColors.SECONDARY);
         formLabel.setOpaque(true);
         formLabel.setHorizontalAlignment(JLabel.CENTER);
-        formLabel.setVerticalAlignment(JLabel.BOTTOM);
-        formLabel.setVerticalTextPosition(JLabel.BOTTOM);
         formLabel.setFont(font.deriveFont(24f));
-        formLabel.setBorder(new LineBorder(new Color(80, 73, 69), 1, true));
+        formLabel.setBorder(null);
 
         aboutText.setBackground(AppThemeColors.panelColor);
         aboutText.setForeground(AppThemeColors.foregroundColor);
         aboutText.setFont(new Font("Arial", Font.PLAIN, 15));
         aboutText.setEditable(false);
-        aboutText.setBorder(new LineBorder(new Color(80, 73, 69), 1, true));
         aboutText.setLineWrap(true);
         aboutText.setWrapStyleWord(true);
 

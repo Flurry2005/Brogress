@@ -11,7 +11,7 @@ import java.util.Map;
 public class Workout extends JPanel {
 
     @Serial
-    private  static final long serialVersionUID = 1L;
+    private  static final long serialVersionUID = 1303335218637308425L;
 
     private boolean isDefault = false;
 
@@ -45,7 +45,6 @@ public class Workout extends JPanel {
         return setPanels;
     }
 
-
     public Exercise getIdToExercise(int i) {
         Exercise e = null;
         for(Map.Entry<Exercise, Integer> exercise : idToExercise.entrySet()){
@@ -60,8 +59,8 @@ public class Workout extends JPanel {
         return idToExercise;
     }
 
-    public void setDefault() {
-        isDefault = true;
+    public void setDefault(boolean daBoolean) {
+        isDefault = daBoolean;
     }
 
     public boolean isWorkoutDefault() {
@@ -75,5 +74,6 @@ public class Workout extends JPanel {
     public String getWorkoutInfo () {
         return workoutInfo;
     }
+
 
 }

@@ -19,6 +19,8 @@ public class UserData {
     private static final ArrayList<Exercise> createdExercises = new ArrayList<>();
     private static boolean isOnline;
 
+    private static boolean isAdmin;
+
     public static void setUserName(String userName) {
         UserData.userName = userName;
     }
@@ -98,5 +100,12 @@ public class UserData {
 
     public static void setIsOnline(boolean isOnline) {
         UserData.isOnline = isOnline;
+    }
+
+    public static void setAdmin(boolean dbVerify) {
+        isAdmin = dbVerify;
+    }
+    public static boolean isUserAdmin () {
+        return isAdmin;
     }
 }
