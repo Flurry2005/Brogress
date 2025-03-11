@@ -334,6 +334,7 @@ public class ProgramPanel extends JPanel {
             defaultWorkoutModel.addElement(workout);
             defaultWorkoutTitleDefaultListModel.addElement(workout.getWorkoutData().getTitle());
         }
+
         defaultWorkoutList.setForeground(Color.WHITE);
         defaultWorkoutList.setFixedCellHeight((int) (getHeight() / 22.5));
         defaultWorkoutList.setBackground(new Color(22, 22, 22));
@@ -348,6 +349,13 @@ public class ProgramPanel extends JPanel {
 
                 if (UserData.isUserAdmin()) {
                     deleteDefaultWorkout.setVisible(true);
+                    newExerciseButton.setEnabled(true);
+                    saveWorkoutButton.setEnabled(true);
+                }
+                else {
+                    newExerciseButton.setEnabled(false);
+                    deleteWorkout.setEnabled(false);
+                    saveWorkoutButton.setEnabled(false);
                 }
 
                 Workout target = defaultWorkoutslist.get(defaultWorkoutList.getSelectedIndex());
@@ -355,9 +363,6 @@ public class ProgramPanel extends JPanel {
 
                 workoutTitle.setText(target.getWorkoutData().getTitle());
 
-                newExerciseButton.setEnabled(false);
-                deleteWorkout.setEnabled(false);
-                saveWorkoutButton.setEnabled(false);
 
                 workoutContainer.setLayout(new BoxLayout(workoutContainer, BoxLayout.Y_AXIS));
                 workoutContainer.setOpaque(false);
@@ -653,7 +658,7 @@ public class ProgramPanel extends JPanel {
                             System.out.println("Hittar inte");
 
                         }
-                        workoutDefaultListModel.get(defaultWorkoutList.getSelectedIndex()).setWorkoutInfo(setDefaultInfo.getText());
+                        defaultWorkoutModel.get(defaultWorkoutList.getSelectedIndex()).setWorkoutInfo(setDefaultInfo.getText());
 
                         defaultWorkoutModel.clear();
                         defaultWorkoutTitleDefaultListModel.clear();
@@ -708,7 +713,7 @@ public class ProgramPanel extends JPanel {
         deleteDefaultWorkout.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // NULL CHECK
+
                 if (!defaultWorkoutslist.isEmpty()) {
                     if (defaultWorkoutList.getSelectedIndex() != -1 && defaultWorkoutList.getSelectedIndex() != defaultWorkoutslist.size()) {
 
@@ -1133,7 +1138,7 @@ public class ProgramPanel extends JPanel {
             workoutContainer.repaint();
             workoutContainer.revalidate();
         });
-        if (saveAsDefault.isSelected()) {
+        if (workoutContainer.isWorkoutDefault()) {
             removeExercise.setVisible(false);
         }
 
