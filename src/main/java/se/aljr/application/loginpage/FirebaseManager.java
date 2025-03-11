@@ -894,7 +894,7 @@ public class FirebaseManager {
                 for(Workout workout : defaultWorkoutsList){
 
                     workout.getWorkoutData().setTotalWorkoutHeight(0);
-                    int exerciseId = 1;
+                    int exerciseId = 0;
                     for (Component comp1 : workout.getComponents()) {
                         if(comp1.getName()!=null){
                             System.out.println("Added 4 panels : " + (float) (4 * height) / 19);

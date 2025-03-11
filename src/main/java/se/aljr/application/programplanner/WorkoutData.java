@@ -7,7 +7,7 @@ import java.util.*;
 public class WorkoutData implements Serializable {
 
     @Serial
-    private  static final long serialVersionUID = -2469696657758778631L;
+    private  static final long serialVersionUID = 1L;
 
     private String title = "Untitled Workout";
     private final HashMap<Integer, List<WorkoutSet>> exerciseSets = new HashMap<>();

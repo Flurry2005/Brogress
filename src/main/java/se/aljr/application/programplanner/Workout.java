@@ -11,7 +11,7 @@ import java.util.Map;
 public class Workout extends JPanel {
 
     @Serial
-    private  static final long serialVersionUID = 1303335218637308425L;
+    private  static final long serialVersionUID = 1L;
 
     private boolean isDefault = false;
 

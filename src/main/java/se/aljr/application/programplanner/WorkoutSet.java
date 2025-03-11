@@ -9,7 +9,7 @@ import java.util.Objects;
 public class WorkoutSet implements Serializable {
 
     @Serial
-    private  static final long serialVersionUID = -7375990489509603276L;
+    private  static final long serialVersionUID = 1L;
 
     int number;
     int weight;
