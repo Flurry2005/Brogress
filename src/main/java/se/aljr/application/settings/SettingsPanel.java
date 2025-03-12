@@ -15,6 +15,7 @@ import se.aljr.application.settings.custom.SteelCheckBoxUI;
 
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
@@ -71,6 +72,7 @@ public class SettingsPanel extends JPanel{
 
     //Array lists for the various dropdown menus
     ArrayList<Integer> agesList = (ArrayList<Integer>) IntStream.rangeClosed(0, 200).boxed().collect(Collectors.toList());
+    String[] activityList = {"~0   ", "1-3", "3-5", "6-7", ">7"};
     ArrayList<String> themeList = new ArrayList<>(Arrays.asList("Light","Dark"));
 
     public static boolean lightMode = false;
@@ -137,19 +139,33 @@ public class SettingsPanel extends JPanel{
     JPanel accountAgePanel = new JPanel();
     JPanel accountWeightPanel = new JPanel();
     JPanel accountHeightPanel = new JPanel();
+    JPanel accountActivityPanel = new JPanel();
     JPanel accountNamePanel = new JPanel();
+
+    JPanel ageLabelCenteringPanel = new JPanel();
+    JPanel weightLabelCenteringPanel = new JPanel();
+    JPanel heightLabelCenteringPanel = new JPanel();
+    JPanel activityLabelCenteringPanel = new JPanel();
+    JPanel usernameLabelCenteringPanel = new JPanel();
+    JPanel pfpLabelCenteringPanel = new JPanel();
+
     JLabel ageLabel = new JLabel("Age: ");
     JLabel weightLabel = new JLabel("Weight: ");
     JLabel heightLabel = new JLabel("Height: ");
+    JLabel accountActivityLabel = new JLabel("Workouts/week");
     JLabel changeUsernameLabel= new JLabel("Change Username");
+    JLabel choosePFPLabel = new JLabel("Avatar");
+
     JTextField changeUsernameField = new JTextField();
     JPanel accountPFPPanel = new JPanel();
+
 
     JTextField changeUsernameFieldD = new JTextField();
 
     JComboBox ageDropDown = new JComboBox(agesList.toArray(new Integer[0]));
     JComboBox weightDropDown = new JComboBox(agesList.toArray(new Integer[0]));
     JComboBox heightDropDown = new JComboBox(agesList.toArray(new Integer[0]));
+    JComboBox activityDropDown = new JComboBox(activityList);
 
     JComboBox ageDropDownD = new JComboBox(agesList.toArray(new Integer[0]));
     JComboBox weightDropDownD = new JComboBox(agesList.toArray(new Integer[0]));
@@ -170,6 +186,13 @@ public class SettingsPanel extends JPanel{
     JPanel accountHeightPanelD = new JPanel();
     JPanel accountNamePanelD = new JPanel();
     JPanel accountPFPPanelD = new JPanel();
+
+    JPanel ageLabelCenteringPanelD = new JPanel();
+    JPanel weightLabelCenteringPanelD = new JPanel();
+    JPanel heightLabelCenteringPanelD = new JPanel();
+    JPanel activityLabelCenteringPanelD = new JPanel();
+    JPanel usernameLabelCenteringPanelD = new JPanel();
+    JPanel pfpLabelCenteringPanelD = new JPanel();
 
     JLabel ageLabelD = new JLabel("Age: ");
     JLabel weightLabelD = new JLabel("Weight: ");
@@ -249,6 +272,9 @@ public class SettingsPanel extends JPanel{
             font = new Font("Arial", Font.BOLD, 40);
             e.printStackTrace();
         }
+
+        System.out.println("WIDDDDDDTHHHTHTHTHTHTHT:" + width);
+        System.out.println("HAIGHTHTHTHTHTHTHTHTHTH:" + height);
         buildBackgroundPanels();
         buildButtonPanel();
         buildButtons();
@@ -266,14 +292,15 @@ public class SettingsPanel extends JPanel{
             @Override
             public void componentResized(ComponentEvent e) {
                 SwingUtilities.invokeLater(()->{
+
+                    //Resize background panels
                     leftPanel.setPreferredSize(new Dimension(getWidth()/4, getHeight()));
                     buttonPanel.setPreferredSize(new Dimension(getWidth()/4,getHeight()));
 
                     rightPanel.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()));
+                    rightRightPanel.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()));
 
-                    generalScroll.setPreferredSize(new Dimension(getWidth()-getWidth()/2, getHeight()));
                     settingsLabelPanel.setPreferredSize(new Dimension(getWidth(), getHeight()/9));
-
 
                     settingsLabel.setFont(new Font("Arial", Font.PLAIN,getHeight()/15));
                     settingsLabel.setPreferredSize(new Dimension(getWidth(), getHeight()/9));
@@ -281,6 +308,126 @@ public class SettingsPanel extends JPanel{
                     rightPanel.setBorder(BorderFactory.createMatteBorder(getHeight()/20, 0, getHeight()/20, 0, AppThemeColors.PRIMARY));
                     rightRightPanel.setBorder(BorderFactory.createMatteBorder(getHeight()/20, 0, getHeight()/20, 0, AppThemeColors.PRIMARY));
 
+
+
+                    generalScroll.setPreferredSize(new Dimension(getWidth()-getWidth()/2, getHeight()));
+
+
+
+                    //Resize search window panels-------------------------------------------------------------------------------------------------------
+                    searchScroll.setPreferredSize(new Dimension(getWidth()-getWidth()/2, getHeight()));
+                    searchFieldPanel.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/15));
+                    searchField.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/15));
+                    searchedPanels.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()));
+
+                    //theme selection panel
+                    themeSelectionPanelD.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/15));
+
+                    //Account selection panel
+                    accountAgePanelD.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/15));
+                    accountWeightPanelD.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/15));
+                    accountHeightPanelD.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/15));
+                    accountNamePanelD.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/15));
+
+                    ageLabelCenteringPanelD.setPreferredSize(new Dimension(getWidth()/7, accountAgePanelD.getPreferredSize().height));
+                    weightLabelCenteringPanelD.setPreferredSize(new Dimension(getWidth()/7, accountWeightPanelD.getPreferredSize().height));
+                    heightLabelCenteringPanelD.setPreferredSize(new Dimension(getWidth()/7, accountHeightPanelD.getPreferredSize().height));
+                    activityLabelCenteringPanelD.setPreferredSize(new Dimension(getWidth()/7, accountAgePanel.getPreferredSize().height));
+                    usernameLabelCenteringPanelD.setPreferredSize(new Dimension(getWidth()/7, accountNamePanelD.getPreferredSize().height));
+                    pfpLabelCenteringPanelD.setPreferredSize(new Dimension(getWidth()/7, accountAgePanel.getPreferredSize().height));
+
+                    ageLabelD.setFont(new Font("Arial", Font.BOLD,getHeight()/50));
+                    ageLabelD.setPreferredSize(new Dimension(getWidth()/20, accountAgePanelD.getPreferredSize().height));
+                    weightLabelD.setFont(new Font("Arial", Font.BOLD,getHeight()/50));
+                    weightLabelD.setPreferredSize(new Dimension(getWidth()/20, accountWeightPanel.getPreferredSize().height));
+                    heightLabelD.setFont(new Font("Arial", Font.BOLD,getHeight()/50));
+                    heightLabelD.setPreferredSize(new Dimension(getWidth()/20, accountHeightPanelD.getPreferredSize().height));
+
+                    changeUsernameLabelD.setFont(new Font("Arial", Font.BOLD,getHeight()/50));
+                    changeUsernameLabelD.setPreferredSize(new Dimension(getWidth()/8, accountNamePanelD.getPreferredSize().height));
+
+
+
+
+
+
+
+
+
+
+                    generalSettingsButton.setFont(new Font("Arial", Font.PLAIN,getHeight()/30));
+                    generalSettingsButton.setPreferredSize(new Dimension(getWidth(), getHeight()/12));
+                    generalSettingsButton.setMaximumSize(new Dimension(getWidth()-getWidth()/5*4, getHeight()/3));
+
+                    themeSettingsButton.setFont(new Font("Arial", Font.PLAIN,getHeight()/30));
+                    themeSettingsButton.setPreferredSize(new Dimension(getWidth(), getHeight()/12));
+                    themeSettingsButton.setMaximumSize(new Dimension(getWidth()-getWidth()/5*4, getHeight()/3));
+
+                    notificationsSettingsButton.setFont(new Font("Arial", Font.PLAIN,getHeight()/30));
+                    notificationsSettingsButton.setPreferredSize(new Dimension(getWidth(), getHeight()/12));
+                    notificationsSettingsButton.setMaximumSize(new Dimension(getWidth()-getWidth()/5*4, getHeight()/3));
+
+                    accountSettingsButton.setFont(new Font("Arial", Font.PLAIN,getHeight()/30));
+                    accountSettingsButton.setPreferredSize(new Dimension(getWidth(), getHeight()/12));
+                    accountSettingsButton.setMaximumSize(new Dimension(getWidth()-getWidth()/5*4, getHeight()/3));
+
+                    privacySettingsButton.setFont(new Font("Arial", Font.PLAIN,getHeight()/30));
+                    privacySettingsButton.setPreferredSize(new Dimension(getWidth(), getHeight()/12));
+                    privacySettingsButton.setMaximumSize(new Dimension(getWidth()-getWidth()/5*4, getHeight()/3));
+
+                    test2.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/10));
+                    test3.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/10));
+                    test4.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/10));
+                    test5.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/10));
+
+                    //SteelCheckBoxUI.SIZE = new Dimension(getWidth()/20, getWidth()/40);
+                    //themeSelectionPanel.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/15));
+
+                    test33.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/10));
+                    test44.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/10));
+                    test55.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/10));
+
+                    //Resize theme panel panels
+                    themeSelectionPanel.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/15));
+
+                    //Resize account panel panels
+                    accountAgePanel.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/15));
+                    accountWeightPanel.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/15));
+                    accountHeightPanel.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/15));
+                    accountActivityPanel.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/15));
+                    accountNamePanel.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/15));
+
+                    ageLabelCenteringPanel.setPreferredSize(new Dimension(getWidth()/7, accountAgePanel.getPreferredSize().height));
+                    weightLabelCenteringPanel.setPreferredSize(new Dimension(getWidth()/7, accountAgePanel.getPreferredSize().height));
+                    heightLabelCenteringPanel.setPreferredSize(new Dimension(getWidth()/7, accountAgePanel.getPreferredSize().height));
+                    activityLabelCenteringPanel.setPreferredSize(new Dimension(getWidth()/7, accountAgePanel.getPreferredSize().height));
+                    usernameLabelCenteringPanel.setPreferredSize(new Dimension(getWidth()/7, accountAgePanel.getPreferredSize().height));
+                    pfpLabelCenteringPanel.setPreferredSize(new Dimension(getWidth()/7, accountAgePanel.getPreferredSize().height));
+
+                    ageDropDown.setFont(new Font("Arial", Font.BOLD,getHeight()/50));
+                    ageLabel.setFont(new Font("Arial", Font.BOLD,getHeight()/50));
+                    ageLabel.setPreferredSize(new Dimension(getWidth()/20, accountWeightPanel.getPreferredSize().height));
+                    weightDropDown.setFont(new Font("Arial", Font.BOLD,getHeight()/50));
+                    weightLabel.setFont(new Font("Arial", Font.BOLD,getHeight()/50));
+                    weightLabel.setPreferredSize(new Dimension(getWidth()/20, accountWeightPanel.getPreferredSize().height));
+                    heightDropDown.setFont(new Font("Arial", Font.BOLD,getHeight()/50));
+                    heightLabel.setFont(new Font("Arial", Font.BOLD,getHeight()/50));
+                    heightLabel.setPreferredSize(new Dimension(getWidth()/20, accountWeightPanel.getPreferredSize().height));
+                    activityDropDown.setFont(new Font("Arial", Font.BOLD,getHeight()/50));
+                    accountActivityLabel.setFont(new Font("Arial", Font.BOLD,getHeight()/50));
+                    accountActivityLabel.setPreferredSize(new Dimension(getWidth()/10, accountActivityPanel.getPreferredSize().height));
+                    changeUsernameLabel.setFont(new Font("Arial", Font.BOLD,getHeight()/50));
+                    changeUsernameLabel.setPreferredSize(new Dimension(getWidth()/8, accountWeightPanel.getPreferredSize().height));
+                    changeUsernameField.setFont(new Font("Arial", Font.BOLD,getHeight()/50));
+                    choosePFPLabel.setFont(new Font("Arial", Font.BOLD,getHeight()/50));
+                    choosePFPLabel.setPreferredSize(new Dimension(getWidth()/20, accountWeightPanel.getPreferredSize().height));
+
+                    changeUsernameField.setMinimumSize(new Dimension(getWidth()/1000*104, getHeight()/20));
+                    changeUsernameField.setPreferredSize(new Dimension(getWidth()/1000*104, getHeight()/20));
+                    changeUsernameField.setMaximumSize(new Dimension(getWidth()/1000*104, getHeight()/20));
+
+
+                    accountPFPPanel.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/15));
 
                     if(!lightMode){
                         Image scaledgeneralSettingsIcon = generalSettingsIcon.getImage().getScaledInstance(getWidth()-getWidth()/5*4,getHeight()/12, Image.SCALE_SMOOTH);
@@ -315,44 +462,6 @@ public class SettingsPanel extends JPanel{
                         scaledDarkPrivacySettingsIcon = new ImageIcon(scaleddarkPrivacySettingsIcon);
                         privacySettingsButton.setIcon(scaledDarkPrivacySettingsIcon);
                     }
-
-                    generalSettingsButton.setFont(new Font("Arial", Font.PLAIN,getHeight()/30));
-                    generalSettingsButton.setPreferredSize(new Dimension(getWidth(), getHeight()/12));
-                    generalSettingsButton.setMaximumSize(new Dimension(getWidth()-getWidth()/5*4, getHeight()/3));
-
-                    themeSettingsButton.setFont(new Font("Arial", Font.PLAIN,getHeight()/30));
-                    themeSettingsButton.setPreferredSize(new Dimension(getWidth(), getHeight()/12));
-                    themeSettingsButton.setMaximumSize(new Dimension(getWidth()-getWidth()/5*4, getHeight()/3));
-
-                    notificationsSettingsButton.setFont(new Font("Arial", Font.PLAIN,getHeight()/30));
-                    notificationsSettingsButton.setPreferredSize(new Dimension(getWidth(), getHeight()/12));
-                    notificationsSettingsButton.setMaximumSize(new Dimension(getWidth()-getWidth()/5*4, getHeight()/3));
-
-                    accountSettingsButton.setFont(new Font("Arial", Font.PLAIN,getHeight()/30));
-                    accountSettingsButton.setPreferredSize(new Dimension(getWidth(), getHeight()/12));
-                    accountSettingsButton.setMaximumSize(new Dimension(getWidth()-getWidth()/5*4, getHeight()/3));
-
-                    privacySettingsButton.setFont(new Font("Arial", Font.PLAIN,getHeight()/30));
-                    privacySettingsButton.setPreferredSize(new Dimension(getWidth(), getHeight()/12));
-                    privacySettingsButton.setMaximumSize(new Dimension(getWidth()-getWidth()/5*4, getHeight()/3));
-
-                    test2.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/10));
-                    test3.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/10));
-                    test4.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/10));
-                    test5.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/10));
-
-                    SteelCheckBoxUI.SIZE = new Dimension(getWidth()/20, getWidth()/40);
-                    themeSelectionPanel.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/15));
-
-                    test33.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/10));
-                    test44.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/10));
-                    test55.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/10));
-
-                    accountAgePanel.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/15));
-                    accountWeightPanel.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/15));
-                    accountHeightPanel.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/15));
-                    accountNamePanel.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/15));
-                    accountPFPPanel.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/15));
                 });
             }
         });
@@ -873,10 +982,10 @@ public class SettingsPanel extends JPanel{
         themeSelectionPanel.setBackground(AppThemeColors.SECONDARY);
         themeSelectionPanel.setLayout(new BoxLayout(themeSelectionPanel, BoxLayout.X_AXIS));
         themeSelectionPanel.setPreferredSize(new Dimension(width-width/10*7, height/15));
-        themeSelectionPanel.setName("themeslectionpanel");
+
         themeSelectionLabel.setForeground(Color.WHITE);
 
-        themeDropDown.setPreferredSize(new Dimension(width/15, height/10));
+        themeDropDown.setPreferredSize(new Dimension(width/15, height/15));
         themeDropDown.addItemListener(_-> {
                 switch (themeDropDown.getSelectedIndex()){
                     //Light Mode
@@ -990,23 +1099,24 @@ public class SettingsPanel extends JPanel{
         accountPanel.add(accountScroll, BorderLayout.CENTER);
 
         //Panels within the scrollable window that will hold various settings--------
+
+        //Account settings panels, age, weight and height settings
         accountAgePanel.setBackground(AppThemeColors.SECONDARY);
-        accountAgePanel.setLayout(new BoxLayout(accountAgePanel, BoxLayout.X_AXIS));
+        accountAgePanel.setLayout(new BorderLayout());
         accountAgePanel.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/15));
 
-        //GeneralSettingsPanel1, age, weight and height settings
+        ageLabelCenteringPanel.setBackground(Color.green);
+        ageLabelCenteringPanel.setLayout(new BoxLayout(ageLabelCenteringPanel, BoxLayout.X_AXIS));
+        ageLabelCenteringPanel.setPreferredSize(new Dimension(width/7, accountAgePanel.getPreferredSize().height));
+        ageLabelCenteringPanel.setOpaque(false);
 
-        ageLabel.setPreferredSize(new Dimension(50, test2.getPreferredSize().height));
-
-
-        weightLabel.setPreferredSize(new Dimension(50, test2.getPreferredSize().height));
-
-
-        heightLabel.setPreferredSize(new Dimension(50, test2.getPreferredSize().height));
+        ageLabel.setPreferredSize(new Dimension(width/20, accountAgePanel.getPreferredSize().height));
+        ageLabel.setFont(new Font("Arial", Font.BOLD,height/50));
 
         ageDropDown.setSelectedIndex(UserData.getUserAge());
         ageDropDown.setEditable(true);
         ageDropDown.setPreferredSize(new Dimension(width/15, height/15));
+        ageDropDown.setFont(new Font("Arial", Font.BOLD,height/50));
         ageDropDown.addItemListener(_ -> {
             UserData.setUserAge(ageDropDown.getSelectedIndex()); //Updates the local user age in the userdata
             try {
@@ -1021,9 +1131,22 @@ public class SettingsPanel extends JPanel{
         });
 
 
+        accountWeightPanel.setBackground(AppThemeColors.SECONDARY);
+        accountWeightPanel.setLayout(new BorderLayout());
+        accountWeightPanel.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/15));
+
+        weightLabelCenteringPanel.setBackground(Color.green);
+        weightLabelCenteringPanel.setLayout(new BoxLayout(weightLabelCenteringPanel, BoxLayout.X_AXIS));
+        weightLabelCenteringPanel.setPreferredSize(new Dimension(width/7, accountWeightPanel.getPreferredSize().height));
+        weightLabelCenteringPanel.setOpaque(false);
+
+        weightLabel.setPreferredSize(new Dimension(width/20, accountWeightPanel.getPreferredSize().height));
+        weightLabel.setFont(new Font("Arial", Font.BOLD,height/50));
+
         weightDropDown.setEditable(true);
         weightDropDown.setSelectedIndex((int)(UserData.getUserWeight()));
         weightDropDown.setPreferredSize(new Dimension(width/15, height/15));
+        weightDropDown.setFont(new Font("Arial", Font.BOLD,height/50));
         weightDropDown.addItemListener(_ -> {
             UserData.setUserWeight(weightDropDown.getSelectedIndex()); //Updates the local user age in the userdata
             try {
@@ -1039,9 +1162,22 @@ public class SettingsPanel extends JPanel{
         });
 
 
+        accountHeightPanel.setBackground(AppThemeColors.SECONDARY);
+        accountHeightPanel.setLayout(new BorderLayout());
+        accountHeightPanel.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/15));
+
+        heightLabelCenteringPanel.setBackground(Color.green);
+        heightLabelCenteringPanel.setLayout(new BoxLayout(heightLabelCenteringPanel, BoxLayout.X_AXIS));
+        heightLabelCenteringPanel.setPreferredSize(new Dimension(width/7, accountHeightPanel.getPreferredSize().height));
+        heightLabelCenteringPanel.setOpaque(false);
+
+        heightLabel.setPreferredSize(new Dimension(width/20, accountHeightPanel.getPreferredSize().height));
+        heightLabel.setFont(new Font("Arial", Font.BOLD,height/50));
+
         heightDropDown.setSelectedIndex((int)(UserData.getUserHeight()));
         heightDropDown.setEditable(true);
         heightDropDown.setPreferredSize(new Dimension(width/15, height/15));
+        heightDropDown.setFont(new Font("Arial", Font.BOLD,height/50));
         heightDropDown.addItemListener(_ -> {
             UserData.setUserHeight(heightDropDown.getSelectedIndex()); //Updates the local user age in the userdata
             try {
@@ -1055,34 +1191,69 @@ public class SettingsPanel extends JPanel{
             HomePanel.updateUserInfo(); //Updates the userdata on the home panel
         });
 
-        accountAgePanel.add(Box.createHorizontalGlue());
-        accountAgePanel.add(ageLabel);
-        accountAgePanel.add(Box.createHorizontalGlue());
-        accountAgePanel.add(Box.createHorizontalGlue());
-        accountAgePanel.add(Box.createHorizontalGlue());
-        accountAgePanel.add(Box.createHorizontalGlue());
-        accountAgePanel.add(Box.createHorizontalGlue());
-        accountAgePanel.add(ageDropDown);
+        accountActivityPanel.setBackground(AppThemeColors.SECONDARY);
+        accountActivityPanel.setLayout(new BorderLayout());
+        accountActivityPanel.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/15));
 
-        accountWeightPanel.setBackground(AppThemeColors.SECONDARY);
-        accountWeightPanel.setLayout(new BoxLayout(accountWeightPanel, BoxLayout.X_AXIS));
-        accountWeightPanel.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/15));
+        activityLabelCenteringPanel.setBackground(Color.green);
+        activityLabelCenteringPanel.setLayout(new BoxLayout(activityLabelCenteringPanel, BoxLayout.X_AXIS));
+        activityLabelCenteringPanel.setPreferredSize(new Dimension(width/7, accountActivityPanel.getPreferredSize().height));
+        activityLabelCenteringPanel.setOpaque(false);
 
-        accountWeightPanel.add(Box.createHorizontalGlue());
-        accountWeightPanel.add(weightLabel);
-        accountWeightPanel.add(Box.createHorizontalGlue());
-        accountWeightPanel.add(Box.createHorizontalGlue());
-        accountWeightPanel.add(Box.createHorizontalGlue());
-        accountWeightPanel.add(Box.createHorizontalGlue());
-        accountWeightPanel.add(Box.createHorizontalGlue());
-        accountWeightPanel.add(weightDropDown);
+        accountActivityLabel.setPreferredSize(new Dimension(width/10, accountActivityPanel.getPreferredSize().height));
+        accountActivityLabel.setFont(new Font("Arial", Font.BOLD,height/50));
 
-        JButton chooseProfilePictureButton = new JButton("Open Image File Chooser");
+        activityDropDown.setFont(new Font("Arial", Font.BOLD,height/50));
+        activityDropDown.addItemListener(_ -> {
+
+        });
+
+        accountAgePanel.add(ageLabelCenteringPanel, BorderLayout.WEST);
+        ageLabelCenteringPanel.add(Box.createHorizontalGlue());
+        ageLabelCenteringPanel.add(ageLabel);
+        ageLabelCenteringPanel.add(Box.createHorizontalGlue());
+        accountAgePanel.add(ageDropDown, BorderLayout.EAST);
+
+
+        accountWeightPanel.add(weightLabelCenteringPanel, BorderLayout.WEST);
+        weightLabelCenteringPanel.add(Box.createHorizontalGlue());
+        weightLabelCenteringPanel.add(weightLabel);
+        weightLabelCenteringPanel.add(Box.createHorizontalGlue());
+        accountWeightPanel.add(weightDropDown, BorderLayout.EAST);
+
+
+        accountHeightPanel.add(heightLabelCenteringPanel, BorderLayout.WEST);
+        heightLabelCenteringPanel.add(Box.createHorizontalGlue());
+        heightLabelCenteringPanel.add(heightLabel);
+        heightLabelCenteringPanel.add(Box.createHorizontalGlue());
+        accountHeightPanel.add(heightDropDown, BorderLayout.EAST);
+
+
+        accountActivityPanel.add(activityLabelCenteringPanel, BorderLayout.WEST);
+        activityLabelCenteringPanel.add(Box.createHorizontalGlue());
+        activityLabelCenteringPanel.add(accountActivityLabel);
+        activityLabelCenteringPanel.add(Box.createHorizontalGlue());
+        accountActivityPanel.add(activityDropDown, BorderLayout.EAST);
+
+        accountPFPPanel.setBackground(AppThemeColors.SECONDARY);
+        accountPFPPanel.setLayout(new BorderLayout());
+        accountPFPPanel.setPreferredSize(new Dimension(width-width/10*9, height/10));
+
+        pfpLabelCenteringPanel.setBackground(Color.green);
+        pfpLabelCenteringPanel.setLayout(new BoxLayout(pfpLabelCenteringPanel, BoxLayout.X_AXIS));
+        pfpLabelCenteringPanel.setPreferredSize(new Dimension(width/7, accountActivityPanel.getPreferredSize().height));
+        pfpLabelCenteringPanel.setOpaque(false);
+
+        choosePFPLabel.setPreferredSize(new Dimension(width/20, accountPFPPanel.getPreferredSize().height));
+        choosePFPLabel.setFont(new Font("Arial", Font.BOLD,height/50));
+
+        JButton chooseProfilePictureButton = new JButton("Choose Avatar");
+        chooseProfilePictureButton.setPreferredSize(new Dimension(width/1000*120, height/20));
         chooseProfilePictureButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 // Skapa huvudfönstret för att visa filväljaren
-                JFrame frame = new JFrame("Choose Image");
+                JFrame frame = new JFrame("Select an Image");
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 frame.setSize(400, 400);
 
@@ -1094,24 +1265,22 @@ public class SettingsPanel extends JPanel{
 
 
 
+        accountNamePanel.setBackground(AppThemeColors.SECONDARY);
+        accountNamePanel.setLayout(new BorderLayout());
+        accountNamePanel.setPreferredSize(new Dimension(width-width/10*9, height/10));
 
-        accountHeightPanel.setBackground(AppThemeColors.SECONDARY);
-        accountHeightPanel.setLayout(new BoxLayout(accountHeightPanel, BoxLayout.X_AXIS));
-        accountHeightPanel.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/15));
+        usernameLabelCenteringPanel.setBackground(Color.green);
+        usernameLabelCenteringPanel.setLayout(new BoxLayout(usernameLabelCenteringPanel, BoxLayout.X_AXIS));
+        usernameLabelCenteringPanel.setPreferredSize(new Dimension(width/7, accountActivityPanel.getPreferredSize().height));
+        usernameLabelCenteringPanel.setOpaque(false);
 
-        accountHeightPanel.add(Box.createHorizontalGlue());
-        accountHeightPanel.add(heightLabel);
-        accountHeightPanel.add(Box.createHorizontalGlue());
-        accountHeightPanel.add(Box.createHorizontalGlue());
-        accountHeightPanel.add(Box.createHorizontalGlue());
-        accountHeightPanel.add(Box.createHorizontalGlue());
-        accountHeightPanel.add(Box.createHorizontalGlue());
-        accountHeightPanel.add(heightDropDown);
+        changeUsernameLabel.setPreferredSize(new Dimension(width/8, accountWeightPanel.getPreferredSize().height));
+        changeUsernameLabel.setFont(new Font("Arial", Font.BOLD,height/50));
 
-
-        changeUsernameField.setMinimumSize(new Dimension(width/11, height/20));
-        changeUsernameField.setPreferredSize(new Dimension(width/11, height/20));
-        changeUsernameField.setMaximumSize(new Dimension(width/11, height/20));
+        changeUsernameField.setMinimumSize(new Dimension(width/1000*104, height/20));
+        changeUsernameField.setPreferredSize(new Dimension(width/1000*104, height/20));
+        changeUsernameField.setMaximumSize(new Dimension(width/1000*104, height/20));
+        changeUsernameField.setFont(new Font("Arial", Font.BOLD,height/50));
         changeUsernameField.setText(UserData.getUserName());
 
         changeUsernameField.addActionListener(_ -> {
@@ -1124,27 +1293,27 @@ public class SettingsPanel extends JPanel{
             if(!changeUsernameFieldD.getText().equals(changeUsernameField.getText())){
                 changeUsernameFieldD.setText(changeUsernameField.getText());
             }
-
             HomePanel.updateUserInfo();
         });
 
-        accountNamePanel.setBackground(AppThemeColors.SECONDARY);
-        accountNamePanel.setLayout(new BoxLayout(accountNamePanel, BoxLayout.X_AXIS));
-        accountNamePanel.setPreferredSize(new Dimension(width-width/10*9, height/10));
 
-        accountNamePanel.add(changeUsernameLabel);
-        accountNamePanel.add(Box.createHorizontalGlue());
-        accountNamePanel.add(changeUsernameField);
+        accountNamePanel.add(usernameLabelCenteringPanel, BorderLayout.WEST);
+        usernameLabelCenteringPanel.add(Box.createHorizontalGlue());
+        usernameLabelCenteringPanel.add(changeUsernameLabel);
+        usernameLabelCenteringPanel.add(Box.createHorizontalGlue());
+        accountNamePanel.add(changeUsernameField, BorderLayout.EAST);
 
-        accountPFPPanel.setBackground(AppThemeColors.SECONDARY);
-        accountPFPPanel.setPreferredSize(new Dimension(width-width/10*9, height/10));
 
-        accountPFPPanel.add(chooseProfilePictureButton);
-
+        accountPFPPanel.add(pfpLabelCenteringPanel, BorderLayout.WEST);
+        pfpLabelCenteringPanel.add(Box.createHorizontalGlue());
+        pfpLabelCenteringPanel.add(choosePFPLabel);
+        pfpLabelCenteringPanel.add(Box.createHorizontalGlue());
+        accountPFPPanel.add(chooseProfilePictureButton, BorderLayout.EAST);
 
         accountScrollPanel.add(accountAgePanel);
         accountScrollPanel.add(accountWeightPanel);
         accountScrollPanel.add(accountHeightPanel);
+        accountScrollPanel.add(accountActivityPanel);
         accountScrollPanel.add(accountNamePanel);
         accountScrollPanel.add(accountPFPPanel);
     }
@@ -1247,17 +1416,18 @@ public class SettingsPanel extends JPanel{
         //Panels within the scrollable window that will hold various settings--------
 
         accountAgePanelD.setBackground(AppThemeColors.SECONDARY);
-        accountAgePanelD.setLayout(new BoxLayout(accountAgePanelD, BoxLayout.X_AXIS));
+        accountAgePanelD.setLayout(new BorderLayout());
         accountAgePanelD.setPreferredSize(new Dimension(width-width/10*7, height/15));
         accountAgePanelD.setName("changeagepanelchange age");
 
-
+        ageLabelCenteringPanelD.setBackground(Color.green);
+        ageLabelCenteringPanelD.setLayout(new BoxLayout(ageLabelCenteringPanelD, BoxLayout.X_AXIS));
+        ageLabelCenteringPanelD.setPreferredSize(new Dimension(width/7, accountAgePanel.getPreferredSize().height));
+        ageLabelCenteringPanelD.setOpaque(false);
 
         //GeneralSettingsPanel1, age, weight and height settings
-        ageLabelD.setPreferredSize(new Dimension(50, test2.getPreferredSize().height));
-        weightLabelD.setPreferredSize(new Dimension(50, test2.getPreferredSize().height));
-        heightLabelD.setPreferredSize(new Dimension(50, test2.getPreferredSize().height));
-
+        ageLabelD.setPreferredSize(new Dimension(width/20, accountAgePanelD.getPreferredSize().height));
+        ageLabelD.setFont(new Font("Arial", Font.BOLD,height/50));
 
         ageDropDownD.setSelectedIndex(UserData.getUserAge());
         ageDropDownD.setEditable(true);
@@ -1276,6 +1446,19 @@ public class SettingsPanel extends JPanel{
         });
 
 
+        accountWeightPanelD.setBackground(AppThemeColors.SECONDARY);
+        accountWeightPanelD.setLayout(new BorderLayout());
+        accountWeightPanelD.setPreferredSize(new Dimension(width-width/10*7, height/15));
+        accountWeightPanelD.setName("changeweightpanelchange weight");
+
+        weightLabelCenteringPanelD.setBackground(Color.green);
+        weightLabelCenteringPanelD.setLayout(new BoxLayout(weightLabelCenteringPanelD, BoxLayout.X_AXIS));
+        weightLabelCenteringPanelD.setPreferredSize(new Dimension(width/7, accountWeightPanelD.getPreferredSize().height));
+        weightLabelCenteringPanelD.setOpaque(false);
+
+        weightLabelD.setPreferredSize(new Dimension(width/20, accountWeightPanel.getPreferredSize().height));
+        weightLabelD.setFont(new Font("Arial", Font.BOLD,height/50));
+
         weightDropDownD.setEditable(true);
         weightDropDownD.setSelectedIndex((int)(UserData.getUserWeight()));
         weightDropDownD.setPreferredSize(new Dimension(width/15, height/15));
@@ -1293,6 +1476,18 @@ public class SettingsPanel extends JPanel{
             HomePanel.updateUserInfo(); //Updates the userdata on the home panel
         });
 
+        accountHeightPanelD.setBackground(AppThemeColors.SECONDARY);
+        accountHeightPanelD.setLayout(new BorderLayout());
+        accountHeightPanelD.setPreferredSize(new Dimension(width-width/10*7, height/15));
+        accountHeightPanelD.setName("changeheightpanelchange height");
+
+        heightLabelCenteringPanelD.setBackground(Color.green);
+        heightLabelCenteringPanelD.setLayout(new BoxLayout(heightLabelCenteringPanelD, BoxLayout.X_AXIS));
+        heightLabelCenteringPanelD.setPreferredSize(new Dimension(width/7, accountHeightPanel.getPreferredSize().height));
+        heightLabelCenteringPanelD.setOpaque(false);
+
+        heightLabelD.setPreferredSize(new Dimension(width/20, accountHeightPanelD.getPreferredSize().height));
+        heightLabelD.setFont(new Font("Arial", Font.BOLD,height/50));
 
         heightDropDownD.setSelectedIndex((int)(UserData.getUserHeight()));
         heightDropDownD.setEditable(true);
@@ -1310,28 +1505,19 @@ public class SettingsPanel extends JPanel{
             HomePanel.updateUserInfo(); //Updates the userdata on the home panel
         });
 
-        accountAgePanelD.add(Box.createHorizontalGlue());
-        accountAgePanelD.add(ageLabelD);
-        accountAgePanelD.add(Box.createHorizontalGlue());
-        accountAgePanelD.add(Box.createHorizontalGlue());
-        accountAgePanelD.add(Box.createHorizontalGlue());
-        accountAgePanelD.add(Box.createHorizontalGlue());
-        accountAgePanelD.add(Box.createHorizontalGlue());
-        accountAgePanelD.add(ageDropDownD);
 
-        accountWeightPanelD.setBackground(AppThemeColors.SECONDARY);
-        accountWeightPanelD.setLayout(new BoxLayout(accountWeightPanelD, BoxLayout.X_AXIS));
-        accountWeightPanelD.setPreferredSize(new Dimension(width-width/10*7, height/15));
-        accountWeightPanelD.setName("changeweightpanelchange weight");
+        accountAgePanelD.add(ageLabelCenteringPanelD, BorderLayout.WEST);
+        ageLabelCenteringPanelD.add(Box.createHorizontalGlue());
+        ageLabelCenteringPanelD.add(ageLabelD);
+        ageLabelCenteringPanelD.add(Box.createHorizontalGlue());
+        accountAgePanelD.add(ageDropDownD, BorderLayout.EAST);
 
-        accountWeightPanelD.add(Box.createHorizontalGlue());
-        accountWeightPanelD.add(weightLabelD);
-        accountWeightPanelD.add(Box.createHorizontalGlue());
-        accountWeightPanelD.add(Box.createHorizontalGlue());
-        accountWeightPanelD.add(Box.createHorizontalGlue());
-        accountWeightPanelD.add(Box.createHorizontalGlue());
-        accountWeightPanelD.add(Box.createHorizontalGlue());
-        accountWeightPanelD.add(weightDropDownD);
+
+        accountWeightPanelD.add(weightLabelCenteringPanelD, BorderLayout.WEST);
+        weightLabelCenteringPanelD.add(Box.createHorizontalGlue());
+        weightLabelCenteringPanelD.add(weightLabelD);
+        weightLabelCenteringPanelD.add(Box.createHorizontalGlue());
+        accountWeightPanelD.add(weightDropDownD, BorderLayout.EAST);
 
         JButton chooseProfilePictureButtonD = new JButton("Open Image File Chooser");
         chooseProfilePictureButtonD.addMouseListener(new MouseAdapter() {
@@ -1349,25 +1535,33 @@ public class SettingsPanel extends JPanel{
         });
 
 
-        accountHeightPanelD.setBackground(AppThemeColors.SECONDARY);
-        accountHeightPanelD.setLayout(new BoxLayout(accountHeightPanelD, BoxLayout.X_AXIS));
-        accountHeightPanelD.setPreferredSize(new Dimension(width-width/10*7, height/15));
-        accountHeightPanelD.setName("changeheightpanelchange height");
-
-        accountHeightPanelD.add(Box.createHorizontalGlue());
-        accountHeightPanelD.add(heightLabelD);
-        accountHeightPanelD.add(Box.createHorizontalGlue());
-        accountHeightPanelD.add(Box.createHorizontalGlue());
-        accountHeightPanelD.add(Box.createHorizontalGlue());
-        accountHeightPanelD.add(Box.createHorizontalGlue());
-        accountHeightPanelD.add(Box.createHorizontalGlue());
-        accountHeightPanelD.add(heightDropDownD);
 
 
 
-        changeUsernameFieldD.setMinimumSize(new Dimension(width/11, height/20));
-        changeUsernameFieldD.setPreferredSize(new Dimension(width/11, height/20));
-        changeUsernameFieldD.setMaximumSize(new Dimension(width/11, height/20));
+        accountHeightPanelD.add(heightLabelCenteringPanelD, BorderLayout.WEST);
+        heightLabelCenteringPanelD.add(Box.createHorizontalGlue());
+        heightLabelCenteringPanelD.add(heightLabelD);
+        heightLabelCenteringPanelD.add(Box.createHorizontalGlue());
+        accountHeightPanelD.add(heightDropDownD, BorderLayout.EAST);
+
+
+
+        accountNamePanelD.setBackground(AppThemeColors.SECONDARY);
+        accountNamePanelD.setLayout(new BorderLayout());
+        accountNamePanelD.setPreferredSize(new Dimension(width-width/10*7, height/15));
+
+        usernameLabelCenteringPanelD.setBackground(Color.green);
+        usernameLabelCenteringPanelD.setLayout(new BoxLayout(usernameLabelCenteringPanelD, BoxLayout.X_AXIS));
+        usernameLabelCenteringPanelD.setPreferredSize(new Dimension(width/7, accountNamePanelD.getPreferredSize().height));
+        usernameLabelCenteringPanelD.setOpaque(false);
+
+        changeUsernameLabelD.setPreferredSize(new Dimension(width/8, accountNamePanelD.getPreferredSize().height));
+        changeUsernameLabelD.setFont(new Font("Arial", Font.BOLD,height/50));
+
+        changeUsernameFieldD.setMinimumSize(new Dimension(width/1000*104, height/20));
+        changeUsernameFieldD.setPreferredSize(new Dimension(width/1000*104, height/20));
+        changeUsernameFieldD.setMaximumSize(new Dimension(width/1000*104, height/20));
+        changeUsernameFieldD.setBorder(BorderFactory.createMatteBorder(0,0,0,accountNamePanel.getPreferredSize().width/15, AppThemeColors.SECONDARY));
         changeUsernameFieldD.setText(UserData.getUserName());
 
         changeUsernameFieldD.addActionListener(_ -> {
@@ -1383,18 +1577,12 @@ public class SettingsPanel extends JPanel{
             HomePanel.updateUserInfo();
         });
 
-
-        accountNamePanelD.setBackground(AppThemeColors.SECONDARY);
-        accountNamePanelD.setLayout(new BoxLayout(accountNamePanelD, BoxLayout.X_AXIS));
-        accountNamePanelD.setPreferredSize(new Dimension(width-width/10*7, height/15));
-
-
-
-        accountNamePanelD.add(changeUsernameLabelD);
-        accountNamePanelD.add(Box.createHorizontalGlue());
-        accountNamePanelD.add(changeUsernameFieldD);
+        accountNamePanelD.add(usernameLabelCenteringPanelD, BorderLayout.WEST);
+        usernameLabelCenteringPanelD.add(Box.createHorizontalGlue());
+        usernameLabelCenteringPanelD.add(changeUsernameLabelD);
+        usernameLabelCenteringPanelD.add(Box.createHorizontalGlue());
+        accountNamePanelD.add(changeUsernameFieldD, BorderLayout.EAST);
         accountNamePanelD.setName("changeusernamepanelchange username");
-
 
         accountPFPPanelD.setBackground(AppThemeColors.SECONDARY);
         accountPFPPanelD.setPreferredSize(new Dimension(new Dimension(width-width/10*7, height/10)));
@@ -1408,7 +1596,6 @@ public class SettingsPanel extends JPanel{
         allPanels.add(accountHeightPanelD);
         allPanels.add(accountNamePanelD);
         allPanels.add(accountPFPPanelD);
-
     }
 
     public void unfocusSearchField(){
@@ -1465,7 +1652,9 @@ public class SettingsPanel extends JPanel{
         ageLabel.setForeground(AppThemeColors.foregroundColor);
         weightLabel.setForeground(AppThemeColors.foregroundColor);
         heightLabel.setForeground(AppThemeColors.foregroundColor);
+        accountActivityLabel.setForeground(AppThemeColors.foregroundColor);
         changeUsernameLabel.setForeground(AppThemeColors.foregroundColor);
+        choosePFPLabel.setForeground(AppThemeColors.foregroundColor);
 
         ageLabelD.setForeground(AppThemeColors.foregroundColor);
         weightLabelD.setForeground(AppThemeColors.foregroundColor);
@@ -1477,6 +1666,7 @@ public class SettingsPanel extends JPanel{
         accountAgePanel.setBackground(AppThemeColors.SECONDARY);
         accountWeightPanel.setBackground(AppThemeColors.SECONDARY);
         accountHeightPanel.setBackground(AppThemeColors.SECONDARY);
+        accountActivityPanel.setBackground(AppThemeColors.SECONDARY);
         accountNamePanel.setBackground(AppThemeColors.SECONDARY);
         accountPFPPanel.setBackground(AppThemeColors.SECONDARY);
 
