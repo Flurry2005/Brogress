@@ -535,6 +535,8 @@ public class FirebaseManager {
         user.put("friendrequests","{}");
         user.put("Created_Exercises","");
         user.put("Favorite_Exercises","");
+        user.put("activityFactor","");
+        user.put("isAdmin","");
 
 
         // Referens till dokumentet i "users" collection
@@ -562,6 +564,7 @@ public class FirebaseManager {
         user.put("age", String.valueOf(UserData.getUserAge()));
         user.put("height", String.valueOf(UserData.getUserHeight()));
         user.put("weight", String.valueOf(UserData.getUserWeight()));
+        user.put("activityFactor", String.valueOf(UserData.getActivityFactor()));
         user.put("theme", UserData.getTheme());
 
 
@@ -598,6 +601,7 @@ public class FirebaseManager {
             UserData.setUserHeight(userData.get("height").toString().isEmpty() ?0:Integer.parseInt(userData.get("height").toString())); //If no user height is set, return 0
             UserData.setTheme(userData.get("theme").toString());
             UserData.setAdmin((boolean) userData.get("isAdmin"));
+            UserData.setActivityFactor(userData.get("activityFactor").toString().isEmpty() ? 1.2f:Float.parseFloat(userData.get("activityFactor").toString()));
 
         } catch (Exception e) {
             e.printStackTrace();

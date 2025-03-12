@@ -1200,8 +1200,23 @@ public class SettingsPanel extends JPanel{
         accountActivityLabel.setFont(new Font("Arial", Font.BOLD,height/50));
 
         activityDropDown.setFont(new Font("Arial", Font.BOLD,height/50));
+        Float[] temp = {1.2f, 1.375f, 1.55f, 1.725f, 1.9f};
+        activityDropDown.setSelectedIndex(Arrays.stream(temp).toList().indexOf(UserData.getActivityFactor()));
         activityDropDown.addItemListener(_ -> {
-
+            int index = activityDropDown.getSelectedIndex();
+            switch (index){
+                case 0->UserData.setActivityFactor(1.2f);
+                case 1->UserData.setActivityFactor(1.375f);
+                case 2->UserData.setActivityFactor(1.55f);
+                case 3->UserData.setActivityFactor(1.725f);
+                case 4->UserData.setActivityFactor(1.9f);
+            }
+            try {
+                FirebaseManager.writeDBUser(UserData.getEmail());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            HomePanel.updateUserInfo();
         });
 
         accountAgePanel.add(ageLabelCenteringPanel, BorderLayout.WEST);
