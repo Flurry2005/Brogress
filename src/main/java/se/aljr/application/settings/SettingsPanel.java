@@ -346,15 +346,6 @@ public class SettingsPanel extends JPanel{
                     changeUsernameLabelD.setFont(new Font("Arial", Font.BOLD,getHeight()/50));
                     changeUsernameLabelD.setPreferredSize(new Dimension(getWidth()/8, accountNamePanelD.getPreferredSize().height));
 
-
-
-
-
-
-
-
-
-
                     generalSettingsButton.setFont(new Font("Arial", Font.PLAIN,getHeight()/30));
                     generalSettingsButton.setPreferredSize(new Dimension(getWidth(), getHeight()/12));
                     generalSettingsButton.setMaximumSize(new Dimension(getWidth()-getWidth()/5*4, getHeight()/3));
