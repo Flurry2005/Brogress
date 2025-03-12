@@ -276,6 +276,7 @@ public class ProgramPanel extends JPanel {
                 workoutContainer = defaultWorkoutslist.getFirst();
                 newExerciseButton.setEnabled(false);
                 workoutTitle.setEditable(false);
+                workoutTitle.setText(workoutContainer.getWorkoutData().getTitle());
                 deleteWorkout.setEnabled(false);
                 if (UserData.isUserAdmin()) {
                     deleteDefaultWorkout.setVisible(true);
@@ -288,6 +289,7 @@ public class ProgramPanel extends JPanel {
 
         } else {
             workoutContainer = workoutsList.getFirst();
+            workoutTitle.setText(workoutContainer.getWorkoutData().getTitle());
             if (UserData.isUserAdmin()) {
                 deleteDefaultWorkout.setVisible(false);
             }
@@ -351,6 +353,8 @@ public class ProgramPanel extends JPanel {
                     deleteDefaultWorkout.setVisible(true);
                     newExerciseButton.setEnabled(true);
                     saveWorkoutButton.setEnabled(true);
+                    setDefaultInfo.setVisible(true);
+
                 }
                 else {
                     newExerciseButton.setEnabled(false);
@@ -390,6 +394,8 @@ public class ProgramPanel extends JPanel {
                 defaultWorkoutList.clearSelection();
                 if (UserData.isUserAdmin()) {
                     deleteDefaultWorkout.setVisible(false);
+                    setDefaultInfo.setVisible(false);
+
                 }
 
                 Workout target = workoutDefaultListModel.getElementAt(savedWorkoutsList.getSelectedIndex());
@@ -438,11 +444,23 @@ public class ProgramPanel extends JPanel {
                     getDefaultInfo.setName("getDefaultInfo");
                     getDefaultInfo.setForeground(Color.white);
                     getDefaultInfo.setFont(new Font("Arial", Font.PLAIN, (int) (getHeight()/33.15)));
-                    getDefaultInfo.setBackground(new Color(11, 11, 98));
+                    getDefaultInfo.setBackground(new Color(6, 6, 52));
                     getDefaultInfo.setOpaque(true);
                     Workout newWorkout = new Workout();
+
+                    newWorkout.setWorkoutInfo(setDefaultInfo.getText());
+                    getDefaultInfo.setText(newWorkout.getWorkoutInfo());
+
                     newWorkout.add(getDefaultInfo, 0);
+
                     defaultWorkoutslist.add(newWorkout);
+
+                    try {
+                        FirebaseManager.writeDBdefaultWorkout(defaultWorkoutslist);
+                    } catch (Exception gyat) {
+                        gyat.getCause();
+
+                    }
 
                     defaultWorkoutModel.addElement(newWorkout);
                     defaultWorkoutTitleDefaultListModel.addElement(newWorkout.getWorkoutData().getTitle());
@@ -637,21 +655,21 @@ public class ProgramPanel extends JPanel {
 
                 try {
 
-                    int index = savedWorkoutsList.getSelectedIndex();
-
-                    if (saveAsDefault.isSelected()) {
-                        System.out.println("Default");
+                    if (saveAsDefault.isSelected() && defaultWorkoutList.getSelectedIndex() != -1) {
                         Workout savedWorkout = defaultWorkoutModel.get(defaultWorkoutList.getSelectedIndex());
+
+                        int index = defaultWorkoutList.getSelectedIndex();
+
                         savedWorkout.getWorkoutData().setTitle(workoutTitle.getText());
                         workoutTitle.setText(savedWorkout.getWorkoutData().getTitle());
-
+                        savedWorkout.setWorkoutInfo("<html>" + setDefaultInfo.getText() + "</html>");
                         savedWorkout.setDefault(true);
+
                         try {
                             if (savedWorkout.getComponent(0).getName().equals("getDefaultInfo")) {
                                 System.out.println("hitta den");
                                 JLabel getDefaultInfo = (JLabel) savedWorkout.getComponent(0);
-                                savedWorkout.setWorkoutInfo(setDefaultInfo.getText());
-                                getDefaultInfo.setText("<html>" + setDefaultInfo.getText() + "</html>");
+                                getDefaultInfo.setText(savedWorkout.getWorkoutInfo());
                             }
                         }
                         catch (NullPointerException e) {
@@ -659,43 +677,52 @@ public class ProgramPanel extends JPanel {
 
                         }
                         defaultWorkoutModel.get(defaultWorkoutList.getSelectedIndex()).setWorkoutInfo(setDefaultInfo.getText());
-
                         defaultWorkoutModel.clear();
                         defaultWorkoutTitleDefaultListModel.clear();
-
 
                         for (Workout workout : defaultWorkoutslist) {
                             defaultWorkoutModel.addElement(workout);
                             defaultWorkoutTitleDefaultListModel.addElement(workout.getWorkoutData().getTitle());
                         }
                         defaultWorkoutList.setModel(defaultWorkoutTitleDefaultListModel);
+                        defaultWorkoutList.setSelectedIndex(index);
+
                         FirebaseManager.writeDBdefaultWorkout(defaultWorkoutslist);
+                        activateStatus("Default workout saved!");
+
                     } else {
+                       if (savedWorkoutsList.getSelectedIndex() != -1) {
+                           Workout savedWorkout = workoutsList.get(savedWorkoutsList.getSelectedIndex());
 
-                        workoutDefaultListModel.clear();
-                        workoutTitleDefaultListModel.clear();
+                           int index = savedWorkoutsList.getSelectedIndex();
 
-                        for (Workout workout : workoutsList) {
-                            workoutDefaultListModel.addElement(workout);
-                            workoutTitleDefaultListModel.addElement(workout.getWorkoutData().getTitle());
-                        }
-                        savedWorkoutsList.setModel(workoutTitleDefaultListModel);
-                        savedWorkoutsList.setSelectedIndex(index);
+                           savedWorkout.getWorkoutData().setTitle(workoutTitle.getText());
+
+                           workoutDefaultListModel.clear();
+                           workoutTitleDefaultListModel.clear();
+
+                           for (Workout workout : workoutsList) {
+                               workoutDefaultListModel.addElement(workout);
+                               workoutTitleDefaultListModel.addElement(workout.getWorkoutData().getTitle());
+                           }
+                           savedWorkoutsList.setModel(workoutTitleDefaultListModel);
+                           savedWorkoutsList.setSelectedIndex(index);
+
+                           FirebaseManager.writeDBworkout(workoutsList);
+                           activateStatus("Workout saved!");
+                       }
 
                     }
 
                     revalidate();
                     repaint();
 
-                    if(!saveAsDefault.isSelected()){
-                        FirebaseManager.writeDBworkout(workoutsList);
-                    }
 
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
-            activateStatus("Workout saved!");
+
         });
 
         saveAsDefault.setText("Default");
@@ -704,7 +731,10 @@ public class ProgramPanel extends JPanel {
         saveAsDefault.setForeground(Color.white);
         saveAsDefault.setOpaque(true);
 
-        deleteDefaultWorkout.setPreferredSize(deleteDefaultWorkout.getSize());
+        deleteDefaultWorkout.setText("x");
+        deleteDefaultWorkout.setPreferredSize(new Dimension(deleteDefaultWorkout.getWidth()/2, deleteDefaultWorkout.getHeight()/2));
+        deleteDefaultWorkout.setMaximumSize(deleteDefaultWorkout.getPreferredSize());
+        deleteDefaultWorkout.setFont(new Font("Arial", Font.BOLD, 5));
         deleteDefaultWorkout.setContentAreaFilled(false);
         deleteDefaultWorkout.setBackground(new Color(159, 10, 186));
         deleteDefaultWorkout.setForeground(Color.white);
@@ -745,7 +775,6 @@ public class ProgramPanel extends JPanel {
         setDefaultInfo.setText(("Default workout info here"));
         setDefaultInfo.setVisible(false);
         setDefaultInfo.setLineWrap(true);
-        setDefaultInfo.setWrapStyleWord(true);
         setDefaultInfo.setBackground(new Color(159, 10, 186));
         setDefaultInfo.setForeground(Color.white);
         setDefaultInfo.setFont(new Font("Arial", Font.BOLD, 12));
@@ -854,6 +883,9 @@ public class ProgramPanel extends JPanel {
         workoutPanelTop.add(saveWorkoutButton);
         workoutPanelTop.add(Box.createHorizontalGlue());
         workoutPanelTop.add(exportWorkoutButton);
+        if (UserData.isUserAdmin()) {
+            workoutPanelTop.add(saveAsDefault);
+        }
 
         workoutPanel.add(Box.createVerticalGlue());
         workoutPanel.add(workoutPanelTop);
@@ -861,19 +893,6 @@ public class ProgramPanel extends JPanel {
         workoutPanel.add(setDefaultInfo);
         workoutPanel.add(workoutScrollPane);
         workoutPanel.add(Box.createVerticalGlue());
-        if (UserData.isUserAdmin()) {
-            workoutPanelTop.add(saveAsDefault);
-        }
-        saveAsDefault.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (saveAsDefault.isSelected()) {
-                    setDefaultInfo.setVisible(true);
-                } else {
-                    setDefaultInfo.setVisible(false);
-                }
-            }
-        });
 
         savedWorkoutsPanelTop.add(Box.createHorizontalGlue());
         savedWorkoutsPanelTop.add(savedWorkoutsLabel);
@@ -1973,6 +1992,8 @@ public class ProgramPanel extends JPanel {
                 savedWorkoutsList.setBackground(AppThemeColors.panelColor);
                 savedWorkoutsList.setForeground(AppThemeColors.foregroundColor);
                 savedWorkoutsLabel.setForeground(AppThemeColors.foregroundColor);
+                defaultWorkoutList.setBackground(AppThemeColors.panelColor);
+                defaultWorkoutList.setForeground(AppThemeColors.foregroundColor);
 
                 for (Workout workout : workoutsList) {
                     for (Component comp1 : workout.getComponents()) {
@@ -2180,7 +2201,7 @@ public class ProgramPanel extends JPanel {
                 savedWorkoutsList.setForeground(workoutPanelTextColor);
                 savedWorkoutsLabel.setForeground(AppThemeColors.foregroundColor);
                 defaultWorkoutList.setBackground(AppThemeColors.panelColor);
-                defaultWorkoutList.setForeground(workoutPanelTextColor);
+                defaultWorkoutList.setForeground(Color.BLACK);
 
 
                 for (Workout workout : workoutsList) {
