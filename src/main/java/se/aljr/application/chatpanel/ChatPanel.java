@@ -7,6 +7,7 @@ import se.aljr.application.loginpage.FirebaseManager;
 import se.aljr.application.settings.SettingsPanel;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentEvent;
@@ -88,8 +89,8 @@ public class ChatPanel extends JPanel {
         this.setPreferredSize(new Dimension(width, height));
         this.setBackground(AppThemeColors.SECONDARY);
         this.setOpaque(false);
-        this.setLayout(new BorderLayout(0, 0));
-        this.setBorder(new EmptyBorder(15, 15, 15, 15));
+        this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+
 
 
         instance = this;
@@ -103,7 +104,10 @@ public class ChatPanel extends JPanel {
         /*--------------------Main panel--------------------*/
         mainPanel = new JPanel();
         mainPanel.setOpaque(false);
-        mainPanel.setPreferredSize(new Dimension(getPreferredSize().width, getPreferredSize().height));
+        mainPanel.setPreferredSize(new Dimension((int) (getPreferredSize().width*0.98), (int) (getPreferredSize().height*0.98)));
+        mainPanel.setMinimumSize(mainPanel.getPreferredSize());
+        mainPanel.setMaximumSize(mainPanel.getPreferredSize());
+        mainPanel.setAlignmentY(Component.CENTER_ALIGNMENT);
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
 
 
@@ -111,7 +115,7 @@ public class ChatPanel extends JPanel {
 
         /*--------------------Right panel--------------------*/
 
-        mainRightPanel.setLayout(new BorderLayout());
+        mainRightPanel.setLayout(new BoxLayout(mainRightPanel, BoxLayout.Y_AXIS));
         mainRightPanel.setOpaque(true);
         mainRightPanel.setBackground(AppThemeColors.textFieldColor);
         mainRightPanel.setPreferredSize(new Dimension(getPreferredSize().width / 2, getPreferredSize().height));
@@ -124,9 +128,10 @@ public class ChatPanel extends JPanel {
         belowPanel.setLayout(new BoxLayout(belowPanel, BoxLayout.X_AXIS));
         belowPanel.setOpaque(true);
         belowPanel.setBackground(AppThemeColors.SECONDARY);
-        belowPanel.setPreferredSize(new Dimension(mainRightPanel.getPreferredSize().width, mainRightPanel.getPreferredSize().height / 8));
-        belowPanel.setMinimumSize(mainRightPanel.getPreferredSize());
-        belowPanel.setMaximumSize(mainRightPanel.getPreferredSize());
+        belowPanel.setPreferredSize(new Dimension(mainRightPanel.getPreferredSize().width, getPreferredSize().height/ 8));
+        belowPanel.setMinimumSize(belowPanel.getPreferredSize());
+        belowPanel.setMaximumSize(belowPanel.getPreferredSize());
+        belowPanel.setBorder(new LineBorder(new Color(70, 70, 70),getPreferredSize().width/663));
 
 
         rightSideTopPanel = new JPanel();
@@ -148,7 +153,7 @@ public class ChatPanel extends JPanel {
 
 
         messagesScrollPane.setOpaque(true);
-        messagesScrollPane.setPreferredSize(new Dimension(mainRightPanel.getPreferredSize().width, (int) (mainRightPanel.getPreferredSize().height / 1.05 - belowPanel.getPreferredSize().height)));
+        messagesScrollPane.setPreferredSize(new Dimension(mainRightPanel.getPreferredSize().width, getPreferredSize().height - getPreferredSize().height/ 8));
         messagesScrollPane.setMinimumSize(messagesScrollPane.getPreferredSize());
         messagesScrollPane.setMaximumSize(messagesScrollPane.getPreferredSize());
         messagesScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -171,7 +176,7 @@ public class ChatPanel extends JPanel {
         messengerTextBox.setWrapStyleWord(true);
         messengerTextBox.setBorder(new LineBorder(Color.WHITE));
         messengerTextBox.setFocusable(true);
-        messengerTextBox.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+        messengerTextBox.setAlignmentY(JComponent.CENTER_ALIGNMENT);
         messengerTextBox.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
@@ -272,6 +277,7 @@ public class ChatPanel extends JPanel {
 
 
         clickToSendButton.setFont(new Font("Ariel", Font.BOLD, (int) (getPreferredSize().width / 50f)));
+        clickToSendButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         clickToSendButton.setUI(new BasicButtonUI() {
             @Override
             public void paint(Graphics g, JComponent c) {
@@ -505,7 +511,7 @@ public class ChatPanel extends JPanel {
         leftBottomPanel.setBorder(new LineBorder(new Color(70, 70, 70),getHeight()/663));
 
         requestScrollPane.setOpaque(true);
-        requestScrollPane.setPreferredSize(new Dimension(mainMiddlePanel.getPreferredSize().width, (int)(mainMiddlePanel.getPreferredSize().height/1.15-leftBottomPanel.getPreferredSize().height)));
+        requestScrollPane.setPreferredSize(new Dimension(mainMiddlePanel.getPreferredSize().width, (int)(mainMiddlePanel.getPreferredSize().height/1.10-leftBottomPanel.getPreferredSize().height)));
         requestScrollPane.setMinimumSize(requestScrollPane.getPreferredSize());
         requestScrollPane.setMaximumSize(requestScrollPane.getPreferredSize());
         requestScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -521,7 +527,7 @@ public class ChatPanel extends JPanel {
 
 
         requestText = new JLabel("Requests",SwingConstants.CENTER);
-        requestText.setFont(new Font("Arial", Font.BOLD, (int) (getPreferredSize().width / 39f)));
+        requestText.setFont(new Font("Arial", Font.BOLD, (int) (getPreferredSize().width / 40f)));
         requestText.setOpaque(true);
         requestText.setPreferredSize(new Dimension(leftPanelThatHoldsEverything.getPreferredSize().width, (int) (1.5*requestText.getFontMetrics(requestText.getFont()).getHeight())));
         requestText.setMinimumSize(requestText.getPreferredSize());
@@ -584,8 +590,7 @@ public class ChatPanel extends JPanel {
 
         /*--------------------(Right panel) Chat--------------------*/
 
-        mainRightPanel.add(belowPanel, BorderLayout.SOUTH);
-        mainRightPanel.add(rightSideTopPanel);
+        //mainRightPanel.add(rightSideTopPanel);
 
         /*--------------------(Right panel) Chatwrite--------------------*/
 
@@ -600,7 +605,8 @@ public class ChatPanel extends JPanel {
 
         /*--------------------(Right panel) ChatBox--------------------*/
 
-        mainRightPanel.add(messagesScrollPane, BorderLayout.NORTH);
+        mainRightPanel.add(messagesScrollPane);
+        mainRightPanel.add(belowPanel);
         messagesScrollPane.setViewportView(messageStorage);
 
         /*--------------------(Main panel) add panels to Main panel--------------------*/
@@ -612,7 +618,9 @@ public class ChatPanel extends JPanel {
         mainPanel.add(mainRightPanel);
         mainPanel.add(Box.createHorizontalGlue());
         /*--------------------add main panel to chatpanel--------------------*/
+        this.add(Box.createHorizontalGlue());
         this.add(mainPanel);
+        this.add(Box.createHorizontalGlue());
         this.revalidate();
         this.repaint();
         this.addComponentListener(new ComponentAdapter() {
@@ -620,38 +628,38 @@ public class ChatPanel extends JPanel {
             public void componentResized(ComponentEvent e) {
                 super.componentResized(e);
                 SwingUtilities.invokeLater(()->{
-                    mainPanel.setPreferredSize(new Dimension(getWidth(), getHeight()));
+                    mainPanel.setPreferredSize(new Dimension((int) (getPreferredSize().width*0.98), (int) (getPreferredSize().height*0.98)));
+                    mainPanel.setMinimumSize(mainPanel.getPreferredSize());
+                    mainPanel.setMaximumSize(mainPanel.getPreferredSize());
 
-                    mainLeftPanel.setPreferredSize(new Dimension(getPreferredSize().width / 5, getPreferredSize().height));
+                    mainLeftPanel.setPreferredSize(new Dimension(mainPanel.getPreferredSize().width / 5, mainPanel.getPreferredSize().height));
                     mainLeftPanel.setMinimumSize(mainLeftPanel.getPreferredSize());
                     mainLeftPanel.setMaximumSize(mainLeftPanel.getPreferredSize());
 
-                    mainMiddlePanel.setPreferredSize(new Dimension(getPreferredSize().width / 5, getPreferredSize().height));
+                    mainMiddlePanel.setPreferredSize(new Dimension(mainPanel.getPreferredSize().width / 5, mainPanel.getPreferredSize().height));
                     mainMiddlePanel.setMinimumSize(mainMiddlePanel.getPreferredSize());
                     mainMiddlePanel.setMaximumSize(mainMiddlePanel.getPreferredSize());
 
-                    mainRightPanel.setPreferredSize(new Dimension(getPreferredSize().width / 2, getPreferredSize().height));
+                    mainRightPanel.setPreferredSize(new Dimension(mainPanel.getPreferredSize().width / 2, mainPanel.getPreferredSize().height));
                     mainRightPanel.setMinimumSize(mainRightPanel.getPreferredSize());
                     mainRightPanel.setMaximumSize(mainRightPanel.getPreferredSize());
 
-                    messagesScrollPane.setPreferredSize(new Dimension(mainRightPanel.getPreferredSize().width, (int) (mainRightPanel.getPreferredSize().height / 1.05 - belowPanel.getPreferredSize().height)));
+                    belowPanel.setPreferredSize(new Dimension(mainRightPanel.getPreferredSize().width, mainPanel.getPreferredSize().height/ 8));
+                    belowPanel.setMinimumSize(belowPanel.getPreferredSize());
+                    belowPanel.setMaximumSize(belowPanel.getPreferredSize());
+                    belowPanel.setBorder(new LineBorder(new Color(70, 70, 70),getHeight()/663));
+
+                    messagesScrollPane.setPreferredSize(new Dimension(mainRightPanel.getPreferredSize().width, mainPanel.getPreferredSize().height - mainPanel.getPreferredSize().height/ 8));
                     messagesScrollPane.setMinimumSize(messagesScrollPane.getPreferredSize());
                     messagesScrollPane.setMaximumSize(messagesScrollPane.getPreferredSize());
                     messagesScrollPane.getVerticalScrollBar().setUnitIncrement((int) (getHeight()/110.5));
                     messagesScrollPane.setBorder(new LineBorder(new Color(70, 70, 70),getHeight()/663));
 
-                    belowPanel.setPreferredSize(new Dimension(mainRightPanel.getWidth(), mainRightPanel.getHeight() / 8));
-                    belowPanel.setMinimumSize(mainRightPanel.getPreferredSize());
-                    belowPanel.setMaximumSize(mainRightPanel.getPreferredSize());
-
-                    rightSideTopPanel.setPreferredSize(new Dimension((int) (mainRightPanel.getWidth() / 1.2), mainRightPanel.getHeight() / 10));
-                    rightSideTopPanel.setMinimumSize(rightSideTopPanel.getPreferredSize());
-                    rightSideTopPanel.setMaximumSize(rightSideTopPanel.getPreferredSize());
 
                     //Rescale message box depending on content
                     if(messengerTextBox.getText().isEmpty()){
                         messengerTextBox.setFont(new Font("Arial", Font.PLAIN, (int) (getWidth() / 65f)));
-                        messengerTextBox.setPreferredSize(new Dimension((int) (belowPanel.getWidth() / 1.2),
+                        messengerTextBox.setPreferredSize(new Dimension((int) (belowPanel.getPreferredSize().width / 1.2),
                                 (int) (messengerTextBox.getFontMetrics(messengerTextBox.getFont()).getHeight()*1.3)));
                         messengerTextBox.setMinimumSize(messengerTextBox.getPreferredSize());
                         messengerTextBox.setMaximumSize(messengerTextBox.getPreferredSize());
@@ -659,7 +667,7 @@ public class ChatPanel extends JPanel {
                     else{
                         messengerTextBox.setFont(new Font("Arial", Font.PLAIN, (int) (getWidth() / 65f)));
 
-                        messengerTextBox.setPreferredSize(new Dimension((int) (belowPanel.getWidth() / 1.2),
+                        messengerTextBox.setPreferredSize(new Dimension((int) (belowPanel.getPreferredSize().width / 1.2),
                                 0));
 
                         FontMetrics metrics = messengerTextBox.getFontMetrics(messengerTextBox.getFont());
@@ -687,20 +695,21 @@ public class ChatPanel extends JPanel {
                             totalHeight = metrics.getHeight();
                         }
 
-                        if (totalHeight < (int) (belowPanel.getPreferredSize().height)) {
+                        if (totalHeight < belowPanel.getPreferredSize().height) {
                             messengerTextBox.setPreferredSize(new Dimension(messengerTextBox.getPreferredSize().width, totalHeight));
                             messengerTextBox.setMinimumSize(messengerTextBox.getPreferredSize());
                             messengerTextBox.setMaximumSize(messengerTextBox.getPreferredSize());
                         }
-                        messengerTextBox.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+                        messengerTextBox.setAlignmentY(JComponent.CENTER_ALIGNMENT);
                     }
 
-                    belowRightPanel.setPreferredSize(new Dimension(belowPanel.getWidth() / 10, (int) (belowPanel.getHeight() / 1.2)));
+
+                    belowRightPanel.setPreferredSize(new Dimension(belowPanel.getPreferredSize().width / 10, (int) (belowPanel.getPreferredSize().height / 1.2)));
                     belowRightPanel.setMinimumSize(belowRightPanel.getPreferredSize());
                     belowRightPanel.setMaximumSize(belowRightPanel.getPreferredSize());
 
-                    clickToSendButton.setFont(new Font("Ariel", Font.BOLD, (int) (getWidth() / 50f)));
-                    clickToSendButton.setPreferredSize(new Dimension((int) (belowRightPanel.getWidth() / 1.7), (int) (belowRightPanel.getWidth() / 1.7)));
+                    clickToSendButton.setFont(new Font("Ariel", Font.BOLD, (int) (getPreferredSize().width / 50f)));
+                    clickToSendButton.setPreferredSize(new Dimension((int) (belowRightPanel.getPreferredSize().width / 1.7), (int) (belowRightPanel.getPreferredSize().width / 1.7)));
                     clickToSendButton.setMinimumSize(clickToSendButton.getPreferredSize());
                     clickToSendButton.setMaximumSize(clickToSendButton.getPreferredSize());
                     clickToSendButton.repaint();
@@ -732,13 +741,13 @@ public class ChatPanel extends JPanel {
                     leftBottomPanel.setMaximumSize(leftBottomPanel.getPreferredSize());
                     leftBottomPanel.setBorder(new LineBorder(new Color(70, 70, 70),getHeight()/663));
 
-                    requestScrollPane.setPreferredSize(new Dimension(mainMiddlePanel.getWidth(), (int)(mainMiddlePanel.getHeight()/1.15-leftBottomPanel.getHeight())));
+                    requestScrollPane.setPreferredSize(new Dimension(mainMiddlePanel.getWidth(), (int)(mainMiddlePanel.getHeight()/1.10-leftBottomPanel.getHeight())));
                     requestScrollPane.setMinimumSize(requestScrollPane.getPreferredSize());
                     requestScrollPane.setMaximumSize(requestScrollPane.getPreferredSize());
                     requestScrollPane.getVerticalScrollBar().setUnitIncrement((int) (getHeight()/110.5));
                     requestScrollPane.setBorder(new LineBorder(new Color(70, 70, 70),getHeight()/663));
 
-                    requestText.setFont(new Font("Arial", Font.BOLD, (int) (getWidth() / 39f)));
+                    requestText.setFont(new Font("Arial", Font.BOLD, (int) (getWidth() / 40f)));
                     requestText.setPreferredSize(new Dimension(leftPanelThatHoldsEverything.getWidth(), (int) (1.5*requestText.getFontMetrics(requestText.getFont()).getHeight())));
                     requestText.setMinimumSize(requestText.getPreferredSize());
                     requestText.setMaximumSize(requestText.getPreferredSize());
@@ -772,6 +781,8 @@ public class ChatPanel extends JPanel {
                 });
             }
         });
+
+
     }
 
     private static void rescaleRequests(){
