@@ -520,6 +520,14 @@ public class FirebaseManager {
     }
 
     public static void writeDBnewUser(String name, String email) throws IOException {
+        String defaultProfilePicturePath = ResourcePath.getResourcePath() + "defaultProfilePicture.txt";
+        String defaultProfilePicture = "";
+        try (FileReader reader = new FileReader(defaultProfilePicturePath)) {
+            BufferedReader bufferedReader = new BufferedReader(reader);
+            defaultProfilePicture = bufferedReader.readLine();
+        } catch (Exception _) {
+
+        }
 
         Map<String, Object> user = new HashMap<>();
         user.put("email", email);
@@ -528,7 +536,7 @@ public class FirebaseManager {
         user.put("height", "");
         user.put("weight", "");
         user.put("workouts", "");
-        user.put("profilepicture","");
+        user.put("profilepicture", defaultProfilePicture);
         user.put("theme","dark");
         user.put("friends","{}");
         user.put("isOnline","");
@@ -536,7 +544,7 @@ public class FirebaseManager {
         user.put("Created_Exercises","");
         user.put("Favorite_Exercises","");
         user.put("activityFactor","");
-        user.put("isAdmin","");
+        user.put("isAdmin",false);
 
 
         // Referens till dokumentet i "users" collection
