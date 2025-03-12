@@ -451,19 +451,23 @@ public class ChatPanel extends JPanel {
                     } catch (ExecutionException | InterruptedException ex) {
                         throw new RuntimeException(ex);
                     }
-                    friendRequestMailText.setText("");
-                }else{
-                    friendRequestMailText.setText("Invalid email adress");
-                    new Timer(1000,_-> friendRequestMailText.setText("")){
+                    friendRequestMailText.setForeground(Color.GREEN);
+                    friendRequestMailText.setText("Friend request sent");
+                    new Timer(1000, _ -> { friendRequestMailText.setText(""); friendRequestMailText.setForeground(AppThemeColors.foregroundColor); }) {
                         {
                             setRepeats(false);
                         }
                     }.start();
 
+                }else{
+                    friendRequestMailText.setForeground(Color.RED);
+                    friendRequestMailText.setText("Invalid email adress");
+                    new Timer(1000, _ -> { friendRequestMailText.setText(""); friendRequestMailText.setForeground(AppThemeColors.foregroundColor); }) {
+                        {
+                            setRepeats(false);
+                        }
+                    }.start();
                 }
-
-
-
             }
         });
 
