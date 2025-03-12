@@ -1,5 +1,6 @@
 package se.aljr.application.settings;
 
+import jnafilechooser.api.JnaFileChooser;
 import se.aljr.application.AppThemeColors;
 import se.aljr.application.ApplicationWindow;
 import se.aljr.application.ResourcePath;
@@ -28,6 +29,7 @@ import java.util.stream.IntStream;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.plaf.basic.BasicButtonUI;
 
 
 public class SettingsPanel extends JPanel{
@@ -199,6 +201,7 @@ public class SettingsPanel extends JPanel{
     JLabel heightLabelD = new JLabel("Height: ");
     JLabel changeUsernameLabelD = new JLabel("Change Username");
 
+    private static SettingsPanel instance;
 
     public static int currentPage = 0;
 
@@ -210,7 +213,9 @@ public class SettingsPanel extends JPanel{
         this.setPreferredSize(new Dimension(width, height));
         this.width = width;
         this.height = height;
-        
+
+        instance = this;
+
         settingsPanelBackground = new ImageIcon(ResourcePath.getResourcePath() +"emptyBackground.png");
         scaleSettingsPanelBackground = settingsPanelBackground.getImage().getScaledInstance(width,height, Image.SCALE_SMOOTH);
         scaledSettingsPanelBackgroundIcon = new ImageIcon(scaleSettingsPanelBackground);
@@ -1239,7 +1244,36 @@ public class SettingsPanel extends JPanel{
         choosePFPLabel.setFont(new Font("Arial", Font.BOLD,height/50));
 
         JButton chooseProfilePictureButton = new JButton("Choose Avatar");
-        chooseProfilePictureButton.setPreferredSize(new Dimension(width/1000*120, height/20));
+        chooseProfilePictureButton.setPreferredSize(new Dimension(width/1000*120, height/24));
+        chooseProfilePictureButton.setMinimumSize(chooseProfilePictureButton.getPreferredSize());
+        chooseProfilePictureButton.setMaximumSize(chooseProfilePictureButton.getPreferredSize());
+        chooseProfilePictureButton.setUI(new BasicButtonUI() {
+            @Override
+            public void paint(Graphics g, JComponent c) {
+                // Måla bakgrunden med rundade hörn
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(new Color(70, 208, 71)); // Grön färg
+                g2.fillRoundRect(0, 0, c.getWidth(), c.getHeight(), instance.getHeight()/60, instance.getHeight()/60); // Rundade hörn
+
+                // Måla texten (den kommer att målas av Swing, så vi ser till att inte skriva över den)
+                super.paint(g, c);
+
+                g2.dispose(); // Frigör Graphics2D
+            }
+            @Override
+            protected void paintButtonPressed(Graphics g, AbstractButton b) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(new Color(64, 136, 65)); // Pressed button color
+                g2.fillRoundRect(0, 0, b.getWidth(), b.getHeight(), instance.getHeight()/60, instance.getHeight()/60); // Rounded corners
+                g2.dispose();
+            }
+        });
+        chooseProfilePictureButton.setFocusPainted(false);
+        chooseProfilePictureButton.setFocusable(false);
+        chooseProfilePictureButton.setBorderPainted(false);
+        chooseProfilePictureButton.setContentAreaFilled(false);
         chooseProfilePictureButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -1248,9 +1282,9 @@ public class SettingsPanel extends JPanel{
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 frame.setSize(400, 400);
 
-                profilePicture = selectImage(frame);
+                profilePicture = selectImage();
 
-                HomePanel.updateProfilePicture(profilePicture);
+                if(profilePicture!=null){HomePanel.updateProfilePicture(profilePicture);}
             }
         });
 
@@ -1519,10 +1553,11 @@ public class SettingsPanel extends JPanel{
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 frame.setSize(400, 400);
 
-                profilePicture = selectImage(frame);
+                profilePicture = selectImage();
 
-                HomePanel.updateProfilePicture(profilePicture);
-            }
+                if(profilePicture!=null){
+                    HomePanel.updateProfilePicture(profilePicture);
+                }}
         });
 
 
@@ -1725,20 +1760,16 @@ public class SettingsPanel extends JPanel{
         }
     }
 
-    public static ImageIcon selectImage(JFrame parentFrame) {
-        // Skapa en JFileChooser
-        JFileChooser fileChooser = new JFileChooser();
+    public static ImageIcon selectImage() {
 
-        // Sätt filtret så att endast bildfiler visas
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("Image files", "jpg", "png", "gif", "bmp", "jpeg");
-        fileChooser.setFileFilter(filter);
+        JnaFileChooser filechooser = new JnaFileChooser();
 
-        // Öppna JFileChooser dialogen i ett nytt fönster
-        int result = fileChooser.showOpenDialog(parentFrame);
+        filechooser.addFilter("Image files", "jpg", "png", "gif", "bmp", "jpeg");
 
-        if (result == JFileChooser.APPROVE_OPTION) {
+        boolean result = filechooser.showOpenDialog(ApplicationWindow.instance);
+        if (result) {
             // Hämta den valda filen
-            File selectedFile = fileChooser.getSelectedFile();
+            File selectedFile = filechooser.getSelectedFile();
 
             // Skapa en ImageIcon från filen
             return new ImageIcon(selectedFile.getAbsolutePath());
