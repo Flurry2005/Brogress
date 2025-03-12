@@ -18,6 +18,7 @@ dependencies {
     implementation 'org.eclipse.angus:jakarta.mail:2.0.2'
     // Om du också vill använda Firebase Storage (filuppladdning och hämtning)
     implementation 'com.google.firebase:firebase-storage'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
 
 
 

@@ -520,6 +520,14 @@ public class FirebaseManager {
     }
 
     public static void writeDBnewUser(String name, String email) throws IOException {
+        String defaultProfilePicturePath = ResourcePath.getResourcePath() + "defaultProfilePicture.txt";
+        String defaultProfilePicture = "";
+        try (FileReader reader = new FileReader(defaultProfilePicturePath)) {
+            BufferedReader bufferedReader = new BufferedReader(reader);
+            defaultProfilePicture = bufferedReader.readLine();
+        } catch (Exception _) {
+
+        }
 
         Map<String, Object> user = new HashMap<>();
         user.put("email", email);
@@ -528,13 +536,15 @@ public class FirebaseManager {
         user.put("height", "");
         user.put("weight", "");
         user.put("workouts", "");
-        user.put("profilepicture","");
+        user.put("profilepicture", defaultProfilePicture);
         user.put("theme","dark");
         user.put("friends","{}");
         user.put("isOnline","");
         user.put("friendrequests","{}");
         user.put("Created_Exercises","");
         user.put("Favorite_Exercises","");
+        user.put("activityFactor","");
+        user.put("isAdmin",false);
 
 
         // Referens till dokumentet i "users" collection
@@ -562,6 +572,7 @@ public class FirebaseManager {
         user.put("age", String.valueOf(UserData.getUserAge()));
         user.put("height", String.valueOf(UserData.getUserHeight()));
         user.put("weight", String.valueOf(UserData.getUserWeight()));
+        user.put("activityFactor", String.valueOf(UserData.getActivityFactor()));
         user.put("theme", UserData.getTheme());
 
 
@@ -598,6 +609,7 @@ public class FirebaseManager {
             UserData.setUserHeight(userData.get("height").toString().isEmpty() ?0:Integer.parseInt(userData.get("height").toString())); //If no user height is set, return 0
             UserData.setTheme(userData.get("theme").toString());
             UserData.setAdmin((boolean) userData.get("isAdmin"));
+            UserData.setActivityFactor(userData.get("activityFactor").toString().isEmpty() ? 1.2f:Float.parseFloat(userData.get("activityFactor").toString()));
 
         } catch (Exception e) {
             e.printStackTrace();

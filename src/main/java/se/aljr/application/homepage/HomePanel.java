@@ -196,7 +196,7 @@ public class HomePanel extends JPanel {
         bmrLabel.setForeground(Color.WHITE);
 
         tdeeLabel = new JLabel();
-        tdeeLabel.setText("TDEE: "+ NutritionCalculator.getTDEE(UserData.getUserWeight(), UserData.getUserHeight(),UserData.getUserAge(),1.2f)+" kcal");
+        tdeeLabel.setText("TDEE: "+ NutritionCalculator.getTDEE(UserData.getUserWeight(), UserData.getUserHeight(),UserData.getUserAge(),UserData.getActivityFactor())+" kcal");
         tdeeLabel.setFont(CustomFont.getFont().deriveFont(getWidth()/50f));
         tdeeLabel.setForeground(Color.WHITE);
 
@@ -423,7 +423,7 @@ public class HomePanel extends JPanel {
         userWeight.setText("Weight: "+ UserData.getUserWeight()+" Kg");
         bmiLabel.setText("BMI: "+ NutritionCalculator.getBmi(UserData.getUserWeight(), UserData.getUserHeight()));
         bmrLabel.setText("BMR: "+ NutritionCalculator.getBMR(UserData.getUserWeight(), UserData.getUserHeight(),UserData.getUserAge())+" kcal");
-        tdeeLabel.setText("TDEE: "+ NutritionCalculator.getTDEE(UserData.getUserWeight(), UserData.getUserHeight(),UserData.getUserAge(),1.2f)+" kcal");
+        tdeeLabel.setText("TDEE: "+ NutritionCalculator.getTDEE(UserData.getUserWeight(), UserData.getUserHeight(),UserData.getUserAge(),UserData.getActivityFactor())+" kcal");
         proteinNeedLabel.setText("Protein: "+ NutritionCalculator.getProteinNeed(UserData.getUserWeight()));
 
 
