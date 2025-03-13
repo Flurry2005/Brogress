@@ -965,8 +965,8 @@ public class ChatPanel extends JPanel {
                 friendPanel.setLayout(new BoxLayout(friendPanel, BoxLayout.X_AXIS));
                 friendPanel.addMouseListener(new MouseAdapter() {
                     @Override
-                    public void mouseClicked(MouseEvent e) {
-                        super.mouseClicked(e);
+                    public void mouseReleased(MouseEvent e) {
+                        super.mouseReleased(e);
                         if(canSelectChat){
                             selectedFriend = friend;
                             updateChat();
