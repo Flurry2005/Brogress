@@ -68,6 +68,8 @@ public class ExercisePanel extends JPanel {
     protected ImageIcon scaledLightContentBackgroundPanel;
     Image scaledLightContentBackground;
 
+    public static int selectedTab;
+
     public static ExercisePanel instance;
 
     public ExercisePanel(int width, int height) {
@@ -579,6 +581,7 @@ public class ExercisePanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!muscleScroll.isVisible()) {
+                    selectedTab = 0;
                     muscleJList.clearSelection();
                     menuList.setModel(new DefaultListModel<>());
                     sortMuscleButton.setBackground(new Color(49, 84, 122));
@@ -623,6 +626,7 @@ public class ExercisePanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!menuList.getModel().equals(favExerciseModel)) {
+                    selectedTab = 1;
                     menuList.setModel(favExerciseModel);
                     muscleScroll.setVisible(false);
                     showFavorites.setBackground(new Color(49, 84, 122));
@@ -655,6 +659,7 @@ public class ExercisePanel extends JPanel {
         myExercises.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                selectedTab = 2;
                 if (!menuList.getModel().equals(myExerciseModel)) {
                     // READ FROM DB AND UPDATE MY EXERCISES
                     try {
@@ -931,6 +936,27 @@ public class ExercisePanel extends JPanel {
         titleLabel.setForeground(AppThemeColors.foregroundColor);
         musclesWorkedLabel.setForeground(AppThemeColors.foregroundColor);
         searchField.setForeground(AppThemeColors.foregroundColor);
+        System.out.println("UPDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATING COLORESSS LOLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL");
+
+        switch(selectedTab){
+            case 0 ->{
+                showFavorites.setBackground(AppThemeColors.PRIMARY);
+                myExercises.setBackground(AppThemeColors.PRIMARY);
+            }
+            case 1->{
+                sortMuscleButton.setBackground(AppThemeColors.PRIMARY);
+                myExercises.setBackground(AppThemeColors.PRIMARY);
+            }
+            case 2->{
+                sortMuscleButton.setBackground(AppThemeColors.PRIMARY);
+                showFavorites.setBackground(AppThemeColors.PRIMARY);
+            }
+            default->{
+                sortMuscleButton.setBackground(AppThemeColors.PRIMARY);
+                showFavorites.setBackground(AppThemeColors.PRIMARY);
+                myExercises.setBackground(AppThemeColors.PRIMARY);
+            }
+        }
     }
 
 
@@ -938,6 +964,7 @@ public class ExercisePanel extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+        System.out.println("UPDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATING COLORESSS LOLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL");
         updateColors();
         // Draw the image to fill the entire panel
         if (homePanelBackground != null) {

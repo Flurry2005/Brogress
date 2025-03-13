@@ -6,6 +6,7 @@ import se.aljr.application.ApplicationWindow;
 import se.aljr.application.ResourcePath;
 import se.aljr.application.UserData;
 import se.aljr.application.exercise.CreateExerciseModule;
+import se.aljr.application.exercise.ExercisePanel;
 import se.aljr.application.homepage.HomePanel;
 import se.aljr.application.homepage.MenuPanel;
 import se.aljr.application.homepage.TopBar;
@@ -200,6 +201,7 @@ public class SettingsPanel extends JPanel{
     JLabel weightLabelD = new JLabel("Weight: ");
     JLabel heightLabelD = new JLabel("Height: ");
     JLabel changeUsernameLabelD = new JLabel("Change Username");
+    JLabel choosePFPLabelD = new JLabel("Avatar");
 
     private static SettingsPanel instance;
 
@@ -989,7 +991,7 @@ public class SettingsPanel extends JPanel{
                         lightMode = true;
                         currentTheme = "light";
                         AppThemeColors.updateThemeColors();
-                        updateColors();
+
                         UserData.setTheme("light");
                         try {
                             FirebaseManager.writeDBUser(UserData.getEmail());
@@ -999,14 +1001,14 @@ public class SettingsPanel extends JPanel{
                         if(themeDropDownD.getSelectedIndex()!=0){
                             themeDropDownD.setSelectedIndex(0);
                         }
-
+                        updateColors();
                     }
                     //Dark Mode
                     case 1->{
                         lightMode = false;
                         currentTheme = "dark";
                         AppThemeColors.updateThemeColors();
-                        updateColors();
+
                         UserData.setTheme("dark");
                         try {
                             FirebaseManager.writeDBUser(UserData.getEmail());
@@ -1016,6 +1018,7 @@ public class SettingsPanel extends JPanel{
                         if(themeDropDownD.getSelectedIndex()!=1){
                             themeDropDownD.setSelectedIndex(1);
                         }
+                        updateColors();
                     }
                 }
 
@@ -1225,20 +1228,17 @@ public class SettingsPanel extends JPanel{
         ageLabelCenteringPanel.add(Box.createHorizontalGlue());
         accountAgePanel.add(ageDropDown, BorderLayout.EAST);
 
-
         accountWeightPanel.add(weightLabelCenteringPanel, BorderLayout.WEST);
         weightLabelCenteringPanel.add(Box.createHorizontalGlue());
         weightLabelCenteringPanel.add(weightLabel);
         weightLabelCenteringPanel.add(Box.createHorizontalGlue());
         accountWeightPanel.add(weightDropDown, BorderLayout.EAST);
 
-
         accountHeightPanel.add(heightLabelCenteringPanel, BorderLayout.WEST);
         heightLabelCenteringPanel.add(Box.createHorizontalGlue());
         heightLabelCenteringPanel.add(heightLabel);
         heightLabelCenteringPanel.add(Box.createHorizontalGlue());
         accountHeightPanel.add(heightDropDown, BorderLayout.EAST);
-
 
         accountActivityPanel.add(activityLabelCenteringPanel, BorderLayout.WEST);
         activityLabelCenteringPanel.add(Box.createHorizontalGlue());
@@ -1559,23 +1559,68 @@ public class SettingsPanel extends JPanel{
         weightLabelCenteringPanelD.add(Box.createHorizontalGlue());
         accountWeightPanelD.add(weightDropDownD, BorderLayout.EAST);
 
-        JButton chooseProfilePictureButtonD = new JButton("Open Image File Chooser");
+
+
+
+        accountPFPPanelD.setBackground(AppThemeColors.SECONDARY);
+        accountPFPPanelD.setLayout(new BorderLayout());
+        accountPFPPanelD.setPreferredSize(new Dimension(width-width/10*9, height/10));
+        accountPFPPanelD.setName("pfppanelprofilepictureprofile picture");
+
+        pfpLabelCenteringPanelD.setBackground(Color.green);
+        pfpLabelCenteringPanelD.setLayout(new BoxLayout(pfpLabelCenteringPanelD, BoxLayout.X_AXIS));
+        pfpLabelCenteringPanelD.setPreferredSize(new Dimension(width/7, accountActivityPanel.getPreferredSize().height));
+        pfpLabelCenteringPanelD.setOpaque(false);
+
+        choosePFPLabelD.setPreferredSize(new Dimension(width/20, accountPFPPanelD.getPreferredSize().height));
+        choosePFPLabelD.setFont(new Font("Arial", Font.BOLD,height/50));
+
+        JButton chooseProfilePictureButtonD = new JButton("Choose Avatar");
+        chooseProfilePictureButtonD.setPreferredSize(new Dimension(width/1000*120, height/24));
+        chooseProfilePictureButtonD.setMinimumSize(chooseProfilePictureButtonD.getPreferredSize());
+        chooseProfilePictureButtonD.setMaximumSize(chooseProfilePictureButtonD.getPreferredSize());
+        chooseProfilePictureButtonD.setUI(new BasicButtonUI() {
+            @Override
+            public void paint(Graphics g, JComponent c) {
+                // Måla bakgrunden med rundade hörn
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(new Color(70, 208, 71)); // Grön färg
+                g2.fillRoundRect(0, 0, c.getWidth(), c.getHeight(), instance.getHeight()/60, instance.getHeight()/60); // Rundade hörn
+
+                // Måla texten (den kommer att målas av Swing, så vi ser till att inte skriva över den)
+                super.paint(g, c);
+
+                g2.dispose(); // Frigör Graphics2D
+            }
+            @Override
+            protected void paintButtonPressed(Graphics g, AbstractButton b) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setColor(new Color(64, 136, 65)); // Pressed button color
+                g2.fillRoundRect(0, 0, b.getWidth(), b.getHeight(), instance.getHeight()/60, instance.getHeight()/60); // Rounded corners
+                g2.dispose();
+            }
+        });
+        chooseProfilePictureButtonD.setFocusPainted(false);
+        chooseProfilePictureButtonD.setFocusable(false);
+        chooseProfilePictureButtonD.setBorderPainted(false);
+        chooseProfilePictureButtonD.setContentAreaFilled(false);
         chooseProfilePictureButtonD.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 // Skapa huvudfönstret för att visa filväljaren
-                JFrame frame = new JFrame("Choose Image");
+                JFrame frame = new JFrame("Select an Image");
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 frame.setSize(400, 400);
 
                 profilePicture = selectImage();
 
-                if(profilePicture!=null){
-                    HomePanel.updateProfilePicture(profilePicture);
-                }}
+                if(profilePicture!=null){HomePanel.updateProfilePicture(profilePicture);}
+            }
         });
 
-
+//-------------------------------
 
 
 
@@ -1602,7 +1647,7 @@ public class SettingsPanel extends JPanel{
         changeUsernameFieldD.setMinimumSize(new Dimension(width/1000*104, height/20));
         changeUsernameFieldD.setPreferredSize(new Dimension(width/1000*104, height/20));
         changeUsernameFieldD.setMaximumSize(new Dimension(width/1000*104, height/20));
-        changeUsernameFieldD.setBorder(BorderFactory.createMatteBorder(0,0,0,accountNamePanel.getPreferredSize().width/15, AppThemeColors.SECONDARY));
+        changeUsernameFieldD.setFont(new Font("Arial", Font.BOLD,height/50));
         changeUsernameFieldD.setText(UserData.getUserName());
 
         changeUsernameFieldD.addActionListener(_ -> {
@@ -1625,11 +1670,12 @@ public class SettingsPanel extends JPanel{
         accountNamePanelD.add(changeUsernameFieldD, BorderLayout.EAST);
         accountNamePanelD.setName("changeusernamepanelchange username");
 
-        accountPFPPanelD.setBackground(AppThemeColors.SECONDARY);
-        accountPFPPanelD.setPreferredSize(new Dimension(new Dimension(width-width/10*7, height/10)));
-        accountPFPPanelD.setName("pfppanelprofilepictureprofile picture");
 
-        accountPFPPanelD.add(chooseProfilePictureButtonD);
+        accountPFPPanelD.add(pfpLabelCenteringPanelD);
+        pfpLabelCenteringPanelD.add(Box.createHorizontalGlue());
+        pfpLabelCenteringPanelD.add(choosePFPLabelD);
+        pfpLabelCenteringPanelD.add(Box.createHorizontalGlue());
+        accountPFPPanelD.add(chooseProfilePictureButtonD, BorderLayout.EAST);
 
 
         allPanels.add(accountAgePanelD);
@@ -1749,6 +1795,10 @@ public class SettingsPanel extends JPanel{
 
         CreateExerciseModule.instance.repaint();
         CreateExerciseModule.instance.revalidate();
+
+        ExercisePanel.instance.repaint();
+        ExercisePanel.instance.revalidate();
+        ExercisePanel.instance.updateColors();
 
         ApplicationWindow.updateBackground();
 

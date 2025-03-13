@@ -1448,6 +1448,8 @@ public class ChatPanel extends JPanel {
 
     public void updateColors(){
         leftPanelThatHoldsEverything.setBackground(AppThemeColors.panelColor);
+        leftTopPanel.setBackground(AppThemeColors.PRIMARY);
+        leftBottomPanel.setBackground(AppThemeColors.panelColor);
         belowPanel.setBackground(AppThemeColors.SECONDARY);
         messengerTextBox.setForeground(AppThemeColors.foregroundColor);
         messengerTextBox.setBackground(AppThemeColors.buttonBG);
@@ -1462,6 +1464,18 @@ public class ChatPanel extends JPanel {
         messagesScrollPane.setBackground(AppThemeColors.textFieldColor);
         friendsScrollPane.getViewport().setBackground(AppThemeColors.panelColor);
         messageStorage.setBackground(AppThemeColors.textFieldColor);
+        requestsPanel.setBackground(AppThemeColors.SECONDARY);
+        requestScrollPane.getViewport().setBackground(AppThemeColors.panelColor);
+        requestsText.setBackground(AppThemeColors.panelColor);
+        requestsText.setForeground(AppThemeColors.foregroundColor);
+        sendRequestText.setBackground(AppThemeColors.panelColor);
+        sendRequestText.setForeground(AppThemeColors.foregroundColor);
+        friendRequestMailText.setBackground(AppThemeColors.textFieldColor);
+        friendRequestMailText.setForeground(AppThemeColors.foregroundColor);
+        friendsText.setBackground(AppThemeColors.panelColor);
+        friendsText.setForeground(AppThemeColors.foregroundColor);
+        mainMiddlePanel.setBackground(AppThemeColors.PRIMARY);
+        mainMiddleTopPanel.setBackground(AppThemeColors.PRIMARY);
     }
 
 
