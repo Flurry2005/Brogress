@@ -1426,13 +1426,6 @@ public class ChatPanel extends JPanel {
 
             }
 
-
-
-
-
-
-
-
             selectedFriend.getMessageStorage().revalidate();
             selectedFriend.getMessageStorage().repaint();
 
@@ -1463,7 +1456,7 @@ public class ChatPanel extends JPanel {
         mainRightPanel.setBackground(AppThemeColors.textFieldColor);
         messagesScrollPane.setBackground(AppThemeColors.textFieldColor);
         friendsScrollPane.getViewport().setBackground(AppThemeColors.panelColor);
-        messageStorage.setBackground(AppThemeColors.textFieldColor);
+        messageStorage.setBackground(AppThemeColors.panelColor);
         requestsPanel.setBackground(AppThemeColors.SECONDARY);
         requestScrollPane.getViewport().setBackground(AppThemeColors.panelColor);
         requestsText.setBackground(AppThemeColors.panelColor);
