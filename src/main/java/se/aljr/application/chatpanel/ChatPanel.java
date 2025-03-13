@@ -109,7 +109,7 @@ public class ChatPanel extends JPanel {
 
         mainRightPanel.setLayout(new BoxLayout(mainRightPanel, BoxLayout.Y_AXIS));
         mainRightPanel.setOpaque(true);
-        mainRightPanel.setBackground(AppThemeColors.textFieldColor);
+        mainRightPanel.setBackground(AppThemeColors.panelColor);
         mainRightPanel.setPreferredSize(new Dimension(getPreferredSize().width / 2, getPreferredSize().height));
         mainRightPanel.setMinimumSize(mainRightPanel.getPreferredSize());
         mainRightPanel.setMaximumSize(mainRightPanel.getPreferredSize());
@@ -191,7 +191,7 @@ public class ChatPanel extends JPanel {
         messageStorage.setLayout(new BoxLayout(messageStorage, BoxLayout.Y_AXIS));
         messageStorage.setOpaque(true);
 //        messageStorage.setBackground(Color.YELLOW);
-        messageStorage.setBackground(AppThemeColors.textFieldColor);
+        messageStorage.setBackground(AppThemeColors.panelColor);
         messageStorage.setPreferredSize(null);
 
         messagesScrollPane.setOpaque(true);
@@ -961,7 +961,7 @@ public class ChatPanel extends JPanel {
                     {
                         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
                         setOpaque(true);
-                        setBackground(AppThemeColors.textFieldColor);
+                        setBackground(AppThemeColors.panelColor);
                         setPreferredSize(null);
                     }
                 });
@@ -1463,8 +1463,8 @@ public class ChatPanel extends JPanel {
         friendRequestMailText.setForeground(AppThemeColors.foregroundColor);
         //friendRequestMailText.setBackground(AppThemeColors.textFieldColor);
         clickToSendRequestButton.setForeground(AppThemeColors.foregroundColor);
-        mainRightPanel.setBackground(AppThemeColors.textFieldColor);
-        messagesScrollPane.setBackground(AppThemeColors.textFieldColor);
+        mainRightPanel.setBackground(AppThemeColors.panelColor);
+        messagesScrollPane.setBackground(AppThemeColors.panelColor);
         friendsScrollPane.getViewport().setBackground(AppThemeColors.panelColor);
         messageStorage.setBackground(AppThemeColors.panelColor);
         requestsPanel.setBackground(AppThemeColors.SECONDARY);
