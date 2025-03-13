@@ -71,7 +71,7 @@ public class TopBar extends JPanel {
     }
     private void init(){
         this.setLayout(new BorderLayout(0,0));
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 0));
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
         buttonPanel.setOpaque(false);
 
 
