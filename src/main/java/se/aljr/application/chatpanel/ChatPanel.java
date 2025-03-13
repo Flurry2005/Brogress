@@ -1396,7 +1396,7 @@ public class ChatPanel extends JPanel {
                 friendTextMessage.setLineWrap(true);
                 friendTextMessage.setWrapStyleWord(true);
                 friendTextMessage.setEditable(false);
-                friendTextMessage.setForeground(new Color(212, 215, 218));
+                friendTextMessage.setForeground(AppThemeColors.foregroundColor);
                 //friendTextMessage.setBorder(new LineBorder(AppThemeColors.PRIMARY,1,true));
                 friendTextMessage.setAlignmentY(Component.TOP_ALIGNMENT);
                 SwingUtilities.invokeLater(() -> {
