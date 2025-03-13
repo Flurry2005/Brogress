@@ -992,8 +992,8 @@ public class ChatPanel extends JPanel {
                         super.mouseReleased(e);
                         if(canSelectChat){
                             selectedFriend = friend;
-                            updateChat();
                             System.out.println(friend.getFriendName());
+                            messagesScrollPane.setViewportView(friend.getMessageStorage());
                             for (Friend friend1 : FriendsList.getFriendArrayList()){
                                 if(!friend1.getFriendName().equals(friend.getFriendName())){
                                     for(Component comp : friendsPanel.getComponents()){
