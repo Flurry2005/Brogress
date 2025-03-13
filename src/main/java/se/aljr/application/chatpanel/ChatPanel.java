@@ -202,7 +202,7 @@ public class ChatPanel extends JPanel {
         messagesScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         messagesScrollPane.getVerticalScrollBar().setPreferredSize(new Dimension(0, 0));
         messagesScrollPane.getVerticalScrollBar().setUnitIncrement((int) (getHeight()/110.5));
-        messagesScrollPane.getViewport().setBackground(Color.GREEN);
+        messagesScrollPane.getViewport().setBackground(AppThemeColors.panelColor);
         messagesScrollPane.setBorder(new LineBorder(new Color(70, 70, 70),getHeight()/663));
 
         messengerTextBox = new JTextArea();
@@ -942,6 +942,7 @@ public class ChatPanel extends JPanel {
 
     public static void updateFriends(){
         friendsPanel.removeAll();
+
         if(instance!=null){
             for (Friend friend : FriendsList.getFriendArrayList()) {
                 ImageIcon userIcon = FirebaseManager.readDBprofilePicture(friend.getFriendEmail());
@@ -960,9 +961,10 @@ public class ChatPanel extends JPanel {
                 friend.setMessageStorage(new JPanel(){
                     {
                         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-                        setOpaque(true);
+                        setOpaque(false);
                         setBackground(AppThemeColors.panelColor);
                         setPreferredSize(null);
+
                     }
                 });
 
@@ -1464,7 +1466,7 @@ public class ChatPanel extends JPanel {
         //friendRequestMailText.setBackground(AppThemeColors.textFieldColor);
         clickToSendRequestButton.setForeground(AppThemeColors.foregroundColor);
         mainRightPanel.setBackground(AppThemeColors.panelColor);
-        messagesScrollPane.setBackground(AppThemeColors.panelColor);
+        messagesScrollPane.getViewport().setBackground(AppThemeColors.panelColor);
         friendsScrollPane.getViewport().setBackground(AppThemeColors.panelColor);
         messageStorage.setBackground(AppThemeColors.panelColor);
         requestsPanel.setBackground(AppThemeColors.SECONDARY);

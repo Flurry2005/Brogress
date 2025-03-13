@@ -1559,12 +1559,9 @@ public class SettingsPanel extends JPanel{
         weightLabelCenteringPanelD.add(Box.createHorizontalGlue());
         accountWeightPanelD.add(weightDropDownD, BorderLayout.EAST);
 
-
-
-
         accountPFPPanelD.setBackground(AppThemeColors.SECONDARY);
         accountPFPPanelD.setLayout(new BorderLayout());
-        accountPFPPanelD.setPreferredSize(new Dimension(width-width/10*9, height/10));
+        accountPFPPanelD.setPreferredSize(new Dimension(new Dimension(width-width/10*7, height/10)));
         accountPFPPanelD.setName("pfppanelprofilepictureprofile picture");
 
         pfpLabelCenteringPanelD.setBackground(Color.green);
@@ -1635,6 +1632,7 @@ public class SettingsPanel extends JPanel{
         accountNamePanelD.setBackground(AppThemeColors.SECONDARY);
         accountNamePanelD.setLayout(new BorderLayout());
         accountNamePanelD.setPreferredSize(new Dimension(width-width/10*7, height/15));
+        accountNamePanelD.setName("changeusernamepanelchange username");
 
         usernameLabelCenteringPanelD.setBackground(Color.green);
         usernameLabelCenteringPanelD.setLayout(new BoxLayout(usernameLabelCenteringPanelD, BoxLayout.X_AXIS));
@@ -1668,7 +1666,7 @@ public class SettingsPanel extends JPanel{
         usernameLabelCenteringPanelD.add(changeUsernameLabelD);
         usernameLabelCenteringPanelD.add(Box.createHorizontalGlue());
         accountNamePanelD.add(changeUsernameFieldD, BorderLayout.EAST);
-        accountNamePanelD.setName("changeusernamepanelchange username");
+
 
 
         accountPFPPanelD.add(pfpLabelCenteringPanelD);
