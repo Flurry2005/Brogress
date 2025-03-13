@@ -202,6 +202,7 @@ public class CreateExerciseModule extends JPanel {
         JButton addExercise = new JButton("Create new exercise");
         addExercise.setMaximumSize(new Dimension(textPanel.getPreferredSize().width, parentPanel.getPreferredSize().height / 15));
         addExercise.setPreferredSize(new Dimension(textPanel.getPreferredSize().width, parentPanel.getPreferredSize().height / 15));
+        addExercise.setFocusable(false);
         addExercise.setMinimumSize(addExercise.getPreferredSize());
         addExercise.setAlignmentX(Component.CENTER_ALIGNMENT);
         addExercise.setBackground(new Color(46, 148, 76));

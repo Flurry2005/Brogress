@@ -183,22 +183,26 @@ public class ExercisePanel extends JPanel {
         sortMuscleButton.setBackground(AppThemeColors.PRIMARY);
         sortMuscleButton.setForeground(AppThemeColors.foregroundColor);
         sortMuscleButton.setPreferredSize(new Dimension((int) (searchContainer.getPreferredSize().getWidth() / 4), searchContainer.getPreferredSize().height/3));
+        sortMuscleButton.setFocusable(false);
         sortMuscleButton.setBorder(new LineBorder(new Color(80, 73, 69), 1, true));
 
         showFavorites.setForeground(AppThemeColors.foregroundColor);
         showFavorites.setBackground(AppThemeColors.PRIMARY);
         showFavorites.setPreferredSize(new Dimension(searchContainer.getPreferredSize().width / 4, searchContainer.getPreferredSize().height/3));
+        showFavorites.setFocusable(false);
         showFavorites.setBorder(new LineBorder(new Color(80, 73, 69), 1, true));
 
         myExercises.setForeground(AppThemeColors.foregroundColor);
         myExercises.setBackground(AppThemeColors.PRIMARY);
         myExercises.setPreferredSize(new Dimension(searchContainer.getPreferredSize().width / 4, searchContainer.getPreferredSize().height/3));
+        myExercises.setFocusable(false);
         myExercises.setBorder(new LineBorder(new Color(80, 73, 69), 1, true));
 
         createExerciseButton.setBackground(new Color(46, 148, 76));
         createExerciseButton.setText("New exercise");
         createExerciseButton.setForeground(Color.white);
         createExerciseButton.setBorder(new LineBorder(new Color(80, 73, 69), 1, true));
+        createExerciseButton.setFocusable(false);
         createExerciseButton.setPreferredSize(new Dimension(searchContainer.getPreferredSize().width / 4, searchContainer.getPreferredSize().height/3));
         createExerciseButton.setMaximumSize(createExerciseButton.getPreferredSize());
         createExerciseButton.setMinimumSize(createExerciseButton.getPreferredSize());
@@ -1059,6 +1063,7 @@ public class ExercisePanel extends JPanel {
         formText.setForeground(AppThemeColors.foregroundColor);
         showFavorites.setForeground(AppThemeColors.foregroundColor);
         muscleJList.setForeground(AppThemeColors.foregroundColor);
+        sortMuscleButton.setBackground(AppThemeColors.PRIMARY);
         sortMuscleButton.setForeground(AppThemeColors.foregroundColor);
         myExercises.setForeground(AppThemeColors.foregroundColor);
         aboutLabel.setForeground(AppThemeColors.foregroundColor);

@@ -15,6 +15,7 @@ import javax.swing.plaf.basic.BasicTextFieldUI;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -54,6 +55,7 @@ public class ChatPanel extends JPanel {
     public static boolean canSelectChat = false;
 
     private boolean canSendMessage = true;
+    private boolean isUpdatingRequestPanel = false;
 
     JPanel leftPanelThatHoldsEverything;
     JPanel belowPanel;
@@ -307,7 +309,7 @@ public class ChatPanel extends JPanel {
         mainMiddlePanel = new JPanel();
         mainMiddlePanel.setOpaque(false);
         mainMiddlePanel.setLayout(new BoxLayout(mainMiddlePanel, BoxLayout.Y_AXIS));
-        mainMiddlePanel.setPreferredSize(new Dimension(getPreferredSize().width / 5, getPreferredSize().height));
+        mainMiddlePanel.setPreferredSize(new Dimension(mainPanel.getPreferredSize().width / 5, mainPanel.getPreferredSize().height));
         mainMiddlePanel.setMinimumSize(mainMiddlePanel.getPreferredSize());
         mainMiddlePanel.setMaximumSize(mainMiddlePanel.getPreferredSize());
 
@@ -350,7 +352,6 @@ public class ChatPanel extends JPanel {
         }
 
         updateFriends();
-        updateRequestsPanel();
 
         /*--------------------Left panel--------------------*/
 
@@ -490,7 +491,7 @@ public class ChatPanel extends JPanel {
         });
 
         requestScrollPane.setOpaque(true);
-        requestScrollPane.setPreferredSize(new Dimension(mainMiddlePanel.getPreferredSize().width, (int)(mainMiddlePanel.getPreferredSize().height/1.10-leftBottomPanel.getPreferredSize().height)));
+        requestScrollPane.setPreferredSize(new Dimension(instance.getPreferredSize().width / 5, (int)(mainMiddlePanel.getPreferredSize().height/1.10-leftBottomPanel.getPreferredSize().height)));
         requestScrollPane.setMinimumSize(requestScrollPane.getPreferredSize());
         requestScrollPane.setMaximumSize(requestScrollPane.getPreferredSize());
         requestScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -525,6 +526,7 @@ public class ChatPanel extends JPanel {
         this.add(Box.createHorizontalGlue());
         this.add(mainPanel);
         this.add(Box.createHorizontalGlue());
+        updateRequestsPanel();
         this.revalidate();
         this.repaint();
         this.addComponentListener(new ComponentAdapter() {
@@ -764,19 +766,21 @@ public class ChatPanel extends JPanel {
 
                     friendRequestPanel.setPreferredSize(new Dimension(friendsScrollPane.getPreferredSize().width,
                             (int) (friendRequest.getImageAvatarFriendRequest().getPreferredSize().height * 1.1)));
-
+                    JPanel friendAvatarPanel = null;
                     for(Component comp1 : friendRequestPanel.getComponents()){
                         if(comp1.getName()!=null){
+
                             if(comp1.getName().equals("friendAvatarPanel")){
-                                JPanel friendAvatarPanel = (JPanel) comp1;
+                                friendAvatarPanel = (JPanel) comp1;
                                 friendAvatarPanel.setPreferredSize(new Dimension((int) (friendRequest.getImageAvatarFriendRequest().getPreferredSize().width * 1.3), friendRequest.getImageAvatarFriendRequest().getPreferredSize().height));
                                 friendAvatarPanel.setMaximumSize(friendAvatarPanel.getPreferredSize());
                             }
                             if(comp1.getName().equals("friendNameLabel")){
                                 JLabel friendNameLabel = (JLabel) comp1;
                                 friendNameLabel.setFont(CustomFont.getFont().deriveFont(instance.getPreferredSize().width / 65f));
-                                friendNameLabel.setMaximumSize(new Dimension(friendsScrollPane.getPreferredSize().width - friendRequest.getImageAvatarFriendRequest().getPreferredSize().width,
+                                friendNameLabel.setPreferredSize(new Dimension((int) (friendRequestPanel.getPreferredSize().width-friendAvatarPanel.getPreferredSize().width-(instance.getPreferredSize().width/35.4333333)*2.5),
                                         friendRequestPanel.getPreferredSize().height));
+                                friendNameLabel.setForeground(AppThemeColors.foregroundColor);
                             }
                             if(comp1.getName().equals("acceptFriendRequestButton")){
                                 JButton acceptFriendRequestButton = (JButton) comp1;
@@ -945,7 +949,12 @@ public class ChatPanel extends JPanel {
 
         if(instance!=null){
             for (Friend friend : FriendsList.getFriendArrayList()) {
-                ImageIcon userIcon = FirebaseManager.readDBprofilePicture(friend.getFriendEmail());
+                ImageIcon userIcon;
+                if(friend.getProfilePicture()==null){
+                    userIcon = FirebaseManager.readDBprofilePicture(friend.getFriendEmail());
+                }else{
+                    userIcon=friend.getProfilePicture();
+                }
 
                 Image scaledFriendProfilePicture = userIcon.getImage().getScaledInstance(instance.getPreferredSize().width / 25, instance.getPreferredSize().width / 25, Image.SCALE_SMOOTH);
                 ImageIcon scaledFriendProfilePictureIcon = new ImageIcon(scaledFriendProfilePicture);
@@ -958,15 +967,17 @@ public class ChatPanel extends JPanel {
                 friend.getImageAvatarSocial().setBorderSize(instance.getPreferredSize().height/221);
                 friend.getImageAvatarSocial().setBorderSpace((int) (instance.getPreferredSize().height/331.5));
 
-                friend.setMessageStorage(new JPanel(){
-                    {
-                        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-                        setOpaque(false);
-                        setBackground(AppThemeColors.panelColor);
-                        setPreferredSize(null);
+                if(friend.getMessageStorage()==null){
+                    friend.setMessageStorage(new JPanel(){
+                        {
+                            setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+                            setOpaque(false);
+                            setBackground(AppThemeColors.panelColor);
+                            setPreferredSize(null);
 
-                    }
-                });
+                        }
+                    });
+                }
 
 
                 JPanel friendPanel = new JPanel();
@@ -1021,203 +1032,209 @@ public class ChatPanel extends JPanel {
                 friendPanel.add(Box.createHorizontalGlue());
 
                 friendsPanel.add(friendPanel);
-
+                friendsPanel.repaint();
 
             }
+            friendsScrollPane.setViewportView(friendsPanel);
         }
     }
 
     public static void updateRequestsPanel() {
-        requestsPanel.removeAll();
-        FriendRequestList.getFriendRequestList().clear();
+
+        while(instance==null){
+
+        }
         HashMap<String, String> friendRequestHashMap = FirebaseManager.readDBgetFriendRequests(UserData.getEmail());
         for (Map.Entry<String, String> entry : friendRequestHashMap.entrySet()) {
-            FriendRequestList.getFriendRequestList().add(new FriendRequest() {
-                {
-                    setFriendEmail(entry.getKey());
-                    setFriendName(entry.getValue());
+            boolean alreadyExists = false;
+            for(FriendRequest friendRequest : FriendRequestList.getFriendRequestList()){
+                if(friendRequest.getFriendEmail().equals(entry.getKey())){
+                    alreadyExists = true;
                 }
-            });
-        }
+            }
+            if(!alreadyExists){
+                FriendRequest friendRequest= new FriendRequest() {
+                    {
+                        setFriendEmail(entry.getKey());
+                        setFriendName(entry.getValue());
+                    }
+                };
+                FriendRequestList.getFriendRequestList().add(friendRequest);
+                ImageIcon userIcon = FirebaseManager.readDBprofilePicture(friendRequest.getFriendEmail());
+                friendRequest.setProfilePicture(userIcon);
+                Image scaledFriendProfilePicture = userIcon.getImage().getScaledInstance(instance.getPreferredSize().width / 25, instance.getPreferredSize().width / 25, Image.SCALE_SMOOTH);
+                ImageIcon scaledFriendProfilePictureIcon = new ImageIcon(scaledFriendProfilePicture);
 
-        for (FriendRequest friendRequest : FriendRequestList.getFriendRequestList()) {
-            ImageIcon userIcon = FirebaseManager.readDBprofilePicture(friendRequest.getFriendEmail());
-            friendRequest.setProfilePicture(userIcon);
-            Image scaledFriendProfilePicture = userIcon.getImage().getScaledInstance(instance.getPreferredSize().width / 25, instance.getPreferredSize().width / 25, Image.SCALE_SMOOTH);
-            ImageIcon scaledFriendProfilePictureIcon = new ImageIcon(scaledFriendProfilePicture);
-
-            friendRequest.getImageAvatarFriendRequest().setPreferredSize(new Dimension(instance.getPreferredSize().width / 25, instance.getPreferredSize().width / 25));
-            friendRequest.getImageAvatarFriendRequest().setMinimumSize(friendRequest.getImageAvatarFriendRequest().getPreferredSize());
-            friendRequest.getImageAvatarFriendRequest().setMaximumSize(friendRequest.getImageAvatarFriendRequest().getPreferredSize());
-            friendRequest.getImageAvatarFriendRequest().setBorderSize(instance.getPreferredSize().height/221);
-            friendRequest.getImageAvatarFriendRequest().setBorderSpace((int) (instance.getPreferredSize().height/331.5));
-            friendRequest.getImageAvatarFriendRequest().setImage(scaledFriendProfilePictureIcon);
-            friendRequest.getImageAvatarFriendRequest().setAlignmentY(Component.CENTER_ALIGNMENT);
-
-
-            JPanel friendRequestPanel = new JPanel();
-            friendRequestPanel.setName("friendRequestPanel");
-            friendRequestPanel.setOpaque(false);
-            friendRequestPanel.setPreferredSize(new Dimension(friendsScrollPane.getPreferredSize().width, (int) (friendRequest.getImageAvatarFriendRequest().getPreferredSize().height * 1.1)));
-            friendRequestPanel.setLayout(new BoxLayout(friendRequestPanel, BoxLayout.X_AXIS));
-            friendRequestPanel.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    super.mouseClicked(e);
-                    System.out.println(friendRequest.getFriendName());
-                }
-            });
+                friendRequest.getImageAvatarFriendRequest().setPreferredSize(new Dimension(instance.getPreferredSize().width / 25, instance.getPreferredSize().width / 25));
+                friendRequest.getImageAvatarFriendRequest().setMinimumSize(friendRequest.getImageAvatarFriendRequest().getPreferredSize());
+                friendRequest.getImageAvatarFriendRequest().setMaximumSize(friendRequest.getImageAvatarFriendRequest().getPreferredSize());
+                friendRequest.getImageAvatarFriendRequest().setBorderSize(instance.getPreferredSize().height/221);
+                friendRequest.getImageAvatarFriendRequest().setBorderSpace((int) (instance.getPreferredSize().height/331.5));
+                friendRequest.getImageAvatarFriendRequest().setImage(scaledFriendProfilePictureIcon);
+                friendRequest.getImageAvatarFriendRequest().setAlignmentY(Component.CENTER_ALIGNMENT);
 
 
+                JPanel friendRequestPanel = new JPanel();
+                friendRequestPanel.setName("friendRequestPanel");
+                friendRequestPanel.setOpaque(false);
+                friendRequestPanel.setPreferredSize(new Dimension(friendsScrollPane.getPreferredSize().width,
+                        (int) (friendRequest.getImageAvatarFriendRequest().getPreferredSize().height * 1.1)));
+                friendRequestPanel.setLayout(new BoxLayout(friendRequestPanel, BoxLayout.X_AXIS));
+                friendRequestPanel.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        super.mouseClicked(e);
+                        System.out.println(friendRequest.getFriendName());
+                    }
+                });
 
 
-            JPanel friendAvatarPanel = new JPanel();
-            friendAvatarPanel.setName("friendAvatarPanel");
-            friendAvatarPanel.setOpaque(false);
-            friendAvatarPanel.setLayout(new BoxLayout(friendAvatarPanel, BoxLayout.X_AXIS));
-            friendAvatarPanel.setPreferredSize(new Dimension((int) (friendRequest.getImageAvatarFriendRequest().getPreferredSize().width * 1.3), friendRequest.getImageAvatarFriendRequest().getPreferredSize().height));
-            friendAvatarPanel.setMaximumSize(friendAvatarPanel.getPreferredSize());
-            friendAvatarPanel.setAlignmentY(Component.CENTER_ALIGNMENT);
-
-            JButton acceptFriendRequestButton = new JButton("✓");
-            acceptFriendRequestButton.setUI(new BasicButtonUI() {
-                @Override
-                public void paint(Graphics g, JComponent c) {
-                    // Måla bakgrunden med rundade hörn
-                    Graphics2D g2 = (Graphics2D) g.create();
-                    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                    g2.setColor(new Color(70, 208, 71)); // Grön färg
-                    g2.fillRoundRect(0, 0, c.getWidth(), c.getHeight(), instance.getHeight()/50, instance.getHeight()/50); // Rundade hörn
-
-                    // Måla texten (den kommer att målas av Swing, så vi ser till att inte skriva över den)
-                    super.paint(g, c);
-
-                    g2.dispose(); // Frigör Graphics2D
-                }
-                @Override
-                protected void paintButtonPressed(Graphics g, AbstractButton b) {
-                    Graphics2D g2 = (Graphics2D) g.create();
-                    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                    g2.setColor(new Color(64, 136, 65)); // Pressed button color
-                    g2.fillRoundRect(0, 0, b.getWidth(), b.getHeight(), instance.getHeight()/50, instance.getHeight()/50); // Rounded corners
-                    g2.dispose();
-                }
-            });
-            acceptFriendRequestButton.setName("acceptFriendRequestButton");
-            acceptFriendRequestButton.setFont(new Font("SansSerif", Font.BOLD, (int) (instance.getHeight()/33.15)));
-            acceptFriendRequestButton.setMargin(new Insets(0, 0, 0, 0));
-            acceptFriendRequestButton.setFocusPainted(false);
-            acceptFriendRequestButton.setFocusable(false);
-            acceptFriendRequestButton.setBorderPainted(false);
-            acceptFriendRequestButton.setContentAreaFilled(false);
-            acceptFriendRequestButton.setForeground(AppThemeColors.foregroundColor);
-            acceptFriendRequestButton.setPreferredSize(new Dimension((int) (instance.getWidth()/35.4333333), (int) (instance.getHeight()/26.52)));
-            acceptFriendRequestButton.setAlignmentY(Component.CENTER_ALIGNMENT);
-            acceptFriendRequestButton.setMinimumSize(acceptFriendRequestButton.getPreferredSize());
-            acceptFriendRequestButton.setMaximumSize(acceptFriendRequestButton.getPreferredSize());
-            acceptFriendRequestButton.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    FriendsList.getFriendArrayList().add(new Friend() {
-                        {
-                            setChat(new ArrayList<>());
-                            setFriendEmail(friendRequest.getFriendEmail());
-                            setFriendName(friendRequest.getFriendName());
 
 
-                            requestsPanel.remove(friendRequestPanel);
-                        }
-                    });
-                    FirebaseManager.writeDBacceptFriendRequest(friendRequest.getFriendEmail());
-                    instance.repaint();
-                    instance.revalidate();
-                }
-            });
+                JPanel friendAvatarPanel = new JPanel();
+                friendAvatarPanel.setName("friendAvatarPanel");
+                friendAvatarPanel.setOpaque(false);
+                friendAvatarPanel.setLayout(new BoxLayout(friendAvatarPanel, BoxLayout.X_AXIS));
+                friendAvatarPanel.setPreferredSize(new Dimension((int) (friendRequest.getImageAvatarFriendRequest().getPreferredSize().width * 1.3), friendRequest.getImageAvatarFriendRequest().getPreferredSize().height));
+                friendAvatarPanel.setMaximumSize(friendAvatarPanel.getPreferredSize());
+                friendAvatarPanel.setAlignmentY(Component.CENTER_ALIGNMENT);
 
-            JButton denyFriendRequestButton = new JButton("X");
-            denyFriendRequestButton.setUI(new BasicButtonUI() {
-                @Override
-                public void paint(Graphics g, JComponent c) {
-                    // Måla bakgrunden med rundade hörn
-                    Graphics2D g2 = (Graphics2D) g.create();
-                    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                    g2.setColor(new Color(201, 31, 31)); // Grön färg
-                    g2.fillRoundRect(0, 0, c.getWidth(), c.getHeight(), instance.getHeight()/50, instance.getHeight()/50); // Rundade hörn
+                JButton acceptFriendRequestButton = new JButton("✓");
+                acceptFriendRequestButton.setUI(new BasicButtonUI() {
+                    @Override
+                    public void paint(Graphics g, JComponent c) {
+                        // Måla bakgrunden med rundade hörn
+                        Graphics2D g2 = (Graphics2D) g.create();
+                        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                        g2.setColor(new Color(70, 208, 71)); // Grön färg
+                        g2.fillRoundRect(0, 0, c.getWidth(), c.getHeight(), instance.getHeight()/50, instance.getHeight()/50); // Rundade hörn
 
-                    // Måla texten (den kommer att målas av Swing, så vi ser till att inte skriva över den)
-                    super.paint(g, c);
+                        // Måla texten (den kommer att målas av Swing, så vi ser till att inte skriva över den)
+                        super.paint(g, c);
 
-                    g2.dispose(); // Frigör Graphics2D
-                }
-                @Override
-                protected void paintButtonPressed(Graphics g, AbstractButton b) {
-                    Graphics2D g2 = (Graphics2D) g.create();
-                    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                    g2.setColor(new Color(178, 27, 27)); // Pressed button color
-                    g2.fillRoundRect(0, 0, b.getWidth(), b.getHeight(), instance.getHeight()/50, instance.getHeight()/50); // Rounded corners
-                    g2.dispose();
-                }
-            });
-            denyFriendRequestButton.setName("denyFriendRequestButton");
-            denyFriendRequestButton.setFont(new Font("Arial", Font.BOLD, (int) (instance.getHeight()/33.15)));
-            denyFriendRequestButton.setMargin(new Insets(0, 0, 0, 0));
-            denyFriendRequestButton.setFocusPainted(false);
-            denyFriendRequestButton.setFocusable(false);
-            denyFriendRequestButton.setBorderPainted(false);
-            denyFriendRequestButton.setContentAreaFilled(false);
-            denyFriendRequestButton.setForeground(AppThemeColors.foregroundColor);
-            denyFriendRequestButton.setPreferredSize(new Dimension((int) (instance.getWidth()/35.4333333), (int) (instance.getHeight()/26.52)));
-            denyFriendRequestButton.setAlignmentY(Component.CENTER_ALIGNMENT);
-            denyFriendRequestButton.setMinimumSize(denyFriendRequestButton.getPreferredSize());
-            denyFriendRequestButton.setMaximumSize(denyFriendRequestButton.getPreferredSize());
-            denyFriendRequestButton.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
+                        g2.dispose(); // Frigör Graphics2D
+                    }
+                    @Override
+                    protected void paintButtonPressed(Graphics g, AbstractButton b) {
+                        Graphics2D g2 = (Graphics2D) g.create();
+                        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                        g2.setColor(new Color(64, 136, 65)); // Pressed button color
+                        g2.fillRoundRect(0, 0, b.getWidth(), b.getHeight(), instance.getHeight()/50, instance.getHeight()/50); // Rounded corners
+                        g2.dispose();
+                    }
+                });
+                acceptFriendRequestButton.setName("acceptFriendRequestButton");
+                acceptFriendRequestButton.setFont(new Font("SansSerif", Font.BOLD, (int) (instance.getHeight()/33.15)));
+                acceptFriendRequestButton.setMargin(new Insets(0, 0, 0, 0));
+                acceptFriendRequestButton.setFocusPainted(false);
+                acceptFriendRequestButton.setFocusable(false);
+                acceptFriendRequestButton.setBorderPainted(false);
+                acceptFriendRequestButton.setContentAreaFilled(false);
+                acceptFriendRequestButton.setForeground(AppThemeColors.foregroundColor);
+                acceptFriendRequestButton.setPreferredSize(new Dimension((int) (friendRequestPanel.getPreferredSize().width/7.2), (int) (friendRequestPanel.getPreferredSize().width/7.2)));
+                acceptFriendRequestButton.setAlignmentY(Component.CENTER_ALIGNMENT);
+                acceptFriendRequestButton.setMinimumSize(acceptFriendRequestButton.getPreferredSize());
+                acceptFriendRequestButton.setMaximumSize(acceptFriendRequestButton.getPreferredSize());
+                acceptFriendRequestButton.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        FriendsList.getFriendArrayList().add(new Friend() {
+                            {
+                                setChat(new ArrayList<>());
+                                setFriendEmail(friendRequest.getFriendEmail());
+                                setFriendName(friendRequest.getFriendName());
+
+                            }
+                        });
+                        FirebaseManager.writeDBacceptFriendRequest(friendRequest.getFriendEmail());
+                        requestsPanel.remove(friendRequestPanel);
+                        FriendRequestList.getFriendRequestList().remove(friendRequest);
+                        instance.repaint();
+                        instance.revalidate();
+                    }
+                });
+
+                JButton denyFriendRequestButton = new JButton("X");
+                denyFriendRequestButton.setUI(new BasicButtonUI() {
+                    @Override
+                    public void paint(Graphics g, JComponent c) {
+                        // Måla bakgrunden med rundade hörn
+                        Graphics2D g2 = (Graphics2D) g.create();
+                        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                        g2.setColor(new Color(201, 31, 31)); // Grön färg
+                        g2.fillRoundRect(0, 0, c.getWidth(), c.getHeight(), instance.getHeight()/50, instance.getHeight()/50); // Rundade hörn
+
+                        // Måla texten (den kommer att målas av Swing, så vi ser till att inte skriva över den)
+                        super.paint(g, c);
+
+                        g2.dispose(); // Frigör Graphics2D
+                    }
+                    @Override
+                    protected void paintButtonPressed(Graphics g, AbstractButton b) {
+                        Graphics2D g2 = (Graphics2D) g.create();
+                        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                        g2.setColor(new Color(178, 27, 27)); // Pressed button color
+                        g2.fillRoundRect(0, 0, b.getWidth(), b.getHeight(), instance.getHeight()/50, instance.getHeight()/50); // Rounded corners
+                        g2.dispose();
+                    }
+                });
+                denyFriendRequestButton.setName("denyFriendRequestButton");
+                denyFriendRequestButton.setFont(new Font("Arial", Font.BOLD, (int) (instance.getHeight()/33.15)));
+                denyFriendRequestButton.setMargin(new Insets(0, 0, 0, 0));
+                denyFriendRequestButton.setFocusPainted(false);
+                denyFriendRequestButton.setFocusable(false);
+                denyFriendRequestButton.setBorderPainted(false);
+                denyFriendRequestButton.setContentAreaFilled(false);
+                denyFriendRequestButton.setForeground(AppThemeColors.foregroundColor);
+                denyFriendRequestButton.setPreferredSize(new Dimension(acceptFriendRequestButton.getPreferredSize().width, (int) (friendRequestPanel.getPreferredSize().width/7.2)));
+                denyFriendRequestButton.setAlignmentY(Component.CENTER_ALIGNMENT);
+                denyFriendRequestButton.setMinimumSize(denyFriendRequestButton.getPreferredSize());
+                denyFriendRequestButton.setMaximumSize(denyFriendRequestButton.getPreferredSize());
+                denyFriendRequestButton.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
                         requestsPanel.remove(friendRequestPanel);
                         FirebaseManager.writeDBdenyFriendRequest(friendRequest.getFriendEmail());
-
+                        FriendRequestList.getFriendRequestList().remove(friendRequest);
                         instance.repaint();
                         instance.revalidate();
 
-                }
-            });
+                    }
+                });
 
 
 
 
-            JLabel friendNameLabel = new JLabel();
-            friendNameLabel.setName("friendNameLabel");
-            SwingUtilities.invokeLater(()->{
-                String limitedText = getLimitedText(friendNameLabel,
-                        FriendRequestList.getFriendRequestList().get(FriendRequestList.getFriendRequestList().indexOf(friendRequest)).getFriendName(),
-                        (int) (friendRequestPanel.getPreferredSize().width-friendAvatarPanel.getPreferredSize().width-(instance.getPreferredSize().width/35.4333333)*2.1));
-                System.out.println( (friendRequestPanel.getPreferredSize().width+" "+friendAvatarPanel.getPreferredSize().width+" "+(instance.getPreferredSize().width/35.4333333)*2.1));
-                friendNameLabel.setText(limitedText);
-            });
-            friendNameLabel.setFont(CustomFont.getFont().deriveFont(instance.getPreferredSize().width / 65f));
-            friendNameLabel.setMaximumSize(new Dimension((int) (friendsScrollPane.getPreferredSize().width - friendRequest.getImageAvatarFriendRequest().getPreferredSize().width-denyFriendRequestButton.getPreferredSize().width*2.1),
-                    friendRequestPanel.getPreferredSize().height));
-            friendNameLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-            friendNameLabel.setForeground(AppThemeColors.foregroundColor);
+                JLabel friendNameLabel = new JLabel();
+                friendNameLabel.setName("friendNameLabel");
+                SwingUtilities.invokeLater(()->{
+                    String limitedText = getLimitedText(friendNameLabel,
+                            friendRequest.getFriendName(),
+                            (int) (friendRequestPanel.getPreferredSize().width-friendAvatarPanel.getPreferredSize().width-(instance.getPreferredSize().width/35.4333333)*2.5));
+
+                    friendNameLabel.setText(limitedText);
+                });
+                friendNameLabel.setFont(CustomFont.getFont().deriveFont(instance.getPreferredSize().width / 65f));
+                friendNameLabel.setPreferredSize(new Dimension((int) (friendRequestPanel.getPreferredSize().width-friendAvatarPanel.getPreferredSize().width-(instance.getPreferredSize().width/35.4333333)*2.5),
+                        friendRequestPanel.getPreferredSize().height));
+                friendNameLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+                friendNameLabel.setForeground(AppThemeColors.foregroundColor);
 
 
 
-            friendAvatarPanel.add(Box.createHorizontalGlue());
-            friendAvatarPanel.add(FriendRequestList.getFriendRequestList().get(FriendRequestList.getFriendRequestList().indexOf(friendRequest)).getImageAvatarFriendRequest());
-            friendAvatarPanel.add(Box.createHorizontalGlue());
+                friendAvatarPanel.add(Box.createHorizontalGlue());
+                friendAvatarPanel.add(FriendRequestList.getFriendRequestList().get(FriendRequestList.getFriendRequestList().indexOf(friendRequest)).getImageAvatarFriendRequest());
+                friendAvatarPanel.add(Box.createHorizontalGlue());
 
-            friendRequestPanel.add(friendAvatarPanel);
-            friendRequestPanel.add(friendNameLabel);
-            friendRequestPanel.add(Box.createHorizontalGlue());
-            friendRequestPanel.add(acceptFriendRequestButton);
-            friendRequestPanel.add(denyFriendRequestButton);
+                friendRequestPanel.add(friendAvatarPanel);
+                friendRequestPanel.add(friendNameLabel);
+                friendRequestPanel.add(Box.createHorizontalGlue());
+                friendRequestPanel.add(acceptFriendRequestButton);
+                friendRequestPanel.add(denyFriendRequestButton);
+                requestsPanel.add(friendRequestPanel);
 
-
-            requestsPanel.add(friendRequestPanel);
-
-            requestScrollPane.setViewportView(requestsPanel);
-
-
+                requestScrollPane.setViewportView(requestsPanel);
+            }
         }
     }
 
@@ -1245,10 +1262,13 @@ public class ChatPanel extends JPanel {
 
         //System.out.println(selectedFriend);
         ArrayList<HashMap<String,String>> newMessages;
+        System.out.println(selectedFriend.firstLoadIn);
         if(selectedFriend.firstLoadIn){
             newMessages = selectedFriend.getChat();
 
         }else{
+            System.out.println(selectedFriend.getMessageStorage().getComponentCount());
+            System.out.println(selectedFriend.getChat().size());
             newMessages =  new ArrayList<>(selectedFriend.getChat().subList((selectedFriend.getMessageStorage().getComponentCount()/2), selectedFriend.getChat().size()));
         }
 
@@ -1481,6 +1501,7 @@ public class ChatPanel extends JPanel {
         friendsText.setForeground(AppThemeColors.foregroundColor);
         mainMiddlePanel.setBackground(AppThemeColors.PRIMARY);
         mainMiddleTopPanel.setBackground(AppThemeColors.PRIMARY);
+        rescaleRequests();
     }
 
 

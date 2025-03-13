@@ -76,7 +76,7 @@ public class ApplicationWindow extends JFrame  {
         SettingsPanel settingsPanel = new SettingsPanel((int)(getWidth()-(getWidth()/6.4)), getHeight()-getHeight()/13);
         settingsPanel.setVisible(false);
 
-        ChatPanel chatPanel = new ChatPanel((int)(getWidth()-(getWidth()/6.4)), getHeight()-getHeight()/13);
+        ChatPanel chatPanel = new ChatPanel((int)(getWidth()-(getWidth()/6.4)-2*getWidth()/150), getHeight()-getHeight()/18-2*getWidth()/150);
         chatPanel.setVisible(false);
 
         left_panel.add(menuPanel);
@@ -108,7 +108,7 @@ public class ApplicationWindow extends JFrame  {
 
                     exercisePanel.setPreferredSize(new Dimension((int)(getWidth()-(getWidth()/6.4)-2*getWidth()/150), getHeight()-top_bar.getHeight()-2*getWidth()/150));
 
-                    chatPanel.setPreferredSize(new Dimension((int)(getWidth()-(getWidth()/6.4)- (double) (2 * getWidth()) /150), getHeight()-top_bar.getHeight()-2*getWidth()/150));
+                    chatPanel.setPreferredSize(new Dimension((int)(getWidth()-(getWidth()/6.4)-2*getWidth()/150), getHeight()-top_bar.getHeight()-2*getWidth()/150));
                     chatPanel.setMaximumSize(chatPanel.getPreferredSize());
                     revalidate();
                     repaint();

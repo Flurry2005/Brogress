@@ -287,7 +287,7 @@ public class FirebaseManager {
                 // Skriv data och vänta på resultat
                 ApiFuture<WriteResult> result = docRef.update(newUserFriendRequests);
 
-                ChatPanel.updateRequestsPanel();
+                //ChatPanel.updateRequestsPanel();
 
                 try {
                     System.out.println("Uppdaterat vid: " + result.get().getUpdateTime());
@@ -500,13 +500,21 @@ public class FirebaseManager {
 
             if(!readOnly){
                 for(Map.Entry<String, String> entry : friendsMap.entrySet()){
-
-                    FriendsList.getFriendArrayList().add(new Friend(){
-                        {
-                            setFriendEmail(entry.getKey());
-                            setFriendName(entry.getValue());
+                    boolean addPerson = true;
+                    for(Friend friend : FriendsList.getFriendArrayList()){
+                        if(friend.getFriendEmail().equals(entry.getKey())){
+                            addPerson = false;
                         }
-                    });
+                    }
+                    if(addPerson){
+                        FriendsList.getFriendArrayList().add(new Friend(){
+                            {
+                                setFriendEmail(entry.getKey());
+                                setFriendName(entry.getValue());
+                            }
+                        });
+                    }
+
                 }
             }
             return friendsMap;
