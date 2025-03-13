@@ -462,7 +462,12 @@ public class ChatPanel extends JPanel {
                 }
                 friendRequestMailText.setForeground(Color.GREEN);
                 friendRequestMailText.setText("Friend request sent");
-                new Timer(1000, _ -> { friendRequestMailText.setText(""); friendRequestMailText.setForeground(AppThemeColors.foregroundColor); }) {
+                friendRequestMailText.setEditable(false);
+                new Timer(1000, _ -> {
+                    friendRequestMailText.setText("");
+                    friendRequestMailText.setForeground(AppThemeColors.foregroundColor);
+                    friendRequestMailText.setEditable(true);
+                }) {
                     {
                         setRepeats(false);
                     }
@@ -471,7 +476,12 @@ public class ChatPanel extends JPanel {
             }else{
                 friendRequestMailText.setForeground(Color.RED);
                 friendRequestMailText.setText("Invalid email adress");
-                new Timer(1000, _ -> { friendRequestMailText.setText(""); friendRequestMailText.setForeground(AppThemeColors.foregroundColor); }) {
+                friendRequestMailText.setEditable(false);
+                new Timer(1000, _ -> {
+                    friendRequestMailText.setText("");
+                    friendRequestMailText.setForeground(AppThemeColors.foregroundColor);
+                    friendRequestMailText.setEditable(true);
+                }) {
                     {
                         setRepeats(false);
                     }
