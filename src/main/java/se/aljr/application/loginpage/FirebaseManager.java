@@ -88,6 +88,10 @@ public class FirebaseManager {
                 }
 
                 if (snapshot != null && snapshot.exists()) {
+                    Friend previousSelectedFriend = null;
+                    if(ChatPanel.selectedFriend!=null){
+                        previousSelectedFriend=ChatPanel.selectedFriend;
+                    }
                     for(Friend friend : FriendsList.getFriendArrayList()){
 
 
@@ -106,7 +110,7 @@ public class FirebaseManager {
                     if(ChatPanel.canSelectChat){
                         ChatPanel.updateChat();
                     }
-
+                    ChatPanel.selectedFriend=previousSelectedFriend;
                     ChatPanel.canSelectChat = true;
                 }
 
