@@ -108,6 +108,8 @@ public class ApplicationWindow extends JFrame  {
 
                     exercisePanel.setPreferredSize(new Dimension((int)(getWidth()-(getWidth()/6.4)-2*getWidth()/150), getHeight()-top_bar.getHeight()-2*getWidth()/150));
 
+                    chatPanel.setPreferredSize(new Dimension((int)(getWidth()-(getWidth()/6.4)- (double) (2 * getWidth()) /150), getHeight()-top_bar.getHeight()-2*getWidth()/150));
+                    chatPanel.setMaximumSize(chatPanel.getPreferredSize());
                     revalidate();
                     repaint();
 

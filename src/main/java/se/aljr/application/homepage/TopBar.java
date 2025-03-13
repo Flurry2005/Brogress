@@ -15,10 +15,13 @@ public class TopBar extends JPanel {
     ImageIcon topBarBackground;
     ImageIcon lightTopBarBackground;
     ImageIcon exitButtonIcon;
+    ImageIcon lightExitButtonicon;
     private Point initialClick;
     private final JFrame parent;
     Image scaledexitButtonIcon;
+    Image scaledlightExitButtonicon;
     ImageIcon scaledExitButtonIcon;
+    ImageIcon scaledLightExitButtonIcon;
 
     JButton exitButton = new JButton("");
     JButton minimizeButton = new JButton("—");
@@ -39,6 +42,11 @@ public class TopBar extends JPanel {
         exitButtonIcon = new ImageIcon(ResourcePath.getResourcePath()+"exit_button_icon.png");
         scaledexitButtonIcon = exitButtonIcon.getImage().getScaledInstance(16, 16, Image.SCALE_SMOOTH);
         scaledExitButtonIcon = new ImageIcon(scaledexitButtonIcon);
+
+        lightExitButtonicon = new ImageIcon(ResourcePath.getResourcePath()+"exit_button_icon_light.png");
+        scaledlightExitButtonicon = lightExitButtonicon.getImage().getScaledInstance(16,16, Image.SCALE_SMOOTH);
+        scaledLightExitButtonIcon = new ImageIcon(scaledlightExitButtonicon);
+
         exitButton.setIcon(scaledExitButtonIcon);
 
         this.parent = parent;
@@ -71,7 +79,7 @@ public class TopBar extends JPanel {
     }
     private void init(){
         this.setLayout(new BorderLayout(0,0));
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 0));
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
         buttonPanel.setOpaque(false);
 
 
@@ -167,24 +175,25 @@ public class TopBar extends JPanel {
             isFullscreen = true;
         }
     }
+
+    public void updateColors(){
+        minimizeButton.setBackground(AppThemeColors.SECONDARY);
+        fullscreenButton.setBackground(AppThemeColors.SECONDARY);
+        exitButton.setBackground(AppThemeColors.SECONDARY);
+        minimizeButton.setForeground(AppThemeColors.foregroundColor);
+        fullscreenButton.setForeground(AppThemeColors.foregroundColor);
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         //draw image from top left corner
-
+        updateColors();
         if(!SettingsPanel.lightMode){
-
-            minimizeButton.setBackground(AppThemeColors.SECONDARY);
-            fullscreenButton.setBackground(AppThemeColors.SECONDARY);
-            exitButton.setBackground(AppThemeColors.SECONDARY);
-
+            exitButton.setIcon(scaledLightExitButtonIcon);
             g.drawImage(topBarBackground.getImage(), 0, 0,getWidth(),getHeight(), this);
         }else{
-
-            minimizeButton.setBackground(AppThemeColors.SECONDARY);
-            fullscreenButton.setBackground(AppThemeColors.SECONDARY);
-            exitButton.setBackground(AppThemeColors.SECONDARY);
-
+            exitButton.setIcon(scaledExitButtonIcon);
             g.drawImage(lightTopBarBackground.getImage(), 0, 0,getWidth(),getHeight(), this);
         }
 

@@ -45,7 +45,7 @@ public class AppThemeColors {
         PRIMARY = new Color(51,51,51);
         SECONDARY = new Color(31,31,31);
         panelColor = new Color(21,21,21);
-        textFieldColor = new Color(22,22,22);
+        textFieldColor = new Color(31,31,31);
 
         buttonBG = new Color(51, 51, 51,255);
         buttonBGHovered = new Color(40,40,40);
