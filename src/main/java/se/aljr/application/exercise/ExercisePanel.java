@@ -1,6 +1,8 @@
 package se.aljr.application.exercise;
 
+import org.checkerframework.checker.units.qual.C;
 import se.aljr.application.AppThemeColors;
+import se.aljr.application.CustomFont;
 import se.aljr.application.ResourcePath;
 import se.aljr.application.UserData;
 import se.aljr.application.exercise.Excercise.*;
@@ -11,6 +13,7 @@ import se.aljr.application.loginpage.FirebaseManager;
 import se.aljr.application.settings.SettingsPanel;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentEvent;
@@ -31,7 +34,6 @@ public class ExercisePanel extends JPanel {
     private JLabel musclesWorkedLabel;
     private Exercise selectedExercise;
     private static int statusDelayCounter;
-    private static final StringBuilder status = new StringBuilder();
     private static DefaultListModel<Exercise> exerciseModel;
     private static JList<Exercise> menuList;
     private static JPanel statusPanel;
@@ -59,9 +61,7 @@ public class ExercisePanel extends JPanel {
     public static JButton createExerciseButton = new JButton();
     private final JLabel imageLabel = new JLabel();
     private final JButton editButton = new JButton("\uD83D\uDCDD");;
-
     Font font;
-
     protected ImageIcon homePanelBackground;
     protected ImageIcon scaledContentBackgroundPanel;
     Image scaledContentBackground;
@@ -70,22 +70,23 @@ public class ExercisePanel extends JPanel {
     protected ImageIcon scaledLightContentBackgroundPanel;
     Image scaledLightContentBackground;
 
+    public static int selectedTab;
 
     public static ExercisePanel instance;
 
     public ExercisePanel(int width, int height) {
-        homePanelBackground = new ImageIcon(ResourcePath.getResourcePath() + "bottom_right_bar.png");
+        homePanelBackground = new ImageIcon(ResourcePath.getResourcePath("bottom_right_bar.png"));
         scaledContentBackground = homePanelBackground.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
         scaledContentBackgroundPanel = new ImageIcon(scaledContentBackground);
 
-        lightHomePanelBackground = new ImageIcon(ResourcePath.getResourcePath() + "lightEmptyBackground.png");
+        lightHomePanelBackground = new ImageIcon(ResourcePath.getResourcePath("lightEmptyBackground.png"));
         scaledLightContentBackground = lightHomePanelBackground.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
         scaledLightContentBackgroundPanel = new ImageIcon(scaledLightContentBackground);
 
         instance = this;
 
         try {
-            font = Font.createFont(Font.TRUETYPE_FONT, new File(ResourcePath.getResourcePath() + "BebasNeue-Regular.otf"));
+            font = Font.createFont(Font.TRUETYPE_FONT, new File(ResourcePath.getResourcePath("BebasNeue-Regular.otf")));
             font = font.deriveFont(40f);
         } catch (Exception e) {
             font = new Font("Arial", Font.BOLD, 40);
@@ -94,7 +95,7 @@ public class ExercisePanel extends JPanel {
         // Set the layout for the panel
         this.setPreferredSize(new Dimension(width, height));
         this.setMaximumSize(this.getPreferredSize());
-        this.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
+        this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
         init(width, height);
     }
 
@@ -106,59 +107,17 @@ public class ExercisePanel extends JPanel {
         mainPanel.setLayout(new BorderLayout());
         mainPanel.setBackground(AppThemeColors.PRIMARY);
         mainPanel.setPreferredSize(this.getPreferredSize());
-        mainPanel.setBorder(new EmptyBorder(height / 45, width / 45, height / 45, width / 45));
+        mainPanel.setBorder(new EmptyBorder(20,20,20,20));
 
         Font emojiFont = new Font("Segoe UI Emoji", Font.PLAIN, 35);
-
-
-        editButton.setFocusPainted(false);
-        editButton.setContentAreaFilled(false);
-        editButton.setBackground(AppThemeColors.PRIMARY);
-        editButton.setFont(emojiFont);
-        editButton.setBorder(null);
-        editButton.setPreferredSize(new Dimension(mainPanel.getPreferredSize().width / 22, mainPanel.getPreferredSize().height / 10));
-        editButton.setVisible(false);
-
-        JButton removeButton = new JButton("\uD83D\uDDD1");
-        removeButton.setFocusPainted(false);
-        removeButton.setContentAreaFilled(false);
-        removeButton.setBackground(AppThemeColors.PRIMARY);
-        removeButton.setForeground(new Color(230, 39, 83));
-        removeButton.setFont(emojiFont);
-        removeButton.setBorder(null);
-        removeButton.setPreferredSize(new Dimension(mainPanel.getPreferredSize().width / 22, mainPanel.getPreferredSize().height / 10));
-        removeButton.setVisible(false);
-
-        JButton favoriteButton = new JButton("\uD83D\uDCAA");
-        favoriteButton.setFocusPainted(false);
-        favoriteButton.setContentAreaFilled(false);
-        favoriteButton.setBackground(AppThemeColors.PRIMARY);
-        favoriteButton.setForeground(AppThemeColors.panelColor);
-        favoriteButton.setFont(emojiFont);
-        favoriteButton.setBorder(null);
-        favoriteButton.setPreferredSize(new Dimension(mainPanel.getPreferredSize().width / 22, mainPanel.getPreferredSize().height / 10));
-
-        titleLabel = new JTextArea();
-        titleLabel.setFont(font.deriveFont(65.f));
-        titleLabel.setForeground(AppThemeColors.foregroundColor);
-        titleLabel.setOpaque(false);
-        titleLabel.setEditable(false);
-
-        musclesWorkedLabel = new JLabel();
-        musclesWorkedLabel.setFont(font.deriveFont(24f));
-        musclesWorkedLabel.setForeground(AppThemeColors.foregroundColor);
-        musclesWorkedLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-
 
         searchField.setFont(new Font("Arial", Font.ITALIC, 12));
         searchField.setBorder(new LineBorder(new Color(80, 73, 69)));
         searchField.setBackground(AppThemeColors.panelColor);
         searchField.setForeground(AppThemeColors.foregroundColor);
-        searchField.setPreferredSize(new Dimension(130, 30));
 
         favExerciseModel = new DefaultListModel<>();
         myExerciseModel = new DefaultListModel<>();
-
 
         MuscleList muscleList = new MuscleList();
         for (Muscle muscle : muscleList) {
@@ -188,81 +147,86 @@ public class ExercisePanel extends JPanel {
         }
 
         menuList = new JList<>(exerciseModel);
-        menuList.setFont(font.deriveFont(17f));
         menuList.setBackground(AppThemeColors.panelColor);
         menuList.setForeground(AppThemeColors.foregroundColor);
         menuList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         menuList.setSelectionBackground(new Color(49, 84, 122));
         menuList.setSelectionForeground(AppThemeColors.foregroundColor);
 
-        JScrollPane exerciseScrollPanel = new JScrollPane(menuList);
-        exerciseScrollPanel.setBorder(new LineBorder(new Color(80, 73, 69)));
-        exerciseScrollPanel.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-
         // Create layout for the panel
         JPanel westPanel = new JPanel();
         westPanel.setLayout(new BoxLayout(westPanel, BoxLayout.Y_AXIS));
-        westPanel.setBackground(AppThemeColors.PRIMARY);
-        westPanel.setPreferredSize(new Dimension(mainPanel.getPreferredSize().width / 4, mainPanel.getPreferredSize().height / 8));
-        westPanel.setBorder(new LineBorder(new Color(80, 73, 69), 1 / 2, true));
+        westPanel.setPreferredSize(new Dimension((int)(mainPanel.getPreferredSize().width/4),mainPanel.getPreferredSize().height - northPanel.getPreferredSize().height));
+        westPanel.setMaximumSize(westPanel.getPreferredSize());
+        westPanel.setBackground(new Color(22,22,22));
+        westPanel.setBorder(new LineBorder(new Color(80, 73, 69), 1, true));
 
         JPanel searchContainer = new JPanel();
         searchContainer.setBorder(null);
         searchContainer.setLayout(new BorderLayout());
         searchContainer.setBackground(AppThemeColors.panelColor);
-        searchContainer.setPreferredSize(new Dimension(westPanel.getPreferredSize().width, getPreferredSize().height / 8));
-        searchContainer.setMaximumSize(new Dimension(westPanel.getPreferredSize().width, getPreferredSize().height / 8));
-        searchContainer.setMinimumSize(new Dimension(westPanel.getPreferredSize().width, getPreferredSize().height / 8));
+        searchContainer.setPreferredSize(new Dimension(westPanel.getPreferredSize().width, getPreferredSize().height / 7));
+        searchContainer.setMaximumSize(searchContainer.getPreferredSize());
+        searchContainer.setMinimumSize(searchContainer.getPreferredSize());
+        searchContainer.setBorder(null);
+
+
+        JScrollPane exerciseScrollPanel = new JScrollPane(menuList);
+        exerciseScrollPanel.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+        exerciseScrollPanel.setPreferredSize(new Dimension(westPanel.getPreferredSize().width, westPanel.getPreferredSize().height - searchContainer.getPreferredSize().height));
+        exerciseScrollPanel.setMaximumSize(exerciseScrollPanel.getPreferredSize());
+        exerciseScrollPanel.setMinimumSize(exerciseScrollPanel.getPreferredSize());
+        exerciseScrollPanel.setBorder(new LineBorder(new Color(80, 73, 69), 1, true));;
+
+        searchField.setPreferredSize(new Dimension(searchContainer.getPreferredSize().width, searchContainer.getPreferredSize().height/3));
 
         sortMuscleButton.setBackground(AppThemeColors.PRIMARY);
         sortMuscleButton.setForeground(AppThemeColors.foregroundColor);
-        sortMuscleButton.setPreferredSize(new Dimension((int) (searchContainer.getPreferredSize().getWidth() / 4), getPreferredSize().height / 20));
-        sortMuscleButton.setMaximumSize(new Dimension((int) (searchContainer.getPreferredSize().getWidth() / 4), getPreferredSize().height / 20));
-        sortMuscleButton.setMinimumSize(new Dimension((int) (searchContainer.getPreferredSize().getWidth() / 4), getPreferredSize().height / 20));
+        sortMuscleButton.setPreferredSize(new Dimension((int) (searchContainer.getPreferredSize().getWidth() / 4), searchContainer.getPreferredSize().height/3));
+        sortMuscleButton.setFocusable(false);
         sortMuscleButton.setBorder(new LineBorder(new Color(80, 73, 69), 1, true));
 
         showFavorites.setForeground(AppThemeColors.foregroundColor);
         showFavorites.setBackground(AppThemeColors.PRIMARY);
-        showFavorites.setPreferredSize(new Dimension(searchContainer.getPreferredSize().width / 4, getPreferredSize().height / 20));
-        showFavorites.setMaximumSize(new Dimension(searchContainer.getPreferredSize().width / 4, getPreferredSize().height / 20));
-        showFavorites.setMinimumSize(new Dimension(searchContainer.getPreferredSize().width / 4, getPreferredSize().height / 20));
+        showFavorites.setPreferredSize(new Dimension(searchContainer.getPreferredSize().width / 4, searchContainer.getPreferredSize().height/3));
+        showFavorites.setFocusable(false);
         showFavorites.setBorder(new LineBorder(new Color(80, 73, 69), 1, true));
 
         myExercises.setForeground(AppThemeColors.foregroundColor);
         myExercises.setBackground(AppThemeColors.PRIMARY);
-        myExercises.setPreferredSize(new Dimension(searchContainer.getPreferredSize().width / 4, getPreferredSize().height / 20));
-        myExercises.setMaximumSize(new Dimension(searchContainer.getPreferredSize().width / 4, getPreferredSize().height / 20));
-        myExercises.setMinimumSize(new Dimension(searchContainer.getPreferredSize().width / 4, getPreferredSize().height / 20));
+        myExercises.setPreferredSize(new Dimension(searchContainer.getPreferredSize().width / 4, searchContainer.getPreferredSize().height/3));
+        myExercises.setFocusable(false);
         myExercises.setBorder(new LineBorder(new Color(80, 73, 69), 1, true));
 
         createExerciseButton.setBackground(new Color(46, 148, 76));
-        createExerciseButton.setText("Create new exercise");
+        createExerciseButton.setText("New exercise");
         createExerciseButton.setForeground(Color.white);
         createExerciseButton.setBorder(new LineBorder(new Color(80, 73, 69), 1, true));
-        createExerciseButton.setPreferredSize(new Dimension(westPanel.getPreferredSize().width, getPreferredSize().height / 24));
-        createExerciseButton.setMaximumSize(new Dimension(westPanel.getPreferredSize().width, getPreferredSize().height / 24));
-        createExerciseButton.setMinimumSize(new Dimension(westPanel.getPreferredSize().width, getPreferredSize().height / 24));
+        createExerciseButton.setFocusable(false);
+        createExerciseButton.setPreferredSize(new Dimension(searchContainer.getPreferredSize().width / 4, searchContainer.getPreferredSize().height/3));
+        createExerciseButton.setMaximumSize(createExerciseButton.getPreferredSize());
+        createExerciseButton.setMinimumSize(createExerciseButton.getPreferredSize());
 
-        centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
+        centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.X_AXIS));
         centerPanel.setBackground(AppThemeColors.PRIMARY);
-        centerPanel.setPreferredSize(new Dimension((int) (mainPanel.getPreferredSize().width / 2.5365), (int) (mainPanel.getPreferredSize().height / 1.1714)));
-        centerPanel.setBorder(new EmptyBorder(0, centerPanel.getPreferredSize().width / 20, 0, centerPanel.getPreferredSize().width / 20));
+        centerPanel.setBorder(new EmptyBorder(0, centerPanel.getPreferredSize().width / 50, 0, centerPanel.getPreferredSize().width / 50));
+        centerPanel.setPreferredSize(new Dimension((int) (mainPanel.getPreferredSize().width / 2), (int) (mainPanel.getPreferredSize().height - northPanel.getPreferredSize().height)));
+        centerPanel.setMaximumSize(centerPanel.getPreferredSize());
+        centerPanel.setMinimumSize(centerPanel.getPreferredSize());
 
         //Label displaying the exercise image
-
+        imageLabel.setPreferredSize(centerPanel.getPreferredSize());
+        imageLabel.setMaximumSize(imageLabel.getPreferredSize());
+        imageLabel.setMinimumSize(imageLabel.getPreferredSize());
         imageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        imageLabel.setPreferredSize(new Dimension(centerPanel.getPreferredSize().width, centerPanel.getPreferredSize().height));
-        imageLabel.setMaximumSize(new Dimension(centerPanel.getPreferredSize().width, centerPanel.getPreferredSize().height));
-        imageLabel.setMinimumSize(new Dimension(centerPanel.getPreferredSize().width, centerPanel.getPreferredSize().height));
 
         eastPanel.setLayout(new BoxLayout(eastPanel, BoxLayout.Y_AXIS));
         eastPanel.setBackground(AppThemeColors.PRIMARY);
-        eastPanel.setPreferredSize(new Dimension(mainPanel.getPreferredSize().width / 4, mainPanel.getPreferredSize().height));
-        eastPanel.setMinimumSize(new Dimension(mainPanel.getPreferredSize().width / 4, mainPanel.getPreferredSize().height));
-        eastPanel.setMaximumSize(new Dimension(mainPanel.getPreferredSize().width / 4, mainPanel.getPreferredSize().height));
+        eastPanel.setPreferredSize(new Dimension((int)(mainPanel.getPreferredSize().width/4),mainPanel.getPreferredSize().height - northPanel.getPreferredSize().height));
+        eastPanel.setMinimumSize(eastPanel.getPreferredSize());
+        eastPanel.setMaximumSize(eastPanel.getPreferredSize());
+        eastPanel.setBorder(null);
 
-        exerciseScrollPanel.setPreferredSize(new Dimension(getPreferredSize().width, getPreferredSize().height));
-        exerciseScrollPanel.setMaximumSize(new Dimension(getPreferredSize().width, getPreferredSize().height));
 
         aboutContainer.setLayout(new BorderLayout());
         aboutContainer.setForeground(AppThemeColors.foregroundColor);
@@ -270,45 +234,43 @@ public class ExercisePanel extends JPanel {
         aboutContainer.setPreferredSize(new Dimension(eastPanel.getPreferredSize().width, eastPanel.getPreferredSize().height / 2));
         aboutContainer.setMinimumSize(new Dimension(eastPanel.getPreferredSize().width, eastPanel.getPreferredSize().height / 2));
         aboutContainer.setMaximumSize(new Dimension(eastPanel.getPreferredSize().width, eastPanel.getPreferredSize().height / 2));
-        aboutContainer.setBorder(new EmptyBorder(0, 0, 10, 0));
+        aboutContainer.setBorder(null);
 
         // Displays "About"
 
         aboutLabel.setText("About");
-        aboutLabel.setForeground(AppThemeColors.foregroundColor);
-        aboutLabel.setBackground(AppThemeColors.PRIMARY);
-        aboutLabel.setOpaque(true);
+        aboutLabel.setOpaque(false);
         aboutLabel.setHorizontalAlignment(JLabel.CENTER);
         aboutLabel.setFont(font.deriveFont(24f));
         aboutLabel.setBorder(new LineBorder(new Color(80, 73, 69), 1, true));
+        aboutLabel.setPreferredSize(new Dimension(eastPanel.getPreferredSize().width, eastPanel.getPreferredSize().height/18));
 
         JPanel formInfoContainer = new JPanel();
         formInfoContainer.setLayout(new BorderLayout());
         formInfoContainer.setBackground(new Color(22, 22, 22));
-        formInfoContainer.setMaximumSize(new Dimension(eastPanel.getPreferredSize().width, eastPanel.getPreferredSize().height / 2));
-        formInfoContainer.setPreferredSize(new Dimension(eastPanel.getPreferredSize().width, eastPanel.getPreferredSize().height / 2));
-        formInfoContainer.setMinimumSize(new Dimension(eastPanel.getPreferredSize().width, eastPanel.getPreferredSize().height / 2));
+        formInfoContainer.setPreferredSize(new Dimension(eastPanel.getPreferredSize().width, (int) (eastPanel.getPreferredSize().height / 2.3)));
+        formInfoContainer.setMaximumSize(formInfoContainer.getPreferredSize());
+        formInfoContainer.setMinimumSize(formInfoContainer.getPreferredSize());
+        formInfoContainer.setBorder(null);
 
         // Displays "How to"
 
         formLabel.setText("How to");
-        formLabel.setForeground(AppThemeColors.foregroundColor);
-        formLabel.setBackground(AppThemeColors.PRIMARY);
+        formLabel.setBackground(AppThemeColors.SECONDARY);
         formLabel.setOpaque(true);
         formLabel.setHorizontalAlignment(JLabel.CENTER);
-        formLabel.setVerticalAlignment(JLabel.BOTTOM);
-        formLabel.setVerticalTextPosition(JLabel.BOTTOM);
-        formLabel.setFont(font.deriveFont(24f));
+        formLabel.setFont(font.deriveFont(getHeight()/35f));
         formLabel.setBorder(new LineBorder(new Color(80, 73, 69), 1, true));
-
+        formLabel.setPreferredSize(new Dimension(eastPanel.getPreferredSize().width, eastPanel.getPreferredSize().height/18));
 
         aboutText.setBackground(AppThemeColors.panelColor);
+        aboutText.setPreferredSize(new Dimension(eastPanel.getPreferredSize().width, eastPanel.getPreferredSize().height/2));
         aboutText.setForeground(AppThemeColors.foregroundColor);
         aboutText.setFont(new Font("Arial", Font.PLAIN, 15));
         aboutText.setEditable(false);
-        aboutText.setBorder(new LineBorder(new Color(80, 73, 69), 1, true));
         aboutText.setLineWrap(true);
         aboutText.setWrapStyleWord(true);
+        aboutText.setBorder(new LineBorder(new Color(80, 73, 69), 1, true));
 
         formText.setBackground(AppThemeColors.panelColor);
         formText.setForeground(AppThemeColors.foregroundColor);
@@ -316,25 +278,87 @@ public class ExercisePanel extends JPanel {
         formText.setFont(new Font("Arial", Font.PLAIN, 15));
         formText.setFocusable(false);
         formText.setBorder(new LineBorder(new Color(80, 73, 69), 1, true));
+        formText.setPreferredSize(new Dimension(formInfoContainer.getPreferredSize().width, (int) (formInfoContainer.getPreferredSize().height/4)));
+        formText.setMaximumSize(formText.getPreferredSize());
+        formText.setMinimumSize(formText.getPreferredSize());
 
         northPanel.setBackground(AppThemeColors.PRIMARY);
         northPanel.setLayout(new BorderLayout());
-        northPanel.setPreferredSize(new Dimension(mainPanel.getPreferredSize().width, mainPanel.getPreferredSize().height / 8));
+        northPanel.setPreferredSize(new Dimension(mainPanel.getPreferredSize().width, (int) (mainPanel.getPreferredSize().height / 10)));
+        northPanel.setMaximumSize(northPanel.getPreferredSize());
+        northPanel.setMinimumSize(northPanel.getPreferredSize());
+        northPanel.setBorder(null);
+
+        JPanel wrapper = new JPanel();
+        wrapper.setLayout(new BorderLayout());
+        wrapper.setOpaque(false);
+        wrapper.setBorder(null);
+        wrapper.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        titleLabel = new JTextArea();
+        titleLabel.setForeground(AppThemeColors.foregroundColor);
+        titleLabel.setOpaque(false);
+        titleLabel.setEditable(false);
+        titleLabel.setFont(font.deriveFont(getHeight()/10f));
+        titleLabel.setAlignmentY(Component.CENTER_ALIGNMENT);
+
+        musclesWorkedLabel = new JLabel();
+        musclesWorkedLabel.setFont(font.deriveFont(getHeight()/20f));
+        musclesWorkedLabel.setForeground(AppThemeColors.foregroundColor);
+        musclesWorkedLabel.setHorizontalAlignment(SwingConstants.LEFT);
 
         JPanel northEastPanel = new JPanel();
-        northEastPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        northEastPanel.setLayout(new BoxLayout(northEastPanel, BoxLayout.X_AXIS));
         northEastPanel.setOpaque(false);
+        northEastPanel.setPreferredSize(new Dimension(eastPanel.getPreferredSize().width, northPanel.getPreferredSize().height));
+
+        JButton favoriteButton = new JButton("\uD83D\uDCAA");
+        favoriteButton.setFocusPainted(false);
+        favoriteButton.setContentAreaFilled(false);
+        favoriteButton.setBackground(AppThemeColors.PRIMARY);
+        favoriteButton.setForeground(AppThemeColors.panelColor);
+        favoriteButton.setFont(emojiFont.deriveFont(getHeight()/20f));
+        favoriteButton.setPreferredSize(new Dimension(northEastPanel.getPreferredSize().width/4, northEastPanel.getPreferredSize().height));
+        favoriteButton.setMaximumSize(favoriteButton.getPreferredSize());
+        favoriteButton.setMinimumSize(favoriteButton.getPreferredSize());
+        favoriteButton.setBorder(null);
+
+        editButton.setFocusPainted(false);
+        editButton.setContentAreaFilled(false);
+        editButton.setBackground(AppThemeColors.PRIMARY);
+        editButton.setFont(emojiFont);
+        editButton.setBorder(null);
+        editButton.setPreferredSize(favoriteButton.getPreferredSize());
+        editButton.setMaximumSize(editButton.getPreferredSize());
+        editButton.setMinimumSize(editButton.getPreferredSize());
+        editButton.setVisible(false);
+
+        JButton removeButton = new JButton("\uD83D\uDDD1");
+        removeButton.setFocusPainted(false);
+        removeButton.setContentAreaFilled(false);
+        removeButton.setBackground(AppThemeColors.PRIMARY);
+        removeButton.setForeground(new Color(230, 39, 83));
+        removeButton.setFont(emojiFont);
+        removeButton.setBorder(null);
+        removeButton.setPreferredSize(favoriteButton.getPreferredSize());
+        removeButton.setMaximumSize(removeButton.getPreferredSize());
+        removeButton.setMinimumSize(removeButton.getPreferredSize());
+        removeButton.setVisible(false);
 
         northWestPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         northWestPanel.setBackground(AppThemeColors.PRIMARY);
+        northWestPanel.setBorder(new LineBorder(Color.yellow));
+        northWestPanel.setPreferredSize(new Dimension((int) (northPanel.getPreferredSize().width/1.5), northPanel.getPreferredSize().height));
+        northWestPanel.setMaximumSize(northWestPanel.getPreferredSize());
 
         // Notice window
         statusPanel = new JPanel();
         statusPanel.setPreferredSize(new Dimension(this.getWidth(), 50));
         statusPanel.setVisible(false);
-        statusText = new JLabel(status.toString());
-        statusText.setForeground(AppThemeColors.foregroundColor);
         statusPanel.setBorder(new LineBorder(new Color(46, 148, 76), 1, true));
+
+        statusText = new JLabel();
+        statusText.setForeground(AppThemeColors.foregroundColor);
 
         // Functionality for the notice window
         shrinkStatusPanel = new Timer(30, _ -> {
@@ -368,16 +392,16 @@ public class ExercisePanel extends JPanel {
         // NORTH
         northEastPanel.add(editButton);
         northEastPanel.add(removeButton);
+        northEastPanel.add(Box.createHorizontalGlue());
         northEastPanel.add(favoriteButton);
 
-        northWestPanel.add(titleLabel);
-        northWestPanel.add(musclesWorkedLabel);
-
-        northPanel.add(northWestPanel, BorderLayout.WEST);
+        northPanel.add(titleLabel, BorderLayout.WEST);
+        northPanel.add(musclesWorkedLabel, BorderLayout.CENTER);
         northPanel.add(northEastPanel, BorderLayout.EAST);
 
+
         //CENTER
-        CreateExerciseModule createExerciseModule = new CreateExerciseModule(centerPanel);
+        CreateExerciseModule createExerciseModule = new CreateExerciseModule(centerPanel, this);
         createExerciseModule.setVisible(false);
         centerPanel.add(imageLabel);
         centerPanel.add(createExerciseModule);
@@ -389,16 +413,17 @@ public class ExercisePanel extends JPanel {
 
         formInfoContainer.add(formLabel, BorderLayout.NORTH);
         formInfoContainer.add(formText, BorderLayout.CENTER);
+        eastPanel.add(Box.createVerticalGlue());
         eastPanel.add(formInfoContainer);
 
         //SOUTH
         statusPanel.add(statusText);
 
         // MAIN STRUCTURE
-        mainPanel.add(eastPanel, BorderLayout.EAST);
-        mainPanel.add(centerPanel, BorderLayout.CENTER);
         mainPanel.add(northPanel, BorderLayout.NORTH);
         mainPanel.add(westPanel, BorderLayout.WEST);
+        mainPanel.add(centerPanel, BorderLayout.CENTER);
+        mainPanel.add(eastPanel, BorderLayout.EAST);
         mainPanel.add(statusPanel, BorderLayout.SOUTH);
 
         this.add(mainPanel);
@@ -548,16 +573,12 @@ public class ExercisePanel extends JPanel {
                 if (UserData.getFavoriteExercises().add(selectedExercise)) {
                     String addedStatus = (selectedExercise.getName() + " has been added to favorites!");
                     activateStatus(new Color(46, 148, 76), addedStatus);
-                    statusPanel.setBackground(new Color(46, 148, 76));
-                    status.setLength(0);
                     favoriteButton.setForeground(new Color(196, 196, 49));
 
                 } else {
                     UserData.removeFavoriteExercises(selectedExercise);
                     String removedStatus = (selectedExercise.getName() + " has been removed from favorites!");
                     activateStatus(new Color(204, 20, 20), removedStatus);
-                    statusPanel.setBackground(new Color(204, 20, 20));
-                    status.setLength(0);
                     favoriteButton.setForeground(new Color(22, 22, 22));
                 }
                 updateMenuList("favExerciseModel");
@@ -593,6 +614,7 @@ public class ExercisePanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!muscleScroll.isVisible()) {
+                    selectedTab = 0;
                     muscleJList.clearSelection();
                     menuList.setModel(new DefaultListModel<>());
                     sortMuscleButton.setBackground(new Color(49, 84, 122));
@@ -602,14 +624,13 @@ public class ExercisePanel extends JPanel {
                 } else {
                     muscleScroll.setVisible(false);
                     sortMuscleButton.setBackground(AppThemeColors.PRIMARY);
+                    menuList.setModel(exerciseModel);
                 }
                 repaint();
                 revalidate();
 
 }
         });
-
-
 
         // TRIGGERS THE EXERCISE CREATION MODULE
         createExerciseButton.addActionListener(_ -> {
@@ -618,6 +639,7 @@ public class ExercisePanel extends JPanel {
             centerPanel.revalidate();
             centerPanel.repaint();
         });
+
         // FILTERS SEARCH RESULTS BASED ON MUSCLE SELECTION
         muscleJList.addListSelectionListener(_ -> {
             DefaultListModel<Exercise> model = new DefaultListModel<>();
@@ -637,6 +659,7 @@ public class ExercisePanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!menuList.getModel().equals(favExerciseModel)) {
+                    selectedTab = 1;
                     menuList.setModel(favExerciseModel);
                     muscleScroll.setVisible(false);
                     showFavorites.setBackground(new Color(49, 84, 122));
@@ -669,6 +692,7 @@ public class ExercisePanel extends JPanel {
         myExercises.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                selectedTab = 2;
                 if (!menuList.getModel().equals(myExerciseModel)) {
                     // READ FROM DB AND UPDATE MY EXERCISES
                     try {
@@ -828,7 +852,7 @@ public class ExercisePanel extends JPanel {
                     imageLabel.setIcon(scaledExerciseIcon);
                     // DISPLAY DEFAULT IF IMAGE NOT FOUND
                 } catch (Exception ex) {
-                    ImageIcon temp = new ImageIcon(ResourcePath.getResourcePath() + "bottom_right_bar.png");
+                    ImageIcon temp = new ImageIcon(ResourcePath.getResourcePath("bottom_right_bar.png"));
                     Image scaledTest = temp.getImage().getScaledInstance(centerPanel.getPreferredSize().width, centerPanel.getPreferredSize().height, Image.SCALE_SMOOTH);
                     ImageIcon scaledTestIcon = new ImageIcon(scaledTest);
                     imageLabel.setIcon(scaledTestIcon);
@@ -866,14 +890,127 @@ public class ExercisePanel extends JPanel {
 
             }
         });
+
+        this.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                super.componentResized(e);
+                SwingUtilities.invokeLater(()->{
+
+                    mainPanel.setPreferredSize(new Dimension(getWidth(), (int) (getHeight())));
+                    mainPanel.setMaximumSize(mainPanel.getPreferredSize());
+                    mainPanel.setMaximumSize(mainPanel.getPreferredSize());
+
+                    northPanel.setPreferredSize(new Dimension(mainPanel.getPreferredSize().width, (int) (mainPanel.getPreferredSize().height/10)));
+                    northPanel.setMaximumSize(northPanel.getPreferredSize());
+                    northPanel.setMinimumSize(northPanel.getPreferredSize());
+
+                    northEastPanel.setPreferredSize(new Dimension(eastPanel.getPreferredSize().width, northPanel.getPreferredSize().height));
+                    northEastPanel.setMaximumSize(northEastPanel.getPreferredSize());
+                    northWestPanel.setPreferredSize(new Dimension((int) (northPanel.getPreferredSize().width/1.5), northPanel.getPreferredSize().height));
+                    northWestPanel.setPreferredSize(northWestPanel.getPreferredSize());
+
+                    favoriteButton.setPreferredSize(new Dimension(northEastPanel.getPreferredSize().width/4, northEastPanel.getPreferredSize().height));
+                    removeButton.setPreferredSize(new Dimension(northEastPanel.getPreferredSize().width/4, northEastPanel.getPreferredSize().height));
+                    editButton.setPreferredSize(new Dimension(northEastPanel.getPreferredSize().width/4, northEastPanel.getPreferredSize().height));
+
+                    westPanel.setPreferredSize(new Dimension((int)(mainPanel.getPreferredSize().width/4),mainPanel.getPreferredSize().height - northPanel.getPreferredSize().height));
+                    westPanel.setMaximumSize(westPanel.getPreferredSize());
+                    westPanel.setMinimumSize(westPanel.getPreferredSize());
+
+                    searchContainer.setPreferredSize(new Dimension(westPanel.getPreferredSize().width, westPanel.getPreferredSize().height / 7));
+                    searchContainer.setMaximumSize(searchContainer.getPreferredSize());
+                    searchContainer.setMinimumSize(searchContainer.getPreferredSize());
+
+                    searchField.setPreferredSize(new Dimension((int) (getWidth() / 1.5), (int) (getHeight() / 22.1)));
+                    searchField.setMinimumSize(searchField.getPreferredSize());
+                    searchField.setMaximumSize(searchField.getPreferredSize());
+
+                    sortMuscleButton.setPreferredSize(new Dimension((int) (searchContainer.getPreferredSize().getWidth() / 4), searchContainer.getPreferredSize().height/3));
+                    sortMuscleButton.setMaximumSize(sortMuscleButton.getPreferredSize());
+                    sortMuscleButton.setMinimumSize(sortMuscleButton.getPreferredSize());
+
+                    showFavorites.setPreferredSize(new Dimension(searchContainer.getPreferredSize().width / 4, searchContainer.getPreferredSize().height/3));
+                    showFavorites.setMaximumSize(showFavorites.getPreferredSize());
+                    showFavorites.setMinimumSize(showFavorites.getPreferredSize());
+
+                    myExercises.setPreferredSize(new Dimension(searchContainer.getPreferredSize().width / 4, searchContainer.getPreferredSize().height/3));
+                    myExercises.setMaximumSize(myExercises.getPreferredSize());
+                    myExercises.setMinimumSize(myExercises.getPreferredSize());
+
+                    createExerciseButton.setPreferredSize(new Dimension(searchContainer.getPreferredSize().width / 4, searchContainer.getPreferredSize().height/3));
+                    createExerciseButton.setMaximumSize(createExerciseButton.getPreferredSize());
+                    createExerciseButton.setMinimumSize(createExerciseButton.getPreferredSize());
+
+                    exerciseScrollPanel.setPreferredSize(new Dimension(westPanel.getPreferredSize().width, westPanel.getPreferredSize().height - searchContainer.getPreferredSize().height));
+                    exerciseScrollPanel.setMaximumSize(exerciseScrollPanel.getPreferredSize());
+                    exerciseScrollPanel.setMinimumSize(exerciseScrollPanel.getPreferredSize());
+
+                    centerPanel.setLayout(new BoxLayout(centerPanel,BoxLayout.Y_AXIS));
+                    centerPanel.setPreferredSize(new Dimension((int) (mainPanel.getPreferredSize().width / 2), (int) (mainPanel.getPreferredSize().height - northPanel.getPreferredSize().height)));
+                    centerPanel.setMaximumSize(centerPanel.getPreferredSize());
+                    centerPanel.setMinimumSize(centerPanel.getPreferredSize());
+                    centerPanel.setBorder(new EmptyBorder(0, centerPanel.getPreferredSize().width / 50, 0, centerPanel.getPreferredSize().width / 50));
+
+                    imageLabel.setPreferredSize(centerPanel.getPreferredSize());
+                    imageLabel.setMaximumSize(imageLabel.getPreferredSize());
+                    imageLabel.setMinimumSize(imageLabel.getPreferredSize());
+                    imageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+                    imageLabel.repaint();
+                    imageLabel.revalidate();
+
+                    eastPanel.setPreferredSize(new Dimension((int)(mainPanel.getPreferredSize().width/4),mainPanel.getPreferredSize().height - northPanel.getPreferredSize().height));
+                    eastPanel.setMinimumSize(eastPanel.getPreferredSize());
+                    eastPanel.setMaximumSize(eastPanel.getPreferredSize());
+
+                    aboutContainer.setPreferredSize(new Dimension(eastPanel.getPreferredSize().width, eastPanel.getPreferredSize().height/ 2));
+                    aboutContainer.setMinimumSize(aboutContainer.getPreferredSize());
+                    aboutContainer.setMaximumSize(aboutContainer.getPreferredSize());
+
+                    aboutLabel.setPreferredSize(new Dimension(eastPanel.getPreferredSize().width, eastPanel.getPreferredSize().height/18));
+
+                    aboutText.setPreferredSize(new Dimension(aboutContainer.getPreferredSize().width,aboutContainer.getPreferredSize().height/2));
+                    aboutText.setMaximumSize(aboutText.getPreferredSize());
+                    aboutText.setMinimumSize(aboutText.getPreferredSize());
+
+                    formInfoContainer.setPreferredSize(new Dimension(eastPanel.getPreferredSize().width, (int) (eastPanel.getPreferredSize().height / 2.3)));
+                    formInfoContainer.setMaximumSize(formInfoContainer.getPreferredSize());
+                    formInfoContainer.setMinimumSize(formInfoContainer.getPreferredSize());
+
+                    formLabel.setPreferredSize(new Dimension(eastPanel.getPreferredSize().width, eastPanel.getPreferredSize().height/18));
+
+                    formText.setPreferredSize(new Dimension(formInfoContainer.getPreferredSize().width, (int) (formInfoContainer.getPreferredSize().height/4)));
+                    formText.setMaximumSize(formText.getPreferredSize());
+                    formText.setMinimumSize(formText.getPreferredSize());
+
+                    titleLabel.setFont(font.deriveFont(getHeight()/10f));
+                    musclesWorkedLabel.setFont(font.deriveFont(getHeight()/20f));
+                    aboutText.setFont(new Font("Arial", Font.PLAIN, (int) (getHeight()/45.25)));
+                    formText.setFont(new Font("Arial", Font.PLAIN, (int) (getHeight()/45.25)));
+                    aboutLabel.setFont(font.deriveFont(getHeight()/30f));
+                    formLabel.setFont(font.deriveFont(getHeight()/30f));
+                    menuList.setFont(font.deriveFont(getHeight()/39f));
+                    muscleJList.setFont(font.deriveFont(getHeight()/39f));
+                    sortMuscleButton.setFont(new Font("Arial", Font.BOLD, (int) (getHeight()/55.25)));
+                    showFavorites.setFont(new Font("Arial", Font.BOLD, (int) (getHeight()/55.25)));
+                    myExercises.setFont(new Font("Arial", Font.BOLD, (int) (getHeight()/55.25)));
+                    createExerciseButton.setFont(new Font("Arial", Font.BOLD, (int) (getHeight()/55.25)));
+                    searchField.setFont(new Font("Arial", Font.ITALIC, (int) (getHeight() / 55.25)));
+                    favoriteButton.setFont(emojiFont.deriveFont(getHeight()/20f));
+                    removeButton.setFont(emojiFont.deriveFont(getHeight()/20f));
+                    editButton.setFont(emojiFont.deriveFont(getHeight()/20f));
+
+                });
+            }
+        });
     }
 
     // NOTICE WINDOW TRIGGER
-    public static void activateStatus(Color color, String status) {
+    public static void activateStatus(Color color, String text) {
         statusDelayCounter = 20;
         statusPanel.setVisible(true);
         statusPanel.setBackground(color);
-        statusText.setText(status);
+        statusText.setText(text);
         shrinkStatusPanel.start();
         shrinkStatusPanel.restart();
         statusPanel.setPreferredSize(new Dimension(statusPanel.getWidth(), 50));
@@ -914,10 +1051,7 @@ public class ExercisePanel extends JPanel {
         aboutLabel.setBackground(AppThemeColors.PRIMARY);
         searchField.setBackground(AppThemeColors.textFieldColor);
         centerPanel.setBackground(AppThemeColors.PRIMARY);
-        myExercises.setBackground(AppThemeColors.buttonBG);
         formLabel.setBackground(AppThemeColors.PRIMARY);
-        showFavorites.setBackground(AppThemeColors.buttonBG);
-        sortMuscleButton.setBackground(AppThemeColors.buttonBG);
 
         if (!editState) {
             aboutText.setBackground(AppThemeColors.panelColor);
@@ -929,6 +1063,7 @@ public class ExercisePanel extends JPanel {
         formText.setForeground(AppThemeColors.foregroundColor);
         showFavorites.setForeground(AppThemeColors.foregroundColor);
         muscleJList.setForeground(AppThemeColors.foregroundColor);
+        sortMuscleButton.setBackground(AppThemeColors.PRIMARY);
         sortMuscleButton.setForeground(AppThemeColors.foregroundColor);
         myExercises.setForeground(AppThemeColors.foregroundColor);
         aboutLabel.setForeground(AppThemeColors.foregroundColor);
@@ -938,6 +1073,27 @@ public class ExercisePanel extends JPanel {
         titleLabel.setForeground(AppThemeColors.foregroundColor);
         musclesWorkedLabel.setForeground(AppThemeColors.foregroundColor);
         searchField.setForeground(AppThemeColors.foregroundColor);
+        System.out.println("UPDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATING COLORESSS LOLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL");
+
+        switch(selectedTab){
+            case 0 ->{
+                showFavorites.setBackground(AppThemeColors.PRIMARY);
+                myExercises.setBackground(AppThemeColors.PRIMARY);
+            }
+            case 1->{
+                sortMuscleButton.setBackground(AppThemeColors.PRIMARY);
+                myExercises.setBackground(AppThemeColors.PRIMARY);
+            }
+            case 2->{
+                sortMuscleButton.setBackground(AppThemeColors.PRIMARY);
+                showFavorites.setBackground(AppThemeColors.PRIMARY);
+            }
+            default->{
+                sortMuscleButton.setBackground(AppThemeColors.PRIMARY);
+                showFavorites.setBackground(AppThemeColors.PRIMARY);
+                myExercises.setBackground(AppThemeColors.PRIMARY);
+            }
+        }
     }
 
 
@@ -945,6 +1101,7 @@ public class ExercisePanel extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+        System.out.println("UPDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATING COLORESSS LOLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL");
         updateColors();
         // Draw the image to fill the entire panel
         if (homePanelBackground != null) {
@@ -956,13 +1113,13 @@ public class ExercisePanel extends JPanel {
                     // SHOW IMAGE
                     try {
                         ImageIcon exerciseImageIcon = selectedExercise.getImageIcon();
-                        Image scaledTest = exerciseImageIcon.getImage().getScaledInstance(centerPanel.getPreferredSize().width, centerPanel.getPreferredSize().height, Image.SCALE_DEFAULT);
+                        Image scaledTest = exerciseImageIcon.getImage().getScaledInstance(centerPanel.getPreferredSize().width, mainPanel.getPreferredSize().height, Image.SCALE_DEFAULT);
                         ImageIcon scaledExerciseIcon = new ImageIcon(scaledTest);
                         imageLabel.setIcon(scaledExerciseIcon);
                         // DISPLAY DEFAULT IF IMAGE NOT FOUND
                     } catch (Exception ex) {
-                        ImageIcon temp = new ImageIcon(ResourcePath.getResourcePath() + "bottom_right_bar.png");
-                        Image scaledTest = temp.getImage().getScaledInstance(centerPanel.getPreferredSize().width, centerPanel.getPreferredSize().height, Image.SCALE_SMOOTH);
+                        ImageIcon temp = new ImageIcon(ResourcePath.getResourcePath("bottom_right_bar.png"));
+                        Image scaledTest = temp.getImage().getScaledInstance(centerPanel.getPreferredSize().width, mainPanel.getPreferredSize().height, Image.SCALE_SMOOTH);
                         ImageIcon scaledTestIcon = new ImageIcon(scaledTest);
                         imageLabel.setIcon(scaledTestIcon);
                     }
@@ -975,13 +1132,13 @@ public class ExercisePanel extends JPanel {
                     // SHOW IMAGE
                     try {
                         ImageIcon exerciseImageIcon = selectedExercise.getImageIcon();
-                        Image scaledTest = exerciseImageIcon.getImage().getScaledInstance(centerPanel.getPreferredSize().width, centerPanel.getPreferredSize().height, Image.SCALE_DEFAULT);
+                        Image scaledTest = exerciseImageIcon.getImage().getScaledInstance(centerPanel.getPreferredSize().width, mainPanel.getPreferredSize().height, Image.SCALE_DEFAULT);
                         ImageIcon scaledExerciseIcon = new ImageIcon(scaledTest);
                         imageLabel.setIcon(scaledExerciseIcon);
                         // DISPLAY DEFAULT IF IMAGE NOT FOUND
                     } catch (Exception ex) {
-                        ImageIcon temp = new ImageIcon(ResourcePath.getResourcePath() + "bottom_right_bar_light.png");
-                        Image scaledTest = temp.getImage().getScaledInstance(centerPanel.getPreferredSize().width, centerPanel.getPreferredSize().height, Image.SCALE_SMOOTH);
+                        ImageIcon temp = new ImageIcon(ResourcePath.getResourcePath("bottom_right_bar_light.png"));
+                        Image scaledTest = temp.getImage().getScaledInstance(centerPanel.getPreferredSize().width, mainPanel.getPreferredSize().height, Image.SCALE_SMOOTH);
                         ImageIcon scaledTestIcon = new ImageIcon(scaledTest);
                         imageLabel.setIcon(scaledTestIcon);
                     }
@@ -993,12 +1150,11 @@ public class ExercisePanel extends JPanel {
         }
     }
 
-    // SCALING WAITING TO BE USED...
+
     public void reScaleBackground() {
         scaledContentBackground = homePanelBackground.getImage().getScaledInstance(getWidth(), getHeight(), Image.SCALE_SMOOTH);
         scaledContentBackgroundPanel = new ImageIcon(scaledContentBackground);
     }
-
     public void updateWindow() {
 
     }

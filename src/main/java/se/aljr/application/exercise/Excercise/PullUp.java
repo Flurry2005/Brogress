@@ -13,7 +13,7 @@ public class PullUp extends Exercise {
 
         form = "To perform a pull-up, grip a pull-up bar with your hands slightly wider than shoulder-width, palms facing away. Pull yourself up until your chin clears the bar, then lower yourself back down with control. Keep your core engaged and avoid using momentum throughout the movement.";
 
-        imageIcon = new ImageIcon(ResourcePath.getResourcePath()+"ExerciseImages\\PullUp.png");
+        imageIcon = new ImageIcon(ResourcePath.getResourcePath("ExerciseImages/PullUp.gif"));
 
         musclesUsed.add(new Lats());
         musclesUsed.add(new Biceps());

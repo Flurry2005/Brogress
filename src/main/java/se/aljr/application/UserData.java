@@ -15,9 +15,12 @@ public class UserData {
     private static float userWeight;
     private static String userEmail;
     private static String userTheme;
+    private static float activityFactor;
     private static final HashSet<Exercise> favoriteExercises = new HashSet<>();
     private static final ArrayList<Exercise> createdExercises = new ArrayList<>();
     private static boolean isOnline;
+
+    private static boolean isAdmin;
 
     public static void setUserName(String userName) {
         UserData.userName = userName;
@@ -98,5 +101,20 @@ public class UserData {
 
     public static void setIsOnline(boolean isOnline) {
         UserData.isOnline = isOnline;
+    }
+
+    public static void setAdmin(boolean dbVerify) {
+        isAdmin = dbVerify;
+    }
+    public static boolean isUserAdmin () {
+        return isAdmin;
+    }
+
+    public static float getActivityFactor() {
+        return activityFactor;
+    }
+
+    public static void setActivityFactor(float activityFactor) {
+        UserData.activityFactor = activityFactor;
     }
 }

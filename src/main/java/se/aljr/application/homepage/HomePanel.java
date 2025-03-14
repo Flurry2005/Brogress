@@ -48,12 +48,12 @@ public class HomePanel extends JPanel {
 
         this.setPreferredSize(new Dimension(width, height));
         instance = this;
-        homePanelBackground = new ImageIcon(ResourcePath.getResourcePath() + "bottom_right_bar.png");
-        moduleIcon = new ImageIcon(ResourcePath.getResourcePath()+"module.png");
+        homePanelBackground = new ImageIcon(ResourcePath.getResourcePath("bottom_right_bar.png"));
+        moduleIcon = new ImageIcon(ResourcePath.getResourcePath("module.png"));
         scaledContentBackground = homePanelBackground.getImage().getScaledInstance(width,height,Image.SCALE_SMOOTH);
         scaledContentBackgroundPanel = new ImageIcon(scaledContentBackground);
 
-        lightHomePanelBackground = new ImageIcon(ResourcePath.getResourcePath()+"bottom_right_bar_light.png");
+        lightHomePanelBackground = new ImageIcon(ResourcePath.getResourcePath("bottom_right_bar_light.png"));
         scaledLightContentBackground = lightHomePanelBackground.getImage().getScaledInstance(width,height,Image.SCALE_SMOOTH);
         scaledLightContentBackgroundPanel = new ImageIcon(scaledLightContentBackground);
 
@@ -80,7 +80,7 @@ public class HomePanel extends JPanel {
         //profilePictureIcon = new ImageIcon(resourcePath + "Johan.png");
         profilePictureIcon = FirebaseManager.readDBprofilePicture(UserData.getEmail());
         if(profilePictureIcon==null){
-            profilePictureIcon = new ImageIcon(ResourcePath.getResourcePath() + "agile_small_icon.png");
+            profilePictureIcon = new ImageIcon(ResourcePath.getResourcePath("agile_small_icon.png"));
         }
         avatar = new ImageAvatar();
         avatar.setPreferredSize(new Dimension(getPreferredSize().width/25,getPreferredSize().width/25));
@@ -196,7 +196,7 @@ public class HomePanel extends JPanel {
         bmrLabel.setForeground(Color.WHITE);
 
         tdeeLabel = new JLabel();
-        tdeeLabel.setText("TDEE: "+ NutritionCalculator.getTDEE(UserData.getUserWeight(), UserData.getUserHeight(),UserData.getUserAge(),1.2f)+" kcal");
+        tdeeLabel.setText("TDEE: "+ NutritionCalculator.getTDEE(UserData.getUserWeight(), UserData.getUserHeight(),UserData.getUserAge(),UserData.getActivityFactor())+" kcal");
         tdeeLabel.setFont(CustomFont.getFont().deriveFont(getWidth()/50f));
         tdeeLabel.setForeground(Color.WHITE);
 
@@ -328,37 +328,89 @@ public class HomePanel extends JPanel {
         this.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
-                userInfoPanel.repaint();
-                userInfoPanel.setPreferredSize(new Dimension((int) (HomePanel.this.getWidth()/3.7695035461),(int)(HomePanel.this.getHeight()/4.22292993631)));
-                userInfoPanel.setMaximumSize(userInfoPanel.getPreferredSize());
-                userInfoPanel.setBorder(new EmptyBorder(0,userInfoPanel.getPreferredSize().width/16,0,0));
+                   SwingUtilities.invokeLater(()->{
+                       userInfoPanel.repaint();
+                       userInfoPanel.setPreferredSize(new Dimension((int) (HomePanel.this.getWidth()/3.7695035461),(int)(HomePanel.this.getHeight()/4.22292993631)));
+                       userInfoPanel.setMaximumSize(userInfoPanel.getPreferredSize());
+                       userInfoPanel.setBorder(new EmptyBorder(0,userInfoPanel.getPreferredSize().width/16,0,0));
 
-                topPanel.setPreferredSize(new Dimension(getWidth(),(int)(getHeight()/3.171974)+getHeight()/20));
+                       topPanel.setPreferredSize(new Dimension(getWidth(),(int)(getHeight()/3.171974)+getHeight()/20));
 
-                usernameLabel.setFont(CustomFont.getFont().deriveFont(getWidth()/50f));
-                userAge.setFont(CustomFont.getFont().deriveFont(getWidth()/60f));
-                userHeight.setFont(CustomFont.getFont().deriveFont(getWidth()/60f));
-                userWeight.setFont(CustomFont.getFont().deriveFont(getWidth()/60f));
+                       usernameLabel.setFont(CustomFont.getFont().deriveFont(getWidth()/50f));
+                       userAge.setFont(CustomFont.getFont().deriveFont(getWidth()/60f));
+                       userHeight.setFont(CustomFont.getFont().deriveFont(getWidth()/60f));
+                       userWeight.setFont(CustomFont.getFont().deriveFont(getWidth()/60f));
 
-                userMacrosPanel.repaint();
-                userMacrosPanel.setPreferredSize(new Dimension((int) (HomePanel.this.getWidth()/3.7695035461),(int)(HomePanel.this.getHeight()/4.22292993631)));
-                userMacrosPanel.setMaximumSize(userMacrosPanel.getPreferredSize());
-                userMacrosPanel.setBorder(new EmptyBorder(0,userMacrosPanel.getPreferredSize().width/16,0,0));
+                       userMacrosPanel.repaint();
+                       userMacrosPanel.setPreferredSize(new Dimension((int) (HomePanel.this.getWidth()/3.7695035461),(int)(HomePanel.this.getHeight()/4.22292993631)));
+                       userMacrosPanel.setMaximumSize(userMacrosPanel.getPreferredSize());
+                       userMacrosPanel.setBorder(new EmptyBorder(0,userMacrosPanel.getPreferredSize().width/16,0,0));
 
-                bmiLabel.setFont(CustomFont.getFont().deriveFont(getWidth()/50f));
-                bmrLabel.setFont(CustomFont.getFont().deriveFont(getWidth()/50f));
-                tdeeLabel.setFont(CustomFont.getFont().deriveFont(getWidth()/50f));
-                proteinNeedLabel.setFont(CustomFont.getFont().deriveFont(getWidth()/50f));
-                macroLabel.setFont(CustomFont.getFont().deriveFont(getWidth()/40f));
+                       bmiLabel.setFont(CustomFont.getFont().deriveFont(getWidth()/50f));
+                       bmrLabel.setFont(CustomFont.getFont().deriveFont(getWidth()/50f));
+                       tdeeLabel.setFont(CustomFont.getFont().deriveFont(getWidth()/50f));
+                       proteinNeedLabel.setFont(CustomFont.getFont().deriveFont(getWidth()/50f));
+                       macroLabel.setFont(CustomFont.getFont().deriveFont(getWidth()/40f));
 
 
 
-                avatar.setPreferredSize(new Dimension(getWidth()/25,getWidth()/25));
-                scaledProfilePicture = profilePictureIcon.getImage().getScaledInstance(getWidth()/25,getWidth()/25,Image.SCALE_SMOOTH);
-                scaledProfilePictureIcon = new ImageIcon(scaledProfilePicture);
-                avatar.setImage(scaledProfilePictureIcon);
-                avatar.repaint();
-                //profilePicture.setIcon(scaledProfilePictureIcon);
+                       avatar.setPreferredSize(new Dimension(getWidth()/25,getWidth()/25));
+                       scaledProfilePicture = profilePictureIcon.getImage().getScaledInstance(getWidth()/25,getWidth()/25,Image.SCALE_SMOOTH);
+                       scaledProfilePictureIcon = new ImageIcon(scaledProfilePicture);
+                       avatar.setImage(scaledProfilePictureIcon);
+                       avatar.repaint();
+                       //profilePicture.setIcon(scaledProfilePictureIcon);
+
+                       friendsListScrollPane1.repaint();
+                       friendsListScrollPane1.setPreferredSize(new Dimension((int) (HomePanel.this.getPreferredSize().width/3.7695035461), (int)(HomePanel.this.getPreferredSize().height/3.22292993631)));
+                       friendsListScrollPane1.setMinimumSize(friendsListScrollPane1.getPreferredSize());
+                       friendsListScrollPane1.setMaximumSize(friendsListScrollPane1.getPreferredSize());
+                       friendsListScrollPane1.getVerticalScrollBar().setUnitIncrement(getPreferredSize().width/140);
+
+                       friendsListScrollPane.repaint();
+                       friendsListScrollPane.setPreferredSize(new Dimension((int) (HomePanel.this.getPreferredSize().width/3.7695035461), (int)(HomePanel.this.getPreferredSize().height/3.22292993631)));
+                       friendsListScrollPane.setMinimumSize(friendsListScrollPane1.getPreferredSize());
+                       friendsListScrollPane.setMaximumSize(friendsListScrollPane1.getPreferredSize());
+                       friendsListScrollPane.getVerticalScrollBar().setUnitIncrement(getPreferredSize().width/140);
+
+                       int friendCounter=0;
+                       for(Component comp: friendsPanel.getComponents()){
+                           if(comp.getName()!=null){
+                               if(comp.getName().equals("friendPanel")){
+                                   JPanel friendPanel = (JPanel) comp;
+                                   friendPanel.setPreferredSize(new Dimension(friendsListScrollPane.getPreferredSize().width, (int) (FriendsList.getFriendArrayList().get(friendCounter).getImageAvatar().getPreferredSize().height*1.1)));
+                                   for(Component comp1 : friendPanel.getComponents()){
+                                       if(comp1.getName()!=null){
+                                           if(comp1.getName().equals("friendAvatarPanel")){
+                                               JPanel friendAvatarPanel = (JPanel) comp1;
+                                               friendAvatarPanel.setPreferredSize(new Dimension((int) (FriendsList.getFriendArrayList().get(friendCounter).getImageAvatar().getPreferredSize().width*1.3),
+                                                       FriendsList.getFriendArrayList().get(friendCounter).getImageAvatar().getPreferredSize().height));
+                                               friendAvatarPanel.setMaximumSize(friendAvatarPanel.getPreferredSize());
+
+                                           }
+                                           if(comp1.getName().equals("friendNameLabel")){
+                                               JLabel friendNameLabel = (JLabel) comp1;
+                                               friendNameLabel.setFont(CustomFont.getFont().deriveFont(instance.getPreferredSize().width/50f));
+                                               friendNameLabel.setMaximumSize(new Dimension(friendsListScrollPane.getPreferredSize().width-FriendsList.getFriendArrayList().get(friendCounter).getImageAvatar().getPreferredSize().width,friendPanel.getPreferredSize().height));
+                                           }
+                                       }
+                                   }
+                               }
+                               Friend friend = FriendsList.getFriendArrayList().get(friendCounter);
+                               Image scaledFriendProfilePicture = friend.getProfilePicture().getImage().getScaledInstance(instance.getWidth()/25,instance.getWidth()/25,Image.SCALE_SMOOTH);
+                               ImageIcon scaledFriendProfilePictureIcon = new ImageIcon(scaledFriendProfilePicture);
+
+                               friend.getImageAvatar().setPreferredSize(new Dimension(instance.getWidth()/25,instance.getWidth()/25));
+                               friend.getImageAvatar().setMinimumSize(friend.getImageAvatar().getPreferredSize());
+                               friend.getImageAvatar().setMaximumSize(friend.getImageAvatar().getPreferredSize());
+                               friend.getImageAvatar().setImage(scaledFriendProfilePictureIcon);
+                               friend.getImageAvatar().setBorderSize(instance.getHeight()/221);
+                               friend.getImageAvatar().setBorderSpace((int) (instance.getHeight()/331.5));
+                           }
+                           friendCounter++;
+                       }
+                   });
+
             }
         });
     }
@@ -371,7 +423,7 @@ public class HomePanel extends JPanel {
         userWeight.setText("Weight: "+ UserData.getUserWeight()+" Kg");
         bmiLabel.setText("BMI: "+ NutritionCalculator.getBmi(UserData.getUserWeight(), UserData.getUserHeight()));
         bmrLabel.setText("BMR: "+ NutritionCalculator.getBMR(UserData.getUserWeight(), UserData.getUserHeight(),UserData.getUserAge())+" kcal");
-        tdeeLabel.setText("TDEE: "+ NutritionCalculator.getTDEE(UserData.getUserWeight(), UserData.getUserHeight(),UserData.getUserAge(),1.2f)+" kcal");
+        tdeeLabel.setText("TDEE: "+ NutritionCalculator.getTDEE(UserData.getUserWeight(), UserData.getUserHeight(),UserData.getUserAge(),UserData.getActivityFactor())+" kcal");
         proteinNeedLabel.setText("Protein: "+ NutritionCalculator.getProteinNeed(UserData.getUserWeight()));
 
 
@@ -379,7 +431,6 @@ public class HomePanel extends JPanel {
 
     public static void updateFriends(){
         friendsPanel.removeAll();
-        FriendsList.getFriendArrayList().clear();
         FirebaseManager.readDBfriends(UserData.getEmail(),false);
         try {
             FirebaseManager.readDBlistenToFriendsOnlineStatus();
@@ -389,6 +440,7 @@ public class HomePanel extends JPanel {
 
         for(Friend friend:FriendsList.getFriendArrayList()){
             ImageIcon userIcon = FirebaseManager.readDBprofilePicture(friend.getFriendEmail());
+            friend.setProfilePicture(userIcon);
             Image scaledFriendProfilePicture = userIcon.getImage().getScaledInstance(instance.getPreferredSize().width/25,instance.getPreferredSize().width/25,Image.SCALE_SMOOTH);
             ImageIcon scaledFriendProfilePictureIcon = new ImageIcon(scaledFriendProfilePicture);
 
@@ -404,16 +456,19 @@ public class HomePanel extends JPanel {
 
             JPanel friendPanel = new JPanel();
             friendPanel.setOpaque(false);
+            friendPanel.setName("friendPanel");
             friendPanel.setPreferredSize(new Dimension(friendsListScrollPane.getPreferredSize().width, (int) (friend.getImageAvatar().getPreferredSize().height*1.1)));
             friendPanel.setLayout(new BoxLayout(friendPanel,BoxLayout.X_AXIS));
 
             JLabel friendNameLabel = new JLabel(FriendsList.getFriendArrayList().get(FriendsList.getFriendArrayList().indexOf(friend)).getFriendName());
+            friendNameLabel.setName("friendNameLabel");
             friendNameLabel.setFont(CustomFont.getFont().deriveFont(instance.getPreferredSize().width/50f));
             friendNameLabel.setMaximumSize(new Dimension(friendsListScrollPane.getPreferredSize().width-friend.getImageAvatar().getPreferredSize().width,friendPanel.getPreferredSize().height));
             friendNameLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
             friendNameLabel.setForeground(Color.WHITE);
 
             JPanel friendAvatarPanel = new JPanel();
+            friendAvatarPanel.setName("friendAvatarPanel");
             friendAvatarPanel.setOpaque(false);
             friendAvatarPanel.setLayout(new BoxLayout(friendAvatarPanel,BoxLayout.X_AXIS));
             friendAvatarPanel.setPreferredSize(new Dimension((int) (friend.getImageAvatar().getPreferredSize().width*1.3),friend.getImageAvatar().getPreferredSize().height));

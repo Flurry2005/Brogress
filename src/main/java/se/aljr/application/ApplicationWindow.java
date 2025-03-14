@@ -13,10 +13,9 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
 public class ApplicationWindow extends JFrame  {
-    final String applicationIconPath = "src/main/resources/agile_small_icon.png";
     private static int pageSelector;
 
-    ImageIcon applicationIcon = new ImageIcon(applicationIconPath);
+    ImageIcon applicationIcon = new ImageIcon(ResourcePath.getResourcePath("agile_small_icon.png"));
 
     public static ApplicationWindow instance;
 
@@ -40,6 +39,8 @@ public class ApplicationWindow extends JFrame  {
 
     private void init() throws InterruptedException {
         this.setLayout(new BorderLayout(0,0)); //Sätter Fönstrets layout till BorderLayout
+
+
 
         LeftPanel left_panel = new LeftPanel(); //Skapar den vänstra sektionen för fönstret
         left_panel.setPreferredSize(new Dimension((int)((getWidth()/6.4)),getHeight()-getHeight()/18));
@@ -74,7 +75,7 @@ public class ApplicationWindow extends JFrame  {
         SettingsPanel settingsPanel = new SettingsPanel((int)(getWidth()-(getWidth()/6.4)), getHeight()-getHeight()/13);
         settingsPanel.setVisible(false);
 
-        ChatPanel chatPanel = new ChatPanel((int)(getWidth()-(getWidth()/6.4)), getHeight()-getHeight()/13);
+        ChatPanel chatPanel = new ChatPanel((int)(getWidth()-(getWidth()/6.4)-2*getWidth()/150), getHeight()-getHeight()/18-2*getWidth()/150);
         chatPanel.setVisible(false);
 
         left_panel.add(menuPanel);
@@ -106,6 +107,8 @@ public class ApplicationWindow extends JFrame  {
 
                     exercisePanel.setPreferredSize(new Dimension((int)(getWidth()-(getWidth()/6.4)-2*getWidth()/150), getHeight()-top_bar.getHeight()-2*getWidth()/150));
 
+                    chatPanel.setPreferredSize(new Dimension((int)(getWidth()-(getWidth()/6.4)-2*getWidth()/150), getHeight()-top_bar.getHeight()-2*getWidth()/150));
+                    chatPanel.setMaximumSize(chatPanel.getPreferredSize());
                     revalidate();
                     repaint();
 

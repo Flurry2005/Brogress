@@ -3,11 +3,19 @@ package se.aljr.application.programplanner;
 import se.aljr.application.exercise.Excercise.Exercise;
 
 import javax.swing.*;
+import java.io.Serial;
 import java.util.HashMap;
 import java.util.Map;
 
 
 public class Workout extends JPanel {
+
+    @Serial
+    private  static final long serialVersionUID = 1L;
+
+    private boolean isDefault = false;
+
+    private String workoutInfo;
 
     private final Map<Integer, JPanel> exercisePanels = new HashMap<>();
 
@@ -37,7 +45,6 @@ public class Workout extends JPanel {
         return setPanels;
     }
 
-
     public Exercise getIdToExercise(int i) {
         Exercise e = null;
         for(Map.Entry<Exercise, Integer> exercise : idToExercise.entrySet()){
@@ -51,5 +58,22 @@ public class Workout extends JPanel {
     public Map<Exercise, Integer> addIdToExercise(){
         return idToExercise;
     }
+
+    public void setDefault(boolean daBoolean) {
+        isDefault = daBoolean;
+    }
+
+    public boolean isWorkoutDefault() {
+        return isDefault;
+    }
+
+    public void setWorkoutInfo (String text) {
+        workoutInfo = text;
+    }
+
+    public String getWorkoutInfo () {
+        return workoutInfo;
+    }
+
 
 }

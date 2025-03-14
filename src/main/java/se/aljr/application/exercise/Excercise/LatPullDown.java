@@ -16,7 +16,7 @@ public class LatPullDown extends Exercise {
 
 		form = "To perform a cable lat pulldown, sit at a lat pulldown machine and grip the bar slightly wider than shoulder-width. Pull the bar down toward your chest while keeping your back straight and elbows pointed downward. Squeeze your lats at the bottom, then slowly return the bar to the starting position with control.";
 
-		imageIcon = new ImageIcon(ResourcePath.getResourcePath()+"ExerciseImages\\LatPullDown.png");
+		imageIcon = new ImageIcon(ResourcePath.getResourcePath("ExerciseImages/LatPulldown.gif"));
 
 		musclesUsed.add(new Lats());
 		musclesUsed.add(new Biceps());

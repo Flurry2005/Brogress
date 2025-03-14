@@ -16,7 +16,7 @@ public class LegPress extends Exercise {
 
         form = "To perform a leg press, sit on the leg press machine with your feet shoulder-width apart on the platform. Push the platform away by extending your legs, then slowly lower it back down until your knees are at a 90-degree angle. Keep your back flat against the seat and maintain controlled movement throughout.";
 
-        imageIcon = new ImageIcon(ResourcePath.getResourcePath()+"ExerciseImages\\LegPress.png");
+        imageIcon = new ImageIcon(ResourcePath.getResourcePath("ExerciseImages/LegPress.gif"));
 
         musclesUsed.add(new Quadriceps());
         musclesUsed.add(new Glutes());

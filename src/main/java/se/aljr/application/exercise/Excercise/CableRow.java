@@ -19,7 +19,7 @@ public class CableRow extends Exercise {
         musclesUsed.add(new PosteriorDeltoid());
         musclesUsed.add(new LowerBack());
 
-        imageIcon = new ImageIcon(ResourcePath.getResourcePath() + "ExerciseImages\\CableRow.png");
+        imageIcon = new ImageIcon(ResourcePath.getResourcePath("ExerciseImages/CableRow.gif"));
     }
 
 }

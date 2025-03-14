@@ -76,24 +76,24 @@ public class MenuPanel extends JPanel{
         this.setOpaque(false);
         instance = this;
         //this.setPreferredSize(new Dimension(width, height));
-        menuBackground = new ImageIcon(ResourcePath.getResourcePath() +"side_bar.png");
-        lightMenuBackground = new ImageIcon(ResourcePath.getResourcePath()+"side_bar_light.png");
-        logoIcon = new ImageIcon(ResourcePath.getResourcePath()+"agile_small_icon.png");
+        menuBackground = new ImageIcon(ResourcePath.getResourcePath("side_bar.png"));
+        lightMenuBackground = new ImageIcon(ResourcePath.getResourcePath("side_bar_light.png"));
+        logoIcon = new ImageIcon(ResourcePath.getResourcePath("agile_small_icon.png"));
 
-        buttonIcon = new ImageIcon(ResourcePath.getResourcePath()+"button.png");
-        buttonIconExercise = new ImageIcon(ResourcePath.getResourcePath()+"button_exercise.png");
-        buttonIconProgram = new ImageIcon(ResourcePath.getResourcePath()+"button_program.png");
-        buttonIconSettings = new ImageIcon(ResourcePath.getResourcePath()+"button_settings.png");
-        buttonIconChat = new ImageIcon(ResourcePath.getResourcePath()+"button_chat.png");
+        buttonIcon = new ImageIcon(ResourcePath.getResourcePath("button.png"));
+        buttonIconExercise = new ImageIcon(ResourcePath.getResourcePath("button_exercise.png"));
+        buttonIconProgram = new ImageIcon(ResourcePath.getResourcePath("button_program.png"));
+        buttonIconSettings = new ImageIcon(ResourcePath.getResourcePath("button_settings.png"));
+        buttonIconChat = new ImageIcon(ResourcePath.getResourcePath("button_chat.png"));
 
-        darkButtonIcon = new ImageIcon(ResourcePath.getResourcePath()+"button_dark.png");
-        darkButtonIconExercise = new ImageIcon(ResourcePath.getResourcePath()+"button_exercise_dark.png");
-        darkButtonIconProgram = new ImageIcon(ResourcePath.getResourcePath()+"button_program_dark.png");
-        darkButtonIconSettings = new ImageIcon(ResourcePath.getResourcePath()+"button_settings_dark.png");
-        darkButtonIconChat = new ImageIcon(ResourcePath.getResourcePath()+"button_chat_dark.png");
+        darkButtonIcon = new ImageIcon(ResourcePath.getResourcePath("button_dark.png"));
+        darkButtonIconExercise = new ImageIcon(ResourcePath.getResourcePath("button_exercise_dark.png"));
+        darkButtonIconProgram = new ImageIcon(ResourcePath.getResourcePath("button_program_dark.png"));
+        darkButtonIconSettings = new ImageIcon(ResourcePath.getResourcePath("button_settings_dark.png"));
+        darkButtonIconChat = new ImageIcon(ResourcePath.getResourcePath("button_chat_dark.png"));
 
         try{
-            font=Font.createFont(Font.TRUETYPE_FONT, new File(ResourcePath.getResourcePath()+"BebasNeue-Regular.otf"));
+            font=Font.createFont(Font.TRUETYPE_FONT, new File(ResourcePath.getResourcePath("BebasNeue-Regular.otf")));
             font = font.deriveFont((float) (height/17));
         }catch(Exception e){
             font = new Font("Arial", Font.BOLD, 40);
@@ -188,21 +188,11 @@ public class MenuPanel extends JPanel{
                 homePageIsActive[0] = true;
                 chatPageIsActive[0] = false;
 
-                if(lightMode){
-                    settingsButton.setBackground(Color.WHITE);
-                    programButton.setBackground(Color.WHITE);
-                    exercisesButton.setBackground(Color.WHITE);
-                    chatButton.setBackground(Color.WHITE);
-                    homeButton.setBackground(new Color(220, 220, 220));
-                }else{
-                    settingsButton.setBackground(new Color(51,51,51));
-                    programButton.setBackground(new Color(51,51,51));
-                    exercisesButton.setBackground(new Color(51,51,51));
-                    chatButton.setBackground(new Color(51,51,51));
-                    homeButton.setBackground(new Color(30,30,30));
-                }
-
-
+                settingsButton.setBackground(AppThemeColors.PRIMARY);
+                programButton.setBackground(AppThemeColors.PRIMARY);
+                exercisesButton.setBackground(AppThemeColors.PRIMARY);
+                chatButton.setBackground(AppThemeColors.PRIMARY);
+                homeButton.setBackground(AppThemeColors.buttonBGSelected);
 
                 homeButton.repaint();
                 ApplicationWindow.switchWindow("home");
@@ -212,12 +202,12 @@ public class MenuPanel extends JPanel{
             public void mouseReleased(MouseEvent e) {
                 if (isHovered) {
                     if(lightMode)
-                        homeButton.setBackground(new Color(230, 230, 230));
+                        homeButton.setBackground(AppThemeColors.buttonBGHovered);
                     else{
-                        homeButton.setBackground(new Color(40,40,40));
+                        homeButton.setBackground(AppThemeColors.buttonBGHovered);
                     }
                 } else {
-                    homeButton.setBackground(bg);
+                    homeButton.setBackground(AppThemeColors.buttonBGHovered);
                 }
                 homeButton.repaint();
             }
@@ -286,19 +276,11 @@ public class MenuPanel extends JPanel{
                 homePageIsActive[0] = false;
                 chatPageIsActive[0] = false;
 
-                if(lightMode){
-                    settingsButton.setBackground(Color.WHITE);
-                    programButton.setBackground(Color.WHITE);
-                    homeButton.setBackground(Color.WHITE);
-                    chatButton.setBackground(Color.WHITE);
-                    exercisesButton.setBackground(new Color(220, 220, 220));
-                }else{
-                    settingsButton.setBackground(new Color(51,51,51));
-                    programButton.setBackground(new Color(51,51,51));
-                    homeButton.setBackground(new Color(51,51,51));
-                    chatButton.setBackground(new Color(51,51,51));
-                    exercisesButton.setBackground(new Color(30,30,30));
-                }
+                settingsButton.setBackground(AppThemeColors.PRIMARY);
+                programButton.setBackground(AppThemeColors.PRIMARY);
+                homeButton.setBackground(AppThemeColors.PRIMARY);
+                chatButton.setBackground(AppThemeColors.PRIMARY);
+                exercisesButton.setBackground(AppThemeColors.buttonBGSelected);
 
                 ApplicationWindow.switchWindow("exercises");
                 exercisesButton.repaint();
@@ -308,12 +290,12 @@ public class MenuPanel extends JPanel{
             public void mouseReleased(MouseEvent e) {
                 if (isHovered) {
                     if(lightMode)
-                        exercisesButton.setBackground(new Color(230, 230, 230));
+                        exercisesButton.setBackground(AppThemeColors.buttonBGHovered);
                     else{
-                        exercisesButton.setBackground(new Color(40,40,40));
+                        exercisesButton.setBackground(AppThemeColors.buttonBGHovered);
                     }
                 } else {
-                    exercisesButton.setBackground(bg1);
+                    exercisesButton.setBackground(AppThemeColors.buttonBGHovered);
                 }
                 exercisesButton.repaint();
             }
@@ -377,19 +359,11 @@ public class MenuPanel extends JPanel{
                 homePageIsActive[0] = false;
                 chatPageIsActive[0] = false;
 
-                if(lightMode){
-                    settingsButton.setBackground(Color.WHITE);
-                    homeButton.setBackground(Color.WHITE);
-                    exercisesButton.setBackground(Color.WHITE);
-                    chatButton.setBackground(Color.WHITE);
-                    programButton.setBackground(new Color(220, 220, 220));
-                }else{
-                    settingsButton.setBackground(new Color(51,51,51));
-                    homeButton.setBackground(new Color(51,51,51));
-                    exercisesButton.setBackground(new Color(51,51,51));
-                    chatButton.setBackground(new Color(51,51,51));
-                    programButton.setBackground(new Color(30,30,30));
-                }
+                settingsButton.setBackground(AppThemeColors.PRIMARY);
+                homeButton.setBackground(AppThemeColors.PRIMARY);
+                exercisesButton.setBackground(AppThemeColors.PRIMARY);
+                chatButton.setBackground(AppThemeColors.PRIMARY);
+                programButton.setBackground(AppThemeColors.buttonBGSelected);
 
                 ApplicationWindow.switchWindow("program");
                 programButton.repaint();
@@ -399,12 +373,12 @@ public class MenuPanel extends JPanel{
             public void mouseReleased(MouseEvent e) {
                 if (isHovered) {
                     if(lightMode)
-                        programButton.setBackground(new Color(230, 230, 230));
+                        programButton.setBackground(AppThemeColors.buttonBGHovered);
                     else{
-                        programButton.setBackground(new Color(40,40,40));
+                        programButton.setBackground(AppThemeColors.buttonBGHovered);
                     }
                 } else {
-                    programButton.setBackground(bg);
+                    programButton.setBackground(AppThemeColors.buttonBGHovered);
                 }
                 programButton.repaint();
             }
@@ -462,19 +436,13 @@ public class MenuPanel extends JPanel{
                 homePageIsActive[0] = false;
                 chatPageIsActive[0] = false;
 
-                if(lightMode){
-                    homeButton.setBackground(Color.WHITE);
-                    programButton.setBackground(Color.WHITE);
-                    exercisesButton.setBackground(Color.WHITE);
-                    chatButton.setBackground(Color.WHITE);
-                    settingsButton.setBackground(new Color(220, 220, 220));
-                }else{
-                    homeButton.setBackground(new Color(51,51,51));
-                    programButton.setBackground(new Color(51,51,51));
-                    exercisesButton.setBackground(new Color(51,51,51));
-                    chatButton.setBackground(new Color(51,51,51));
-                    settingsButton.setBackground(new Color(30,30,30));
-                }
+
+                homeButton.setBackground(AppThemeColors.PRIMARY);
+                programButton.setBackground(AppThemeColors.PRIMARY);
+                exercisesButton.setBackground(AppThemeColors.PRIMARY);
+                chatButton.setBackground(AppThemeColors.PRIMARY);
+                settingsButton.setBackground(AppThemeColors.buttonBGSelected);
+
                 ApplicationWindow.switchWindow("settings");
                 settingsButton.repaint();
             }
@@ -483,12 +451,12 @@ public class MenuPanel extends JPanel{
             public void mouseReleased(MouseEvent e) {
                 if (isHovered) {
                     if(lightMode)
-                        settingsButton.setBackground(new Color(230, 230, 230));
+                        settingsButton.setBackground(AppThemeColors.buttonBGHovered);
                     else{
-                        settingsButton.setBackground(new Color(40,40,40));
+                        settingsButton.setBackground(AppThemeColors.buttonBGHovered);
                     }
                 } else {
-                    settingsButton.setBackground(bg);
+                    settingsButton.setBackground(AppThemeColors.buttonBGHovered);
                 }
                 settingsButton.repaint();
             }
@@ -549,7 +517,7 @@ public class MenuPanel extends JPanel{
                 programButton.setBackground(AppThemeColors.PRIMARY);
                 exercisesButton.setBackground(AppThemeColors.PRIMARY);
                 settingsButton.setBackground(AppThemeColors.PRIMARY);
-                chatButton.setBackground(AppThemeColors.PRIMARY);
+                chatButton.setBackground(AppThemeColors.buttonBGSelected);
                 ApplicationWindow.switchWindow("chat");
                 settingsButton.repaint();
             }
@@ -558,12 +526,12 @@ public class MenuPanel extends JPanel{
             public void mouseReleased(MouseEvent e) {
                 if (isHovered) {
                     if(lightMode)
-                        chatButton.setBackground(new Color(230, 230, 230));
+                        chatButton.setBackground(AppThemeColors.buttonBGHovered);
                     else{
-                        chatButton.setBackground(new Color(40,40,40));
+                        chatButton.setBackground(AppThemeColors.buttonBGHovered);
                     }
                 } else {
-                    chatButton.setBackground(bg);
+                    chatButton.setBackground(AppThemeColors.buttonBGHovered);
                 }
                 chatButton.repaint();
             }

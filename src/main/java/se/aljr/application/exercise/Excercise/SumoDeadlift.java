@@ -1,6 +1,9 @@
 package se.aljr.application.exercise.Excercise;
 
+import se.aljr.application.ResourcePath;
 import se.aljr.application.exercise.Muscle.*;
+
+import javax.swing.*;
 
 public class SumoDeadlift extends Exercise {
     public SumoDeadlift() {

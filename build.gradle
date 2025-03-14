@@ -15,12 +15,43 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter'
     implementation(platform("com.google.firebase:firebase-bom:33.8.0"))
     implementation 'com.google.firebase:firebase-admin:9.1.1'
+    implementation 'org.eclipse.angus:jakarta.mail:2.0.2'
     // Om du också vill använda Firebase Storage (filuppladdning och hämtning)
     implementation 'com.google.firebase:firebase-storage'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
 
 
+}
 
+tasks.withType(Copy).configureEach {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
 
+sourceSets {
+    main.java {
+        srcDir 'src/main/resources'
+    }
+    test.java {
+        srcDir 'src/test/resources'
+
+    }
+}
+jar {
+
+    //processResources.exclude('*')
+
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    manifest {
+        attributes 'Main-Class': 'se.aljr.application.Launcher'
+    }
+
+    from('src/main/resources') {
+        into('resources')  // Lägg till filerna i en "resources" mapp i jar-filen
+    }
+
+    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+
+    exclude 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA', 'META-INF/*.EC','**/*.psd'
 
 }
 
