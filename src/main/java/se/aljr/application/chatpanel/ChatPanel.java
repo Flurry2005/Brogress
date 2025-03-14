@@ -983,7 +983,11 @@ public class ChatPanel extends JPanel {
 
                 JPanel friendPanel = new JPanel();
                 friendPanel.setName("friendPanel");
-                friendPanel.setOpaque(false);
+                if(selectedFriend==friend){
+                    friendPanel.setOpaque(true);
+                }else{
+                    friendPanel.setOpaque(false);
+                }
                 friendPanel.setBackground(AppThemeColors.SECONDARY);
                 friendPanel.setPreferredSize(new Dimension(friendsScrollPane.getPreferredSize().width, (int) (friend.getImageAvatarSocial().getPreferredSize().height * 1.3)));
                 friendPanel.setLayout(new BoxLayout(friendPanel, BoxLayout.X_AXIS));
@@ -994,7 +998,7 @@ public class ChatPanel extends JPanel {
                         if(canSelectChat){
                             selectedFriend = friend;
                             System.out.println(friend.getFriendName());
-                            messagesScrollPane.setViewportView(friend.getMessageStorage());
+                            updateChat();
                             for (Friend friend1 : FriendsList.getFriendArrayList()){
                                 if(!friend1.getFriendName().equals(friend.getFriendName())){
                                     for(Component comp : friendsPanel.getComponents()){
@@ -1264,7 +1268,7 @@ public class ChatPanel extends JPanel {
 
         //System.out.println(selectedFriend);
         ArrayList<HashMap<String,String>> newMessages;
-        System.out.println(selectedFriend.firstLoadIn);
+        System.out.println(selectedFriend.getFriendName()+" first load in: "+selectedFriend.firstLoadIn);
         if(selectedFriend.firstLoadIn){
             newMessages = selectedFriend.getChat();
 
@@ -1360,7 +1364,8 @@ public class ChatPanel extends JPanel {
 
                 selectedFriend.getMessageStorage().add(Box.createRigidArea(new Dimension(userMessagePanel.getPreferredSize().width, instance.getPreferredSize().height/40)));
                 selectedFriend.getMessageStorage().add(userMessagePanel);
-            }else{
+            }
+            else{
                 /*--------------------right side of chat--------------------*/
                 JPanel friendMessagePanel = new JPanel();
                 friendMessagePanel.setName("friendMessagePanel");
@@ -1466,9 +1471,9 @@ public class ChatPanel extends JPanel {
         if(!selectedFriend.firstLoadIn){
             messagesScrollPane.setViewportView(selectedFriend.getMessageStorage());
         }
-
-        SwingUtilities.invokeLater(() -> messagesScrollPane.getVerticalScrollBar().setValue(messagesScrollPane.getVerticalScrollBar().getMaximum()));
         selectedFriend.firstLoadIn = false;
+        SwingUtilities.invokeLater(() -> messagesScrollPane.getVerticalScrollBar().setValue(messagesScrollPane.getVerticalScrollBar().getMaximum()));
+
     }
 
     public void updateColors(){

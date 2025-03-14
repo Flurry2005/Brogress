@@ -107,6 +107,8 @@ public class FirebaseManager {
 
                         friend.setChat(newChat);
                         if(friend.firstLoadIn){
+                            ChatPanel.canSelectChat=false;
+                            System.out.println("Nu körs nullifieringen av selected friend");
                             ChatPanel.selectedFriend = friend;
                             ChatPanel.updateChat();
                             ChatPanel.selectedFriend=null;
@@ -115,6 +117,7 @@ public class FirebaseManager {
 
                     }
                     if(ChatPanel.canSelectChat){
+                        System.out.println("UPDATE TO CHAT SENT\n");
                         ChatPanel.updateChat();
                     }
                     if(previousSelectedFriendIndex!=-1){
