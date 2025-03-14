@@ -8,10 +8,14 @@ import se.aljr.application.settings.SettingsPanel;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.plaf.basic.BasicButtonUI;
 import javax.swing.plaf.basic.BasicTextFieldUI;
+import javax.swing.text.Caret;
+import javax.swing.text.DefaultCaret;
+import javax.swing.text.JTextComponent;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
@@ -860,6 +864,8 @@ public class ChatPanel extends JPanel {
                                         JTextArea friendTextMessage = (JTextArea) comp1;
                                         friendTextMessage.setFont(new Font("Arial", Font.PLAIN, (int)(instance.getPreferredSize().width/65f)));
 
+                                        friendTextMessage.setForeground(AppThemeColors.foregroundColor);
+
                                         FontMetrics metrics = friendTextMessage.getFontMetrics(friendTextMessage.getFont());
                                         int lineHeight = metrics.getHeight();
 
@@ -876,8 +882,6 @@ public class ChatPanel extends JPanel {
                                         //System.out.println(new Dimension(friendMessagePanel.getPreferredSize().width - friendProfilePicturePanel.getPreferredSize().width, totalHeight));
                                         friendTextMessage.setMinimumSize(friendTextMessage.getPreferredSize());
                                         friendTextMessage.setMaximumSize(friendTextMessage.getPreferredSize());
-                                        friendTextMessage.setForeground(Color.WHITE);
-                                        friendTextMessage.setBackground(Color.green);
 
                                         //System.out.println(friendTextMessage.getSize().height +" "+ friendMessagePanel.getPreferredSize().height);
 
@@ -988,7 +992,7 @@ public class ChatPanel extends JPanel {
                 }else{
                     friendPanel.setOpaque(false);
                 }
-                friendPanel.setBackground(AppThemeColors.SECONDARY);
+                friendPanel.setBackground(AppThemeColors.buttonBGSelected);
                 friendPanel.setPreferredSize(new Dimension(friendsScrollPane.getPreferredSize().width, (int) (friend.getImageAvatarSocial().getPreferredSize().height * 1.3)));
                 friendPanel.setLayout(new BoxLayout(friendPanel, BoxLayout.X_AXIS));
                 friendPanel.addMouseListener(new MouseAdapter() {
@@ -1330,6 +1334,23 @@ public class ChatPanel extends JPanel {
                 //System.out.println(userTextMessage.getText());
                 //userTextMessage.setBorder(new LineBorder(AppThemeColors.PRIMARY,1,true));
                 userTextMessage.setEditable(false);
+                userTextMessage.setCaret(new DefaultCaret(){
+                    @Override
+                    public void setSelectionVisible(boolean visible){
+                        super.setSelectionVisible(true);
+                    }
+                    @Override
+                    public void setVisible(boolean visible){
+                        super.setVisible(false);
+                    }
+                });
+                userTextMessage.addFocusListener(new FocusAdapter() {
+                    @Override
+                    public void focusLost(FocusEvent e) {
+                        super.focusLost(e);
+                        userTextMessage.select(0,0);
+                    }
+                });
                 userTextMessage.setAlignmentY(Component.TOP_ALIGNMENT);
                 SwingUtilities.invokeLater(() -> {
                     FontMetrics metrics = userTextMessage.getFontMetrics(userTextMessage.getFont());
@@ -1349,7 +1370,7 @@ public class ChatPanel extends JPanel {
                     //System.out.println(new Dimension(userMessagePanel.getPreferredSize().width - userProfilePicturePanel.getPreferredSize().width, totalHeight));
                     userTextMessage.setMinimumSize(userTextMessage.getPreferredSize());
                     userTextMessage.setMaximumSize(userTextMessage.getPreferredSize());
-                    userTextMessage.setForeground(Color.WHITE);
+                    userTextMessage.setForeground(AppThemeColors.foregroundColor);
                     userTextMessage.setBackground(Color.green);
                     //System.out.println(userTextMessage.getSize().height +" "+ userMessagePanel.getPreferredSize().height);
                     if (userTextMessage.getSize().height > userMessagePanel.getPreferredSize().height) {
@@ -1441,7 +1462,7 @@ public class ChatPanel extends JPanel {
                     //System.out.println(new Dimension(friendMessagePanel.getPreferredSize().width - friendProfilePicturePanel.getPreferredSize().width, totalHeight));
                     friendTextMessage.setMinimumSize(friendTextMessage.getPreferredSize());
                     friendTextMessage.setMaximumSize(friendTextMessage.getPreferredSize());
-                    friendTextMessage.setForeground(Color.WHITE);
+                    friendTextMessage.setForeground(AppThemeColors.foregroundColor);
                     friendTextMessage.setBackground(Color.green);
 
                     //System.out.println(friendTextMessage.getSize().height +" "+ friendMessagePanel.getPreferredSize().height);
@@ -1507,6 +1528,7 @@ public class ChatPanel extends JPanel {
         mainMiddlePanel.setBackground(AppThemeColors.PRIMARY);
         mainMiddleTopPanel.setBackground(AppThemeColors.PRIMARY);
         rescaleRequests();
+        rescaleChats();
     }
 
 
