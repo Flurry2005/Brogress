@@ -74,23 +74,30 @@ public class FirebaseManager {
         }
     }
 
+
+
     public static void readDBlistenToClientChats() {
 
         new Thread(()->{
+
             // Referens till användarens dokument
             DocumentReference docRef = db.collection("chats").document(UserData.getEmail());
 
             // Lyssna på ändringar i fältet "isOnline"
             docRef.addSnapshotListener((snapshot, e) -> {
+                int previousSelectedFriendIndex = -1;
                 if (e != null) {
                     System.err.println("Couldnt listen to chats document of user: "+UserData.getEmail() + e);
                     return;
                 }
 
                 if (snapshot != null && snapshot.exists()) {
-                    Friend previousSelectedFriend = null;
+
                     if(ChatPanel.selectedFriend!=null){
-                        previousSelectedFriend=ChatPanel.selectedFriend;
+                        previousSelectedFriendIndex = FriendsList.getFriendArrayList().indexOf(ChatPanel.selectedFriend);
+                        System.out.println("THE SELECTED INDEX IS : "+previousSelectedFriendIndex);
+                    }else{
+                        System.out.println("Selected friend is null");
                     }
                     for(Friend friend : FriendsList.getFriendArrayList()){
 
@@ -110,7 +117,13 @@ public class FirebaseManager {
                     if(ChatPanel.canSelectChat){
                         ChatPanel.updateChat();
                     }
-                    ChatPanel.selectedFriend=previousSelectedFriend;
+                    if(previousSelectedFriendIndex!=-1){
+                        ChatPanel.selectedFriend=FriendsList.getFriendArrayList().get(previousSelectedFriendIndex);
+                        System.out.println("Selected friend getting: " + FriendsList.getFriendArrayList().get(previousSelectedFriendIndex)+"\n");
+                        System.out.println("Selected Friend: " + ChatPanel.selectedFriend.getFriendName()+"\n");
+                    }else{
+                        System.out.println("Could not retrieve previously selected friend\n");
+                    }
                     ChatPanel.canSelectChat = true;
                 }
 

@@ -331,6 +331,8 @@ public class SettingsPanel extends JPanel{
                     themeSelectionPanelD.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/15));
 
                     //Account selection panel
+                    searchField.setFont(new Font("Arial", Font.PLAIN, getHeight()/40));
+
                     accountAgePanelD.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/15));
                     accountWeightPanelD.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/15));
                     accountHeightPanelD.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/15));
@@ -1561,7 +1563,7 @@ public class SettingsPanel extends JPanel{
 
         accountPFPPanelD.setBackground(AppThemeColors.SECONDARY);
         accountPFPPanelD.setLayout(new BorderLayout());
-        accountPFPPanelD.setPreferredSize(new Dimension(new Dimension(width-width/10*7, height/10)));
+        accountPFPPanelD.setPreferredSize(new Dimension(width-width/10*7, height/15));
         accountPFPPanelD.setName("pfppanelprofilepictureprofile picture");
 
         pfpLabelCenteringPanelD.setBackground(Color.green);

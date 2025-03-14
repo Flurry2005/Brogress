@@ -171,6 +171,7 @@ public class ChatPanel extends JPanel {
         clickToSendButton.setFocusable(false);
         clickToSendButton.setOpaque(false);
         clickToSendButton.addActionListener(_ -> {
+            System.out.println("Selected friend: " + selectedFriend.getFriendName());
             if(selectedFriend!=null&&canSendMessage&&!messengerTextBox.getText().isEmpty()){
                 messengerTextBox.setEditable(false);
                 canSendMessage = false;
@@ -1004,6 +1005,7 @@ public class ChatPanel extends JPanel {
                                 }
                             }
                             friendPanel.setOpaque(true);
+                            friendPanel.setBackground(AppThemeColors.SECONDARY);
                         }
                     }
                 });
@@ -1287,8 +1289,6 @@ public class ChatPanel extends JPanel {
                 userMessagePanel.setMinimumSize(userMessagePanel.getPreferredSize());
                 userMessagePanel.setMaximumSize(userMessagePanel.getPreferredSize());
                 userMessagePanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-
 
                 JPanel userProfilePicturePanel = new JPanel();
                 userProfilePicturePanel.setName("userProfilePicturePanel");
