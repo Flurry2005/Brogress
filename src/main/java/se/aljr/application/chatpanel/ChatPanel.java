@@ -1013,7 +1013,8 @@ public class ChatPanel extends JPanel {
                                 }
                             }
                             friendPanel.setOpaque(true);
-                            friendPanel.setBackground(AppThemeColors.SECONDARY);
+                            friendPanel.setBackground(AppThemeColors.buttonBGSelected);
+                            friendPanel.repaint();
                         }
                     }
                 });
@@ -1330,9 +1331,7 @@ public class ChatPanel extends JPanel {
                 userTextMessage.setLineWrap(true);
                 userTextMessage.setWrapStyleWord(true);
                 userTextMessage.append(message);
-                userTextMessage.setForeground(new Color(212, 215, 218));
-                //System.out.println(userTextMessage.getText());
-                //userTextMessage.setBorder(new LineBorder(AppThemeColors.PRIMARY,1,true));
+                userTextMessage.setForeground(AppThemeColors.foregroundColor);
                 userTextMessage.setEditable(false);
                 userTextMessage.setCaret(new DefaultCaret(){
                     @Override
@@ -1442,8 +1441,27 @@ public class ChatPanel extends JPanel {
                 friendTextMessage.setLineWrap(true);
                 friendTextMessage.setWrapStyleWord(true);
                 friendTextMessage.setEditable(false);
+                friendTextMessage.setCaret(new DefaultCaret(){
+                    @Override
+                    public void setSelectionVisible(boolean visible){
+                        super.setSelectionVisible(true);
+                    }
+                    @Override
+                    public void setVisible(boolean visible){
+                        super.setVisible(false);
+                    }
+                });
+
+                friendTextMessage.addFocusListener(new FocusAdapter() {
+                    @Override
+                    public void focusLost(FocusEvent e) {
+                        super.focusLost(e);
+                        friendTextMessage.select(0,0);
+                    }
+                });
+                DefaultCaret caret = (DefaultCaret) friendTextMessage.getCaret();
+                caret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
                 friendTextMessage.setForeground(AppThemeColors.foregroundColor);
-                //friendTextMessage.setBorder(new LineBorder(AppThemeColors.PRIMARY,1,true));
                 friendTextMessage.setAlignmentY(Component.TOP_ALIGNMENT);
                 SwingUtilities.invokeLater(() -> {
                     FontMetrics metrics = friendTextMessage.getFontMetrics(friendTextMessage.getFont());
