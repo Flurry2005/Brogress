@@ -36,14 +36,14 @@ public class TopBar extends JPanel {
     public TopBar(final JFrame parent){
         instance = this;
 
-        topBarBackground = new ImageIcon(ResourcePath.getResourcePath() +"top_bar.png");
-        lightTopBarBackground = new ImageIcon(ResourcePath.getResourcePath()+"top_bar_light.png");
+        topBarBackground = new ImageIcon(ResourcePath.getResourcePath("top_bar.png"));
+        lightTopBarBackground = new ImageIcon(ResourcePath.getResourcePath("top_bar_light.png"));
 
-        exitButtonIcon = new ImageIcon(ResourcePath.getResourcePath()+"exit_button_icon.png");
+        exitButtonIcon = new ImageIcon(ResourcePath.getResourcePath("exit_button_icon.png"));
         scaledexitButtonIcon = exitButtonIcon.getImage().getScaledInstance(16, 16, Image.SCALE_SMOOTH);
         scaledExitButtonIcon = new ImageIcon(scaledexitButtonIcon);
 
-        lightExitButtonicon = new ImageIcon(ResourcePath.getResourcePath()+"exit_button_icon_light.png");
+        lightExitButtonicon = new ImageIcon(ResourcePath.getResourcePath("exit_button_icon_light.png"));
         scaledlightExitButtonicon = lightExitButtonicon.getImage().getScaledInstance(16,16, Image.SCALE_SMOOTH);
         scaledLightExitButtonIcon = new ImageIcon(scaledlightExitButtonicon);
 

@@ -77,7 +77,7 @@ public class SearchPanel extends JPanel {
         searchField.setAlignmentY(Component.CENTER_ALIGNMENT);
         searchField.setText("Search for exercise...");
 
-        addButton = new ImageIcon(ResourcePath.getResourcePath() + "add_button.png");
+        addButton = new ImageIcon(ResourcePath.getResourcePath("add_button.png"));
         scaledAddButton = addButton.getImage().getScaledInstance((int) (getPreferredSize().width*5/14.1733333), (int) (getPreferredSize().height/22.862069), Image.SCALE_SMOOTH);
         scaledAddButtonIcon = new ImageIcon(scaledAddButton);
 

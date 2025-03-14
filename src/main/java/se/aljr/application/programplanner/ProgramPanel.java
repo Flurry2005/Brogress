@@ -126,51 +126,51 @@ public class ProgramPanel extends JPanel {
     private Image scaledExportIcon;
 
     public ProgramPanel(int width, int height) {
-        emptyBackground = new ImageIcon(ResourcePath.getResourcePath() + "emptyBackground.png");
+        emptyBackground = new ImageIcon(ResourcePath.getResourcePath("emptyBackground.png"));
         scaledEmptyBackground = emptyBackground.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
         scaledEmptyBackgroundIcon = new ImageIcon(scaledEmptyBackground);
 
-        lightEmptyBackground = new ImageIcon(ResourcePath.getResourcePath() + "lightEmptyBackground.png");
+        lightEmptyBackground = new ImageIcon(ResourcePath.getResourcePath("lightEmptyBackground.png"));
         scaledLightEmptyBackground = lightEmptyBackground.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
         scaledLightEmptyBackgroundIcon = new ImageIcon(scaledLightEmptyBackground);
 
-        addButton = new ImageIcon(ResourcePath.getResourcePath() + "add_button.png");
+        addButton = new ImageIcon(ResourcePath.getResourcePath("add_button.png"));
         scaledAddButton = addButton.getImage().getScaledInstance((int) (addButton.getIconWidth() / 1.5), (int) (addButton.getIconHeight()), Image.SCALE_SMOOTH);
         scaledAddButtonIcon = new ImageIcon(scaledAddButton);
 
-        saveButton = new ImageIcon(ResourcePath.getResourcePath() + "save_workout_button.png");
+        saveButton = new ImageIcon(ResourcePath.getResourcePath("save_workout_button.png"));
         scaledsaveButton = saveButton.getImage().getScaledInstance((int) (width / 7.59285714), (int) (height / 22.862069), Image.SCALE_SMOOTH);
         scaledsaveButtonIcon = new ImageIcon(scaledsaveButton);
 
-        removeWorkoutButtonImage = new ImageIcon(ResourcePath.getResourcePath() + "remove_workout_button.png");
+        removeWorkoutButtonImage = new ImageIcon(ResourcePath.getResourcePath("remove_workout_button.png"));
         scaledRemoveWorkoutButtonImage = removeWorkoutButtonImage.getImage().getScaledInstance((int) (width / 28.7297297), (int) (height / 22.862069), Image.SCALE_SMOOTH);
         scaledRemoveWorkoutIcon = new ImageIcon(scaledRemoveWorkoutButtonImage);
 
-        newWorkoutButtonImage = new ImageIcon(ResourcePath.getResourcePath() + "new_workout_button.png");
+        newWorkoutButtonImage = new ImageIcon(ResourcePath.getResourcePath("new_workout_button.png"));
         scaledNewWorkoutButtonImage = newWorkoutButtonImage.getImage().getScaledInstance((int) (width / 14.1733333), (int) (height / 22.862069), Image.SCALE_SMOOTH);
         scaledNewWorkoutIcon = new ImageIcon(scaledNewWorkoutButtonImage);
 
-        removeExerciseButtonImage = new ImageIcon(ResourcePath.getResourcePath() + "remove_exercise_button.png");
+        removeExerciseButtonImage = new ImageIcon(ResourcePath.getResourcePath("remove_exercise_button.png"));
         scaledRemoveExerciseButtonImage = removeExerciseButtonImage.getImage().getScaledInstance((int) (width / 14.971831), (int) (height / 19.5), Image.SCALE_SMOOTH);
         scaledRemoveExerciseIcon = new ImageIcon(scaledRemoveExerciseButtonImage);
 
-        newSetButtonImage = new ImageIcon(ResourcePath.getResourcePath() + "new_set_button.png");
+        newSetButtonImage = new ImageIcon(ResourcePath.getResourcePath("new_set_button.png"));
         scaledNewSetButtonImage = newSetButtonImage.getImage().getScaledInstance((int) (width / 35.4333333), (int) (height / 19.5), Image.SCALE_SMOOTH);
         scaledNewSetIcon = new ImageIcon(scaledNewSetButtonImage);
 
-        removeSetButtonImage = new ImageIcon(ResourcePath.getResourcePath() + "remove_set_button.png");
+        removeSetButtonImage = new ImageIcon(ResourcePath.getResourcePath("remove_set_button.png"));
         scaledRemoveSetButtonImage = removeSetButtonImage.getImage().getScaledInstance((int) (width / 46.2173913043), (int) (height / 26.52), Image.SCALE_SMOOTH);
         scaledRemoveSetIcon = new ImageIcon(scaledRemoveSetButtonImage);
 
-        moveSetUpButtonImage = new ImageIcon(ResourcePath.getResourcePath() + "move_set_up.png");
+        moveSetUpButtonImage = new ImageIcon(ResourcePath.getResourcePath("move_set_up.png"));
         scaledMoveSetUpButtonImage = moveSetUpButtonImage.getImage().getScaledInstance((int) (width / 88.5833333), (int) (height / 30.1363636), Image.SCALE_SMOOTH);
         scaledMoveSetUpIcon = new ImageIcon(scaledMoveSetUpButtonImage);
 
-        moveSetDownButtonImage = new ImageIcon(ResourcePath.getResourcePath() + "move_set_down.png");
+        moveSetDownButtonImage = new ImageIcon(ResourcePath.getResourcePath("move_set_down.png"));
         scaledMoveSetDownButtonImage = moveSetDownButtonImage.getImage().getScaledInstance((int) (width / 88.5833333), (int) (height / 30.1363636), Image.SCALE_SMOOTH);
         scaledMoveSetDownIcon = new ImageIcon(scaledMoveSetDownButtonImage);
 
-        exportIcon = new ImageIcon(ResourcePath.getResourcePath() + "exportIcon.png");
+        exportIcon = new ImageIcon(ResourcePath.getResourcePath("exportIcon.png"));
         scaledExportIcon = exportIcon.getImage().getScaledInstance(width / 30, height / 20, Image.SCALE_SMOOTH);
         exportIcon = new ImageIcon(scaledExportIcon);
 
@@ -987,14 +987,14 @@ public class ProgramPanel extends JPanel {
                     defaultWorkoutList.setFixedCellHeight((int) (getHeight() / 22.5));
                     defaultWorkoutList.setFont(new Font("Arial", Font.BOLD, (int) (getHeight() / 55.25)));
 
-                    newWorkoutButtonImage = new ImageIcon(ResourcePath.getResourcePath() + "new_workout_button.png");
+                    newWorkoutButtonImage = new ImageIcon(ResourcePath.getResourcePath("new_workout_button.png"));
                     scaledNewWorkoutButtonImage = newWorkoutButtonImage.getImage().getScaledInstance((int) (getWidth() / 14.1733333), (int) (getHeight() / 22.862069), Image.SCALE_SMOOTH);
                     scaledNewWorkoutIcon = new ImageIcon(scaledNewWorkoutButtonImage);
                     newWorkoutButton.setIcon(scaledNewWorkoutIcon);
                     newWorkoutButton.setPreferredSize(new Dimension(scaledNewWorkoutIcon.getIconWidth(), scaledNewWorkoutIcon.getIconHeight()));
                     newWorkoutButton.setMaximumSize(newWorkoutButton.getPreferredSize());
 
-                    removeWorkoutButtonImage = new ImageIcon(ResourcePath.getResourcePath() + "remove_workout_button.png");
+                    removeWorkoutButtonImage = new ImageIcon(ResourcePath.getResourcePath("remove_workout_button.png"));
                     scaledRemoveWorkoutButtonImage = removeWorkoutButtonImage.getImage().getScaledInstance((int) (getWidth() / 28.7297297), (int) (getHeight() / 22.862069), Image.SCALE_SMOOTH);
                     scaledRemoveWorkoutIcon = new ImageIcon(scaledRemoveWorkoutButtonImage);
                     deleteWorkout.setIcon(scaledRemoveWorkoutIcon);
@@ -1020,14 +1020,14 @@ public class ProgramPanel extends JPanel {
                     workoutTitle.setPreferredSize(new Dimension(getWidth() / 3, (int) (getHeight() / 22.1)));
                     workoutTitle.setMaximumSize(workoutTitle.getPreferredSize());
 
-                    saveButton = new ImageIcon(ResourcePath.getResourcePath() + "save_workout_button.png");
+                    saveButton = new ImageIcon(ResourcePath.getResourcePath("save_workout_button.png"));
                     scaledsaveButton = saveButton.getImage().getScaledInstance((int) (getWidth() / 7.59285714), (int) (getHeight() / 22.862069), Image.SCALE_SMOOTH);
                     scaledsaveButtonIcon = new ImageIcon(scaledsaveButton);
                     saveWorkoutButton.setIcon(scaledsaveButtonIcon);
                     saveWorkoutButton.setPreferredSize(new Dimension(scaledsaveButtonIcon.getIconWidth(), scaledsaveButtonIcon.getIconHeight()));
                     saveWorkoutButton.setMaximumSize(new Dimension(scaledsaveButtonIcon.getIconWidth(), scaledsaveButtonIcon.getIconHeight()));
 
-                    exportIcon = new ImageIcon(ResourcePath.getResourcePath() + "exportIcon.png");
+                    exportIcon = new ImageIcon(ResourcePath.getResourcePath("exportIcon.png"));
                     scaledExportIcon = exportIcon.getImage().getScaledInstance(getWidth() / 30, getHeight() / 20, Image.SCALE_SMOOTH);
                     exportIcon = new ImageIcon(scaledExportIcon);
                     exportWorkoutButton.setIcon(exportIcon);

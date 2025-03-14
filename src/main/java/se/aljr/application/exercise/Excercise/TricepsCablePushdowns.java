@@ -13,7 +13,7 @@ public class TricepsCablePushdowns extends Exercise {
 
         form = "To perform a cable pushdown, stand in front of a cable machine with a straight bar or rope attachment. Grip the handle with palms facing down, keep your elbows close to your body, and push the handle down until your arms are fully extended. Slowly return to the starting position while maintaining control and keeping tension on the triceps.";
 
-        imageIcon = new ImageIcon(ResourcePath.getResourcePath()+"ExerciseImages\\CablePushdown.gif");
+        imageIcon = new ImageIcon(ResourcePath.getResourcePath("ExerciseImages/CablePushdown.gif"));
         musclesUsed.add(new Triceps());
     }
 }

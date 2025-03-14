@@ -48,12 +48,12 @@ public class HomePanel extends JPanel {
 
         this.setPreferredSize(new Dimension(width, height));
         instance = this;
-        homePanelBackground = new ImageIcon(ResourcePath.getResourcePath() + "bottom_right_bar.png");
-        moduleIcon = new ImageIcon(ResourcePath.getResourcePath()+"module.png");
+        homePanelBackground = new ImageIcon(ResourcePath.getResourcePath("bottom_right_bar.png"));
+        moduleIcon = new ImageIcon(ResourcePath.getResourcePath("module.png"));
         scaledContentBackground = homePanelBackground.getImage().getScaledInstance(width,height,Image.SCALE_SMOOTH);
         scaledContentBackgroundPanel = new ImageIcon(scaledContentBackground);
 
-        lightHomePanelBackground = new ImageIcon(ResourcePath.getResourcePath()+"bottom_right_bar_light.png");
+        lightHomePanelBackground = new ImageIcon(ResourcePath.getResourcePath("bottom_right_bar_light.png"));
         scaledLightContentBackground = lightHomePanelBackground.getImage().getScaledInstance(width,height,Image.SCALE_SMOOTH);
         scaledLightContentBackgroundPanel = new ImageIcon(scaledLightContentBackground);
 
@@ -80,7 +80,7 @@ public class HomePanel extends JPanel {
         //profilePictureIcon = new ImageIcon(resourcePath + "Johan.png");
         profilePictureIcon = FirebaseManager.readDBprofilePicture(UserData.getEmail());
         if(profilePictureIcon==null){
-            profilePictureIcon = new ImageIcon(ResourcePath.getResourcePath() + "agile_small_icon.png");
+            profilePictureIcon = new ImageIcon(ResourcePath.getResourcePath("agile_small_icon.png"));
         }
         avatar = new ImageAvatar();
         avatar.setPreferredSize(new Dimension(getPreferredSize().width/25,getPreferredSize().width/25));

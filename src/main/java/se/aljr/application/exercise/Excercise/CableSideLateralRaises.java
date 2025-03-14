@@ -19,6 +19,6 @@ public class CableSideLateralRaises extends Exercise {
         musclesUsed.add(new Traps());
         musclesUsed.add(new AnteriorDeltoid());
 
-        imageIcon = new ImageIcon(ResourcePath.getResourcePath() +"ExerciseImages\\CableSideLateralRaises.gif");
+        imageIcon = new ImageIcon(ResourcePath.getResourcePath("ExerciseImages/CableSideLateralRaises.gif"));
     }
 }

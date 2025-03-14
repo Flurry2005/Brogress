@@ -218,19 +218,19 @@ public class SettingsPanel extends JPanel{
 
         instance = this;
 
-        settingsPanelBackground = new ImageIcon(ResourcePath.getResourcePath() +"emptyBackground.png");
+        settingsPanelBackground = new ImageIcon(ResourcePath.getResourcePath("emptyBackground.png"));
         scaleSettingsPanelBackground = settingsPanelBackground.getImage().getScaledInstance(width,height, Image.SCALE_SMOOTH);
         scaledSettingsPanelBackgroundIcon = new ImageIcon(scaleSettingsPanelBackground);
 
-        lightSettingsPanelBackground = new ImageIcon(ResourcePath.getResourcePath() +"lightEmptyBackground.png");
+        lightSettingsPanelBackground = new ImageIcon(ResourcePath.getResourcePath("lightEmptyBackground.png"));
         lightScaleSettingsPanelBackground = lightSettingsPanelBackground.getImage().getScaledInstance(width,height,Image.SCALE_SMOOTH);
         lightScaledSettingsPanelBackgroundIcon = new ImageIcon(lightScaleSettingsPanelBackground);
 
-        generalSettingsIcon = new ImageIcon(ResourcePath.getResourcePath()  + "settings_general.png");
-        themeSettingsIcon = new ImageIcon(ResourcePath.getResourcePath() +"settings_theme.png");
-        notificationsSettingsIcon = new ImageIcon(ResourcePath.getResourcePath() +"settings_notifications.png");
-        accountSettingsIcon = new ImageIcon(ResourcePath.getResourcePath() +"settings_account.png");
-        privacySettingsIcon = new ImageIcon(ResourcePath.getResourcePath() +"settings_privacy.png");
+        generalSettingsIcon = new ImageIcon(ResourcePath.getResourcePath("settings_general.png"));
+        themeSettingsIcon = new ImageIcon(ResourcePath.getResourcePath("settings_theme.png"));
+        notificationsSettingsIcon = new ImageIcon(ResourcePath.getResourcePath("settings_notifications.png"));
+        accountSettingsIcon = new ImageIcon(ResourcePath.getResourcePath("settings_account.png"));
+        privacySettingsIcon = new ImageIcon(ResourcePath.getResourcePath("settings_privacy.png"));
 
         Image scaledgeneralSettingsIcon = generalSettingsIcon.getImage().getScaledInstance(width-width/5*4,height/12, Image.SCALE_SMOOTH);
         scaledGeneralSettingsIcon = new ImageIcon(scaledgeneralSettingsIcon);
@@ -243,11 +243,11 @@ public class SettingsPanel extends JPanel{
         Image scaledprivacySettingsIcon = privacySettingsIcon.getImage().getScaledInstance(width-width/5*4, height/12, Image.SCALE_SMOOTH);
         scaledPrivacySettingsIcon = new ImageIcon(scaledprivacySettingsIcon);
 
-        darkGeneralSettingsIcon = new ImageIcon(ResourcePath.getResourcePath()  + "settings_general_dark.png");
-        darkThemeSettingsIcon = new ImageIcon(ResourcePath.getResourcePath() +"settings_theme_dark.png");
-        darkNotificationsSettingsIcon = new ImageIcon(ResourcePath.getResourcePath() +"settings_notifications_dark.png");
-        darkAccountSettingsIcon = new ImageIcon(ResourcePath.getResourcePath() +"settings_account_dark.png");
-        darkPrivacySettingsIcon = new ImageIcon(ResourcePath.getResourcePath() +"settings_privacy_dark.png");
+        darkGeneralSettingsIcon = new ImageIcon(ResourcePath.getResourcePath("settings_general_dark.png"));
+        darkThemeSettingsIcon = new ImageIcon(ResourcePath.getResourcePath("settings_theme_dark.png"));
+        darkNotificationsSettingsIcon = new ImageIcon(ResourcePath.getResourcePath("settings_notifications_dark.png"));
+        darkAccountSettingsIcon = new ImageIcon(ResourcePath.getResourcePath("settings_account_dark.png"));
+        darkPrivacySettingsIcon = new ImageIcon(ResourcePath.getResourcePath("settings_privacy_dark.png"));
 
         Image scaleddarkGeneralSettingsIcon = darkGeneralSettingsIcon.getImage().getScaledInstance(width-width/5*4,height/12, Image.SCALE_SMOOTH);
         scaledDarkGeneralSettingsIcon = new ImageIcon(scaleddarkGeneralSettingsIcon);
@@ -273,7 +273,7 @@ public class SettingsPanel extends JPanel{
 
     private void init(int width, int height){
         try{
-            font=Font.createFont(Font.TRUETYPE_FONT, new File(ResourcePath.getResourcePath()+"BebasNeue-Regular.otf"));
+            font=Font.createFont(Font.TRUETYPE_FONT, new File(ResourcePath.getResourcePath("BebasNeue-Regular.otf")));
             font = font.deriveFont((float) (height/17));
         }catch(Exception e){
             font = new Font("Arial", Font.BOLD, 40);

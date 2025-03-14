@@ -15,7 +15,7 @@ public class DumbbellPress extends Exercise {
 
         form = "To perform a dumbbell chest press, lie on a bench with a dumbbell in each hand, elbows bent at a 90-degree angle. Press the dumbbells upward until your arms are fully extended, then slowly lower them back to the starting position. Keep your core engaged and maintain control throughout the movement.";
 
-        imageIcon = new ImageIcon(ResourcePath.getResourcePath()+"ExerciseImages\\DumbbellPress.gif");
+        imageIcon = new ImageIcon(ResourcePath.getResourcePath("ExerciseImages/DumbbellPress.gif"));
         musclesUsed.add(new Chest());
         musclesUsed.add(new AnteriorDeltoid());
         musclesUsed.add(new Triceps());

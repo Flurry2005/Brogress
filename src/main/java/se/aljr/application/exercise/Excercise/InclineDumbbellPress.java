@@ -19,6 +19,6 @@ public class InclineDumbbellPress extends Exercise {
         musclesUsed.add(new AnteriorDeltoid());
         musclesUsed.add(new Triceps());
 
-        imageIcon = new ImageIcon(ResourcePath.getResourcePath() +"ExerciseImages\\InclineDumbbellPress.gif");
+        imageIcon = new ImageIcon(ResourcePath.getResourcePath("ExerciseImages/InclineDumbbellPress.gif"));
     }
 }

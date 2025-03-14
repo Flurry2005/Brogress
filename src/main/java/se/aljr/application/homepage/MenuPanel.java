@@ -76,24 +76,24 @@ public class MenuPanel extends JPanel{
         this.setOpaque(false);
         instance = this;
         //this.setPreferredSize(new Dimension(width, height));
-        menuBackground = new ImageIcon(ResourcePath.getResourcePath() +"side_bar.png");
-        lightMenuBackground = new ImageIcon(ResourcePath.getResourcePath()+"side_bar_light.png");
-        logoIcon = new ImageIcon(ResourcePath.getResourcePath()+"agile_small_icon.png");
+        menuBackground = new ImageIcon(ResourcePath.getResourcePath("side_bar.png"));
+        lightMenuBackground = new ImageIcon(ResourcePath.getResourcePath("side_bar_light.png"));
+        logoIcon = new ImageIcon(ResourcePath.getResourcePath("agile_small_icon.png"));
 
-        buttonIcon = new ImageIcon(ResourcePath.getResourcePath()+"button.png");
-        buttonIconExercise = new ImageIcon(ResourcePath.getResourcePath()+"button_exercise.png");
-        buttonIconProgram = new ImageIcon(ResourcePath.getResourcePath()+"button_program.png");
-        buttonIconSettings = new ImageIcon(ResourcePath.getResourcePath()+"button_settings.png");
-        buttonIconChat = new ImageIcon(ResourcePath.getResourcePath()+"button_chat.png");
+        buttonIcon = new ImageIcon(ResourcePath.getResourcePath("button.png"));
+        buttonIconExercise = new ImageIcon(ResourcePath.getResourcePath("button_exercise.png"));
+        buttonIconProgram = new ImageIcon(ResourcePath.getResourcePath("button_program.png"));
+        buttonIconSettings = new ImageIcon(ResourcePath.getResourcePath("button_settings.png"));
+        buttonIconChat = new ImageIcon(ResourcePath.getResourcePath("button_chat.png"));
 
-        darkButtonIcon = new ImageIcon(ResourcePath.getResourcePath()+"button_dark.png");
-        darkButtonIconExercise = new ImageIcon(ResourcePath.getResourcePath()+"button_exercise_dark.png");
-        darkButtonIconProgram = new ImageIcon(ResourcePath.getResourcePath()+"button_program_dark.png");
-        darkButtonIconSettings = new ImageIcon(ResourcePath.getResourcePath()+"button_settings_dark.png");
-        darkButtonIconChat = new ImageIcon(ResourcePath.getResourcePath()+"button_chat_dark.png");
+        darkButtonIcon = new ImageIcon(ResourcePath.getResourcePath("button_dark.png"));
+        darkButtonIconExercise = new ImageIcon(ResourcePath.getResourcePath("button_exercise_dark.png"));
+        darkButtonIconProgram = new ImageIcon(ResourcePath.getResourcePath("button_program_dark.png"));
+        darkButtonIconSettings = new ImageIcon(ResourcePath.getResourcePath("button_settings_dark.png"));
+        darkButtonIconChat = new ImageIcon(ResourcePath.getResourcePath("button_chat_dark.png"));
 
         try{
-            font=Font.createFont(Font.TRUETYPE_FONT, new File(ResourcePath.getResourcePath()+"BebasNeue-Regular.otf"));
+            font=Font.createFont(Font.TRUETYPE_FONT, new File(ResourcePath.getResourcePath("BebasNeue-Regular.otf")));
             font = font.deriveFont((float) (height/17));
         }catch(Exception e){
             font = new Font("Arial", Font.BOLD, 40);

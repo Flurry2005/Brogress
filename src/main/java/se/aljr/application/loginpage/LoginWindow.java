@@ -7,9 +7,11 @@ import se.aljr.application.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URL;
 import java.util.HashMap;
 
 /**
@@ -33,7 +35,7 @@ public class LoginWindow extends JFrame {
 
     public LoginWindow(int width, int height) {
 
-        logoIcon = new ImageIcon(ResourcePath.getResourcePath() + "agile300.png");
+        logoIcon = new ImageIcon(ResourcePath.getResourcePath("agile300.png"));
         font = CustomFont.getFont();
         thisFrame = this;
 
@@ -110,7 +112,7 @@ public class LoginWindow extends JFrame {
 
         JLabel bigLogoLabel = new JLabel(scaledBigLogoIcon);
 
-        Image scaledSmallLogo = new ImageIcon(ResourcePath.getResourcePath() + "agile_small_icon.png").getImage().getScaledInstance((getHeight() - getHeight() / 13) - (getHeight() * 3 / 4), (getHeight() - getHeight() / 13) - (getHeight() * 3 / 4), Image.SCALE_SMOOTH);
+        Image scaledSmallLogo = new ImageIcon(ResourcePath.getResourcePath("agile_small_icon.png")).getImage().getScaledInstance((getHeight() - getHeight() / 13) - (getHeight() * 3 / 4), (getHeight() - getHeight() / 13) - (getHeight() * 3 / 4), Image.SCALE_SMOOTH);
         ImageIcon scaledSmallLogoIcon = new ImageIcon(scaledSmallLogo);
 
 
@@ -154,7 +156,16 @@ public class LoginWindow extends JFrame {
 
         HashMap<String, String> userLoginDetails = new HashMap<>();
         Gson gson = new Gson();
-        String userLoginDetailsPathJson = ResourcePath.getResourcePath() + "loginDetails.json";
+        String userLoginDetailsPathJson;
+        if(ResourcePath.isRunningFromJar()){
+            URL location = ResourcePath.class.getProtectionDomain().getCodeSource().getLocation();
+
+            String jarFilePath = location.getPath();
+
+            userLoginDetailsPathJson = jarFilePath.substring(0,jarFilePath.lastIndexOf("/")+1)+"loginDetails.json";
+        }else{
+            userLoginDetailsPathJson = ResourcePath.class.getClassLoader().getResource("resource.path").getPath().replace("resource.path","")+"loginDetails.json";
+        }
         try (FileReader reader = new FileReader(userLoginDetailsPathJson)) {
             userLoginDetails = gson.fromJson(reader, HashMap.class);
             if (userLoginDetails.get("email") != null) {
@@ -223,7 +234,17 @@ public class LoginWindow extends JFrame {
                             userLoginDeatils1.put("password", password);
 
                             Gson gson1 = new GsonBuilder().setPrettyPrinting().create();
-                            String userLoginDetailsPathJson1 = ResourcePath.getResourcePath() + "loginDetails.json";
+                            String userLoginDetailsPathJson1;
+                            if(ResourcePath.isRunningFromJar()){
+                                URL location = ResourcePath.class.getProtectionDomain().getCodeSource().getLocation();
+
+                                String jarFilePath = location.getPath();
+
+                                userLoginDetailsPathJson1 = jarFilePath.substring(0,jarFilePath.lastIndexOf("/")+1)+"loginDetails.json";
+
+                            }else{
+                                userLoginDetailsPathJson1 = LoginWindow.class.getClassLoader().getResource("resource.path").getPath().replace("resource.path","")+"loginDetails.json";
+                            }
                             try (FileWriter writer = new FileWriter(userLoginDetailsPathJson1)) {
                                 gson1.toJson(userLoginDeatils1, writer);
                             } catch (IOException es) {
@@ -370,7 +391,7 @@ public class LoginWindow extends JFrame {
                 bigLogoLabel.setIcon(new ImageIcon(scaledBigLogo));
                 loginPanel.setPreferredSize(new Dimension(rightPanel.getWidth(), (rightPanel.getHeight() - topBar.getHeight())));
                 loginMenuPanel.setPreferredSize(new Dimension(loginPanel.getWidth(), getHeight() * 6 / 9));
-                Image scaledSmallLogo = new ImageIcon(ResourcePath.getResourcePath() + "agile_small_icon.png").getImage().getScaledInstance((rightPanel.getHeight() - topBar.getHeight()) - (getHeight() * 3 / 4), (rightPanel.getHeight() - topBar.getHeight()) - (getHeight() * 3 / 4), Image.SCALE_SMOOTH);
+                Image scaledSmallLogo = new ImageIcon(ResourcePath.getResourcePath("agile_small_icon.png")).getImage().getScaledInstance((rightPanel.getHeight() - topBar.getHeight()) - (getHeight() * 3 / 4), (rightPanel.getHeight() - topBar.getHeight()) - (getHeight() * 3 / 4), Image.SCALE_SMOOTH);
                 smallLogoLabel.setIcon(new ImageIcon(scaledSmallLogo));
                 smallLogoLabel.setPreferredSize(new Dimension((rightPanel.getHeight() - topBar.getHeight()) - (getHeight() * 3 / 5), (rightPanel.getHeight() - topBar.getHeight()) - (getHeight() * 6 / 9)));
                 register.setFont(font.deriveFont((float) (getHeight() / 30)));

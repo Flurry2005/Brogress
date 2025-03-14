@@ -21,7 +21,7 @@ public class BenchPress extends Exercise {
 		musclesUsed.add(new AnteriorDeltoid());
 		musclesUsed.add(new Triceps());
 
-		imageIcon = new ImageIcon(ResourcePath.getResourcePath() +"ExerciseImages\\BenchPress.gif");
+		imageIcon = new ImageIcon(ResourcePath.getResourcePath("ExerciseImages/BenchPress.gif"));
 
 	}
 }

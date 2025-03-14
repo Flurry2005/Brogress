@@ -49,7 +49,7 @@ public class FirebaseManager {
 
         try {
 
-            FileInputStream serviceAccount = new FileInputStream(ResourcePath.getResourcePath() + "serviceKey.json" );
+            FileInputStream serviceAccount = new FileInputStream(ResourcePath.getResourcePath("serviceKey.json"));
             GoogleCredentials credentials = GoogleCredentials.fromStream(serviceAccount);
             FirebaseOptions options = FirebaseOptions.builder()
                     .setCredentials(credentials)
@@ -548,7 +548,7 @@ public class FirebaseManager {
     }
 
     public static void writeDBnewUser(String name, String email) throws IOException {
-        String defaultProfilePicturePath = ResourcePath.getResourcePath() + "defaultProfilePicture.txt";
+        String defaultProfilePicturePath = ResourcePath.getResourcePath("defaultProfilePicture.txt");
         String defaultProfilePicture = "";
         try (FileReader reader = new FileReader(defaultProfilePicturePath)) {
             BufferedReader bufferedReader = new BufferedReader(reader);

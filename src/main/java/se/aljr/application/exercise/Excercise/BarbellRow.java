@@ -22,6 +22,6 @@ public class BarbellRow extends Exercise {
         musclesUsed.add(new LowerBack());
 
 
-        imageIcon = new ImageIcon(ResourcePath.getResourcePath() +"ExerciseImages\\BarbellRow.gif");
+        imageIcon = new ImageIcon(ResourcePath.getResourcePath("ExerciseImages/BarbellRow.gif"));
     }
 }

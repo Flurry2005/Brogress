@@ -13,10 +13,9 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
 public class ApplicationWindow extends JFrame  {
-    final String applicationIconPath = "src/main/resources/agile_small_icon.png";
     private static int pageSelector;
 
-    ImageIcon applicationIcon = new ImageIcon(applicationIconPath);
+    ImageIcon applicationIcon = new ImageIcon(ResourcePath.getResourcePath("agile_small_icon.png"));
 
     public static ApplicationWindow instance;
 

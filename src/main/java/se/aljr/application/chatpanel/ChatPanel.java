@@ -83,11 +83,11 @@ public class ChatPanel extends JPanel {
     JTextField friendRequestMailText;
 
     public ChatPanel(int width, int height) {
-        settingsPanelBackground = new ImageIcon(ResourcePath.getResourcePath() + "emptyBackground.png");
+        settingsPanelBackground = new ImageIcon(ResourcePath.getResourcePath("emptyBackground.png"));
         scaleSettingsPanelBackground = settingsPanelBackground.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
         scaledSettingsPanelBackgroundIcon = new ImageIcon(scaleSettingsPanelBackground);
 
-        lightSettingsPanelBackground = new ImageIcon(ResourcePath.getResourcePath() +"lightEmptyBackground.png");
+        lightSettingsPanelBackground = new ImageIcon(ResourcePath.getResourcePath("lightEmptyBackground.png"));
         lightScaleSettingsPanelBackground = lightSettingsPanelBackground.getImage().getScaledInstance(width,height,Image.SCALE_SMOOTH);
         lightScaledSettingsPanelBackgroundIcon = new ImageIcon(lightScaleSettingsPanelBackground);
 

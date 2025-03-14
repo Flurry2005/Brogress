@@ -75,18 +75,18 @@ public class ExercisePanel extends JPanel {
     public static ExercisePanel instance;
 
     public ExercisePanel(int width, int height) {
-        homePanelBackground = new ImageIcon(ResourcePath.getResourcePath() + "bottom_right_bar.png");
+        homePanelBackground = new ImageIcon(ResourcePath.getResourcePath("bottom_right_bar.png"));
         scaledContentBackground = homePanelBackground.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
         scaledContentBackgroundPanel = new ImageIcon(scaledContentBackground);
 
-        lightHomePanelBackground = new ImageIcon(ResourcePath.getResourcePath() + "lightEmptyBackground.png");
+        lightHomePanelBackground = new ImageIcon(ResourcePath.getResourcePath("lightEmptyBackground.png"));
         scaledLightContentBackground = lightHomePanelBackground.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
         scaledLightContentBackgroundPanel = new ImageIcon(scaledLightContentBackground);
 
         instance = this;
 
         try {
-            font = Font.createFont(Font.TRUETYPE_FONT, new File(ResourcePath.getResourcePath() + "BebasNeue-Regular.otf"));
+            font = Font.createFont(Font.TRUETYPE_FONT, new File(ResourcePath.getResourcePath("BebasNeue-Regular.otf")));
             font = font.deriveFont(40f);
         } catch (Exception e) {
             font = new Font("Arial", Font.BOLD, 40);
@@ -852,7 +852,7 @@ public class ExercisePanel extends JPanel {
                     imageLabel.setIcon(scaledExerciseIcon);
                     // DISPLAY DEFAULT IF IMAGE NOT FOUND
                 } catch (Exception ex) {
-                    ImageIcon temp = new ImageIcon(ResourcePath.getResourcePath() + "bottom_right_bar.png");
+                    ImageIcon temp = new ImageIcon(ResourcePath.getResourcePath("bottom_right_bar.png"));
                     Image scaledTest = temp.getImage().getScaledInstance(centerPanel.getPreferredSize().width, centerPanel.getPreferredSize().height, Image.SCALE_SMOOTH);
                     ImageIcon scaledTestIcon = new ImageIcon(scaledTest);
                     imageLabel.setIcon(scaledTestIcon);
@@ -1118,7 +1118,7 @@ public class ExercisePanel extends JPanel {
                         imageLabel.setIcon(scaledExerciseIcon);
                         // DISPLAY DEFAULT IF IMAGE NOT FOUND
                     } catch (Exception ex) {
-                        ImageIcon temp = new ImageIcon(ResourcePath.getResourcePath() + "bottom_right_bar.png");
+                        ImageIcon temp = new ImageIcon(ResourcePath.getResourcePath("bottom_right_bar.png"));
                         Image scaledTest = temp.getImage().getScaledInstance(centerPanel.getPreferredSize().width, mainPanel.getPreferredSize().height, Image.SCALE_SMOOTH);
                         ImageIcon scaledTestIcon = new ImageIcon(scaledTest);
                         imageLabel.setIcon(scaledTestIcon);
@@ -1137,7 +1137,7 @@ public class ExercisePanel extends JPanel {
                         imageLabel.setIcon(scaledExerciseIcon);
                         // DISPLAY DEFAULT IF IMAGE NOT FOUND
                     } catch (Exception ex) {
-                        ImageIcon temp = new ImageIcon(ResourcePath.getResourcePath() + "bottom_right_bar_light.png");
+                        ImageIcon temp = new ImageIcon(ResourcePath.getResourcePath("bottom_right_bar_light.png"));
                         Image scaledTest = temp.getImage().getScaledInstance(centerPanel.getPreferredSize().width, mainPanel.getPreferredSize().height, Image.SCALE_SMOOTH);
                         ImageIcon scaledTestIcon = new ImageIcon(scaledTest);
                         imageLabel.setIcon(scaledTestIcon);
