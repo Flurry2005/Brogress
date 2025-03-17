@@ -13,7 +13,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
-import se.aljr.application.CustomFont;
 import se.aljr.application.Friends.Friend;
 import se.aljr.application.Friends.FriendsList;
 import se.aljr.application.ResourcePath;
@@ -27,7 +26,6 @@ import se.aljr.application.programplanner.WorkoutSet;
 import se.aljr.application.programplanner.WorkoutsList;
 
 import javax.swing.*;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.io.*;
 import java.lang.reflect.Type;
@@ -208,7 +206,7 @@ public class FirebaseManager {
 
     public static void writeDBsendFriendRequest(String email) throws ExecutionException, InterruptedException {
         HashMap<String,String> newFriendRequest= readDBgetFriendRequests(email);
-        HashMap<String,String> usersFriends = readDBfriends(email,true);
+        HashMap<String,String> usersFriends = readDBfriends(email);
         if(newFriendRequest!=null&&usersFriends!=null){
             if(!newFriendRequest.containsKey(UserData.getEmail())&&!usersFriends.containsKey(UserData.getEmail())&&!email.equals(UserData.getEmail())){
                 // Referens till dokumentet i "users" collection
@@ -237,7 +235,7 @@ public class FirebaseManager {
 
     public static void writeDBacceptFriendRequest(String email){
         HashMap<String,String> myFriendRequests= readDBgetFriendRequests(UserData.getEmail());
-        HashMap<String,String> usersFriends = readDBfriends(email,true);
+        HashMap<String,String> usersFriends = readDBfriends(email);
         if(myFriendRequests!=null&&usersFriends!=null){
             if(!myFriendRequests.containsKey(UserData.getEmail())&&!usersFriends.containsKey(UserData.getEmail())&&!email.equals(UserData.getEmail())){
                 for(Map.Entry<String,String> entry : myFriendRequests.entrySet()){
@@ -263,7 +261,6 @@ public class FirebaseManager {
 
                 writeDBfriends(UserData.getEmail());
                 writeDBfriends(email);
-                HomePanel.updateFriends();
                 ChatPanel.updateFriends();
 
 
@@ -468,7 +465,7 @@ public class FirebaseManager {
                 friends.put(friend.getFriendEmail(), friend.getFriendName());
             }
         }else{
-            friends = readDBfriends(email,true);
+            friends = readDBfriends(email);
             friends.put(UserData.getEmail(),UserData.getUserName());
         }
         String json = gson.toJson(friends);
@@ -492,7 +489,7 @@ public class FirebaseManager {
 
     }
 
-    public static HashMap<String,String> readDBfriends(String email, boolean readOnly){
+    public static HashMap<String,String> readDBfriends(String email){
         try {
             Gson gson = new Gson();
             HashMap<String, String> friendsMap = new HashMap<>();
@@ -518,15 +515,16 @@ public class FirebaseManager {
                 System.out.println("Dokumentet existerar inte.");
             }
 
-            if(!readOnly){
                 for(Map.Entry<String, String> entry : friendsMap.entrySet()){
                     boolean addPerson = true;
                     for(Friend friend : FriendsList.getFriendArrayList()){
                         if(friend.getFriendEmail().equals(entry.getKey())){
                             addPerson = false;
+                            break;
                         }
                     }
                     if(addPerson){
+                        System.out.println("Added :" +entry.getKey()+ " to friends list in the client\n\n");
                         FriendsList.getFriendArrayList().add(new Friend(){
                             {
                                 setFriendEmail(entry.getKey());
@@ -534,8 +532,6 @@ public class FirebaseManager {
                             }
                         });
                     }
-
-                }
             }
             return friendsMap;
 
