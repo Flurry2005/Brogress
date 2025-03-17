@@ -13,6 +13,7 @@ import se.aljr.application.homepage.TopBar;
 import se.aljr.application.loginpage.FirebaseManager;
 import se.aljr.application.programplanner.ProgramPanel;
 import se.aljr.application.programplanner.SearchPanel;
+import se.aljr.application.settings.custom.JComboBoxUICustom;
 import se.aljr.application.settings.custom.SteelCheckBoxUI;
 
 
@@ -23,14 +24,19 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.plaf.ComboBoxUI;
 import javax.swing.plaf.basic.BasicButtonUI;
+import javax.swing.plaf.basic.BasicComboBoxUI;
+import javax.swing.plaf.basic.ComboPopup;
 
 
 public class SettingsPanel extends JPanel{
@@ -74,9 +80,12 @@ public class SettingsPanel extends JPanel{
 
 
     //Array lists for the various dropdown menus
-    ArrayList<Integer> agesList = (ArrayList<Integer>) IntStream.rangeClosed(0, 200).boxed().collect(Collectors.toList());
+    String[] agesList = IntStream.rangeClosed(0, 200)
+            .mapToObj(Integer::toString)  // Konvertera varje Integer till en String
+            .toArray(String[]::new);
     String[] activityList = {"~0   ", "1-3", "3-5", "6-7", ">7"};
-    ArrayList<String> themeList = new ArrayList<>(Arrays.asList("Light","Dark"));
+    String[] gendersList = {"Male", "Female"};
+    String[] themeList = {"Light","Dark"};
 
     public static boolean lightMode = false;
     public static String currentTheme = "dark";
@@ -122,7 +131,7 @@ public class SettingsPanel extends JPanel{
     JPanel themePanel = new JPanel();
     JPanel themeScrollPanel = new JPanel();
     JScrollPane themeScroll = new JScrollPane(themeScrollPanel, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-    JComboBox themeDropDown = new JComboBox(themeList.toArray());
+    JComboBox themeDropDown = new JComboBox(themeList);
 
     JPanel themeSelectionPanel = new JPanel();
     JLabel themeSelectionLabel = new JLabel("Select theme");
@@ -143,12 +152,14 @@ public class SettingsPanel extends JPanel{
     JPanel accountWeightPanel = new JPanel();
     JPanel accountHeightPanel = new JPanel();
     JPanel accountActivityPanel = new JPanel();
+    JPanel accountGenderPanel = new JPanel();
     JPanel accountNamePanel = new JPanel();
 
     JPanel ageLabelCenteringPanel = new JPanel();
     JPanel weightLabelCenteringPanel = new JPanel();
     JPanel heightLabelCenteringPanel = new JPanel();
     JPanel activityLabelCenteringPanel = new JPanel();
+    JPanel genderLabelCenteringPanel = new JPanel();
     JPanel usernameLabelCenteringPanel = new JPanel();
     JPanel pfpLabelCenteringPanel = new JPanel();
 
@@ -156,6 +167,7 @@ public class SettingsPanel extends JPanel{
     JLabel weightLabel = new JLabel("Weight: ");
     JLabel heightLabel = new JLabel("Height: ");
     JLabel accountActivityLabel = new JLabel("Workouts/week");
+    JLabel accountGenderLabel = new JLabel("Gender:");
     JLabel changeUsernameLabel= new JLabel("Change Username");
     JLabel choosePFPLabel = new JLabel("Avatar");
 
@@ -165,14 +177,15 @@ public class SettingsPanel extends JPanel{
 
     JTextField changeUsernameFieldD = new JTextField();
 
-    JComboBox ageDropDown = new JComboBox(agesList.toArray(new Integer[0]));
-    JComboBox weightDropDown = new JComboBox(agesList.toArray(new Integer[0]));
-    JComboBox heightDropDown = new JComboBox(agesList.toArray(new Integer[0]));
+    JComboBox ageDropDown = new JComboBox(agesList);
+    JComboBox weightDropDown = new JComboBox(agesList);
+    JComboBox heightDropDown = new JComboBox(agesList);
     JComboBox activityDropDown = new JComboBox(activityList);
+    JComboBox genderDropDown = new JComboBox(gendersList);
 
-    JComboBox ageDropDownD = new JComboBox(agesList.toArray(new Integer[0]));
-    JComboBox weightDropDownD = new JComboBox(agesList.toArray(new Integer[0]));
-    JComboBox heightDropDownD = new JComboBox(agesList.toArray(new Integer[0]));
+    JComboBox ageDropDownD = new JComboBox(agesList);
+    JComboBox weightDropDownD = new JComboBox(agesList);
+    JComboBox heightDropDownD = new JComboBox(agesList);
 
     //Privacy Panel
     JPanel privacyPanel = new JPanel();
@@ -181,7 +194,7 @@ public class SettingsPanel extends JPanel{
     //Theme panels
     JPanel themeSelectionPanelD = new JPanel();
     JLabel themeSelectionLabelD = new JLabel("Select theme");
-    JComboBox themeDropDownD = new JComboBox(themeList.toArray());
+    JComboBox themeDropDownD = new JComboBox(themeList);
 
     //Account panels
     JPanel accountAgePanelD = new JPanel();
@@ -282,16 +295,19 @@ public class SettingsPanel extends JPanel{
 
         System.out.println("WIDDDDDDTHHHTHTHTHTHTHT:" + width);
         System.out.println("HAIGHTHTHTHTHTHTHTHTHTH:" + height);
+        AppThemeColors.updateThemeColors();
+
         buildBackgroundPanels();
         buildButtonPanel();
         buildButtons();
 
         buildSearchPanel();
         buildGeneralPanel();
-        buildThemePanel();
+
         buildNotificationsPanel();
         buildAccountPanel();
         buildPrivacyPanel();
+        buildThemePanel();
 
         buildDuplicatePanels();
 
@@ -342,6 +358,7 @@ public class SettingsPanel extends JPanel{
                     weightLabelCenteringPanelD.setPreferredSize(new Dimension(getWidth()/7, accountWeightPanelD.getPreferredSize().height));
                     heightLabelCenteringPanelD.setPreferredSize(new Dimension(getWidth()/7, accountHeightPanelD.getPreferredSize().height));
                     activityLabelCenteringPanelD.setPreferredSize(new Dimension(getWidth()/7, accountAgePanel.getPreferredSize().height));
+                    genderLabelCenteringPanel.setPreferredSize(new Dimension(getWidth()/7, accountAgePanel.getPreferredSize().height));
                     usernameLabelCenteringPanelD.setPreferredSize(new Dimension(getWidth()/7, accountNamePanelD.getPreferredSize().height));
                     pfpLabelCenteringPanelD.setPreferredSize(new Dimension(getWidth()/7, accountAgePanel.getPreferredSize().height));
 
@@ -395,12 +412,14 @@ public class SettingsPanel extends JPanel{
                     accountWeightPanel.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/15));
                     accountHeightPanel.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/15));
                     accountActivityPanel.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/15));
+                    accountGenderPanel.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/15));
                     accountNamePanel.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/15));
 
                     ageLabelCenteringPanel.setPreferredSize(new Dimension(getWidth()/7, accountAgePanel.getPreferredSize().height));
                     weightLabelCenteringPanel.setPreferredSize(new Dimension(getWidth()/7, accountAgePanel.getPreferredSize().height));
                     heightLabelCenteringPanel.setPreferredSize(new Dimension(getWidth()/7, accountAgePanel.getPreferredSize().height));
                     activityLabelCenteringPanel.setPreferredSize(new Dimension(getWidth()/7, accountAgePanel.getPreferredSize().height));
+                    genderLabelCenteringPanel.setPreferredSize(new Dimension(getWidth()/7, accountAgePanel.getPreferredSize().height));
                     usernameLabelCenteringPanel.setPreferredSize(new Dimension(getWidth()/7, accountAgePanel.getPreferredSize().height));
                     pfpLabelCenteringPanel.setPreferredSize(new Dimension(getWidth()/7, accountAgePanel.getPreferredSize().height));
 
@@ -416,6 +435,9 @@ public class SettingsPanel extends JPanel{
                     activityDropDown.setFont(new Font("Arial", Font.BOLD,getHeight()/50));
                     accountActivityLabel.setFont(new Font("Arial", Font.BOLD,getHeight()/50));
                     accountActivityLabel.setPreferredSize(new Dimension(getWidth()/10, accountActivityPanel.getPreferredSize().height));
+                    genderDropDown.setFont(new Font("Arial", Font.BOLD,getHeight()/50));
+                    accountGenderLabel.setFont(new Font("Arial", Font.BOLD,getHeight()/50));
+                    accountGenderLabel.setPreferredSize(new Dimension(getWidth()/10, accountGenderPanel.getPreferredSize().height));
                     changeUsernameLabel.setFont(new Font("Arial", Font.BOLD,getHeight()/50));
                     changeUsernameLabel.setPreferredSize(new Dimension(getWidth()/8, accountWeightPanel.getPreferredSize().height));
                     changeUsernameField.setFont(new Font("Arial", Font.BOLD,getHeight()/50));
@@ -839,6 +861,7 @@ public class SettingsPanel extends JPanel{
         searchPanel.setBackground(AppThemeColors.panelColor);
         searchPanel.setPreferredSize(new Dimension(width/2, height));
         searchPanel.setVisible(true);
+        searchPanel.setOpaque(false);
         searchPanel.setLayout(new BoxLayout(searchPanel, BoxLayout.X_AXIS));
         rightRightPanel.add(searchPanel);
 
@@ -855,7 +878,7 @@ public class SettingsPanel extends JPanel{
         searchScrollPanel.add(searchFieldPanel);
 
         searchedPanels.setPreferredSize(new Dimension(width-width/10*7, height));
-        searchedPanels.setBackground(AppThemeColors.panelColor);
+        searchedPanels.setOpaque(false);
         searchedPanels.setLayout(new FlowLayout());
         searchScrollPanel.add(searchedPanels);
 
@@ -985,7 +1008,13 @@ public class SettingsPanel extends JPanel{
 
         themeSelectionLabel.setForeground(Color.WHITE);
 
+        themeDropDown.setFont(new Font("Arial", Font.BOLD,height/50));
         themeDropDown.setPreferredSize(new Dimension(width/15, height/15));
+        themeDropDown.setBackground(AppThemeColors.SECONDARY);
+        themeDropDown.setForeground(AppThemeColors.foregroundColor);
+        themeDropDown.setFocusable(false);
+        themeDropDown.setBorder(new LineBorder(AppThemeColors.foregroundColor));
+        themeDropDown.setUI(new JComboBoxUICustom(themeDropDown));
         themeDropDown.addItemListener(_-> {
                 switch (themeDropDown.getSelectedIndex()){
                     //Light Mode
@@ -1115,9 +1144,13 @@ public class SettingsPanel extends JPanel{
         ageLabel.setFont(new Font("Arial", Font.BOLD,height/50));
 
         ageDropDown.setSelectedIndex(UserData.getUserAge());
-        ageDropDown.setEditable(true);
-        ageDropDown.setPreferredSize(new Dimension(width/15, height/15));
         ageDropDown.setFont(new Font("Arial", Font.BOLD,height/50));
+        ageDropDown.setPreferredSize(new Dimension(width/15, height/15));
+        ageDropDown.setBackground(AppThemeColors.SECONDARY);
+        ageDropDown.setForeground(AppThemeColors.foregroundColor);
+        ageDropDown.setFocusable(false);
+        ageDropDown.setBorder(new LineBorder(AppThemeColors.foregroundColor));
+        ageDropDown.setUI(new JComboBoxUICustom(ageDropDown));
         ageDropDown.addItemListener(_ -> {
             UserData.setUserAge(ageDropDown.getSelectedIndex()); //Updates the local user age in the userdata
             try {
@@ -1144,10 +1177,16 @@ public class SettingsPanel extends JPanel{
         weightLabel.setPreferredSize(new Dimension(width/20, accountWeightPanel.getPreferredSize().height));
         weightLabel.setFont(new Font("Arial", Font.BOLD,height/50));
 
-        weightDropDown.setEditable(true);
+        weightDropDown.setEditable(false);
         weightDropDown.setSelectedIndex((int)(UserData.getUserWeight()));
+        weightDropDown.setEditable(false);
         weightDropDown.setPreferredSize(new Dimension(width/15, height/15));
         weightDropDown.setFont(new Font("Arial", Font.BOLD,height/50));
+        weightDropDown.setBackground(AppThemeColors.SECONDARY);
+        weightDropDown.setForeground(AppThemeColors.foregroundColor);
+        weightDropDown.setFocusable(false);
+        weightDropDown.setBorder(new LineBorder(AppThemeColors.foregroundColor));
+        weightDropDown.setUI(new JComboBoxUICustom(weightDropDown));
         weightDropDown.addItemListener(_ -> {
             UserData.setUserWeight(weightDropDown.getSelectedIndex()); //Updates the local user age in the userdata
             try {
@@ -1176,9 +1215,14 @@ public class SettingsPanel extends JPanel{
         heightLabel.setFont(new Font("Arial", Font.BOLD,height/50));
 
         heightDropDown.setSelectedIndex((int)(UserData.getUserHeight()));
-        heightDropDown.setEditable(true);
+        heightDropDown.setEditable(false);
         heightDropDown.setPreferredSize(new Dimension(width/15, height/15));
         heightDropDown.setFont(new Font("Arial", Font.BOLD,height/50));
+        heightDropDown.setBackground(AppThemeColors.SECONDARY);
+        heightDropDown.setForeground(AppThemeColors.foregroundColor);
+        heightDropDown.setFocusable(false);
+        heightDropDown.setBorder(new LineBorder(AppThemeColors.foregroundColor));
+        heightDropDown.setUI(new JComboBoxUICustom(heightDropDown));
         heightDropDown.addItemListener(_ -> {
             UserData.setUserHeight(heightDropDown.getSelectedIndex()); //Updates the local user age in the userdata
             try {
@@ -1190,6 +1234,39 @@ public class SettingsPanel extends JPanel{
                 heightDropDownD.setSelectedIndex(heightDropDown.getSelectedIndex());
             }
             HomePanel.updateUserInfo(); //Updates the userdata on the home panel
+        });
+        accountGenderPanel.setBackground(AppThemeColors.SECONDARY);
+        accountGenderPanel.setLayout(new BorderLayout());
+        accountGenderPanel.setPreferredSize(new Dimension(getWidth()-getWidth()/10*7, getHeight()/15));
+
+        genderLabelCenteringPanel.setBackground(Color.green);
+        genderLabelCenteringPanel.setLayout(new BoxLayout(genderLabelCenteringPanel, BoxLayout.X_AXIS));
+        genderLabelCenteringPanel.setPreferredSize(new Dimension(width/7, accountGenderPanel.getPreferredSize().height));
+        genderLabelCenteringPanel.setOpaque(false);
+
+        accountActivityLabel.setPreferredSize(new Dimension(width/10, accountActivityPanel.getPreferredSize().height));
+        accountActivityLabel.setFont(new Font("Arial", Font.BOLD,height/50));
+
+        genderDropDown.setFont(new Font("Arial", Font.BOLD,height/50));
+        genderDropDown.setPreferredSize(new Dimension(width/15, height/15));
+        genderDropDown.setBackground(AppThemeColors.SECONDARY);
+        genderDropDown.setForeground(AppThemeColors.foregroundColor);
+        genderDropDown.setFocusable(false);
+        genderDropDown.setBorder(new LineBorder(AppThemeColors.foregroundColor));
+        genderDropDown.setUI(new JComboBoxUICustom(genderDropDown));
+        genderDropDown.setSelectedIndex(UserData.getUserGender().equals("Male")?0:1);
+        genderDropDown.addItemListener(_ -> {
+            int index = genderDropDown.getSelectedIndex();
+            switch (index){
+                case 0->UserData.setUserGender("Male");
+                case 1->UserData.setUserGender("Female");
+            }
+            try {
+                FirebaseManager.writeDBUser(UserData.getEmail());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            HomePanel.updateUserInfo();
         });
 
         accountActivityPanel.setBackground(AppThemeColors.SECONDARY);
@@ -1204,7 +1281,14 @@ public class SettingsPanel extends JPanel{
         accountActivityLabel.setPreferredSize(new Dimension(width/10, accountActivityPanel.getPreferredSize().height));
         accountActivityLabel.setFont(new Font("Arial", Font.BOLD,height/50));
 
+        activityDropDown.setEditable(false);
+        activityDropDown.setPreferredSize(new Dimension(width/15, height/15));
         activityDropDown.setFont(new Font("Arial", Font.BOLD,height/50));
+        activityDropDown.setBackground(AppThemeColors.SECONDARY);
+        activityDropDown.setForeground(AppThemeColors.foregroundColor);
+        activityDropDown.setFocusable(false);
+        activityDropDown.setBorder(new LineBorder(AppThemeColors.foregroundColor));
+        activityDropDown.setUI(new JComboBoxUICustom(activityDropDown));
         Float[] temp = {1.2f, 1.375f, 1.55f, 1.725f, 1.9f};
         activityDropDown.setSelectedIndex(Arrays.stream(temp).toList().indexOf(UserData.getActivityFactor()));
         activityDropDown.addItemListener(_ -> {
@@ -1247,6 +1331,12 @@ public class SettingsPanel extends JPanel{
         activityLabelCenteringPanel.add(accountActivityLabel);
         activityLabelCenteringPanel.add(Box.createHorizontalGlue());
         accountActivityPanel.add(activityDropDown, BorderLayout.EAST);
+
+        accountGenderPanel.add(genderLabelCenteringPanel, BorderLayout.WEST);
+        genderLabelCenteringPanel.add(Box.createHorizontalGlue());
+        genderLabelCenteringPanel.add(accountGenderLabel);
+        genderLabelCenteringPanel.add(Box.createHorizontalGlue());
+        accountGenderPanel.add(genderDropDown, BorderLayout.EAST);
 
         accountPFPPanel.setBackground(AppThemeColors.SECONDARY);
         accountPFPPanel.setLayout(new BorderLayout());
@@ -1323,6 +1413,8 @@ public class SettingsPanel extends JPanel{
         changeUsernameField.setPreferredSize(new Dimension(width/1000*104, height/20));
         changeUsernameField.setMaximumSize(new Dimension(width/1000*104, height/20));
         changeUsernameField.setFont(new Font("Arial", Font.BOLD,height/50));
+        changeUsernameField.setBackground(AppThemeColors.SECONDARY);
+        changeUsernameField.setForeground(AppThemeColors.foregroundColor);
         changeUsernameField.setText(UserData.getUserName());
 
         changeUsernameField.addActionListener(_ -> {
@@ -1356,6 +1448,7 @@ public class SettingsPanel extends JPanel{
         accountScrollPanel.add(accountWeightPanel);
         accountScrollPanel.add(accountHeightPanel);
         accountScrollPanel.add(accountActivityPanel);
+        accountScrollPanel.add(accountGenderPanel);
         accountScrollPanel.add(accountNamePanel);
         accountScrollPanel.add(accountPFPPanel);
     }
@@ -1378,6 +1471,12 @@ public class SettingsPanel extends JPanel{
 
 
         themeDropDownD.setPreferredSize(new Dimension(width/15, height/10));
+        themeDropDownD.setFont(new Font("Arial", Font.BOLD,height/50));
+        themeDropDownD.setBackground(AppThemeColors.SECONDARY);
+        themeDropDownD.setForeground(AppThemeColors.foregroundColor);
+        themeDropDownD.setFocusable(false);
+        themeDropDownD.setBorder(new LineBorder(AppThemeColors.foregroundColor));
+        themeDropDownD.setUI(new JComboBoxUICustom(themeDropDownD));
         themeDropDownD.addItemListener(_-> {
             switch (themeDropDownD.getSelectedIndex()){
                 //Light Mode
@@ -1472,8 +1571,13 @@ public class SettingsPanel extends JPanel{
         ageLabelD.setFont(new Font("Arial", Font.BOLD,height/50));
 
         ageDropDownD.setSelectedIndex(UserData.getUserAge());
-        ageDropDownD.setEditable(true);
+        ageDropDownD.setFont(new Font("Arial", Font.BOLD,height/50));
         ageDropDownD.setPreferredSize(new Dimension(width/15, height/15));
+        ageDropDownD.setBackground(AppThemeColors.SECONDARY);
+        ageDropDownD.setForeground(AppThemeColors.foregroundColor);
+        ageDropDownD.setFocusable(false);
+        ageDropDownD.setBorder(new LineBorder(AppThemeColors.foregroundColor));
+        ageDropDownD.setUI(new JComboBoxUICustom(ageDropDownD));
         ageDropDownD.addItemListener(_ -> {
             UserData.setUserAge(ageDropDownD.getSelectedIndex()); //Updates the local user age in the userdata
             try {
@@ -1501,9 +1605,15 @@ public class SettingsPanel extends JPanel{
         weightLabelD.setPreferredSize(new Dimension(width/20, accountWeightPanel.getPreferredSize().height));
         weightLabelD.setFont(new Font("Arial", Font.BOLD,height/50));
 
-        weightDropDownD.setEditable(true);
+
         weightDropDownD.setSelectedIndex((int)(UserData.getUserWeight()));
         weightDropDownD.setPreferredSize(new Dimension(width/15, height/15));
+        weightDropDownD.setFont(new Font("Arial", Font.BOLD,height/50));
+        weightDropDownD.setBackground(AppThemeColors.SECONDARY);
+        weightDropDownD.setForeground(AppThemeColors.foregroundColor);
+        weightDropDownD.setFocusable(false);
+        weightDropDownD.setBorder(new LineBorder(AppThemeColors.foregroundColor));
+        weightDropDownD.setUI(new JComboBoxUICustom(weightDropDownD));
         weightDropDownD.addItemListener(_ -> {
             UserData.setUserWeight(weightDropDownD.getSelectedIndex()); //Updates the local user age in the userdata
             try {
@@ -1532,7 +1642,13 @@ public class SettingsPanel extends JPanel{
         heightLabelD.setFont(new Font("Arial", Font.BOLD,height/50));
 
         heightDropDownD.setSelectedIndex((int)(UserData.getUserHeight()));
-        heightDropDownD.setEditable(true);
+        heightDropDownD.setPreferredSize(new Dimension(width/15, height/15));
+        heightDropDownD.setFont(new Font("Arial", Font.BOLD,height/50));
+        heightDropDownD.setBackground(AppThemeColors.SECONDARY);
+        heightDropDownD.setForeground(AppThemeColors.foregroundColor);
+        heightDropDownD.setFocusable(false);
+        heightDropDownD.setBorder(new LineBorder(AppThemeColors.foregroundColor));
+        heightDropDownD.setUI(new JComboBoxUICustom(heightDropDownD));
         heightDropDownD.setPreferredSize(new Dimension(width/15, height/15));
         heightDropDownD.addItemListener(_ -> {
             UserData.setUserHeight(heightDropDownD.getSelectedIndex()); //Updates the local user age in the userdata
@@ -1573,6 +1689,7 @@ public class SettingsPanel extends JPanel{
 
         choosePFPLabelD.setPreferredSize(new Dimension(width/20, accountPFPPanelD.getPreferredSize().height));
         choosePFPLabelD.setFont(new Font("Arial", Font.BOLD,height/50));
+        choosePFPLabelD.setForeground(AppThemeColors.foregroundColor);
 
         JButton chooseProfilePictureButtonD = new JButton("Choose Avatar");
         chooseProfilePictureButtonD.setPreferredSize(new Dimension(width/1000*120, height/24));
@@ -1648,6 +1765,8 @@ public class SettingsPanel extends JPanel{
         changeUsernameFieldD.setPreferredSize(new Dimension(width/1000*104, height/20));
         changeUsernameFieldD.setMaximumSize(new Dimension(width/1000*104, height/20));
         changeUsernameFieldD.setFont(new Font("Arial", Font.BOLD,height/50));
+        changeUsernameFieldD.setBackground(AppThemeColors.SECONDARY);
+        changeUsernameFieldD.setForeground(AppThemeColors.foregroundColor);
         changeUsernameFieldD.setText(UserData.getUserName());
 
         changeUsernameFieldD.addActionListener(_ -> {
@@ -1699,7 +1818,7 @@ public class SettingsPanel extends JPanel{
         settingsLabel.setForeground(AppThemeColors.foregroundColor);
 
         //Search Panel
-        searchPanel.setBackground(AppThemeColors.panelColor);
+        searchPanel.setBackground(Color.GREEN);
         searchScrollPanel.setBackground(AppThemeColors.panelColor);
         searchFieldPanel.setBackground(AppThemeColors.SECONDARY);
 
@@ -1740,8 +1859,10 @@ public class SettingsPanel extends JPanel{
         weightLabel.setForeground(AppThemeColors.foregroundColor);
         heightLabel.setForeground(AppThemeColors.foregroundColor);
         accountActivityLabel.setForeground(AppThemeColors.foregroundColor);
+        accountGenderLabel.setForeground(AppThemeColors.foregroundColor);
         changeUsernameLabel.setForeground(AppThemeColors.foregroundColor);
         choosePFPLabel.setForeground(AppThemeColors.foregroundColor);
+        choosePFPLabelD.setForeground(AppThemeColors.foregroundColor);
 
         ageLabelD.setForeground(AppThemeColors.foregroundColor);
         weightLabelD.setForeground(AppThemeColors.foregroundColor);
@@ -1754,6 +1875,7 @@ public class SettingsPanel extends JPanel{
         accountWeightPanel.setBackground(AppThemeColors.SECONDARY);
         accountHeightPanel.setBackground(AppThemeColors.SECONDARY);
         accountActivityPanel.setBackground(AppThemeColors.SECONDARY);
+        accountGenderPanel.setBackground(AppThemeColors.SECONDARY);
         accountNamePanel.setBackground(AppThemeColors.SECONDARY);
         accountPFPPanel.setBackground(AppThemeColors.SECONDARY);
 
@@ -1762,6 +1884,65 @@ public class SettingsPanel extends JPanel{
         accountHeightPanelD.setBackground(AppThemeColors.SECONDARY);
         accountNamePanelD.setBackground(AppThemeColors.SECONDARY);
         accountPFPPanelD.setBackground(AppThemeColors.SECONDARY);
+
+        themeDropDown.setForeground(AppThemeColors.foregroundColor);
+        themeDropDown.setBorder(new LineBorder(AppThemeColors.foregroundColor));
+        themeDropDown.setBackground(AppThemeColors.textFieldColor);
+        updateArrowButton(themeDropDown);
+
+        themeDropDownD.setForeground(AppThemeColors.foregroundColor);
+        themeDropDownD.setBorder(new LineBorder(AppThemeColors.foregroundColor));
+        themeDropDownD.setBackground(AppThemeColors.textFieldColor);
+        updateArrowButton(themeDropDownD);
+
+        ageDropDown.setForeground(AppThemeColors.foregroundColor);
+        ageDropDown.setBorder(new LineBorder(AppThemeColors.foregroundColor));
+        ageDropDown.setBackground(AppThemeColors.textFieldColor);
+        updateArrowButton(ageDropDown);
+
+        weightDropDown.setForeground(AppThemeColors.foregroundColor);
+        weightDropDown.setBorder(new LineBorder(AppThemeColors.foregroundColor));
+        weightDropDown.setBackground(AppThemeColors.textFieldColor);
+        updateArrowButton(weightDropDown);
+
+        heightDropDown.setForeground(AppThemeColors.foregroundColor);
+        heightDropDown.setBorder(new LineBorder(AppThemeColors.foregroundColor));
+        heightDropDown.setBackground(AppThemeColors.textFieldColor);
+        updateArrowButton(heightDropDown);
+
+        activityDropDown.setForeground(AppThemeColors.foregroundColor);
+        activityDropDown.setBorder(new LineBorder(AppThemeColors.foregroundColor));
+        activityDropDown.setBackground(AppThemeColors.textFieldColor);
+        updateArrowButton(activityDropDown);
+
+        genderDropDown.setForeground(AppThemeColors.foregroundColor);
+        genderDropDown.setBorder(new LineBorder(AppThemeColors.foregroundColor));
+        genderDropDown.setBackground(AppThemeColors.textFieldColor);
+        updateArrowButton(genderDropDown);
+
+        ageDropDownD.setForeground(AppThemeColors.foregroundColor);
+        ageDropDownD.setBorder(new LineBorder(AppThemeColors.foregroundColor));
+        ageDropDownD.setBackground(AppThemeColors.textFieldColor);
+        updateArrowButton(ageDropDownD);
+
+        weightDropDownD.setForeground(AppThemeColors.foregroundColor);
+        weightDropDownD.setBorder(new LineBorder(AppThemeColors.foregroundColor));
+        weightDropDownD.setBackground(AppThemeColors.textFieldColor);
+        updateArrowButton(weightDropDownD);
+
+        heightDropDownD.setForeground(AppThemeColors.foregroundColor);
+        heightDropDownD.setBorder(new LineBorder(AppThemeColors.foregroundColor));
+        heightDropDownD.setBackground(AppThemeColors.textFieldColor);
+        updateArrowButton(heightDropDownD);
+
+        changeUsernameField.setForeground(AppThemeColors.foregroundColor);
+        changeUsernameField.setBorder(new LineBorder(AppThemeColors.foregroundColor));
+        changeUsernameField.setBackground(AppThemeColors.textFieldColor);
+
+        changeUsernameFieldD.setForeground(AppThemeColors.foregroundColor);
+        changeUsernameFieldD.setBorder(new LineBorder(AppThemeColors.foregroundColor));
+        changeUsernameFieldD.setBackground(AppThemeColors.textFieldColor);
+
 
         //Privacy Settings
         privacySettingsButton.setIcon(scaledDarkPrivacySettingsIcon);
@@ -1806,6 +1987,24 @@ public class SettingsPanel extends JPanel{
 
         repaint();
         revalidate();
+    }
+
+    private void updateArrowButton(JComboBox comboBox) {
+        if(comboBox.getUI() instanceof JComboBoxUICustom){
+            JButton button =  ((JComboBoxUICustom) comboBox.getUI()).getArrowButton();
+            ComboPopup comboPopup = ((JComboBoxUICustom) comboBox.getUI()).getComboPopup();
+            JList list = comboPopup.getList();
+
+            button.setForeground(AppThemeColors.foregroundColor);
+            button.setBorder(new LineBorder(AppThemeColors.foregroundColor));
+
+            list.setBackground(AppThemeColors.textFieldColor);
+            list.setForeground(AppThemeColors.foregroundColor);
+
+
+            list.setSelectionBackground(AppThemeColors.buttonBGSelected);
+            list.setSelectionForeground(AppThemeColors.foregroundColor);
+        }
     }
 
     @Override

@@ -263,6 +263,7 @@ public class ExercisePanel extends JPanel {
         formLabel.setFont(font.deriveFont(getHeight()/35f));
         formLabel.setBorder(new LineBorder(new Color(80, 73, 69), 1, true));
         formLabel.setPreferredSize(new Dimension(eastPanel.getPreferredSize().width, eastPanel.getPreferredSize().height/18));
+        formLabel.setMinimumSize(formLabel.getPreferredSize());
 
         aboutText.setBackground(AppThemeColors.panelColor);
         aboutText.setPreferredSize(new Dimension(eastPanel.getPreferredSize().width, eastPanel.getPreferredSize().height/2));
@@ -290,11 +291,6 @@ public class ExercisePanel extends JPanel {
         northPanel.setMinimumSize(northPanel.getPreferredSize());
         northPanel.setBorder(null);
 
-        JPanel wrapper = new JPanel();
-        wrapper.setLayout(new BorderLayout());
-        wrapper.setOpaque(false);
-        wrapper.setBorder(null);
-        wrapper.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         titleLabel = new JTextArea();
         titleLabel.setForeground(AppThemeColors.foregroundColor);
@@ -355,7 +351,8 @@ public class ExercisePanel extends JPanel {
 
         // Notice window
         statusPanel = new JPanel();
-        statusPanel.setPreferredSize(new Dimension(this.getWidth(), 50));
+        statusPanel.setBounds(0, (int) (getPreferredSize().height - (getPreferredSize().height / 13.26)), this.getWidth(), (int) (getPreferredSize().height / 13.26));
+        statusPanel.setPreferredSize(new Dimension(this.getWidth(), (int) (getPreferredSize().height / 13.26)));
         statusPanel.setVisible(false);
         statusPanel.setBorder(new LineBorder(new Color(46, 148, 76), 1, true));
 
@@ -371,7 +368,7 @@ public class ExercisePanel extends JPanel {
                 statusPanel.setVisible(true);
                 statusDelayCounter -= 1;
             } else {
-                statusPanel.setPreferredSize(new Dimension(statusPanel.getWidth(), statusPanel.getHeight() - 1));
+                statusPanel.setBounds(0, statusPanel.getBounds().y + 1, mainPanel.getWidth(), statusPanel.getHeight());
                 statusPanel.repaint();
                 statusPanel.revalidate();
             }
@@ -422,13 +419,21 @@ public class ExercisePanel extends JPanel {
         statusPanel.add(statusText);
 
         // MAIN STRUCTURE
+        JLayeredPane wrapper = new JLayeredPane();
+        wrapper.setPreferredSize(new Dimension(getPreferredSize().width,getPreferredSize().height));
+
+        mainPanel.setBounds(0,0,getPreferredSize().width,getPreferredSize().height);
+
         mainPanel.add(northPanel, BorderLayout.NORTH);
         mainPanel.add(westPanel, BorderLayout.WEST);
         mainPanel.add(centerPanel, BorderLayout.CENTER);
         mainPanel.add(eastPanel, BorderLayout.EAST);
-        mainPanel.add(statusPanel, BorderLayout.SOUTH);
 
-        this.add(mainPanel);
+        wrapper.add(mainPanel, JLayeredPane.DEFAULT_LAYER);
+        wrapper.add(statusPanel, JLayeredPane.POPUP_LAYER);
+
+        //this.add(mainPanel);
+        this.add(wrapper);
         this.setOpaque(false);
 
         //-------------Methods and listeners-------------------
@@ -440,10 +445,10 @@ public class ExercisePanel extends JPanel {
             musclesWorkedLabel.setText(selectedExercise.getMusclesUsed());
             aboutText.setText(selectedExercise.getInfo());
             formText.setText(selectedExercise.getForm());
-            ImageIcon exerciseImageIcon = selectedExercise.getImageIcon();
-            scaledTest = exerciseImageIcon.getImage().getScaledInstance(centerPanel.getPreferredSize().width, (int) (centerPanel.getPreferredSize().height), Image.SCALE_DEFAULT);
+            scaledTest = selectedExercise.getImageIcon().getImage().getScaledInstance(centerPanel.getPreferredSize().width, (int) (centerPanel.getPreferredSize().height), Image.SCALE_DEFAULT);
             ImageIcon scaledExerciseIcon = new ImageIcon(scaledTest);
             imageLabel.setIcon(scaledExerciseIcon);
+            menuList.setSelectedIndex(0);
         }
 
         editButton.addActionListener(new ActionListener() {
@@ -854,8 +859,7 @@ public class ExercisePanel extends JPanel {
                     imageLabel.setIcon(scaledExerciseIcon);
                     // DISPLAY DEFAULT IF IMAGE NOT FOUND
                 } catch (Exception ex) {
-                    ImageIcon temp = new ImageIcon(ResourcePath.getResourcePath("bottom_right_bar.png"));
-                    scaledTest = temp.getImage().getScaledInstance(imageLabel.getPreferredSize().width, (int) (imageLabel.getPreferredSize().height), Image.SCALE_SMOOTH);
+                    scaledTest = homePanelBackground.getImage().getScaledInstance(imageLabel.getPreferredSize().width, (int) (imageLabel.getPreferredSize().height), Image.SCALE_SMOOTH);
                     ImageIcon scaledTestIcon = new ImageIcon(scaledTest);
                     imageLabel.setIcon(scaledTestIcon);
                     formInfoContainer.setVisible(false);
@@ -902,6 +906,13 @@ public class ExercisePanel extends JPanel {
                     mainPanel.setPreferredSize(new Dimension(getWidth(), (int) (getHeight())));
                     mainPanel.setMaximumSize(mainPanel.getPreferredSize());
                     mainPanel.setMaximumSize(mainPanel.getPreferredSize());
+                    mainPanel.setBounds(0, 0, getWidth(), getHeight());
+
+                    wrapper.setPreferredSize(new Dimension(getWidth(), getHeight()));
+
+                    statusPanel.setBounds(0, getHeight(), getWidth(), (int) (getWidth() / 13.26));
+                    statusPanel.setPreferredSize(new Dimension(getWidth(), (int) (getWidth() / 13.26)));
+                    statusText.setFont(new Font("Arial", Font.BOLD, (int) (getHeight() / 55.25)));
 
                     northPanel.setPreferredSize(new Dimension(mainPanel.getPreferredSize().width, (int) (mainPanel.getPreferredSize().height/10)));
                     northPanel.setMaximumSize(northPanel.getPreferredSize());
@@ -958,13 +969,9 @@ public class ExercisePanel extends JPanel {
                     imageLabel.revalidate();
                     if (selectedExercise != null) {
                         if (selectedExercise.getImageIcon() != null) {
-                            ImageIcon exerciseImageIcon = selectedExercise.getImageIcon();
-                            scaledTest = exerciseImageIcon.getImage().getScaledInstance(imageLabel.getPreferredSize().width, (int) (imageLabel.getPreferredSize().height), Image.SCALE_DEFAULT);
-                            ImageIcon scaledExerciseIcon = new ImageIcon(scaledTest);
-                            imageLabel.setIcon(scaledExerciseIcon);
+                            imageLabel.setIcon(new ImageIcon(selectedExercise.getImageIcon().getImage().getScaledInstance(imageLabel.getPreferredSize().width, (int) (imageLabel.getPreferredSize().height), Image.SCALE_DEFAULT)));
                         } else {
-                            ImageIcon temp = new ImageIcon(ResourcePath.getResourcePath("bottom_right_bar.png"));
-                            scaledTest = temp.getImage().getScaledInstance(imageLabel.getPreferredSize().width, (int) (imageLabel.getPreferredSize().height), Image.SCALE_SMOOTH);
+                            scaledTest = homePanelBackground.getImage().getScaledInstance(imageLabel.getPreferredSize().width, (int) (imageLabel.getPreferredSize().height), Image.SCALE_SMOOTH);
                             ImageIcon scaledTestIcon = new ImageIcon(scaledTest);
                             imageLabel.setIcon(scaledTestIcon);
 
@@ -1019,14 +1026,15 @@ public class ExercisePanel extends JPanel {
     }
 
     // NOTICE WINDOW TRIGGER
-    public static void activateStatus(Color color, String text) {
+    public void activateStatus(Color color, String text) {
         statusDelayCounter = 20;
         statusPanel.setVisible(true);
         statusPanel.setBackground(color);
+        statusPanel.setBorder(new LineBorder(color));
         statusText.setText(text);
         shrinkStatusPanel.start();
         shrinkStatusPanel.restart();
-        statusPanel.setPreferredSize(new Dimension(statusPanel.getWidth(), 50));
+        statusPanel.setBounds(0, getHeight() - (int) (getHeight() / 13.26), mainPanel.getWidth(), (int) (getHeight() / 13.26));
     }
 
     // UPDATE THE MENU LIST IN REAL TIME
@@ -1116,7 +1124,7 @@ public class ExercisePanel extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         System.out.println("UPDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATING COLORESSS LOLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL");
-        updateColors();
+        //updateColors();
         // Draw the image to fill the entire panel
         if (homePanelBackground != null) {
             if (!SettingsPanel.lightMode) {
@@ -1126,14 +1134,12 @@ public class ExercisePanel extends JPanel {
                     imageLabel.setVisible(true);
                     // SHOW IMAGE
                     try {
-                        ImageIcon exerciseImageIcon = selectedExercise.getImageIcon();
-                        scaledTest = exerciseImageIcon.getImage().getScaledInstance(imageLabel.getPreferredSize().width, (int) (imageLabel.getPreferredSize().height), Image.SCALE_DEFAULT);
+                        scaledTest = selectedExercise.getImageIcon().getImage().getScaledInstance(imageLabel.getPreferredSize().width, (int) (imageLabel.getPreferredSize().height), Image.SCALE_DEFAULT);
                         ImageIcon scaledExerciseIcon = new ImageIcon(scaledTest);
                         imageLabel.setIcon(scaledExerciseIcon);
                         // DISPLAY DEFAULT IF IMAGE NOT FOUND
                     } catch (Exception ex) {
-                        ImageIcon temp = new ImageIcon(ResourcePath.getResourcePath("bottom_right_bar.png"));
-                        scaledTest = temp.getImage().getScaledInstance(imageLabel.getPreferredSize().width, (int) (imageLabel.getPreferredSize().height), Image.SCALE_SMOOTH);
+                        scaledTest = homePanelBackground.getImage().getScaledInstance(imageLabel.getPreferredSize().width, (int) (imageLabel.getPreferredSize().height), Image.SCALE_SMOOTH);
                         ImageIcon scaledTestIcon = new ImageIcon(scaledTest);
                         imageLabel.setIcon(scaledTestIcon);
                     }

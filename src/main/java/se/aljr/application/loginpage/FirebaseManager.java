@@ -573,6 +573,7 @@ public class FirebaseManager {
         user.put("Favorite_Exercises","");
         user.put("activityFactor","");
         user.put("isAdmin",false);
+        user.put("gender", "");
 
 
         // Referens till dokumentet i "users" collection
@@ -602,6 +603,7 @@ public class FirebaseManager {
         user.put("weight", String.valueOf(UserData.getUserWeight()));
         user.put("activityFactor", String.valueOf(UserData.getActivityFactor()));
         user.put("theme", UserData.getTheme());
+        user.put("gender", UserData.getUserGender());
 
 
         // Referens till dokumentet i "users" collection
@@ -638,6 +640,7 @@ public class FirebaseManager {
             UserData.setTheme(userData.get("theme").toString());
             UserData.setAdmin((boolean) userData.get("isAdmin"));
             UserData.setActivityFactor(userData.get("activityFactor").toString().isEmpty() ? 1.2f:Float.parseFloat(userData.get("activityFactor").toString()));
+            UserData.setUserGender(userData.get("gender").toString());
 
         } catch (Exception e) {
             e.printStackTrace();

@@ -5,7 +5,8 @@ public class NutritionCalculator {
         return (float) Math.round((float) ((weight) / Math.pow(((double) height / 100), 2)) * 10) /10;
     }
     public static int getBMR(float weight, int height, int age){
-        return (int) (88.362+(13.397*weight)+(4.799*height)-(5.677*age));
+        return UserData.getUserGender().equals("Male")?(int) (88.362+(13.397*weight)+(4.799*height)-(5.677*age)):
+                (int) (447.593+(9.247*weight)+(3.098*height)-(4.330*age));
     }
     public static int getTDEE(float weight, int height, int age,float activityFactor){
         return (int) (getBMR(weight,height,age)*activityFactor);

@@ -13,6 +13,7 @@ public class UserData {
     private static int userHeight;
     private static int userAge;
     private static float userWeight;
+    private static String userGender;
     private static String userEmail;
     private static String userTheme;
     private static float activityFactor;
@@ -116,5 +117,13 @@ public class UserData {
 
     public static void setActivityFactor(float activityFactor) {
         UserData.activityFactor = activityFactor;
+    }
+
+    public static String getUserGender() {
+        return userGender;
+    }
+
+    public static void setUserGender(String userGender) {
+        UserData.userGender = userGender;
     }
 }

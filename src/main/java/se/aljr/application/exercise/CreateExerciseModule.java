@@ -541,7 +541,7 @@ public class CreateExerciseModule extends JPanel {
                 } catch (Exception f) {
                     f.printStackTrace();
                 }
-                ExercisePanel.activateStatus(new Color(46, 148, 76), "New exercise " + exercise.getName() + " has been created!");
+                exercisePanel.activateStatus(new Color(46, 148, 76), "New exercise " + exercise.getName() + " has been created!");
 
             } else {
 
