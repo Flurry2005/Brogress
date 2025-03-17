@@ -323,6 +323,7 @@ public class ExercisePanel extends JPanel {
         favoriteButton.setMaximumSize(favoriteButton.getPreferredSize());
         favoriteButton.setMinimumSize(favoriteButton.getPreferredSize());
         favoriteButton.setBorder(null);
+        favoriteButton.setForeground(new Color(21,21,21));
 
         editButton.setFocusPainted(false);
         editButton.setContentAreaFilled(false);
