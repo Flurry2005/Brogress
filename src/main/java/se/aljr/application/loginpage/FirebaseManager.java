@@ -827,6 +827,9 @@ public class FirebaseManager {
         DocumentReference documentReference = db.collection("users").document(UserData.getEmail());
         documentReference.update("Favorite_Exercises", exercise64);
 
+        for (Exercise exercise : temp) {
+            exercise.reattachImageIcon(favoriteList);
+        }
     }
 
 

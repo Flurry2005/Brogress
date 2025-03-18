@@ -20,6 +20,7 @@ public class CableRow extends Exercise {
         musclesUsed.add(new LowerBack());
 
         imageIcon = new ImageIcon(ResourcePath.getResourcePath("ExerciseImages/CableRow.gif"));
+        imageIconPath = "ExerciseImages/CableRow.gif";
     }
 
 }

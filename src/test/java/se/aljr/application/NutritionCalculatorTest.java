@@ -8,6 +8,7 @@ class NutritionCalculatorTest {
 
     @Test
     void getBmi() {
+        UserData.setUserGender("Male");
         float weight = 70f; // in kg
         int height = 175;   // in cm
 
@@ -20,6 +21,7 @@ class NutritionCalculatorTest {
 
     @Test
     void getBMR() {
+        UserData.setUserGender("Male");
         float weight = 70f;
         int height = 175;
         int age = 25;

@@ -77,7 +77,7 @@ public class ExercisePanel extends JPanel {
     public static ExercisePanel instance;
 
     public ExercisePanel(int width, int height) {
-        homePanelBackground = new ImageIcon(ResourcePath.getResourcePath("bottom_right_bar.png"));
+        homePanelBackground = new ImageIcon(ResourcePath.getResourcePath("emptyBackground.png"));
         scaledContentBackground = homePanelBackground.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
         scaledContentBackgroundPanel = new ImageIcon(scaledContentBackground);
 
@@ -369,8 +369,8 @@ public class ExercisePanel extends JPanel {
                 statusDelayCounter -= 1;
             } else {
                 statusPanel.setBounds(0, statusPanel.getBounds().y + 1, mainPanel.getWidth(), statusPanel.getHeight());
-                statusPanel.repaint();
-                statusPanel.revalidate();
+//                statusPanel.repaint();
+//                statusPanel.revalidate();
             }
         });
 
@@ -1057,8 +1057,6 @@ public class ExercisePanel extends JPanel {
                 exerciseModel.addElement(exercise);
             }
         }
-        menuList.revalidate();
-        menuList.repaint();
     }
 
     public void updateColors() {
@@ -1129,7 +1127,7 @@ public class ExercisePanel extends JPanel {
         if (homePanelBackground != null) {
             if (!SettingsPanel.lightMode) {
                 g.drawImage(scaledContentBackgroundPanel.getImage(), 0, 0, getWidth(), getHeight(), this);
-                if (menuList.getSelectedIndex() != -1) {
+                if (menuList.getSelectedIndex() != -1 && !shrinkStatusPanel.isRunning()) {
                     selectedExercise = menuList.getSelectedValue();
                     imageLabel.setVisible(true);
                     // SHOW IMAGE
@@ -1146,7 +1144,7 @@ public class ExercisePanel extends JPanel {
                 }
             } else {
                 g.drawImage(scaledLightContentBackgroundPanel.getImage(), 0, 0, getWidth(), getHeight(), this);
-                if (menuList.getSelectedIndex() != -1) {
+                if (menuList.getSelectedIndex() != -1 && !shrinkStatusPanel.isRunning()) {
                     selectedExercise = menuList.getSelectedValue();
                     imageLabel.setVisible(true);
                     // SHOW IMAGE
@@ -1157,8 +1155,8 @@ public class ExercisePanel extends JPanel {
                         imageLabel.setIcon(scaledExerciseIcon);
                         // DISPLAY DEFAULT IF IMAGE NOT FOUND
                     } catch (Exception ex) {
-                        ImageIcon temp = new ImageIcon(ResourcePath.getResourcePath("bottom_right_bar_light.png"));
-                        scaledTest = temp.getImage().getScaledInstance(imageLabel.getPreferredSize().width, (int) (imageLabel.getPreferredSize().height), Image.SCALE_SMOOTH);
+
+                        scaledTest = lightHomePanelBackground.getImage().getScaledInstance(imageLabel.getPreferredSize().width, (int) (imageLabel.getPreferredSize().height), Image.SCALE_SMOOTH);
                         ImageIcon scaledTestIcon = new ImageIcon(scaledTest);
                         imageLabel.setIcon(scaledTestIcon);
                     }

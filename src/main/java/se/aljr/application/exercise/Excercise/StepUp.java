@@ -13,6 +13,7 @@ public class StepUp extends Exercise {
 
         form = "To perform a step-up, stand in front of a sturdy bench or box. Step onto it with one foot, driving through your heel to lift your body up until your other foot meets the platform. Step back down in a controlled manner and repeat, alternating legs or focusing on one side before switching.";
         imageIcon = new ImageIcon(ResourcePath.getResourcePath("ExerciseImages/StepUp.gif"));
+        imageIconPath = "ExerciseImages/StepUp.gif";
         musclesUsed.add(new Quadriceps());
         musclesUsed.add(new Glutes());
         musclesUsed.add(new Hamstrings());

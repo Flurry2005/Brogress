@@ -16,6 +16,7 @@ public class DumbbellSideLateralRaises extends Exercise {
         form = "To perform a dumbbell side lateral raise, stand with a dumbbell in each hand, arms at your sides. With a slight bend in your elbows, lift the dumbbells out to the sides until they reach shoulder height, then slowly lower them back down. Maintain controlled movement and avoid using momentum.";
 
         imageIcon = new ImageIcon(ResourcePath.getResourcePath("ExerciseImages/DumbbellSideLateralRaise.gif"));
+        imageIconPath = "ExerciseImages/DumbbellSideLateralRaise.gif";
         musclesUsed.add(new LateralDeltoid());
         musclesUsed.add(new Traps());
         musclesUsed.add(new AnteriorDeltoid());
