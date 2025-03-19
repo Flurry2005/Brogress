@@ -6,7 +6,7 @@
 
 # Brogress
 Brogress, is a Windows based fitness tracking application used for learning about working out and creating your own workouts!\
-<br /><br /><br />
+<br />
 # Getting started
 To use the application for yourself follow these steps.
 <h2>Installation</h2>
