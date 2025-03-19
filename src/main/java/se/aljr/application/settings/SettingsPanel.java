@@ -1429,14 +1429,12 @@ public class SettingsPanel extends JPanel{
             }
             HomePanel.updateUserInfo();
         });
-
-
+        
         accountNamePanel.add(usernameLabelCenteringPanel, BorderLayout.WEST);
         usernameLabelCenteringPanel.add(Box.createHorizontalGlue());
         usernameLabelCenteringPanel.add(changeUsernameLabel);
         usernameLabelCenteringPanel.add(Box.createHorizontalGlue());
         accountNamePanel.add(changeUsernameField, BorderLayout.EAST);
-
 
         accountPFPPanel.add(pfpLabelCenteringPanel, BorderLayout.WEST);
         pfpLabelCenteringPanel.add(Box.createHorizontalGlue());
@@ -1461,14 +1459,12 @@ public class SettingsPanel extends JPanel{
     public void buildDuplicatePanels(){
         //Theme selection panel-----------------------------------------------------------------------------------------------------
 
-
         //Panels within the scrollable window that will hold various settings
         themeSelectionPanelD.setBackground(AppThemeColors.SECONDARY);
         themeSelectionPanelD.setLayout(new BoxLayout(themeSelectionPanelD, BoxLayout.X_AXIS));
         themeSelectionPanelD.setPreferredSize(new Dimension(width-width/10*7, height/15));
         themeSelectionPanelD.setName("themeselectionpanel");
         themeSelectionLabelD.setForeground(AppThemeColors.foregroundColor);
-
 
         themeDropDownD.setPreferredSize(new Dimension(width/15, height/10));
         themeDropDownD.setFont(new Font("Arial", Font.BOLD,height/50));
@@ -1663,13 +1659,11 @@ public class SettingsPanel extends JPanel{
             HomePanel.updateUserInfo(); //Updates the userdata on the home panel
         });
 
-
         accountAgePanelD.add(ageLabelCenteringPanelD, BorderLayout.WEST);
         ageLabelCenteringPanelD.add(Box.createHorizontalGlue());
         ageLabelCenteringPanelD.add(ageLabelD);
         ageLabelCenteringPanelD.add(Box.createHorizontalGlue());
         accountAgePanelD.add(ageDropDownD, BorderLayout.EAST);
-
 
         accountWeightPanelD.add(weightLabelCenteringPanelD, BorderLayout.WEST);
         weightLabelCenteringPanelD.add(Box.createHorizontalGlue());
@@ -1738,15 +1732,11 @@ public class SettingsPanel extends JPanel{
 
 //-------------------------------
 
-
-
         accountHeightPanelD.add(heightLabelCenteringPanelD, BorderLayout.WEST);
         heightLabelCenteringPanelD.add(Box.createHorizontalGlue());
         heightLabelCenteringPanelD.add(heightLabelD);
         heightLabelCenteringPanelD.add(Box.createHorizontalGlue());
         accountHeightPanelD.add(heightDropDownD, BorderLayout.EAST);
-
-
 
         accountNamePanelD.setBackground(AppThemeColors.SECONDARY);
         accountNamePanelD.setLayout(new BorderLayout());
@@ -1788,14 +1778,11 @@ public class SettingsPanel extends JPanel{
         usernameLabelCenteringPanelD.add(Box.createHorizontalGlue());
         accountNamePanelD.add(changeUsernameFieldD, BorderLayout.EAST);
 
-
-
         accountPFPPanelD.add(pfpLabelCenteringPanelD);
         pfpLabelCenteringPanelD.add(Box.createHorizontalGlue());
         pfpLabelCenteringPanelD.add(choosePFPLabelD);
         pfpLabelCenteringPanelD.add(Box.createHorizontalGlue());
         accountPFPPanelD.add(chooseProfilePictureButtonD, BorderLayout.EAST);
-
 
         allPanels.add(accountAgePanelD);
         allPanels.add(accountWeightPanelD);
