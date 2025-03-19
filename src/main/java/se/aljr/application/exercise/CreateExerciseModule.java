@@ -72,11 +72,11 @@ public class CreateExerciseModule extends JPanel {
         headerLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
         eastPanel.setLayout(new BoxLayout(eastPanel, BoxLayout.Y_AXIS));
-        eastPanel.setBackground(AppThemeColors.PRIMARY);
-        eastPanel.setPreferredSize(new Dimension(parentPanel.getPreferredSize().width / 3, parentPanel.getPreferredSize().height));
+        eastPanel.setBackground(AppThemeColors.panelColor);
+        eastPanel.setPreferredSize(new Dimension(parentPanel.getPreferredSize().width / 3, (int) (parentPanel.getPreferredSize().height /1.2)));
         eastPanel.setMaximumSize(eastPanel.getPreferredSize());
         eastPanel.setMinimumSize(eastPanel.getPreferredSize());
-        eastPanel.setBorder(null);
+        eastPanel.setBorder(new LineBorder(new Color(80, 73, 69)));
 
         textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.Y_AXIS));
         textPanel.setBackground(AppThemeColors.PRIMARY);
@@ -280,7 +280,7 @@ public class CreateExerciseModule extends JPanel {
                     exerciseInfo.setMaximumSize(new Dimension(parentPanel.getPreferredSize().width, parentPanel.getPreferredSize().height / 5));
                     exerciseInfo.setMinimumSize(new Dimension(parentPanel.getPreferredSize().width, parentPanel.getPreferredSize().height / 5));
 
-                    eastPanel.setPreferredSize(new Dimension(parentPanel.getPreferredSize().width / 3, textPanel.getPreferredSize().height));
+                    eastPanel.setPreferredSize(new Dimension(parentPanel.getPreferredSize().width / 3, (int) (parentPanel.getPreferredSize().height/1.2)));
                     eastPanel.setMaximumSize(eastPanel.getPreferredSize());
                     eastPanel.setMinimumSize(eastPanel.getPreferredSize());
 
@@ -522,7 +522,7 @@ public class CreateExerciseModule extends JPanel {
                 UserData.setCreatedExercises(exercise);
 
                 if (setFav.isSelected()) {
-                    UserData.setFavoriteExercises(exercise);
+                    UserData.addFavoriteExercise(exercise);
                 }
 
                 exerciseName.setText("");
@@ -541,7 +541,7 @@ public class CreateExerciseModule extends JPanel {
                 } catch (Exception f) {
                     f.printStackTrace();
                 }
-                ExercisePanel.activateStatus(new Color(46, 148, 76), "New exercise " + exercise.getName() + " has been created!");
+                exercisePanel.activateStatus(new Color(46, 148, 76), "New exercise " + exercise.getName() + " has been created!");
 
             } else {
 
@@ -565,7 +565,7 @@ public class CreateExerciseModule extends JPanel {
     public void updateColors() {
         headerPanel.setBackground(AppThemeColors.PRIMARY);
         headerLabel.setForeground(AppThemeColors.foregroundColor);
-        eastPanel.setBackground(AppThemeColors.PRIMARY);
+        eastPanel.setBackground(AppThemeColors.panelColor);
         textPanel.setBackground(AppThemeColors.PRIMARY);
         nameAndFavPanel.setBackground(AppThemeColors.PRIMARY);
         exerciseName.setBackground(AppThemeColors.panelColor);

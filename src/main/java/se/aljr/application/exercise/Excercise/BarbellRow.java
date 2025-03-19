@@ -8,6 +8,7 @@ import javax.swing.*;
 
 
 public class BarbellRow extends Exercise {
+
     public BarbellRow() {
         name = "Barbell Row";
 
@@ -23,5 +24,6 @@ public class BarbellRow extends Exercise {
 
 
         imageIcon = new ImageIcon(ResourcePath.getResourcePath("ExerciseImages/BarbellRow.gif"));
+        imageIconPath = "ExerciseImages/BarbellRow.gif";
     }
 }

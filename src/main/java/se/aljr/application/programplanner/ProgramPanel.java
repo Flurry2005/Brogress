@@ -775,6 +775,7 @@ public class ProgramPanel extends JPanel {
         setDefaultInfo.setText(("Default workout info here"));
         setDefaultInfo.setVisible(false);
         setDefaultInfo.setLineWrap(true);
+        setDefaultInfo.setWrapStyleWord(true);
         setDefaultInfo.setBackground(new Color(159, 10, 186));
         setDefaultInfo.setForeground(Color.white);
         setDefaultInfo.setFont(new Font("Arial", Font.BOLD, 12));

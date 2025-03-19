@@ -1,7 +1,9 @@
 package se.aljr.application.exercise.Excercise;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Objects;
 import se.aljr.application.ResourcePath;
 import se.aljr.application.UserData;
@@ -10,6 +12,9 @@ import se.aljr.application.exercise.Muscle.Muscle;
 import javax.swing.*;
 
 public class Exercise implements Serializable {
+    @Serial
+    private  static final long serialVersionUID = 1L;
+
     protected String name;
     protected String info;
     protected String form;
@@ -18,6 +23,16 @@ public class Exercise implements Serializable {
     protected String picture;
     protected ArrayList<Muscle> musclesUsed = new ArrayList<>();
     protected ImageIcon imageIcon;
+
+    public String getImageIconPath() {
+        return imageIconPath;
+    }
+
+    public void setImageIconPath(String imageIconPath) {
+        this.imageIconPath = imageIconPath;
+    }
+
+    protected String imageIconPath;
 
     public String getName() {
             return this.name;
@@ -49,6 +64,12 @@ public class Exercise implements Serializable {
 
     public void removeImageIcon(){
         this.imageIcon=null;
+    }
+
+    public void reattachImageIcon(){
+        if (imageIconPath!=null) {
+            imageIcon = new ImageIcon(ResourcePath.getResourcePath(imageIconPath));
+        }
     }
 
     public void createExercise(String name, String info, ArrayList<Muscle> musclesUsed) {

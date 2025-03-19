@@ -13,10 +13,11 @@ public class UserData {
     private static int userHeight;
     private static int userAge;
     private static float userWeight;
+    private static String userGender;
     private static String userEmail;
     private static String userTheme;
     private static float activityFactor;
-    private static final HashSet<Exercise> favoriteExercises = new HashSet<>();
+    private static HashSet<Exercise> favoriteExercises = new HashSet<>();
     private static final ArrayList<Exercise> createdExercises = new ArrayList<>();
     private static boolean isOnline;
 
@@ -70,10 +71,14 @@ public class UserData {
         return favoriteExercises;
     }
 
+    public static void setFavoriteExercises(HashSet<Exercise> list) {
+        favoriteExercises = list;
+    }
+
     public static void removeFavoriteExercises(Exercise exercise) {
         favoriteExercises.remove(exercise);
     }
-    public static void setFavoriteExercises(Exercise exercise) {
+    public static void addFavoriteExercise(Exercise exercise) {
         favoriteExercises.add(exercise);
     }
 
@@ -116,5 +121,13 @@ public class UserData {
 
     public static void setActivityFactor(float activityFactor) {
         UserData.activityFactor = activityFactor;
+    }
+
+    public static String getUserGender() {
+        return userGender;
+    }
+
+    public static void setUserGender(String userGender) {
+        UserData.userGender = userGender;
     }
 }

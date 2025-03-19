@@ -14,6 +14,7 @@ public class Lunge extends Exercise {
         form = "To perform a lunge, step forward with one leg and lower your hips until both knees form a 90-degree angle. Push through your front heel to return to the starting position, then repeat on the other leg. Keep your core engaged and maintain an upright posture throughout the movement.";
 
         imageIcon = new ImageIcon(ResourcePath.getResourcePath("ExerciseImages/Lunge.gif"));
+        imageIconPath = "ExerciseImages/Lunge.gif";
 
         musclesUsed.add(new Glutes());
         musclesUsed.add(new Quadriceps());

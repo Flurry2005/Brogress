@@ -13,6 +13,7 @@ public class TricepsFrenchPress extends Exercise {
 
         form = "To perform a dumbbell French press, sit, lie down or stand while holding a dumbbell with both hands, extending it overhead. Keep your elbows close to your head as you lower the dumbbell behind your head in a controlled motion. Press the dumbbell back up to the starting position, fully extending your arms while keeping tension on the triceps.";
         imageIcon = new ImageIcon(ResourcePath.getResourcePath("ExerciseImages/FrenchPress.gif"));
+        imageIconPath = "ExerciseImages/FrenchPress.gif";
         musclesUsed.add(new Triceps());
     }
 }

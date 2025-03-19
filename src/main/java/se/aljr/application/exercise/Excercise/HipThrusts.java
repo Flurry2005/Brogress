@@ -15,6 +15,7 @@ public class HipThrusts extends Exercise {
 
         form = "To perform a barbell hip thrust, sit with your upper back against a bench and place a barbell across your hips. Plant your feet shoulder-width apart, then drive through your heels to lift your hips until your body forms a straight line from shoulders to knees. Squeeze your glutes at the top, then lower back down with control.";
         imageIcon = new ImageIcon(ResourcePath.getResourcePath("ExerciseImages/HipThrust.gif"));
+        imageIconPath = "ExerciseImages/HipThrust.gif";
         musclesUsed.add(new Glutes());
         musclesUsed.add(new Hamstrings());
     }

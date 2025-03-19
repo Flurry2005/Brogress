@@ -20,5 +20,6 @@ public class ChestFly extends Exercise {
         musclesUsed.add(new Biceps());
 
         imageIcon = new ImageIcon(ResourcePath.getResourcePath("ExerciseImages/CableChestFly.gif"));
+        imageIconPath = "ExerciseImages/CableChestFly.gif";
     }
 }

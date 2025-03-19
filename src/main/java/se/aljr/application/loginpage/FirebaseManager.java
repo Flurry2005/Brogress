@@ -13,7 +13,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
-import se.aljr.application.CustomFont;
 import se.aljr.application.Friends.Friend;
 import se.aljr.application.Friends.FriendsList;
 import se.aljr.application.ResourcePath;
@@ -27,7 +26,6 @@ import se.aljr.application.programplanner.WorkoutSet;
 import se.aljr.application.programplanner.WorkoutsList;
 
 import javax.swing.*;
-import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.io.*;
 import java.lang.reflect.Type;
@@ -43,23 +41,55 @@ public class FirebaseManager {
     private static Firestore db;
     private static StorageOptions storageOptions;
     private static final ArrayList<Thread> activeThreads = new ArrayList<>();
+    private static String apiKey;
 
 
     static {
 
         try {
+            Gson gson = new Gson();
+            HashMap<String, String> firebaseCredentials = new HashMap<>();
+            String firebaseCredentialsPath;
+            String databaseUrl = "";
+            String projectId = "";
+            if(ResourcePath.isRunningFromJar()){
+                URL location = ResourcePath.class.getProtectionDomain().getCodeSource().getLocation();
 
-            FileInputStream serviceAccount = new FileInputStream(ResourcePath.getResourcePath("serviceKey.json"));
+                String jarFilePath = location.getPath();
+
+                firebaseCredentialsPath = jarFilePath.substring(0,jarFilePath.lastIndexOf("/")+1)+"databaseConfig.json";
+            }else{
+                firebaseCredentialsPath = ResourcePath.class.getClassLoader().getResource("resource.path").getPath().replace("resource.path","")+"databaseConfig.json";
+            }
+            try (FileReader reader = new FileReader(firebaseCredentialsPath)) {
+                firebaseCredentials = gson.fromJson(reader, HashMap.class);
+                if (firebaseCredentials.get("serviceKey") != null) {
+                }
+                if (firebaseCredentials.get("databaseUrl") != null) {
+                    databaseUrl = firebaseCredentials.get("databaseUrl");
+                }
+                if (firebaseCredentials.get("projectId") != null) {
+                    projectId = firebaseCredentials.get("projectId");
+                }
+                if (firebaseCredentials.get("apiKey") != null) {
+                    apiKey = firebaseCredentials.get("apiKey");
+                }
+            } catch (Exception _) {
+
+            }
+
+
+            InputStream serviceAccount = new ByteArrayInputStream(firebaseCredentials.get("serviceKey").getBytes());
             GoogleCredentials credentials = GoogleCredentials.fromStream(serviceAccount);
             FirebaseOptions options = FirebaseOptions.builder()
                     .setCredentials(credentials)
-                    .setDatabaseUrl("https://test-7528a.firebaseio.com")
+                    .setDatabaseUrl(databaseUrl)
                     .build();
 
             FirebaseApp.initializeApp(options);
 
             FirestoreOptions firestoreOptions = FirestoreOptions.newBuilder()
-                    .setProjectId("brogress-7499c")
+                    .setProjectId(projectId)
                     .setCredentials(credentials)
                     .build();
 
@@ -208,7 +238,7 @@ public class FirebaseManager {
 
     public static void writeDBsendFriendRequest(String email) throws ExecutionException, InterruptedException {
         HashMap<String,String> newFriendRequest= readDBgetFriendRequests(email);
-        HashMap<String,String> usersFriends = readDBfriends(email,true);
+        HashMap<String,String> usersFriends = readDBfriends(email);
         if(newFriendRequest!=null&&usersFriends!=null){
             if(!newFriendRequest.containsKey(UserData.getEmail())&&!usersFriends.containsKey(UserData.getEmail())&&!email.equals(UserData.getEmail())){
                 // Referens till dokumentet i "users" collection
@@ -237,7 +267,7 @@ public class FirebaseManager {
 
     public static void writeDBacceptFriendRequest(String email){
         HashMap<String,String> myFriendRequests= readDBgetFriendRequests(UserData.getEmail());
-        HashMap<String,String> usersFriends = readDBfriends(email,true);
+        HashMap<String,String> usersFriends = readDBfriends(email);
         if(myFriendRequests!=null&&usersFriends!=null){
             if(!myFriendRequests.containsKey(UserData.getEmail())&&!usersFriends.containsKey(UserData.getEmail())&&!email.equals(UserData.getEmail())){
                 for(Map.Entry<String,String> entry : myFriendRequests.entrySet()){
@@ -263,7 +293,6 @@ public class FirebaseManager {
 
                 writeDBfriends(UserData.getEmail());
                 writeDBfriends(email);
-                HomePanel.updateFriends();
                 ChatPanel.updateFriends();
 
 
@@ -468,7 +497,7 @@ public class FirebaseManager {
                 friends.put(friend.getFriendEmail(), friend.getFriendName());
             }
         }else{
-            friends = readDBfriends(email,true);
+            friends = readDBfriends(email);
             friends.put(UserData.getEmail(),UserData.getUserName());
         }
         String json = gson.toJson(friends);
@@ -492,7 +521,7 @@ public class FirebaseManager {
 
     }
 
-    public static HashMap<String,String> readDBfriends(String email, boolean readOnly){
+    public static HashMap<String,String> readDBfriends(String email){
         try {
             Gson gson = new Gson();
             HashMap<String, String> friendsMap = new HashMap<>();
@@ -518,15 +547,16 @@ public class FirebaseManager {
                 System.out.println("Dokumentet existerar inte.");
             }
 
-            if(!readOnly){
                 for(Map.Entry<String, String> entry : friendsMap.entrySet()){
                     boolean addPerson = true;
                     for(Friend friend : FriendsList.getFriendArrayList()){
                         if(friend.getFriendEmail().equals(entry.getKey())){
                             addPerson = false;
+                            break;
                         }
                     }
                     if(addPerson){
+                        System.out.println("Added :" +entry.getKey()+ " to friends list in the client\n\n");
                         FriendsList.getFriendArrayList().add(new Friend(){
                             {
                                 setFriendEmail(entry.getKey());
@@ -534,8 +564,6 @@ public class FirebaseManager {
                             }
                         });
                     }
-
-                }
             }
             return friendsMap;
 
@@ -573,6 +601,7 @@ public class FirebaseManager {
         user.put("Favorite_Exercises","");
         user.put("activityFactor","");
         user.put("isAdmin",false);
+        user.put("gender", "");
 
 
         // Referens till dokumentet i "users" collection
@@ -602,6 +631,7 @@ public class FirebaseManager {
         user.put("weight", String.valueOf(UserData.getUserWeight()));
         user.put("activityFactor", String.valueOf(UserData.getActivityFactor()));
         user.put("theme", UserData.getTheme());
+        user.put("gender", UserData.getUserGender());
 
 
         // Referens till dokumentet i "users" collection
@@ -638,6 +668,7 @@ public class FirebaseManager {
             UserData.setTheme(userData.get("theme").toString());
             UserData.setAdmin((boolean) userData.get("isAdmin"));
             UserData.setActivityFactor(userData.get("activityFactor").toString().isEmpty() ? 1.2f:Float.parseFloat(userData.get("activityFactor").toString()));
+            UserData.setUserGender(userData.get("gender").toString());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -828,6 +859,11 @@ public class FirebaseManager {
         DocumentReference documentReference = db.collection("users").document(UserData.getEmail());
         documentReference.update("Favorite_Exercises", exercise64);
 
+        for (Exercise exercise : temp) {
+            if(exercise.getImageIconPath()!=null){
+                exercise.reattachImageIcon();
+            }
+        }
     }
 
 
@@ -1313,8 +1349,12 @@ public class FirebaseManager {
                 ByteArrayInputStream bis = new ByteArrayInputStream(decodedBytes);
                 ObjectInputStream inStream = new ObjectInputStream(bis);
                 inStream.close();
+                HashSet<Exercise> favoriteExercises = (HashSet<Exercise>) inStream.readObject();
+                for(Exercise e : favoriteExercises){
+                    e.reattachImageIcon();
+                }
 
-                return (HashSet<Exercise>) inStream.readObject();
+                return favoriteExercises;
             }else{
                 return new HashSet<>();
             }
@@ -1398,7 +1438,7 @@ public class FirebaseManager {
     public static boolean authenticateUser(String email, String password) {
         try {
             // Firebase Authentication endpoint
-            String endpoint = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=" + "AIzaSyADuzz3eZoO-UpAkNS89ksgC4G4eXAdx8w";
+            String endpoint = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=" + apiKey;
 
             // Create JSON payload
             String payload = String.format(

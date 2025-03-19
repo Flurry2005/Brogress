@@ -20,5 +20,6 @@ public class InclineDumbbellPress extends Exercise {
         musclesUsed.add(new Triceps());
 
         imageIcon = new ImageIcon(ResourcePath.getResourcePath("ExerciseImages/InclineDumbbellPress.gif"));
+        imageIconPath = "ExerciseImages/InclineDumbbellPress.gif";
     }
 }
