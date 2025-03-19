@@ -203,6 +203,7 @@ public class LoginWindow extends JFrame {
         });
 
         JButton loginButton = new JButton("Login");
+        loginButton.setFocusable(false);
         loginButton.setMinimumSize(new Dimension(new Dimension(getWidth() / 5, (int) (getHeight() / 7.5))));
         loginButton.setPreferredSize(new Dimension(new Dimension(getWidth() / 5, (int) (getHeight() / 7.5))));
         loginButton.setMaximumSize(new Dimension(new Dimension(getWidth() / 5, (int) (getHeight() / 7.5))));

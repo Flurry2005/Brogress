@@ -41,23 +41,55 @@ public class FirebaseManager {
     private static Firestore db;
     private static StorageOptions storageOptions;
     private static final ArrayList<Thread> activeThreads = new ArrayList<>();
+    private static String apiKey;
 
 
     static {
 
         try {
+            Gson gson = new Gson();
+            HashMap<String, String> firebaseCredentials = new HashMap<>();
+            String firebaseCredentialsPath;
+            String databaseUrl = "";
+            String projectId = "";
+            if(ResourcePath.isRunningFromJar()){
+                URL location = ResourcePath.class.getProtectionDomain().getCodeSource().getLocation();
 
-            FileInputStream serviceAccount = new FileInputStream(ResourcePath.getResourcePath("serviceKey.json"));
+                String jarFilePath = location.getPath();
+
+                firebaseCredentialsPath = jarFilePath.substring(0,jarFilePath.lastIndexOf("/")+1)+"databaseConfig.json";
+            }else{
+                firebaseCredentialsPath = ResourcePath.class.getClassLoader().getResource("resource.path").getPath().replace("resource.path","")+"databaseConfig.json";
+            }
+            try (FileReader reader = new FileReader(firebaseCredentialsPath)) {
+                firebaseCredentials = gson.fromJson(reader, HashMap.class);
+                if (firebaseCredentials.get("serviceKey") != null) {
+                }
+                if (firebaseCredentials.get("databaseUrl") != null) {
+                    databaseUrl = firebaseCredentials.get("databaseUrl");
+                }
+                if (firebaseCredentials.get("projectId") != null) {
+                    projectId = firebaseCredentials.get("projectId");
+                }
+                if (firebaseCredentials.get("apiKey") != null) {
+                    apiKey = firebaseCredentials.get("apiKey");
+                }
+            } catch (Exception _) {
+
+            }
+
+
+            InputStream serviceAccount = new ByteArrayInputStream(firebaseCredentials.get("serviceKey").getBytes());
             GoogleCredentials credentials = GoogleCredentials.fromStream(serviceAccount);
             FirebaseOptions options = FirebaseOptions.builder()
                     .setCredentials(credentials)
-                    .setDatabaseUrl("https://test-7528a.firebaseio.com")
+                    .setDatabaseUrl(databaseUrl)
                     .build();
 
             FirebaseApp.initializeApp(options);
 
             FirestoreOptions firestoreOptions = FirestoreOptions.newBuilder()
-                    .setProjectId("brogress-7499c")
+                    .setProjectId(projectId)
                     .setCredentials(credentials)
                     .build();
 
@@ -1406,7 +1438,7 @@ public class FirebaseManager {
     public static boolean authenticateUser(String email, String password) {
         try {
             // Firebase Authentication endpoint
-            String endpoint = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=" + "AIzaSyADuzz3eZoO-UpAkNS89ksgC4G4eXAdx8w";
+            String endpoint = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=" + apiKey;
 
             // Create JSON payload
             String payload = String.format(
