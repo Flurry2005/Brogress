@@ -1,8 +1,6 @@
 package se.aljr.application.exercise;
 
-import org.checkerframework.checker.units.qual.C;
 import se.aljr.application.AppThemeColors;
-import se.aljr.application.CustomFont;
 import se.aljr.application.ResourcePath;
 import se.aljr.application.UserData;
 import se.aljr.application.exercise.Excercise.*;
@@ -13,7 +11,6 @@ import se.aljr.application.loginpage.FirebaseManager;
 import se.aljr.application.settings.SettingsPanel;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.event.DocumentEvent;
@@ -61,6 +58,7 @@ public class ExercisePanel extends JPanel {
     public static JButton createExerciseButton = new JButton();
     private final JLabel imageLabel = new JLabel();
     private final JButton editButton = new JButton("\uD83D\uDCDD");;
+    private static final Exercises exercises = new Exercises();
     Font font;
     protected ImageIcon homePanelBackground;
     protected ImageIcon scaledContentBackgroundPanel;
@@ -140,10 +138,16 @@ public class ExercisePanel extends JPanel {
 
         // Populate the JList with exercises
         exerciseModel = new DefaultListModel<>();
-        Exercises exercises = new Exercises();
         for (Exercise exercise : exercises.getList()) {
             exerciseModel.addElement(exercise);
         }
+
+        try{
+            UserData.setFavoriteExercises(FirebaseManager.readDBfavoriteExercises());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
         for (Exercise userExercise : UserData.getFavoriteExercises()) {
             exerciseModel.addElement(userExercise);
         }
@@ -588,12 +592,12 @@ public class ExercisePanel extends JPanel {
                     activateStatus(new Color(204, 20, 20), removedStatus);
                     favoriteButton.setForeground(new Color(22, 22, 22));
                 }
-                updateMenuList("favExerciseModel");
                 try {
                     FirebaseManager.writeDBFavoriteExercises(UserData.getFavoriteExercises());
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
+                updateMenuList("favExerciseModel");
             }
         });
 
@@ -673,17 +677,7 @@ public class ExercisePanel extends JPanel {
                     sortMuscleButton.setBackground(AppThemeColors.PRIMARY);
                     myExercises.setBackground(AppThemeColors.PRIMARY);
                     menuList.setSelectionBackground(new Color(49, 84, 122));
-                    try {
-                        UserData.updateFavoriteExercises();
-                    } catch (IOException ex) {
-                        throw new RuntimeException(ex);
-                    } catch (ExecutionException ex) {
-                        throw new RuntimeException(ex);
-                    } catch (InterruptedException ex) {
-                        throw new RuntimeException(ex);
-                    } catch (ClassNotFoundException ex) {
-                        throw new RuntimeException(ex);
-                    }
+
                     updateMenuList("favExerciseModel");
                 }
                 else {
@@ -859,7 +853,11 @@ public class ExercisePanel extends JPanel {
                     imageLabel.setIcon(scaledExerciseIcon);
                     // DISPLAY DEFAULT IF IMAGE NOT FOUND
                 } catch (Exception ex) {
-                    scaledTest = homePanelBackground.getImage().getScaledInstance(imageLabel.getPreferredSize().width, (int) (imageLabel.getPreferredSize().height), Image.SCALE_SMOOTH);
+                    if(SettingsPanel.lightMode){
+                        scaledTest = lightHomePanelBackground.getImage().getScaledInstance(imageLabel.getPreferredSize().width, (int) (imageLabel.getPreferredSize().height), Image.SCALE_SMOOTH);
+                    }else{
+                        scaledTest = homePanelBackground.getImage().getScaledInstance(imageLabel.getPreferredSize().width, (int) (imageLabel.getPreferredSize().height), Image.SCALE_SMOOTH);
+                    }
                     ImageIcon scaledTestIcon = new ImageIcon(scaledTest);
                     imageLabel.setIcon(scaledTestIcon);
                     formInfoContainer.setVisible(false);
@@ -1044,7 +1042,6 @@ public class ExercisePanel extends JPanel {
             for (Exercise exercise : UserData.getCreatedExercises()) {
                 myExerciseModel.addElement(exercise);
             }
-            menuList.setModel(myExerciseModel);
         } else if (modelName.equals("favExerciseModel")) {
             favExerciseModel.clear();
             for (Exercise exercise : UserData.getFavoriteExercises()) {
@@ -1052,7 +1049,6 @@ public class ExercisePanel extends JPanel {
             }
         } else {
             exerciseModel.clear();
-            Exercises exercises = new Exercises();
             for (Exercise exercise : exercises.getList()) {
                 exerciseModel.addElement(exercise);
             }

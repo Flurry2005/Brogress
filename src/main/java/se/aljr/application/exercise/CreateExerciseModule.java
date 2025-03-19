@@ -522,7 +522,7 @@ public class CreateExerciseModule extends JPanel {
                 UserData.setCreatedExercises(exercise);
 
                 if (setFav.isSelected()) {
-                    UserData.setFavoriteExercises(exercise);
+                    UserData.addFavoriteExercise(exercise);
                 }
 
                 exerciseName.setText("");

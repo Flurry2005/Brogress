@@ -3,10 +3,7 @@ package se.aljr.application;
 import org.junit.jupiter.api.Test;
 import se.aljr.application.exercise.Excercise.Exercise;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.concurrent.ExecutionException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -63,8 +60,8 @@ class UserDataTest {
         exercise1.setName("Exercise1");
         exercise2.setName("Exercise2");
 
-        UserData.setFavoriteExercises(exercise1);
-        UserData.setFavoriteExercises(exercise2);
+        UserData.addFavoriteExercise(exercise1);
+        UserData.addFavoriteExercise(exercise2);
 
         HashSet<Exercise> result = UserData.getFavoriteExercises();
 
@@ -75,15 +72,15 @@ class UserDataTest {
     @Test
     void removeFavoriteExercises() {
         Exercise exercise = new Exercise();
-        UserData.setFavoriteExercises(exercise);
+        UserData.addFavoriteExercise(exercise);
         UserData.removeFavoriteExercises(exercise);
         assertFalse(UserData.getFavoriteExercises().contains(exercise), "The exercise should be removed from the favoriteExercises collection.");
     }
 
     @Test
-    void setFavoriteExercises() {
+    void addFavoriteExercise() {
         Exercise exercise = new Exercise();
-        UserData.setFavoriteExercises(exercise);
+        UserData.addFavoriteExercise(exercise);
         assertTrue(UserData.getFavoriteExercises().contains(exercise), "The exercise should be added to the favoriteExercises collection.");
     }
 

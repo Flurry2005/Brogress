@@ -828,7 +828,9 @@ public class FirebaseManager {
         documentReference.update("Favorite_Exercises", exercise64);
 
         for (Exercise exercise : temp) {
-            exercise.reattachImageIcon(favoriteList);
+            if(exercise.getImageIconPath()!=null){
+                exercise.reattachImageIcon();
+            }
         }
     }
 
@@ -1315,8 +1317,12 @@ public class FirebaseManager {
                 ByteArrayInputStream bis = new ByteArrayInputStream(decodedBytes);
                 ObjectInputStream inStream = new ObjectInputStream(bis);
                 inStream.close();
+                HashSet<Exercise> favoriteExercises = (HashSet<Exercise>) inStream.readObject();
+                for(Exercise e : favoriteExercises){
+                    e.reattachImageIcon();
+                }
 
-                return (HashSet<Exercise>) inStream.readObject();
+                return favoriteExercises;
             }else{
                 return new HashSet<>();
             }

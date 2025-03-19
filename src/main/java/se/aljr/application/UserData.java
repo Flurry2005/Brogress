@@ -17,7 +17,7 @@ public class UserData {
     private static String userEmail;
     private static String userTheme;
     private static float activityFactor;
-    private static final HashSet<Exercise> favoriteExercises = new HashSet<>();
+    private static HashSet<Exercise> favoriteExercises = new HashSet<>();
     private static final ArrayList<Exercise> createdExercises = new ArrayList<>();
     private static boolean isOnline;
 
@@ -71,10 +71,14 @@ public class UserData {
         return favoriteExercises;
     }
 
+    public static void setFavoriteExercises(HashSet<Exercise> list) {
+        favoriteExercises = list;
+    }
+
     public static void removeFavoriteExercises(Exercise exercise) {
         favoriteExercises.remove(exercise);
     }
-    public static void setFavoriteExercises(Exercise exercise) {
+    public static void addFavoriteExercise(Exercise exercise) {
         favoriteExercises.add(exercise);
     }
 

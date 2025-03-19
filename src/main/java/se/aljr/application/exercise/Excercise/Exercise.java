@@ -23,6 +23,15 @@ public class Exercise implements Serializable {
     protected String picture;
     protected ArrayList<Muscle> musclesUsed = new ArrayList<>();
     protected ImageIcon imageIcon;
+
+    public String getImageIconPath() {
+        return imageIconPath;
+    }
+
+    public void setImageIconPath(String imageIconPath) {
+        this.imageIconPath = imageIconPath;
+    }
+
     protected String imageIconPath;
 
     public String getName() {
@@ -57,8 +66,8 @@ public class Exercise implements Serializable {
         this.imageIcon=null;
     }
 
-    public void reattachImageIcon(HashSet<Exercise> list){
-        for(Exercise e : list){
+    public void reattachImageIcon(){
+        if (imageIconPath!=null) {
             imageIcon = new ImageIcon(ResourcePath.getResourcePath(imageIconPath));
         }
     }
