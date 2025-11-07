@@ -10,7 +10,7 @@ Brogress, is a Windows based fitness tracking application used for learning abou
 # Getting started
 To use the application for yourself follow these steps.
 <h2>Installation</h2>
-1. Download the latest version of the application <href>https://github.com/Flurry2005/Brogress/releases/tag/base</href>.<br />
+1. Download the latest version of the application <a href="https://github.com/Flurry2005/Brogress/releases/tag/base">https://github.com/Flurry2005/Brogress/releases/tag/base</a> <br>
 2. Create a firebase database and add authentication, Firestore Database and Cloud Storage.<br />
 3. In Firestore Database, add three collections, <code>chats</code> <code>defaultworkouts</code> and <code>users</code>.<br />
 4. Configurate <code>firebaseConfig.json</code> and enter your firebase credentials in the file.<br />
